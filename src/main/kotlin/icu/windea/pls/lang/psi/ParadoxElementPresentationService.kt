@@ -128,7 +128,7 @@ object ParadoxElementPresentationService {
             val definitionInfo = element.definitionInfo
             if (definitionInfo == null) return null
             val typeInfo = definitionInfo.typeText
-            val presentableName = ParadoxDefinitionManager.getPresentableName(element)
+            val presentableName = ParadoxDefinitionManager.getPresentableNames(element, onlyOne = true).firstOrNull()
             return buildString {
                 append(": ").append(typeInfo)
                 if (presentableName != null) append(" ").append(presentableName)

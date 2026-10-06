@@ -3,27 +3,22 @@ package icu.windea.pls.lang.codeInsight.navigation
 import com.intellij.codeInsight.navigation.GotoTargetHandler
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.synced
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orAnonymous
-import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
 import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
-import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
-import icu.windea.pls.lang.search.ParadoxFilePathSearch
-import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.select.selectScope
+import icu.windea.pls.lang.util.ParadoxDefinitionManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 
 // com.intellij.testIntegration.GotoTestOrCodeHandler
@@ -48,17 +43,10 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
             if (definitionInfo.name.isEmpty()) return@run // 排除匿名定义
             sourceElement = definition
             val name = ParadoxPsiPresentationService.getNameForDefinition(definition) ?: return@run
-            val imageInfos = definitionInfo.images
             runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedImages.search.definition", name.orAnonymous().escapeXml())) {
                 // need read actions here if necessary
-                for ((_, locationExpression) in imageInfos) {
-                    ProgressManager.checkCanceled()
-                    readAction {
-                        val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, definition, definitionInfo)
-                        if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
-                            targets.addAll(resolveResult.elements)
-                        }
-                    }
+                readAction {
+                    targets.addAll(ParadoxDefinitionManager.getRelatedImages(definition))
                 }
             }
         }
@@ -72,12 +60,7 @@ class GotoRelatedImagesHandler : GotoTargetHandler() {
             runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedImages.search.modifier", name.orAnonymous().escapeXml())) {
                 // need read actions here if necessary
                 readAction {
-                    val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
-                    val iconFiles = paths.firstNotNullOfOrNull { path ->
-                        val iconSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
-                        ParadoxFilePathSearch.searchModifierIcon(path, iconSelector).findAll().orNull()
-                    }
-                    if (iconFiles != null) targets.addAll(iconFiles.mapNotNull { it.toPsiFile(project) })
+                    targets.addAll(ParadoxModifierManager.getRelatedImages(name, element))
                 }
             }
         }

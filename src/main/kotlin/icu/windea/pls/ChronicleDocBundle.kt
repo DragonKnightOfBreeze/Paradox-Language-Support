@@ -89,7 +89,7 @@ object ChronicleDocBundle {
         run {
             val selector = ParadoxDefinitionSearch.selector(project, context).contextSensitive().withGameType(gameType)
             val definition = ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.technologyCategory, selector).find() ?: return@run
-            val localisation = ParadoxDefinitionManager.getPrimaryLocalisation(definition) ?: return@run
+            val localisation = ParadoxDefinitionManager.getRelatedLocalisations(definition, onlyOne = true, onlyPrimary = true).firstOrNull() ?: return@run
             val text = ParadoxLocalisationManager.getPresentableText(localisation) ?: return@run
             return text
         }

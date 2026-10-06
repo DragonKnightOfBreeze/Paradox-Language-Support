@@ -55,17 +55,17 @@ object ParadoxGameConceptManager {
                 val overrideValue = overrideProperty?.propertyValue<ParadoxScriptString>() ?: return@r2
                 val override = overrideValue.references.lastOrNull()?.resolve() ?: return@r2
                 when {
-                    override is ParadoxScriptProperty -> return resolved to ParadoxDefinitionManager.getPrimaryLocalisation(override)
+                    override is ParadoxScriptProperty -> return resolved to ParadoxDefinitionManager.getRelatedLocalisations(override, onlyOne = true, onlyPrimary = true).firstOrNull()
                     override is ParadoxLocalisationProperty -> return resolved to override
                 }
             }
-            return resolved to ParadoxDefinitionManager.getPrimaryLocalisation(resolved)
+            return resolved to ParadoxDefinitionManager.getRelatedLocalisations(resolved, onlyOne = true, onlyPrimary = true).firstOrNull()
         }
         run r1@{
             val resolved = element.conceptName?.references?.lastOrNull()?.resolve()
             if (resolved !is ParadoxScriptProperty) return@r1
             if (conceptString != null) return resolved to conceptString
-            return resolved to ParadoxDefinitionManager.getPrimaryLocalisation(resolved)
+            return resolved to ParadoxDefinitionManager.getRelatedLocalisations(resolved, onlyOne = true, onlyPrimary = true).firstOrNull()
         }
         return null to null
     }

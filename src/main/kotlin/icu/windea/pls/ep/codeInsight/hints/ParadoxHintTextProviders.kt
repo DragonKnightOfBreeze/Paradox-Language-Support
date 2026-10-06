@@ -29,7 +29,8 @@ class ParadoxDefinitionHintTextProvider : ParadoxHintTextProviderBase.Definition
     }
 
     override fun doGetHintLocalisation(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
-        return ParadoxDefinitionManager.getPrimaryLocalisation(element)
+        val localeToUse = locale ?: ParadoxLocaleManager.getPreferredLocaleConfig()
+        return ParadoxDefinitionManager.getRelatedLocalisations(element, localeToUse, onlyOne = true, onlyPrimary = true).firstOrNull()
     }
 }
 

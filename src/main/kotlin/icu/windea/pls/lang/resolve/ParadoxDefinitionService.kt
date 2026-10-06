@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
@@ -13,7 +14,6 @@ import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.processFast
@@ -230,74 +230,49 @@ object ParadoxDefinitionService {
         return null
     }
 
-    fun resolvePrimaryLocalisation(definitionInfo: ParadoxDefinitionInfo): ParadoxLocalisationProperty? {
-        val element = definitionInfo.element ?: return null
-        val primaryLocalisations = definitionInfo.primaryLocalisations
-        if (primaryLocalisations.isEmpty()) return null // 没有或者规则不完善
-        val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
-        primaryLocalisations.forEachFast f@{ primaryLocalisation ->
-            val resolveResult = ParadoxLocationExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
-            if (resolveResult !is CwtLocalisationLocationResolveResult.Static) return@f
-            return resolveResult.element
-        }
-        return null
-    }
-
-    fun resolvePrimaryLocalisations(definitionInfo: ParadoxDefinitionInfo): Set<ParadoxLocalisationProperty> {
-        val element = definitionInfo.element ?: return emptySet()
-        val primaryLocalisations = definitionInfo.primaryLocalisations
-        if (primaryLocalisations.isEmpty()) return emptySet() // 没有或者规则不完善
-        val result = mutableSetOf<ParadoxLocalisationProperty>()
-        val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
-        primaryLocalisations.forEachFast f@{ primaryLocalisation ->
-            val resolveResult = ParadoxLocationExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
-            if (resolveResult !is CwtLocalisationLocationResolveResult.Static) return@f
-            result.addAll(resolveResult.elements)
-        }
-        return result
-    }
-
-    fun resolvePrimaryImage(definitionInfo: ParadoxDefinitionInfo): PsiFile? {
-        val element = definitionInfo.element ?: return null
-        val primaryImages = definitionInfo.primaryImages
-        if (primaryImages.isEmpty()) return null // 没有或者规则不完善
-        primaryImages.forEachFast f@{ primaryImage ->
-            val resolveResult = ParadoxLocationExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
-            if (resolveResult !is CwtImageLocationResolveResult.Static) return@f
-            val file = resolveResult.element?.castOrNull<PsiFile>() ?: return@f
-            element.putUserData(Keys.imageFrameInfo, resolveResult.frameInfo)
-            return file
-        }
-        return null
-    }
-
-    fun resolvePrimaryImages(definitionInfo: ParadoxDefinitionInfo): Set<PsiFile> {
-        val element = definitionInfo.element ?: return emptySet()
-        val primaryImages = definitionInfo.primaryImages
-        if (primaryImages.isEmpty()) return emptySet() // 没有或者规则不完善
-        val result = mutableSetOf<PsiFile>()
-        primaryImages.forEachFast f@{ primaryImage ->
-            val resolveResult = ParadoxLocationExpressionService.resolve(primaryImage.locationExpression, element, definitionInfo, toFile = true)
-            if (resolveResult !is CwtImageLocationResolveResult.Static) return@f
-            val files = resolveResult.elements.filterIsInstance<PsiFile>()
-            element.putUserData(Keys.imageFrameInfo, resolveResult.frameInfo)
-            result.addAll(files)
-        }
-        return result
-    }
-
-    fun resolveRelatedLocalisations(definitionInfo: ParadoxDefinitionInfo): List<ParadoxLocalisationProperty> {
+    /**
+     * 解析 [definitionInfo] 对应的定义的所有相关本地化。
+     *
+     * @param onlyPrimary 是否仅解析（关联键）作为主键的本地化。
+     */
+    fun resolveRelatedLocalisations(
+        definitionInfo: ParadoxDefinitionInfo,
+        preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
+        onlyPrimary: Boolean = false,
+    ): List<ParadoxLocalisationProperty> {
         val element = definitionInfo.element ?: return emptyList()
-        val localisationInfos = definitionInfo.localisations
+        val localisationInfos = if (onlyPrimary) definitionInfo.primaryLocalisations else definitionInfo.localisations
         if (localisationInfos.isEmpty()) return emptyList() // 没有或者规则不完善
         val result = mutableListOf<ParadoxLocalisationProperty>()
-        val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         for ((_, locationExpression) in localisationInfos) {
             ProgressManager.checkCanceled()
             val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
             if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
                 result.addAll(resolveResult.elements)
             }
+        }
+        return result
+    }
+
+    /**
+     * 解析 [definitionInfo] 对应的定义的所有相关图片。
+     *
+     * @param onlyPrimary 是否仅解析（关联键）作为主键的图片。
+     */
+    fun resolveRelatedImages(
+        definitionInfo: ParadoxDefinitionInfo,
+        onlyPrimary: Boolean = false,
+    ): List<PsiFile> {
+        val element = definitionInfo.element ?: return emptyList()
+        val imageInfos = if (onlyPrimary) definitionInfo.primaryImages else definitionInfo.images
+        if (imageInfos.isEmpty()) return emptyList() // 没有或者规则不完善
+        val result = mutableListOf<PsiFile>()
+        for ((_, locationExpression) in imageInfos) {
+            ProgressManager.checkCanceled()
+            val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo, toFile = true)
+            if (resolveResult !is CwtImageLocationResolveResult.Static) continue
+            element.putUserData(Keys.imageFrameInfo, resolveResult.frameInfo)
+            result.addAll(resolveResult.elements.filterIsInstance<PsiFile>())
         }
         return result
     }

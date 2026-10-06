@@ -139,12 +139,12 @@ object ParadoxEventManager {
 
     @Suppress("unused")
     fun getPresentableNameElement(definition: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
-        return ParadoxDefinitionManager.getPrimaryLocalisation(definition)
+        return ParadoxDefinitionManager.getRelatedLocalisations(definition, onlyOne = true, onlyPrimary = true).firstOrNull()
     }
 
     @Suppress("unused")
     fun getIconFile(definition: ParadoxDefinitionElement): PsiFile? {
-        return ParadoxDefinitionManager.getPrimaryImage(definition)
+        return ParadoxDefinitionManager.getRelatedImages(definition, onlyOne = true, onlyPrimary = true).firstOrNull()
     }
 
     /**

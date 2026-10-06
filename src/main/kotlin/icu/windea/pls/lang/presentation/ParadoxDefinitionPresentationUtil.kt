@@ -32,7 +32,7 @@ import javax.swing.JLabel
 
 object ParadoxDefinitionPresentationUtil {
     fun getNameLocalisation(definition: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
-        return ParadoxDefinitionManager.getPrimaryLocalisation(definition)
+        return ParadoxDefinitionManager.getRelatedLocalisations(definition, onlyOne = true, onlyPrimary = true).firstOrNull()
     }
 
     fun getNameLocalisationKey(definition: ParadoxDefinitionElement): String? {
@@ -112,7 +112,7 @@ object ParadoxDefinitionPresentationUtil {
     }
 
     fun getIcon(definition: ParadoxDefinitionElement): Icon? {
-        val ddsFile = ParadoxDefinitionManager.getPrimaryImage(definition) ?: return null
+        val ddsFile = ParadoxDefinitionManager.getRelatedImages(definition, onlyOne = true, onlyPrimary = true).firstOrNull() ?: return null
         val iconFile = ddsFile.virtualFile ?: return null
         val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile, ddsFile.project) ?: return null
         if (!ParadoxImageManager.canResolve(iconUrl)) return null

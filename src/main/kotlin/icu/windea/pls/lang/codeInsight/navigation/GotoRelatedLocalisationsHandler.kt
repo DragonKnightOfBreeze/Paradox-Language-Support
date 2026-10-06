@@ -48,7 +48,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.s", name.orAnonymous().escapeXml())) {
                 // need read actions here if necessary
                 readAction {
-                    targets.addAll(ParadoxSnippetManager.getRelatedLocalisations(element))
+                    targets.addAll(ParadoxSnippetManager.getRelatedLocalisations(element, preferredLocale))
                 }
             }
         }
@@ -79,7 +79,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.d", name.orAnonymous().escapeXml())) {
                 // need read actions here if necessary
                 readAction {
-                    targets.addAll(ParadoxDefinitionManager.getRelatedLocalisations(definition))
+                    targets.addAll(ParadoxDefinitionManager.getRelatedLocalisations(definition, preferredLocale))
                 }
             }
         }
@@ -93,7 +93,7 @@ class GotoRelatedLocalisationsHandler : GotoTargetHandler() {
             runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.relatedLocalisations.search.m", name.orAnonymous().escapeXml())) {
                 // need read actions here if necessary
                 readAction {
-                    targets.addAll(ParadoxModifierManager.getRelatedLocalisations(element))
+                    targets.addAll(ParadoxModifierManager.getRelatedLocalisations(element, preferredLocale))
                 }
             }
         }

@@ -110,7 +110,7 @@ object ParadoxPsiPresentationService {
         if (element !is ParadoxDefinitionElement) return null
         val definitionInfo = element.definitionInfo
         if (definitionInfo == null) return null
-        return ParadoxDefinitionManager.getPresentableName(element).orEmpty()
+        return ParadoxDefinitionManager.getPresentableNames(element, onlyOne = true).firstOrNull().orEmpty()
     }
 
     /**

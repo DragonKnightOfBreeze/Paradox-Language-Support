@@ -7,6 +7,7 @@ import com.intellij.psi.util.PsiModificationTracker
 import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.buildImmutableList
@@ -17,6 +18,8 @@ import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
+import icu.windea.pls.core.util.values.singletonListOrEmpty
+import icu.windea.pls.core.util.values.to
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -37,10 +40,10 @@ object ParadoxDefinitionManager {
         val cachedDeclaration by registerKey<CachedValue<CwtPropertyConfig?>>(this)
         val cachedDeclarationDumb by registerKey<CachedValue<CwtPropertyConfig?>>(this)
         val cachedPrimaryLocalisationKey by registerKey<CachedValue<String?>>(this)
-        val cachedPrimaryLocalisation by registerKey<CachedValue<ParadoxLocalisationProperty?>>(this)
-        val cachedPrimaryLocalisations by registerKey<CachedValue<Set<ParadoxLocalisationProperty>>>(this)
-        val cachedPrimaryImage by registerKey<CachedValue<PsiFile?>>(this)
-        val cachedPrimaryImages by registerKey<CachedValue<Set<PsiFile>>>(this)
+        val cachedPrimaryLocalisations by registerKey<CachedValue<List<ParadoxLocalisationProperty>>>(this)
+        val cachedRelatedLocalisations by registerKey<CachedValue<List<ParadoxLocalisationProperty>>>(this)
+        val cachedPrimaryImages by registerKey<CachedValue<List<PsiFile>>>(this)
+        val cachedRelatedImages by registerKey<CachedValue<List<PsiFile>>>(this)
 
         /** 用于标记图片的帧数信息以便后续进行切分。 */
         val imageFrameInfo by registerKey<ImageFrameInfo>(Keys)
@@ -144,45 +147,47 @@ object ParadoxDefinitionManager {
         }
     }
 
-    fun getPrimaryLocalisation(element: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
-        return getCachedValueOnDemand(element, Keys.cachedPrimaryLocalisation, ChronicleCapabilities.Cache.relatedItems) {
-            // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
-            val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisation(it) }
-            CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT, ChronicleModificationTrackers.PreferredLocale)
+    /**
+     * 得到 [element] 对应的定义的所有相关本地化。
+     *
+     * 备注：[onlyPrimary] 为 `true` 时，仅解析（关联键）作为主键的本地化。
+     */
+    fun getRelatedLocalisations(
+        element: ParadoxDefinitionElement,
+        preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
+        onlyOne: Boolean = false,
+        onlyPrimary: Boolean = false,
+    ): List<ParadoxLocalisationProperty> {
+        val definitionInfo = getInfo(element) ?: return emptyList()
+        val cacheKey = if (onlyPrimary) Keys.cachedPrimaryLocalisations else Keys.cachedRelatedLocalisations
+        // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
+        // NOTE 3.0.4 仅在（默认的）偏好语言环境时经过缓存，从而避免缓存键不能区分语言环境
+        val onDemand = ChronicleCapabilities.Cache.relatedItems && preferredLocale == ParadoxLocaleManager.getPreferredLocaleConfig()
+        val value = getCachedValueOnDemand(element, cacheKey, onDemand) {
+            val resolved = ParadoxDefinitionService.resolveRelatedLocalisations(definitionInfo, preferredLocale, onlyPrimary).optimized()
+            CachedValueProvider.Result.create(resolved, element, PsiModificationTracker.MODIFICATION_COUNT, ChronicleModificationTrackers.PreferredLocale)
         }
-    }
-
-    fun getPrimaryLocalisations(element: ParadoxDefinitionElement): Set<ParadoxLocalisationProperty> {
-        return getCachedValueOnDemand(element, Keys.cachedPrimaryLocalisations, ChronicleCapabilities.Cache.relatedItems) {
-            // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
-            val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisations(it) }.orEmpty()
-            CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT, ChronicleModificationTrackers.PreferredLocale)
-        }
-    }
-
-    fun getPrimaryImage(element: ParadoxDefinitionElement): PsiFile? {
-        return getCachedValueOnDemand(element, Keys.cachedPrimaryImage, ChronicleCapabilities.Cache.relatedItems) {
-            // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
-            val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryImage(it) }
-            CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT)
-        }
-    }
-
-    @Suppress("unused")
-    fun getPrimaryImages(element: ParadoxDefinitionElement): Set<PsiFile> {
-        return getCachedValueOnDemand(element, Keys.cachedPrimaryImages, ChronicleCapabilities.Cache.relatedItems) {
-            // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
-            val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryImages(it) }
-            CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT)
-        }
+        return if (onlyOne) value.firstOrNull().to.singletonListOrEmpty() else value
     }
 
     /**
-     * 得到 [element] 对应的定义的所有相关本地化。
+     * 得到 [element] 对应的定义的所有相关图片。
+     *
+     * 备注：[onlyPrimary] 为 `true` 时，仅解析（关联键）作为主键的图片。
      */
-    fun getRelatedLocalisations(element: ParadoxDefinitionElement): List<ParadoxLocalisationProperty> {
+    fun getRelatedImages(
+        element: ParadoxDefinitionElement,
+        onlyOne: Boolean = false,
+        onlyPrimary: Boolean = false,
+    ): List<PsiFile> {
         val definitionInfo = getInfo(element) ?: return emptyList()
-        return ParadoxDefinitionService.resolveRelatedLocalisations(definitionInfo)
+        val cacheKey = if (onlyPrimary) Keys.cachedPrimaryImages else Keys.cachedRelatedImages
+        // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
+        val value = getCachedValueOnDemand(element, cacheKey, ChronicleCapabilities.Cache.relatedItems) {
+            val resolved = ParadoxDefinitionService.resolveRelatedImages(definitionInfo, onlyPrimary).optimized()
+            CachedValueProvider.Result.create(resolved, element, PsiModificationTracker.MODIFICATION_COUNT)
+        }
+        return if (onlyOne) value.firstOrNull().to.singletonListOrEmpty() else value
     }
 
     // endregion
@@ -194,18 +199,12 @@ object ParadoxDefinitionManager {
      *
      * @see ParadoxLocalisationManager.getPresentableText
      */
-    fun getPresentableName(element: ParadoxDefinitionElement): String? {
-        val localisation = getPrimaryLocalisation(element)
-        return ParadoxLocalisationManager.getPresentableText(localisation)
-    }
-
-    /**
-     * 得到 [element] 对应的定义的所有展示名字。
-     *
-     * @see ParadoxLocalisationManager.getPresentableText
-     */
-    fun getPresentableNames(element: ParadoxDefinitionElement): List<String> {
-        val localisations = getPrimaryLocalisations(element)
+    fun getPresentableNames(
+        element: ParadoxDefinitionElement,
+        preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
+        onlyOne: Boolean = false,
+    ): List<String> {
+        val localisations = getRelatedLocalisations(element, preferredLocale, onlyOne, onlyPrimary = true)
         return ParadoxLocalisationManager.getPresentableText(localisations)
     }
 

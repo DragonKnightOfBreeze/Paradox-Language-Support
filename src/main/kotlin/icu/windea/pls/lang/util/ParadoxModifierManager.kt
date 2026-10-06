@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.util.Processor
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
@@ -180,6 +181,38 @@ object ParadoxModifierManager {
         val nameKeys = if (forName) getModifierNameKeys(name, contextElement) else emptySet()
         val descKeys = if (forDesc) getModifierDescKeys(name, contextElement) else emptySet()
         return ParadoxModifierService.resolveRelatedLocalisations(nameKeys, descKeys, contextElement, preferredLocale, onlyOne)
+    }
+
+    /**
+     * 得到修正关联的所有图片。
+     *
+     * 备注：目前不经过缓存。
+     *
+     * @see ParadoxModifierService.resolveRelatedImages
+     */
+    @Suppress("unused")
+    fun getRelatedImages(
+        element: ParadoxModifierLightElement,
+        onlyOne: Boolean = false,
+    ): List<PsiFile> {
+        return getRelatedImages(element.name, element, onlyOne)
+    }
+
+    /**
+     * 得到修正关联的所有图片。
+     *
+     * 备注：目前不经过缓存。
+     *
+     * @see ParadoxModifierService.resolveRelatedImages
+     */
+    fun getRelatedImages(
+        name: String?,
+        contextElement: PsiElement,
+        onlyOne: Boolean = false,
+    ): List<PsiFile> {
+        if (name.isNullOrEmpty()) return emptyList()
+        val iconPaths = getModifierIconPaths(name, contextElement)
+        return ParadoxModifierService.resolveRelatedImages(iconPaths, contextElement, onlyOne)
     }
 
     // endregion

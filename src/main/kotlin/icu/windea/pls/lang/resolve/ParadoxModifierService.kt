@@ -3,6 +3,7 @@ package icu.windea.pls.lang.resolve
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.util.Processor
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -12,12 +13,14 @@ import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.optimizedIfEmpty
+import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierIconProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierNameDescProvider
 import icu.windea.pls.ep.resolve.modifier.ParadoxModifierSupport
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
+import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
@@ -172,6 +175,34 @@ object ParadoxModifierService {
             if (result.isNotEmpty()) return result
         }
         return emptyList()
+    }
+
+    /**
+     * 解析修正的图标路径对应的所有相关图片。
+     *
+     * 说明：
+     * - 使用特殊的查询（[ParadoxFilePathSearch.searchModifierIcon]）。
+     */
+    fun resolveRelatedImages(
+        iconPaths: Set<String>,
+        contextElement: PsiElement,
+        onlyOne: Boolean = false,
+    ): List<PsiFile> {
+        if (iconPaths.isEmpty()) return emptyList()
+        val project = contextElement.project
+        val result = mutableListOf<PsiFile>()
+        for (path in iconPaths) {
+            if (path.isEmpty()) continue
+            ProgressManager.checkCanceled()
+            val selector = ParadoxFilePathSearch.selector(project, contextElement).contextSensitive()
+            val query = ParadoxFilePathSearch.searchModifierIcon(path, selector)
+            if (onlyOne) {
+                query.findFirst()?.toPsiFile(project)?.let { return listOf(it) }
+            } else {
+                result += query.findAll().mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
+            }
+        }
+        return result
     }
 
     // endregion
