@@ -2,10 +2,8 @@ package icu.windea.pls.test.chronicle
 
 import com.intellij.codeInspection.LocalInspectionEP
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
-import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.toClass
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ChronicleConstants
@@ -14,19 +12,24 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.nio.file.Path
 
 /**
  * 基于各种默认启用的代码检查的快照测试。
  *
- * 目前不检查存在警告和错误的情况。
+ * 执行逻辑：
+ * 1. 收集并配置 [chroniclePath] 下的所有测试数据文件，同时把它们拷贝到输出目录用于差异比较。
+ * 2. 启用本插件所有默认启用的 [LocalInspectionTool]。
+ * 3. 对每个数据文件单独执行高亮检查，记录其通过与否，并输出逐文件状态与整体汇总。
  *
+ * 目前只检查不存在警告和错误的情况（即期望检查结果为空）。
+ *
+ * @see ChronicleSnapshotTest
  * @see LocalInspectionTool
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")
 class ChronicleInspectionBasedSnapshotTest : ChronicleSnapshotTest() {
-    private val gameType = ParadoxGameType.Stellaris
+    override val gameType = ParadoxGameType.Stellaris
 
     override fun getTestDataPath() = "src/test/testData"
 
@@ -43,35 +46,43 @@ class ChronicleInspectionBasedSnapshotTest : ChronicleSnapshotTest() {
 
     @Test
     fun test() {
+        logHeader("Inspection-based snapshot test")
         val dataFilePaths = getDataFiles()
-        val files = configureDataFiles(dataFilePaths)
+        val snapshotFiles = configureDataFiles(dataFilePaths)
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
-        highlightDataFiles(files)
+        copyDataFiles(dataFilePaths)
+
+        highlightDataFiles(snapshotFiles)
     }
 
-    private fun getDataFiles(): List<Path> {
-        val dataFilePaths = computeDataFilePaths()
-        assertNotEmpty(dataFilePaths)
-        println("Number of data files: ${dataFilePaths.size}")
-        dataFilePaths.forEach { println("- ${it.toString().normalizePath()}") }
-        return dataFilePaths
-    }
+    private fun highlightDataFiles(snapshotFiles: List<SnapshotDataFile>) {
+        val inspections = getEnabledInspections()
+        myFixture.enableInspections(*inspections.toTypedArray())
+        log("Number of enabled inspections: ${inspections.size}")
+        inspections.forEach { inspection -> log("- ${inspection.name}") }
+        log("Expected result: no warnings or errors")
 
-    private fun configureDataFiles(dataFilePaths: List<Path>): MutableList<VirtualFile> {
-        val files = mutableListOf<VirtualFile>()
-        for (dataFilePath in dataFilePaths) {
-            val filePath = dataFilePath.toString().normalizePath()
-            val markedPath = filePath.removePrefix("chronicle/")
-            markFileInfo(gameType, markedPath)
-            files += myFixture.configureByFile(filePath).virtualFile
+        val failedFiles = mutableListOf<SnapshotDataFile>()
+        for ((index, snapshotFile) in snapshotFiles.withIndex()) {
+            val progress = "[${index + 1}/${snapshotFiles.size}]"
+            val filePath = displayPath(snapshotFile.path)
+            try {
+                myFixture.testHighlighting(true, false, true, snapshotFile.file)
+                log("PASS $progress $filePath")
+            } catch (e: AssertionError) {
+                failedFiles += snapshotFile
+                log("FAIL $progress $filePath")
+                log(e.message.orEmpty().prependIndent("  "))
+            }
         }
-        return files
-    }
 
-    private fun highlightDataFiles(files: MutableList<VirtualFile>) {
-        myFixture.enableInspections(*getEnabledInspections().toTypedArray())
-        myFixture.testHighlightingAllFiles(true, false, true, *files.toTypedArray())
+        val passedCount = snapshotFiles.size - failedFiles.size
+        log("Result: ${passedCount} passed, ${failedFiles.size} failed, ${snapshotFiles.size} total")
+        if (failedFiles.isNotEmpty()) {
+            val failedPaths = failedFiles.joinToString(", ") { displayPath(it.path) }
+            throw AssertionError("Highlighting snapshot test failed for ${failedFiles.size} file(s): $failedPaths")
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -83,8 +94,6 @@ class ChronicleInspectionBasedSnapshotTest : ChronicleSnapshotTest() {
             val type = ep.implementationClass.toClass() as Class<out LocalInspectionTool>
             types += type
         }
-        println("Number of enabled inspections: ${types.size}")
-        types.forEach { println("- ${it.name}") }
         return types
     }
 }
