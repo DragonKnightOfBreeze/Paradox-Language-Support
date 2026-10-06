@@ -19,16 +19,13 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 @Optimized
 object ParadoxLocalisationService {
-    fun resolvePresentableText(element: ParadoxLocalisationProperty): String? {
-        return ParadoxLocalisationTextPlainRenderer().render(element).orNull()
-    }
+    // region Related Items
 
     fun resolveRelatedScriptedVariables(element: ParadoxLocalisationProperty): List<ParadoxScriptScriptedVariable> {
         val name = element.name.orNull() ?: return emptyList()
         val project = element.project
         val gameType = selectGameType(element)
         if (gameType == null) return emptyList()
-        ProgressManager.checkCanceled()
         // search for all scripted variable with same name
         val selector = ParadoxScriptedVariableSearch.selector(project, element).contextSensitive()
         val result = ParadoxScriptedVariableSearch.search(name, selector, null).findAll()
@@ -38,7 +35,8 @@ object ParadoxLocalisationService {
     fun resolveRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxDefinitionElement> {
         val name = element.name.orNull() ?: return emptyList()
         val project = element.project
-        val gameType = selectGameType(element) ?: return emptyList()
+        val gameType = selectGameType(element)
+        if (gameType == null) return emptyList()
         val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         val patterns = configGroup.relatedLocalisationPatterns
         val namesToSearch = mutableSetOf<String>()
@@ -65,4 +63,14 @@ object ParadoxLocalisationService {
         }
         return result
     }
+
+    // endregion
+
+    // region Presentable Text
+
+    fun resolvePresentableText(element: ParadoxLocalisationProperty): String? {
+        return ParadoxLocalisationTextPlainRenderer().render(element).orNull()
+    }
+
+    // endregion
 }

@@ -1,6 +1,6 @@
 package icu.windea.pls.config.model
 
-import icu.windea.pls.base.ChronicleCapacities
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.config.attributes.CwtConfigGroupAttributes
 import icu.windea.pls.config.attributes.CwtConfigGroupAttributesBase
 import icu.windea.pls.config.attributes.CwtExpandableConfigAttributes
@@ -39,9 +39,11 @@ import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.collections.CaseInsensitiveStringKeyMap
 import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenCustomHashMap
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
@@ -56,18 +58,18 @@ import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
  * - 规则系统的说明文档：[config.md](https://windea.icu/Paradox-Language-Support/config.md)
  * - 规则格式的参考手册：[ref-config-format.md](https://windea.icu/Paradox-Language-Support/ref-config-format.md)
  *
- * @see icu.windea.pls.config.configGroup.CwtConfigGroup
+ * @see CwtConfigGroup
  */
 interface CwtConfigGroupDataModel {
     /**
      * 得到原始的文件规则映射，键为相对于规则分组根目录的路径。
      *
-     * 备注：默认不保留。参见 [ChronicleCapacities.keepFileConfigs]。
+     * 备注：默认不保留（参见 [keepFileConfigs][ChronicleCapabilities.General.keepFileConfigs]）。
      */
     val fileConfigs: Map<String, CwtFileConfig>
 
     /**
-     * @see icu.windea.pls.ep.config.config.CwtConfigPostProcessor
+     * @see CwtConfigPostProcessor
      */
     val configPostProcessActions: List<Runnable>
 

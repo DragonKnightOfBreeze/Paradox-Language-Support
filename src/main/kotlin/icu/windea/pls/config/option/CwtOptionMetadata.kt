@@ -1,6 +1,6 @@
 package icu.windea.pls.config.option
 
-import icu.windea.pls.base.ChronicleCapacities
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.config.CwtConfigApiStatus
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
@@ -44,7 +44,7 @@ interface CwtOptionMetadata : MetadataMap {
     /**
      * 得到原始的选项规则列表。
      *
-     * 备注：默认仅为内部规则保留。参见 [ChronicleCapacities.keepOptionConfigs]。
+     * 备注：默认仅为内部规则保留（参见 [keepOptionConfigs][ChronicleCapabilities.General.keepOptionConfigs]）。
      */
     val optionConfigs: List<CwtOptionMemberConfig<*>> get() = emptyList()
 

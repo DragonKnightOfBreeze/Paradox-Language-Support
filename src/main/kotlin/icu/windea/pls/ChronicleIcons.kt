@@ -11,8 +11,6 @@ import javax.swing.Icon
 
 @Suppress("unused")
 object ChronicleIcons {
-    private fun getIcon(path: String): Icon = IconLoader.getIcon(path, ChronicleIcons.javaClass.classLoader)
-
     object General {
         @JvmField val GameDirectory = AllIcons.Nodes.Module
         @JvmField val ModDirectory = AllIcons.Nodes.Module
@@ -188,4 +186,12 @@ object ChronicleIcons {
         @JvmField val AddRowAbove = getIcon("/icons/editorActions/addRowAbove.svg") // from Markdown plugin
         @JvmField val AddRowBelow = getIcon("/icons/editorActions/addRowBelow.svg") // from Markdown plugin
     }
+
+    // region Helpers
+
+    private fun getIcon(path: String): Icon {
+        return IconLoader.getIcon(path, ChronicleIcons.javaClass.classLoader)
+    }
+
+    // endregion
 }

@@ -19,8 +19,8 @@ class SimilarityMatchServiceBenchmarkTest {
         // benchmark 默认忽略，需要显示包含
         ChronicleAssume.includeBenchmark()
         // 确保启用 Caffeine 的 recordStats()，以便获取命中率等统计
-        if (!java.lang.Boolean.getBoolean("chronicle.capacities.recordCacheStats")) {
-            System.setProperty("chronicle.capacities.recordCacheStats", "true")
+        if (!java.lang.Boolean.getBoolean("chronicle.recordCacheStats")) {
+            System.setProperty("chronicle.recordCacheStats", "true")
         }
         // 尽量清理缓存，避免不同测试方法之间的相互影响（统计不会被重置，后续取增量）
         cache().invalidateAll()

@@ -3,8 +3,8 @@ package icu.windea.pls.lang.resolve
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -82,7 +82,8 @@ object ParadoxDefinitionService {
         val source = resolveSource(element) ?: return null
         val typeKey = ParadoxMemberService.getTypeKey(element) ?: return null
         // 3.0.1 懒加载（通常可以先检查 typeKey） + 忽略 rootKeys 深度超出限制，或者带参数的情况
-        val lazyRootKeys = lazy { ParadoxMemberService.getRootKeys(element, maxDepth = ChronicleCapacities.maxDefinitionDepth(), parameterAware = false) }
+        val maxDefinitionDepth = ChronicleCapabilities.General.maxDefinitionDepth
+        val lazyRootKeys = lazy { ParadoxMemberService.getRootKeys(element, maxDepth = maxDefinitionDepth, parameterAware = false) }
         // 3.0.1 懒加载（通常都是不必要的）
         val lazyTypeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(element) }
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)

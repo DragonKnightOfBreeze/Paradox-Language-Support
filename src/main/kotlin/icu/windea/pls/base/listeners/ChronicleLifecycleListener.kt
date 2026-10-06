@@ -3,8 +3,8 @@ package icu.windea.pls.base.listeners
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.configGroup.CwtConfigGroupService
 import icu.windea.pls.core.withDoubleLock
 import icu.windea.pls.lang.tools.SpecialPathService
@@ -52,7 +52,7 @@ class ChronicleLifecycleListener : AppLifecycleListener, ProjectActivity {
     private suspend fun refreshBuiltInConfigFiles(project: Project) {
         if (project.isDefault || project.isDisposed) return
         if (ChronicleFacade.isUnitTestMode()) return // 单元测试时不自动刷新内置规则文件
-        if (!ChronicleCapacities.refreshBuiltInConfigDirectories()) return // 必须显式启用
+        if (!ChronicleCapabilities.General.refreshBuiltInConfigDirectories) return // 必须显式启用
         CwtConfigGroupService.getInstance().refreshBuiltInConfigFiles()
     }
 

@@ -1,6 +1,6 @@
 package icu.windea.pls.test
 
-object ChronicleTestCapacities {
+object ChronicleTestCapabilities {
     fun includeAll() = model.includeAll
 
     fun includeBenchmark() = model.includeBenchmark

@@ -138,7 +138,7 @@ class TigerLintToolService : Disposable {
         val gameType = selectGameType(rootDirectory) ?: return null
         val tool = findTool(gameType) ?: return null
         val result = tool.validateRootDirectory(rootDirectory.virtualFile)
-        if (result != null && result.error != null) {
+        if (result?.error != null) {
             notifyWarningNotification(rootDirectory, tool, result.error)
         }
         return result

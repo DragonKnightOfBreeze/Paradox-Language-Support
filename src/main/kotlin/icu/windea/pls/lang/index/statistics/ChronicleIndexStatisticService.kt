@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.index.statistics
 
-import icu.windea.pls.base.ChronicleCapacities
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.lang.index.ParadoxMergedIndexType
 import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.model.ParadoxGameType
@@ -9,8 +9,6 @@ import java.util.concurrent.atomic.AtomicLong
 
 @Suppress("unused")
 object ChronicleIndexStatisticService {
-    private var recordIndexStats = ChronicleCapacities.recordIndexStats()
-
     private val configSymbolCounters = ConcurrentHashMap<ParadoxGameType, AtomicLong>()
     private val complexEnumValueCounters = ConcurrentHashMap<ParadoxGameType, AtomicLong>()
     private val definitionCounters = ConcurrentHashMap<ParadoxGameType, AtomicLong>()
@@ -30,43 +28,42 @@ object ChronicleIndexStatisticService {
     }
 
     fun recordConfigSymbol(gameType: ParadoxGameType) {
-        if (!recordIndexStats) return
+        if (!ChronicleCapabilities.General.recordIndexStats) return
         val counter = configSymbolCounters.getOrPut(gameType) { AtomicLong() }
         counter.incrementAndGet()
     }
 
     fun recordComplexEnumValue(gameType: ParadoxGameType) {
-        if (!recordIndexStats) return
+        if (!ChronicleCapabilities.General.recordIndexStats) return
         val counter = complexEnumValueCounters.getOrPut(gameType) { AtomicLong() }
         counter.incrementAndGet()
     }
 
     fun recordDefinition(gameType: ParadoxGameType) {
-        if (!recordIndexStats) return
+        if (!ChronicleCapabilities.General.recordIndexStats) return
         val counter = definitionCounters.getOrPut(gameType) { AtomicLong() }
         counter.incrementAndGet()
     }
 
     fun recordDefinitionConstrained(gameType: ParadoxGameType, constraint: ParadoxDefinitionIndexConstraint) {
-        if (!recordIndexStats) return
+        if (!ChronicleCapabilities.General.recordIndexStats) return
         val counter = definitionConstrainedCounters.computeIfAbsent(gameType) { ConcurrentHashMap() }.getOrPut(constraint) { AtomicLong() }
         counter.incrementAndGet()
     }
 
     fun recordDefinitionInjection(gameType: ParadoxGameType) {
-        if (!recordIndexStats) return
+        if (!ChronicleCapabilities.General.recordIndexStats) return
         val counter = definitionInjectionCounters.getOrPut(gameType) { AtomicLong() }
         counter.incrementAndGet()
     }
 
     fun recordMerged(gameType: ParadoxGameType, indexInfoType: ParadoxMergedIndexType<*>) {
-        if (!recordIndexStats) return
+        if (!ChronicleCapabilities.General.recordIndexStats) return
         val counter = mergedCounters.computeIfAbsent(gameType) { ConcurrentHashMap() }.getOrPut(indexInfoType) { AtomicLong() }
         counter.incrementAndGet()
     }
 
     fun refresh() {
-        recordIndexStats = ChronicleCapacities.recordIndexStats()
         cleanUp()
     }
 

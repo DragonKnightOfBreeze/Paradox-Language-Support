@@ -5,8 +5,8 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.util.elementType
 import com.intellij.ui.JBColor
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.base.ChronicleCapacities
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -73,7 +73,8 @@ object ParadoxCompletionManager {
         // 仅提示不在定义声明中的 key（顶级键和类型键）
         if (!configContext.inRoot()) {
             // 忽略 rootKeys 深度超出限制，或者带参数的情况
-            val memberPath = ParadoxMemberService.getPath(memberElement, maxDepth = ChronicleCapacities.maxDefinitionDepth(), parameterAware = false) ?: return
+            val maxDefinitionDepth = ChronicleCapabilities.General.maxDefinitionDepth
+            val memberPath = ParadoxMemberService.getPath(memberElement, maxDepth = maxDefinitionDepth, parameterAware = false) ?: return
             val typeKeyPrefix = lazy { ParadoxMemberService.getKeyPrefix(context.contextElement) }
             val context = context.copy(isKey = true)
             completeKey(context, result, memberPath, typeKeyPrefix)

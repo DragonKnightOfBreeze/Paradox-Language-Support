@@ -1,6 +1,6 @@
 package icu.windea.pls.config.option
 
-import icu.windea.pls.base.ChronicleCapacities
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.config.CwtConfigApiStatus
 import icu.windea.pls.config.CwtConfigThreadContext
 import icu.windea.pls.config.CwtDataTypes
@@ -28,7 +28,7 @@ object CwtOptionMetadataService : CwtOptionMetadataResolutionScope {
     private fun processMain(optionMetadata: CwtOptionMetadataBase, optionConfigs: List<CwtOptionMemberConfig<*>>, configGroup: CwtConfigGroup) {
         if (optionConfigs.isEmpty()) return
         val skipProcessing = CwtConfigThreadContext.skipProcessingOptionMetadata.hasState()
-        val keepOptionConfigs = skipProcessing || ChronicleCapacities.keepOptionConfigs()
+        val keepOptionConfigs = skipProcessing || ChronicleCapabilities.General.keepOptionConfigs
         if (keepOptionConfigs) {
             optionMetadata.optionConfigs = optionConfigs.optimized() // ensure optimized
         }

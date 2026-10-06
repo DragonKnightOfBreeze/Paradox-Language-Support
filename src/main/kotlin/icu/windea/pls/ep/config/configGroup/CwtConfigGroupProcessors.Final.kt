@@ -1,6 +1,6 @@
 package icu.windea.pls.ep.config.configGroup
 
-import icu.windea.pls.base.ChronicleCapacities
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 
 /**
@@ -10,7 +10,7 @@ class CwtFinalConfigGroupProcessor : CwtConfigGroupProcessor {
     // NOTE 2.1.5 为了优化内存，文件规则最终默认不会保留在规则分组数据中
 
     override suspend fun process(configGroup: CwtConfigGroup) {
-        val keepFileConfigs = ChronicleCapacities.keepFileConfigs()
+        val keepFileConfigs = ChronicleCapabilities.General.keepFileConfigs
         if (!keepFileConfigs) {
             val fileConfigs = configGroup.initializer.fileConfigs
             fileConfigs.clear()

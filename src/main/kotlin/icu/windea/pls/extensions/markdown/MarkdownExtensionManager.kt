@@ -48,18 +48,14 @@ object MarkdownExtensionManager {
     }
 
     fun getPathInjectionInfo(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
-        return getPathInjectionInfoFromCache(element)
-    }
-
-    private fun getPathInjectionInfoFromCache(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
         return CachedValuesManager.getCachedValue(element, Keys.cachedPathInjectionInfo) {
             ProgressManager.checkCanceled()
-            val value = doGetPathInjectionInfo(element)
+            val value = resolvePathInjectionInfo(element)
             value.withDependencyItems(element)
         }
     }
 
-    private fun doGetPathInjectionInfo(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
+    private fun resolvePathInjectionInfo(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
         val fenceLanguage = element.fenceLanguage?.trim()
         if (fenceLanguage.isNullOrEmpty()) return null
         val infos = fenceLanguage.splitByBlank()

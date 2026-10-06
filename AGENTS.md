@@ -163,7 +163,7 @@ Package `icu.windea.pls.test.chronicle` hosts a family of "snapshot" tests drive
 
 ### Optional / on-demand tests (assume-based)
 
-Some tests are intentionally **disabled by default** and only run when explicitly enabled via system properties, gated through `icu.windea.pls.test.ChronicleAssume` (each method wraps `org.junit.Assume.assumeTrue(...)`, so a gated-out test is reported as *skipped*, not *failed*). Flags are read by `icu.windea.pls.test.ChronicleTestCapacities` from system properties:
+Some tests are intentionally **disabled by default** and only run when explicitly enabled via system properties, gated through `icu.windea.pls.test.ChronicleAssume` (each method wraps `org.junit.Assume.assumeTrue(...)`, so a gated-out test is reported as *skipped*, not *failed*). Flags are read by `icu.windea.pls.ChronicleCapabilities.Test` from system properties:
 
 | `ChronicleAssume` method   | System property                           | Category                                                                          |
 |----------------------------|-------------------------------------------|-----------------------------------------------------------------------------------|

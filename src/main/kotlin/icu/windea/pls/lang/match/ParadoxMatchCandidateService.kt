@@ -2,7 +2,7 @@ package icu.windea.pls.lang.match
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.util.SmartList
-import icu.windea.pls.base.ChronicleCapacities
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -169,15 +169,15 @@ object ParadoxMatchCandidateService {
     /**
      * 收集匹配候选项，并在必要时进行回退。
      *
-     * 如果数量超出阈值（[ChronicleCapacities.maxMatchCandidateSize]），需要改为使用回退匹配（拥有特殊的数据类型和匹配候选项）。
+     * 如果数量超出阈值（参见 [maxMatchCandidateSize][ChronicleCapabilities.General.maxMatchCandidateSize]），
+     * 需要改为使用回退匹配（拥有特殊的数据类型和匹配候选项）。
      * 否则，可能会导致意外的性能问题，以及不期望的语言功能的行为。
      *
-     * @see ChronicleCapacities.maxMatchCandidateSize
      * @see CwtDataTypes.Any
      * @see ParadoxMatchResult.FallbackMatch
      */
     fun collectCandidate(candidate: ParadoxMatchCandidate, result: MutableList<ParadoxMatchCandidate>): Boolean {
-        if (result.size >= ChronicleCapacities.maxMatchCandidateSize()) {
+        if (result.size >= ChronicleCapabilities.General.maxMatchCandidateSize) {
             // NOTE 3.0.3 too many candidates, use fallback candidate only (clear all collected candidates first)
             // 3.0.4 use wildcard form
             val mockConfigs = candidate.value.configGroup.mockConfigs
@@ -197,15 +197,15 @@ object ParadoxMatchCandidateService {
     /**
      * 收集处理后的匹配候选项，并在必要时进行回退。
      *
-     * 如果数量超出阈值（[ChronicleCapacities.maxProcessedMatchCandidateSize]），需要改为使用回退匹配（拥有特殊的数据类型和匹配候选项）。
+     * 如果数量超出阈值（参见 [maxProcessedMatchCandidateSize][ChronicleCapabilities.General.maxProcessedMatchCandidateSize]），
+     * 需要改为使用回退匹配（拥有特殊的数据类型和匹配候选项）。
      * 否则，可能会导致意外的性能问题，以及不期望的语言功能的行为。
      *
-     * @see ChronicleCapacities.maxProcessedMatchCandidateSize
      * @see CwtDataTypes.Any
      * @see ParadoxMatchResult.FallbackMatch
      */
     fun collectProcessedCandidate(candidate: ParadoxMatchCandidate, result: MutableList<ParadoxMatchCandidate>): Boolean {
-        if (result.size >= ChronicleCapacities.maxProcessedMatchCandidateSize()) {
+        if (result.size >= ChronicleCapabilities.General.maxProcessedMatchCandidateSize) {
             // NOTE 3.0.3 too many candidates, use fallback candidate only (clear all collected candidates first)
             // 3.0.4 use wildcard form
             val mockConfigs = candidate.value.configGroup.mockConfigs
