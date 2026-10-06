@@ -10,7 +10,7 @@ import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchResult
 
 abstract class ParadoxExpandableCsvExpressionMatcher : ParadoxCsvExpressionMatcher {
-    /** @see icu.windea.pls.config.CwtDataTypes.UnionValue */
+    /** @see CwtDataTypes.UnionValue */
     class ForUnionValue : ParadoxCoreCsvExpressionMatcher() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.UnionValue
 
@@ -20,7 +20,7 @@ abstract class ParadoxExpandableCsvExpressionMatcher : ParadoxCsvExpressionMatch
             val processor = ProcessorFactory.find<ParadoxMatchResult>()
             runWithRecursionGuard("csvExpression.match.union", unionName) {
                 ParadoxConfigExpansionService.expandAndMatchUnion(context.element, context.expression, unionName, context.configGroup, context.options) { _, matchResult ->
-                    processor.process(matchResult)
+                    if (matchResult.get(context.options)) processor.process(matchResult) else true
                 }
             }
             return processor.result ?: ParadoxMatchResult.NotMatch
