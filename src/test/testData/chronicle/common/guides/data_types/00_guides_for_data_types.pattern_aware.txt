@@ -1,0 +1,21 @@
+guide = {
+    name = data_type_lession_ex_pattern
+    category = pattern_aware
+
+    # start
+
+    d_template = hello_world__world__day1
+    d_template = on_the_way__universe__one_day
+
+    d_glob = hello
+    d_glob = hello_world
+    d_glob = hello_oh_its_you
+
+    d_ant = say/hello
+    d_ant = say/hello_world
+    # d_ant = say/hello/world # not matched
+
+    d_regex = hello
+    d_regex = hello_world
+    d_regex = hello_ahh_its_me
+}

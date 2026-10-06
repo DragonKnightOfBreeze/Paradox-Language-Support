@@ -4,6 +4,8 @@ import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.config.CwtDataTypeSets
+import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.inspections.script.expression.IncorrectExpressionInspection
@@ -23,18 +25,17 @@ import org.junit.runners.JUnit4
 import icu.windea.pls.script.highlighting.ParadoxScriptHighlighterColors as Colors
 
 /**
- * 片段匹配（[DefinitionSnippet][icu.windea.pls.config.CwtDataTypes.DefinitionSnippet] /
- * [LocalisationSnippet][icu.windea.pls.config.CwtDataTypes.LocalisationSnippet]）的回归测试。
+ * 片段匹配（snippet matching）的回归测试。
  *
- * 使用自行编写的规则文件和脚本文件（均位于 `features/snippet`）：
+ * 使用自定义的规则文件和脚本文件（位于 `features/snippet`）：
  * - `test_type` 类型用于验证定义引用片段，要求存在实际的 `test_type` 定义（`test_a`、`b_foo`）。
  * - `localisation` 引用片段用于验证本地化引用片段，要求存在实际的本地化（`test_desc`、`test_effect`）。
  *
- * 覆盖语义匹配、语义高亮（[ParadoxScriptSemanticHighlightingAnnotator][icu.windea.pls.lang.highlighting.ParadoxScriptSemanticHighlightingAnnotator]）、
- * 引用解析、代码补全和代码检查。定义引用片段和本地化引用片段的用例放在各自的分组中，且尽可能对齐。
+ * 覆盖语义匹配、语义高亮、引用解析、代码补全和代码检查。
  *
- * @see icu.windea.pls.config.CwtDataTypes.DefinitionSnippet
- * @see icu.windea.pls.config.CwtDataTypes.LocalisationSnippet
+ * @see CwtDataTypeSets.Snippet
+ * @see CwtDataTypes.DefinitionSnippet
+ * @see CwtDataTypes.LocalisationSnippet
  */
 @RunWith(JUnit4::class)
 @TestDataPath("\$CONTENT_ROOT/testData")

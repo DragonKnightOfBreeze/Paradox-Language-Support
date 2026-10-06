@@ -43,3 +43,21 @@ guide_example = {
     ## @config_expression name = scalar
     name = hi_the_forever_seeker
 }
+## @type string = block
+## @config_expression guide_example = {...}
+## @definition_type guide_example
+## @override_strategy LIOS
+guide_example = {
+    ## @type string = string
+    ## @config_expression name = scalar
+    name = sample_a
+}
+## @type string = block
+## @config_expression guide_example = {...}
+## @definition_type guide_example
+## @override_strategy LIOS
+guide_example = {
+    ## @type string = string
+    ## @config_expression name = scalar
+    name = b_sample
+}

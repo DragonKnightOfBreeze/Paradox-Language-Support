@@ -2582,6 +2582,53 @@ a_value[anything]_b
 - 规则表达式：[模板表达式](#config-expression-template)。
 - 数据类型：[Template](#data-type-template)。
 
+#### 关于模板匹配 {#faq-template-matching}
+
+<!-- @see icu.windea.pls.config.CwtDataTypes.Template -->
+
+模板匹配用于将脚本表达式与模板（[Template](#data-type-template)）进行精确匹配。
+
+匹配时，模板按“最左最早”的策略拆分为若干片段（常量片段与动态片段交替），然后逐个校验：
+- 常量片段必须完全一致。
+- 动态片段各自作为受限的数据表达式进行匹配（如定义引用、枚举引用、动态值引用等）。
+
+只有所有片段都匹配，整个表达式才视为匹配；只要有一个片段不匹配，整个表达式即视为不匹配。
+
+示例：
+- 数据表达式 `a_<job>_b` 匹配 `a_researcher_b`、`a_farmer_b`，但不匹配 `a_b`、`x_researcher_b`。
+- 数据表达式 `a_enum[weight_or_base]_b` 匹配 `a_weight_b`、`a_base_b`。
+
+另见：
+- 规则表达式：[模板表达式](#config-expression-template)。
+- 数据类型：[Template](#data-type-template)。
+- 相关：[关于片段匹配](#faq-snippet-matching)。
+
+#### 关于片段匹配 {#faq-snippet-matching}
+
+<!-- @see icu.windea.pls.config.CwtDataTypes.DefinitionSnippet -->
+<!-- @see icu.windea.pls.config.CwtDataTypes.LocalisationSnippet -->
+
+> [!tip]
+> 引入的插件版本：3.0.4
+
+片段匹配用于将脚本表达式与引用片段（[DefinitionSnippet](#data-type-definition-snippet) / [LocalisationSnippet](#data-type-localisation-snippet)）进行匹配。
+
+与模板匹配不同，片段只是完整引用文本的一部分。片段通过一组模板参数补全为完整的引用文本：
+每个模板参数是一个含单个 `$` 占位符的一元模板（如 `$_a`、`b_$`、`c_$_d`），将脚本表达式代入占位符即可得到完整的引用文本。
+
+例如，若数据表达式为 `<entity>|$_a,b_$`，则对于脚本表达式 `test`：
+- 通过 `$_a` 得到完整文本 `test_a`，要求存在类型为 `entity` 的定义 `test_a`。
+- 通过 `b_$` 得到完整文本 `b_test`，要求存在类型为 `entity` 的定义 `b_test`。
+
+片段匹配在语义匹配阶段采用宽松策略，只要其中一个模板参数能够匹配，即视为匹配；在代码检查阶段才会报告无法完全匹配的问题。
+
+由于片段并非完整匹配，其引用解析得到的是一个片段元素（而非直接解析为对应的定义或本地化）。
+插件通过“相关项”提供对应的能力：代码补全、快速文档、相关项导航、自动重命名等。
+
+另见：
+- 数据类型：[DefinitionSnippet](#data-type-definition-snippet)、[LocalisationSnippet](#data-type-localisation-snippet)。
+- 相关：[关于模板匹配](#faq-template-matching)。
+
 #### 如何在规则文件中使用 ANT 路径模式 {#faq-ant}
 
 <!-- @see icu.windea.pls.config.CwtDataTypes.Ant -->

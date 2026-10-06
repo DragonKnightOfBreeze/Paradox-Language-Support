@@ -1,0 +1,113 @@
+## @type string = block
+## @config_expression guide_for_data_types = {...}
+## @definition_type guide_for_data_types, basic
+## @override_strategy LIOS
+guide = {
+    ## @type string = string
+    ## @config_expression name = scalar
+    name = data_type_lession_1
+    ## @type string = string
+    ## @config_expression category = enum[guide_category]
+    category = basic
+    ## @type string = int
+    ## @config_expression d_any = $any
+    d_any = 01
+    ## @type string = string
+    ## @config_expression d_any = $any
+    d_any = secret
+    ## @type string = block
+    ## @config_expression d_any = $any
+    d_any = {
+        ## @type string
+        ## @config_expression $any
+        hint
+    }
+    ## @type string = block
+    ## @config_expression d_any = $any
+    d_any = {
+        ## @type string
+        ## @config_expression $any
+        hint
+        ## @type string = string
+        ## @config_expression $any = $any
+        say = hello_world
+    }
+    ## @type string = boolean
+    ## @config_expression d_bool = bool
+    d_bool = yes
+    ## @type string = boolean
+    ## @config_expression d_bool = bool
+    d_bool = no
+    ## @type string = int
+    ## @config_expression d_int = int
+    d_int = 0
+    ## @type string = int
+    ## @config_expression d_int = int
+    d_int = 1
+    ## @type string = int
+    ## @config_expression d_int = int
+    d_int = -1
+    ## @type string = int
+    ## @config_expression d_int = int
+    d_int = 001
+    ## @type string = int
+    ## @config_expression d_int_ranged = int[0..10]
+    d_int_ranged = 0
+    ## @type string = int
+    ## @config_expression d_int_ranged = int[0..10]
+    d_int_ranged = 10
+    ## @type string = int
+    ## @config_expression d_float = float
+    d_float = 0
+    ## @type string = int
+    ## @config_expression d_float = float
+    d_float = 1
+    ## @type string = int
+    ## @config_expression d_float = float
+    d_float = -1
+    ## @type string = int
+    ## @config_expression d_float = float
+    d_float = 001
+    ## @type string = float
+    ## @config_expression d_float = float
+    d_float = 0.0
+    ## @type string = float
+    ## @config_expression d_float = float
+    d_float = 1.0
+    ## @type string = float
+    ## @config_expression d_float = float
+    d_float = -1.0
+    ## @type string = float
+    ## @config_expression d_float = float
+    d_float = 001.0
+    ## @type string = float
+    ## @config_expression d_float = float
+    d_float = .0
+    ## @type string = int
+    ## @config_expression d_float_ranged = float[0.0..10.0]
+    d_float_ranged = 0
+    ## @type string = int
+    ## @config_expression d_float_ranged = float[0.0..10.0]
+    d_float_ranged = 10
+    ## @type string = float
+    ## @config_expression d_float_ranged = float[0.0..10.0]
+    d_float_ranged = 0.0
+    ## @type string = float
+    ## @config_expression d_float_ranged = float[0.0..10.0]
+    d_float_ranged = 10.0
+    ## @type string = boolean
+    ## @config_expression d_scalar = scalar
+    d_scalar = yes
+    ## @type string = int
+    ## @config_expression d_scalar = scalar
+    d_scalar = 1
+    ## @type string = string
+    ## @config_expression d_scalar = scalar
+    d_scalar = scalar
+    ## @type string = color
+    ## @config_expression d_color_field = color_field
+    d_color_field = rgb { 255 0 0  }
+    ## @type string = color
+    ## @config_expression d_color_field_rgb = color[rgb]
+    d_color_field_rgb = rgb { 255 0 0 }
+}

@@ -2582,6 +2582,53 @@ See also:
 - Config expression: [Template expressions](#config-expression-template).
 - Data type: [Template](#data-type-template).
 
+#### About Template Matching {#faq-template-matching}
+
+<!-- @see icu.windea.pls.config.CwtDataTypes.Template -->
+
+Template matching is used to exactly match a script expression against a template ([Template](#data-type-template)).
+
+During matching, the template is split into several fragments (constant and dynamic fragments alternating) using a "leftmost-earliest" strategy, and then validated one by one:
+- Constant fragments must be exactly equal.
+- Each dynamic fragment is matched as a restricted data expression (such as a definition reference, enum reference, dynamic value reference, etc.).
+
+The whole expression is considered matched only when all fragments match; if any fragment does not match, the whole expression is considered not matched.
+
+Examples:
+- The data expression `a_<job>_b` matches `a_researcher_b` and `a_farmer_b`, but not `a_b` or `x_researcher_b`.
+- The data expression `a_enum[weight_or_base]_b` matches `a_weight_b` and `a_base_b`.
+
+See also:
+- Config expression: [Template expressions](#config-expression-template).
+- Data type: [Template](#data-type-template).
+- Related: [About Snippet Matching](#faq-snippet-matching).
+
+#### About Snippet Matching {#faq-snippet-matching}
+
+<!-- @see icu.windea.pls.config.CwtDataTypes.DefinitionSnippet -->
+<!-- @see icu.windea.pls.config.CwtDataTypes.LocalisationSnippet -->
+
+> [!tip]
+> Introduced plugin version: 3.0.4
+
+Snippet matching is used to match a script expression against a reference snippet ([DefinitionSnippet](#data-type-definition-snippet) / [LocalisationSnippet](#data-type-localisation-snippet)).
+
+Unlike template matching, a snippet is only part of the complete reference text. The snippet is completed into the complete reference text by a set of template arguments:
+each template argument is a unary template containing a single `$` placeholder (such as `$_a`, `b_$`, `c_$_d`). Substituting the script expression into the placeholder yields the complete reference text.
+
+For example, if the data expression is `<entity>|$_a,b_$`, then for the script expression `test`:
+- Via `$_a`, the complete text is `test_a`, requiring a definition `test_a` of type `entity`.
+- Via `b_$`, the complete text is `b_test`, requiring a definition `b_test` of type `entity`.
+
+During the semantic matching phase, snippet matching adopts a lenient strategy: as long as one of the template arguments can be matched, it is considered matched. Only during the code inspection phase will issues of incomplete matching be reported.
+
+Since a snippet is not a complete match, its reference resolves to a snippet element (rather than directly to the corresponding definition or localisation).
+The plugin provides the corresponding capabilities through "related items": code completion, quick documentation, related item navigation, automatic renaming, etc.
+
+See also:
+- Data types: [DefinitionSnippet](#data-type-definition-snippet), [LocalisationSnippet](#data-type-localisation-snippet).
+- Related: [About Template Matching](#faq-template-matching).
+
 #### How to Use ANT Path Patterns in Config Files {#faq-ant}
 
 <!-- @see icu.windea.pls.config.CwtDataTypes.Ant -->

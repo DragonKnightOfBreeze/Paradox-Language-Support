@@ -3,3 +3,5 @@ l_english:
  name: "This is a name"
  desc: "This is some description"
  effect: "This is some effect description"
+ sample_desc: "This is a sample description"
+ sample_effect: "This is a sample effect description"

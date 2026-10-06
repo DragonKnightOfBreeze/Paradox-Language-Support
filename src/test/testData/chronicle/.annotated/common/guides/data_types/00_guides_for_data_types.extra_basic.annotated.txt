@@ -1,0 +1,30 @@
+## @type string = block
+## @config_expression guide_for_data_types = {...}
+## @definition_type guide_for_data_types, extra_basic
+## @override_strategy LIOS
+guide = {
+    ## @type string = string
+    ## @config_expression name = scalar
+    name = data_type_lession_2
+    ## @type string = string
+    ## @config_expression category = enum[guide_category]
+    category = extra_basic
+    ## @type string = string
+    ## @config_expression d_percentage_field = percentage_field
+    d_percentage_field = 10%
+    ## @type string = string
+    ## @config_expression d_percentage_field = percentage_field
+    d_percentage_field = 10.0%
+    ## @type string = string
+    ## @config_expression d_int_percentage_field = int_percentage_field
+    d_int_percentage_field = 10%
+    ## @type string = string
+    ## @config_expression d_date_field = date_field
+    d_date_field = 2200.1.1
+    ## @type string = string
+    ## @config_expression d_date_field = date_field
+    d_date_field = 2200.01.01
+    ## @type string = string
+    ## @config_expression d_date_field_formatted = date_field[yyyy.MM.dd]
+    d_date_field_formatted = 2200.01.01
+}

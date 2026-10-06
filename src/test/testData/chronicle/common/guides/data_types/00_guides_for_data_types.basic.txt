@@ -1,0 +1,52 @@
+guide = {
+    name = data_type_lession_1
+    category = basic
+
+    # start
+
+    d_any = 01
+    d_any = secret
+    d_any = { hint }
+    d_any = {
+        hint
+        say = hello_world
+    }
+
+    d_bool = yes
+    d_bool = no
+
+    d_int = 0
+    d_int = 1
+    d_int = -1
+    d_int = 001
+
+    d_int_ranged = 0
+    d_int_ranged = 10
+    # d_int_ranged = 100 # number out of range -> lenient matched (reported by inspections)
+
+    d_float = 0
+    d_float = 1
+    d_float = -1
+    d_float = 001
+    d_float = 0.0
+    d_float = 1.0
+    d_float = -1.0
+    d_float = 001.0
+    d_float = .0 # allowed
+    # d_float = 0. # not allowed, `0.` is not a `FLOAT_TOKEN` here
+
+    d_float_ranged = 0
+    d_float_ranged = 10
+    # d_float_ranged = 100 # number out of range -> lenient matched (reported by inspections)
+    d_float_ranged = 0.0
+    d_float_ranged = 10.0
+    # d_float_ranged = 100.0 # number out of range -> lenient matched (reported by inspections)
+
+    d_scalar = yes # allowed
+    d_scalar = 1 # allowed
+    d_scalar = scalar
+
+    d_color_field = rgb { 255 0 0  }
+
+    d_color_field_rgb = rgb { 255 0 0 }
+}

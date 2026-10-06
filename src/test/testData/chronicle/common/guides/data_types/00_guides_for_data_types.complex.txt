@@ -1,0 +1,62 @@
+guide = {
+    name = data_type_lession_3
+    category = complex
+
+    # start
+
+    d_definition = hello_world
+    d_definition = next_step
+    d_definition = on_the_way
+
+    d_localisation = title
+    d_localisation = name
+
+    d_synced_localisation = NAME_title
+    d_synced_localisation = NAME_name
+
+    d_inline_localisation = name
+    d_inline_localisation = "This is a name"
+
+    d_enum_value = garden
+    d_enum_value = world
+
+    d_value = awakened
+    d_value_set = awakened
+    d_dynamic_value = awakened_or_not
+}
+
+guide = {
+    name = data_type_lession_4
+    category = complex
+
+    # start
+
+    d_scope_field = this # lenient match
+    d_scope = this # lenient match
+    d_scope_character = this # lenient match
+    d_scope_group_geography = this # lenient match
+
+    # and more, omitted atm...
+}
+
+guide = {
+    name = data_type_lession_ex_union
+    category = complex
+
+    # start
+
+    d_union_value = yes # `bool`
+    d_union_value = world # `enum[guide_example_enum]`
+    d_union_value = hello_world # `<guide_example>`
+    d_union_value = name_windea # `localisation`
+}
+
+guide = {
+    name = data_type_lession_ex_snippet
+    category = complex
+
+    # start
+
+    d_definition_snippet = sample
+    d_localisation_snippet = sample
+}

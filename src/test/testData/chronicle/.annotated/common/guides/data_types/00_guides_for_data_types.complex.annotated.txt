@@ -1,0 +1,120 @@
+## @type string = block
+## @config_expression guide_for_data_types = {...}
+## @definition_type guide_for_data_types, complex
+## @override_strategy LIOS
+guide = {
+    ## @type string = string
+    ## @config_expression name = scalar
+    name = data_type_lession_3
+    ## @type string = string
+    ## @config_expression category = enum[guide_category]
+    category = complex
+    ## @type string = string
+    ## @config_expression d_definition = <guide_example>
+    d_definition = hello_world
+    ## @type string = string
+    ## @config_expression d_definition = <guide_example>
+    d_definition = next_step
+    ## @type string = string
+    ## @config_expression d_definition = <guide_example>
+    d_definition = on_the_way
+    ## @type string = string
+    ## @config_expression d_localisation = localisation
+    d_localisation = title
+    ## @type string = string
+    ## @config_expression d_localisation = localisation
+    d_localisation = name
+    ## @type string = string
+    ## @config_expression d_synced_localisation = localisation_synced
+    d_synced_localisation = NAME_title
+    ## @type string = string
+    ## @config_expression d_synced_localisation = localisation_synced
+    d_synced_localisation = NAME_name
+    ## @type string = string
+    ## @config_expression d_inline_localisation = localisation_inline
+    d_inline_localisation = name
+    ## @type string = string
+    ## @config_expression d_inline_localisation = localisation_inline
+    d_inline_localisation = "This is a name"
+    ## @type string = string
+    ## @config_expression d_enum_value = enum[guide_example_enum]
+    d_enum_value = garden
+    ## @type string = string
+    ## @config_expression d_enum_value = enum[guide_example_enum]
+    d_enum_value = world
+    ## @type string = string
+    ## @config_expression d_value = value[guide_example_tag]
+    d_value = awakened
+    ## @type string = string
+    ## @config_expression d_value_set = value_set[guide_example_tag]
+    d_value_set = awakened
+    ## @type string = string
+    ## @config_expression d_dynamic_value = dynamic_value[guide_example_tag]
+    d_dynamic_value = awakened_or_not
+}
+## @type string = block
+## @config_expression guide_for_data_types = {...}
+## @definition_type guide_for_data_types, complex
+## @override_strategy LIOS
+guide = {
+    ## @type string = string
+    ## @config_expression name = scalar
+    name = data_type_lession_4
+    ## @type string = string
+    ## @config_expression category = enum[guide_category]
+    category = complex
+    ## @type string = string
+    ## @config_expression d_scope_field = scope_field
+    d_scope_field = this
+    ## @type string = string
+    ## @config_expression d_scope = scope[[any]
+    d_scope = this
+    ## @type string = string
+    ## @config_expression d_scope_character = scope[character]
+    d_scope_character = this
+    ## @type string = string
+    ## @config_expression d_scope_group_geography = scope_group[geography]
+    d_scope_group_geography = this
+}
+## @type string = block
+## @config_expression guide_for_data_types = {...}
+## @definition_type guide_for_data_types, complex
+## @override_strategy LIOS
+guide = {
+    ## @type string = string
+    ## @config_expression name = scalar
+    name = data_type_lession_ex_union
+    ## @type string = string
+    ## @config_expression category = enum[guide_category]
+    category = complex
+    ## @type string = boolean
+    ## @config_expression d_union_value = union[guide_example_union]
+    d_union_value = yes
+    ## @type string = string
+    ## @config_expression d_union_value = union[guide_example_union]
+    d_union_value = world
+    ## @type string = string
+    ## @config_expression d_union_value = union[guide_example_union]
+    d_union_value = hello_world
+    ## @type string = string
+    ## @config_expression d_union_value = union[guide_example_union]
+    d_union_value = name_windea
+}
+## @type string = block
+## @config_expression guide_for_data_types = {...}
+## @definition_type guide_for_data_types, complex
+## @override_strategy LIOS
+guide = {
+    ## @type string = string
+    ## @config_expression name = scalar
+    name = data_type_lession_ex_snippet
+    ## @type string = string
+    ## @config_expression category = enum[guide_category]
+    category = complex
+    ## @type string = string
+    ## @config_expression d_definition_snippet = <guide_example>|$_a,b_$
+    d_definition_snippet = sample
+    ## @type string = string
+    ## @config_expression d_localisation_snippet = localisation|$_desc,$_effect
+    d_localisation_snippet = sample
+}
