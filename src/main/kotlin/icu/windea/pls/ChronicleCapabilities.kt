@@ -31,15 +31,15 @@ object ChronicleCapabilities {
     }
 
     object Cache {
-        var configSymbolInfos: Boolean = getBooleanProperty("chronicle.cache.configSymbolInfos", true)
+        var arguments: Boolean = getBooleanProperty("chronicle.cache.arguments", true)
+        var childOccurrences: Boolean = getBooleanProperty("chronicle.cache.childOccurrences", true)
+        var complexEnumValueInfo: Boolean = getBooleanProperty("chronicle.cache.complexEnumValueInfo", true)
         var configContext: Boolean = getBooleanProperty("chronicle.cache.configContext", true)
         var configs: Boolean = getBooleanProperty("chronicle.cache.configs", true)
-        var childOccurrences: Boolean = getBooleanProperty("chronicle.cache.childOccurrences", true)
-        var rowConfig: Boolean = getBooleanProperty("chronicle.cache.rowConfig", true)
+        var configSymbolInfos: Boolean = getBooleanProperty("chronicle.cache.configSymbolInfos", true)
         var defineInfo: Boolean =getBooleanProperty("chronicle.cache.define", true)
-        var complexEnumValueInfo: Boolean = getBooleanProperty("chronicle.cache.complexEnumValueInfo", true)
+        var rowConfig: Boolean = getBooleanProperty("chronicle.cache.rowConfig", true)
         var textColorInfo: Boolean = getBooleanProperty("chronicle.cache.textColor", true)
-        var arguments: Boolean = getBooleanProperty("chronicle.cache.arguments", true)
     }
 
     object Test {
