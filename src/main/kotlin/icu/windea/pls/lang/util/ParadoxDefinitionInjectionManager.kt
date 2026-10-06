@@ -127,7 +127,7 @@ object ParadoxDefinitionInjectionManager {
     }
 
     private fun getInfoInternal(element: ParadoxScriptProperty): ParadoxDefinitionInjectionInfo? {
-        return getCachedValueOnDemand(element, Keys.cachedDefinitionInjectionInfo, ChronicleCapabilities.Cache.definition) {
+        return getCachedValueOnDemand(element, Keys.cachedDefinitionInjectionInfo, ChronicleCapabilities.Cache.definitionInjection) {
             val file = element.containingFile
             val value = ParadoxDefinitionInjectionService.resolveInfo(element, file)
             CachedValueProvider.Result.create(value, getInfoDependencies(element, file, value))
@@ -155,7 +155,7 @@ object ParadoxDefinitionInjectionManager {
         val isDumb = ParadoxMatchOptionsService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedSubtypeConfigsDumb else Keys.cachedSubtypeConfigs
-        return getCachedValueOnDemand(element, cacheKey, ChronicleCapabilities.Cache.definition) {
+        return getCachedValueOnDemand(element, cacheKey, ChronicleCapabilities.Cache.definitionInjection) {
             val value = ParadoxDefinitionInjectionService.resolveSubtypeConfigs(definitionInjectionInfo, finalOptions).optimized()
             CachedValueProvider.Result.create(value, getSubtypeAwareDependencies(element, definitionInjectionInfo))
         }
@@ -166,7 +166,7 @@ object ParadoxDefinitionInjectionManager {
         val isDumb = ParadoxMatchOptionsService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedDeclarationDumb else Keys.cachedDeclaration
-        return getCachedValueOnDemand(element, cacheKey, ChronicleCapabilities.Cache.definition) {
+        return getCachedValueOnDemand(element, cacheKey, ChronicleCapabilities.Cache.definitionInjection) {
             val value = ParadoxDefinitionInjectionService.resolveDeclaration(definitionInjectionInfo, finalOptions)
             CachedValueProvider.Result.create(value, getSubtypeAwareDependencies(element, definitionInjectionInfo))
         }.castOrNull()

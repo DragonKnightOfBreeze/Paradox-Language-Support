@@ -38,13 +38,13 @@ object ChronicleCapabilities {
         var configs: Boolean = getBooleanProperty("chronicle.cache.configs", true)
         var configSymbol: Boolean = getBooleanProperty("chronicle.cache.configSymbol", true)
         var define: Boolean = getBooleanProperty("chronicle.cache.define", true)
-        var rowConfig: Boolean = getBooleanProperty("chronicle.cache.rowConfig", true)
-        var textColor: Boolean = getBooleanProperty("chronicle.cache.textColor", true)
         var definition: Boolean = getBooleanProperty("chronicle.cache.definition", true)
         var definitionInjection: Boolean = getBooleanProperty("chronicle.cache.definitionInjection", true)
+        var presentableItems: Boolean = getBooleanProperty("chronicle.cache.presentableItems", true)
+        var relatedItems: Boolean = getBooleanProperty("chronicle.cache.relatedItems", true)
+        var rowConfig: Boolean = getBooleanProperty("chronicle.cache.rowConfig", true)
         var scopeContext: Boolean = getBooleanProperty("chronicle.cache.scopeContext", true)
-        val relatedItems: Boolean = getBooleanProperty("chronicle.cache.relatedItems", true)
-        val presentableItems: Boolean = getBooleanProperty("chronicle.cache.presentableItems", true)
+        var textColor: Boolean = getBooleanProperty("chronicle.cache.textColor", true)
     }
 
     object Test {

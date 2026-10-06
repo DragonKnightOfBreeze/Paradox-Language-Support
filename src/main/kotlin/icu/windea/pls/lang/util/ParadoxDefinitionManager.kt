@@ -1,22 +1,19 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
-import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -34,16 +31,16 @@ import icu.windea.pls.model.paths.ParadoxMemberPath
 @Optimized
 object ParadoxDefinitionManager {
     object Keys : KeyRegistry() {
-        val cachedDefinitionInfo by registerKey<CachedValue<ParadoxDefinitionInfo>>(Keys)
-        val cachedSubtypeConfigs by registerKey<CachedValue<List<CwtSubtypeConfig>>>(Keys)
-        val cachedSubtypeConfigsDumb by registerKey<CachedValue<List<CwtSubtypeConfig>>>(Keys)
-        val cachedDeclaration by registerKey<CachedValue<Any>>(Keys) // Any: CwtPropertyConfig | EMPTY_OBJECT
-        val cachedDeclarationDumb by registerKey<CachedValue<Any>>(Keys) // Any: CwtPropertyConfig | EMPTY_OBJECT
-        val cachedPrimaryLocalisationKey by registerKey<CachedValue<String>>(Keys)
-        val cachedPrimaryLocalisation by registerKey<CachedValue<ParadoxLocalisationProperty>>(Keys)
-        val cachedPrimaryLocalisations by registerKey<CachedValue<Set<ParadoxLocalisationProperty>>>(Keys)
-        val cachedPrimaryImage by registerKey<CachedValue<PsiFile>>(Keys)
-        val cachedPrimaryImages by registerKey<CachedValue<Set<PsiFile>>>(Keys)
+        val cachedDefinitionInfo by registerKey<CachedValue<ParadoxDefinitionInfo?>>(this)
+        val cachedSubtypeConfigs by registerKey<CachedValue<List<CwtSubtypeConfig>>>(this)
+        val cachedSubtypeConfigsDumb by registerKey<CachedValue<List<CwtSubtypeConfig>>>(this)
+        val cachedDeclaration by registerKey<CachedValue<CwtPropertyConfig?>>(this)
+        val cachedDeclarationDumb by registerKey<CachedValue<CwtPropertyConfig?>>(this)
+        val cachedPrimaryLocalisationKey by registerKey<CachedValue<String?>>(this)
+        val cachedPrimaryLocalisation by registerKey<CachedValue<ParadoxLocalisationProperty?>>(this)
+        val cachedPrimaryLocalisations by registerKey<CachedValue<Set<ParadoxLocalisationProperty>>>(this)
+        val cachedPrimaryImage by registerKey<CachedValue<PsiFile?>>(this)
+        val cachedPrimaryImages by registerKey<CachedValue<Set<PsiFile>>>(this)
 
         /** 用于标记图片的帧数信息以便后续进行切分。 */
         val imageFrameInfo by registerKey<ImageFrameInfo>(Keys)
@@ -66,14 +63,10 @@ object ParadoxDefinitionManager {
     }
 
     private fun getInfoFromCache(element: ParadoxDefinitionElement): ParadoxDefinitionInfo? {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInfo) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                val file = element.containingFile
-                val value = ParadoxDefinitionService.resolveInfo(element, file)
-                val dependencies = getInfoDependencies(element, file, value)
-                CachedValueProvider.Result.create(value, dependencies)
-            }
+        return getCachedValueOnDemand(element, Keys.cachedDefinitionInfo, ChronicleCapabilities.Cache.definition) {
+            val file = element.containingFile
+            val value = ParadoxDefinitionService.resolveInfo(element, file)
+            CachedValueProvider.Result.create(value, getInfoDependencies(element, file, value))
         }
     }
 
@@ -88,12 +81,9 @@ object ParadoxDefinitionManager {
         val isDumb = ParadoxMatchOptionsService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedSubtypeConfigsDumb else Keys.cachedSubtypeConfigs
-        return CachedValuesManager.getCachedValue(element, cacheKey) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                val value = ParadoxDefinitionService.resolveSubtypeConfigs(definitionInfo, finalOptions).optimized()
-                CachedValueProvider.Result.create(value, getSubtypeAwareDependencies(element, definitionInfo))
-            }
+        return getCachedValueOnDemand(element, cacheKey, ChronicleCapabilities.Cache.definition) {
+            val value = ParadoxDefinitionService.resolveSubtypeConfigs(definitionInfo, finalOptions).optimized()
+            CachedValueProvider.Result.create(value, getSubtypeAwareDependencies(element, definitionInfo))
         }
     }
 
@@ -106,13 +96,10 @@ object ParadoxDefinitionManager {
         val isDumb = ParadoxMatchOptionsService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedDeclarationDumb else Keys.cachedDeclaration
-        return CachedValuesManager.getCachedValue(element, cacheKey) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                val value = ParadoxDefinitionService.resolveDeclaration(definitionInfo, finalOptions) ?: EMPTY_OBJECT
-                CachedValueProvider.Result.create(value, getSubtypeAwareDependencies(element, definitionInfo))
-            }
-        }.castOrNull()
+        return getCachedValueOnDemand(element, cacheKey, ChronicleCapabilities.Cache.definition) {
+            val value = ParadoxDefinitionService.resolveDeclaration(definitionInfo, finalOptions)
+            CachedValueProvider.Result.create(value, getSubtypeAwareDependencies(element, definitionInfo))
+        }
     }
 
     fun getMemberPath(definitionInfo: ParadoxDefinitionInfo): ParadoxMemberPath {
@@ -151,57 +138,42 @@ object ParadoxDefinitionManager {
     // region Related Items
 
     fun getPrimaryLocalisationKey(element: ParadoxDefinitionElement): String? {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisationKey) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisationKey(it) }
-                CachedValueProvider.Result.create(value, element, ChronicleModificationTrackers.LocalisationFile)
-            }
+        return getCachedValueOnDemand(element, Keys.cachedPrimaryLocalisationKey, ChronicleCapabilities.Cache.relatedItems) {
+            val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisationKey(it) }
+            CachedValueProvider.Result.create(value, element, ChronicleModificationTrackers.LocalisationFile)
         }
     }
 
     fun getPrimaryLocalisation(element: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisation) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
-                val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisation(it) }
-                CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT, ChronicleModificationTrackers.PreferredLocale)
-            }
+        return getCachedValueOnDemand(element, Keys.cachedPrimaryLocalisation, ChronicleCapabilities.Cache.relatedItems) {
+            // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
+            val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisation(it) }
+            CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT, ChronicleModificationTrackers.PreferredLocale)
         }
     }
 
     fun getPrimaryLocalisations(element: ParadoxDefinitionElement): Set<ParadoxLocalisationProperty> {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisations) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
-                val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisations(it) }.orEmpty()
-                CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT, ChronicleModificationTrackers.PreferredLocale)
-            }
+        return getCachedValueOnDemand(element, Keys.cachedPrimaryLocalisations, ChronicleCapabilities.Cache.relatedItems) {
+            // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
+            val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisations(it) }.orEmpty()
+            CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT, ChronicleModificationTrackers.PreferredLocale)
         }
     }
 
     fun getPrimaryImage(element: ParadoxDefinitionElement): PsiFile? {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryImage) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
-                val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryImage(it) }
-                CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT)
-            }
+        return getCachedValueOnDemand(element, Keys.cachedPrimaryImage, ChronicleCapabilities.Cache.relatedItems) {
+            // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
+            val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryImage(it) }
+            CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT)
         }
     }
 
     @Suppress("unused")
     fun getPrimaryImages(element: ParadoxDefinitionElement): Set<PsiFile> {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryImages) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
-                val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryImages(it) }
-                CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT)
-            }
+        return getCachedValueOnDemand(element, Keys.cachedPrimaryImages, ChronicleCapabilities.Cache.relatedItems) {
+            // NOTE 3.0.4 since PSI is directly cached here, invalidated on any PSI change atm
+            val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryImages(it) }
+            CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT)
         }
     }
 
@@ -271,5 +243,5 @@ object ParadoxDefinitionManager {
         return listOf(element.containingFile, ChronicleModificationTrackers.ScriptFile)
     }
 
-    //endregion
+    // endregion
 }
