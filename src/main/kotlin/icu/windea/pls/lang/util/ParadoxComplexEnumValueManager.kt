@@ -10,7 +10,7 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getCachedValue
+import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -44,7 +44,7 @@ object ParadoxComplexEnumValueManager {
     }
 
     private fun getInfoInternal(element: ParadoxScriptExpressionElement): ParadoxComplexEnumValueInfo? {
-        return getCachedValue(element, Keys.cachedComplexEnumValueInfo, onDemand = ChronicleCapabilities.Cache.complexEnumValueInfo) {
+        return getCachedValueOnDemand(element, Keys.cachedComplexEnumValueInfo, onDemand = ChronicleCapabilities.Cache.complexEnumValue) {
             runSmartReadAction {
                 val file = element.containingFile
                 val value = ParadoxComplexEnumValueService.resolveInfo(element, file)
@@ -54,7 +54,7 @@ object ParadoxComplexEnumValueManager {
     }
 
     private fun getInfoInternal(element: ParadoxCsvColumn): ParadoxComplexEnumValueInfo? {
-        return getCachedValue(element, Keys.cachedComplexEnumValueInfo, onDemand = ChronicleCapabilities.Cache.complexEnumValueInfo) {
+        return getCachedValueOnDemand(element, Keys.cachedComplexEnumValueInfo, onDemand = ChronicleCapabilities.Cache.complexEnumValue) {
             runSmartReadAction {
                 val value = ParadoxComplexEnumValueService.resolveInfo(element)
                 CachedValueProvider.Result.create(value, getInfoDependencies(element))

@@ -11,7 +11,7 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.core.util.getCachedValue
+import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -88,7 +88,7 @@ object ParadoxDefineManager {
     }
 
     private fun getInfoInternal(element: ParadoxScriptProperty): ParadoxDefineInfo? {
-        return getCachedValue(element, Keys.cachedDefineInfo, onDemand = ChronicleCapabilities.Cache.defineInfo) {
+        return getCachedValueOnDemand(element, Keys.cachedDefineInfo, onDemand = ChronicleCapabilities.Cache.define) {
             runSmartReadAction {
                 // invalidated on file modification
                 val file = element.containingFile

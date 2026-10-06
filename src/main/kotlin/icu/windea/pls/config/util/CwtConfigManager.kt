@@ -1,6 +1,5 @@
 package icu.windea.pls.config.util
 
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.toNioPathOrNull
@@ -8,7 +7,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.config.CwtConfig
@@ -35,6 +33,7 @@ import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -54,12 +53,11 @@ import kotlin.io.path.name
 @Optimized
 object CwtConfigManager {
     object Keys : KeyRegistry() {
-        val gameTypeIdFromRepoFile by registerKey<String>(Keys)
-        val cachedConfigPath by registerKey<CachedValue<CwtConfigPath>>(Keys)
-        val cachedConfigType by registerKey<CachedValue<CwtConfigType>>(Keys)
-        val cachedDocumentation by registerKey<CachedValue<String>>(Keys)
-        val filePathPatterns by registerKey<Set<String>>(Keys)
-        val filePathPatternsForOverride by registerKey<Set<String>>(Keys)
+        val cachedConfigPath by registerKey<CachedValue<CwtConfigPath?>>(this)
+        val cachedConfigType by registerKey<CachedValue<CwtConfigType?>>(this)
+        val cachedDocumentation by registerKey<CachedValue<String?>>(this)
+        val filePathPatterns by registerKey<Set<String>>(this)
+        val filePathPatternsForOverride by registerKey<Set<String>>(this)
         val withinBlockKeys by registerKey<Set<String>>(this)
 
         /** 用于在解析引用时，将规则临时写入到对应的PSI的用户数据中。 */
@@ -117,27 +115,30 @@ object CwtConfigManager {
         if (element.language !== CwtLanguage) return null
         if (element is CwtFile || element is CwtRootBlock) return CwtConfigPath.resolveEmpty()
         val memberElement = element.parentOfType<CwtMember>(withSelf = true) ?: return null
-        return CachedValuesManager.getCachedValue(element, Keys.cachedConfigPath) {
-            runSmartReadAction {
-                // invalidated on file modification
-                val file = element.containingFile
-                val value = CwtConfigService.resolveConfigPath(memberElement)?.normalize()
-                CachedValueProvider.Result.create(value, file)
-            }
+        return getConfigPathInternal(memberElement)
+    }
+
+    private fun getConfigPathInternal(element: CwtMember): CwtConfigPath? {
+        return getCachedValueOnDemand(element, Keys.cachedConfigPath) {
+            // invalidated on file modification
+            val file = element.containingFile
+            val value = CwtConfigService.resolveConfigPath(element)?.normalize()
+            CachedValueProvider.Result.create(value, file)
         }
     }
 
     fun getConfigType(element: PsiElement): CwtConfigType? {
         if (element.language !== CwtLanguage) return null
         val memberElement = element.parentOfType<CwtMember>(withSelf = true) ?: return null
-        return CachedValuesManager.getCachedValue(memberElement, Keys.cachedConfigType) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                // invalidated on file modification
-                val file = memberElement.containingFile
-                val value = CwtConfigService.resolveConfigType(memberElement, file)
-                CachedValueProvider.Result.create(value, file)
-            }
+        return getConfigTypeInternal(memberElement)
+    }
+
+    private fun getConfigTypeInternal(element: CwtMember): CwtConfigType? {
+        return getCachedValueOnDemand(element, Keys.cachedConfigType) {
+            // invalidated on file modification
+            val file = element.containingFile
+            val value = CwtConfigService.resolveConfigType(element, file)
+            CachedValueProvider.Result.create(value, file)
         }
     }
 
@@ -147,13 +148,15 @@ object CwtConfigManager {
 
     fun getDocumentation(config: CwtMemberConfig<*>): String? {
         val memberElement = config.pointer.element ?: return null
-        return CachedValuesManager.getCachedValue(memberElement, Keys.cachedDocumentation) {
-            runSmartReadAction {
-                // invalidated on file modification
-                val file = memberElement.containingFile
-                val value = CwtConfigService.getDocumentation(memberElement)
-                CachedValueProvider.Result.create(value, file)
-            }
+        return getDocumentationInternal(memberElement)
+    }
+
+    private fun getDocumentationInternal(element: CwtMember): String? {
+        return getCachedValueOnDemand(element, Keys.cachedDocumentation) {
+            // invalidated on file modification
+            val file = element.containingFile
+            val value = CwtConfigService.getDocumentation(element)
+            CachedValueProvider.Result.create(value, file)
         }
     }
 

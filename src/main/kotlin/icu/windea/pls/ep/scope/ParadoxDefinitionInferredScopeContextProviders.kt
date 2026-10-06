@@ -4,7 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.configGroup.CwtConfigGroup
@@ -15,6 +15,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -44,7 +45,7 @@ import icu.windea.pls.model.scope.ParadoxScopeContextInferenceInfo
 @Optimized
 class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     object Keys : KeyRegistry() {
-        val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
+        val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo?>>(this)
     }
 
     override fun supports(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
@@ -54,17 +55,20 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
 
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if (!ChronicleSettings.getInstance().state.inference.scopeContext) return null
-        return getScopeContextFromCache(definition)
+        return getScopeContextInternal(definition)
     }
 
-    private fun getScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
-        return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                val value = resolveScopeContext(definition)
-                CachedValueProvider.Result.create(value, getDependencies(definition))
-            }
+    private fun getScopeContextInternal(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
+        return getCachedValueOnDemand(definition, Keys.cachedScopeContextInferenceInfo, ChronicleCapabilities.Cache.scopeContext) {
+            val value = resolveScopeContext(definition)
+            CachedValueProvider.Result.create(value, getDependencies(definition))
         }
+    }
+
+    private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
+        val configGroup = definition.definitionInfo?.configGroup
+        val scriptTracker = configGroup?.modificationTrackers?.definitionScopeContext ?: ChronicleModificationTrackers.ScriptFile
+        return listOf(ChronicleModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
     private fun resolveScopeContext(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
@@ -79,12 +83,6 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
         if (!r) hasConflict = true
         val resultScopeContextMap = scopeContextMap.orNull() ?: return null
         return ParadoxScopeContextInferenceInfo(resultScopeContextMap, hasConflict)
-    }
-
-    private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
-        val configGroup = definition.definitionInfo?.configGroup
-        val scriptTracker = configGroup?.modificationTrackers?.definitionScopeContext ?: ChronicleModificationTrackers.ScriptFile
-        return listOf(ChronicleModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
     private fun processQuery(
@@ -149,7 +147,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
 @Optimized
 class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     object Keys : KeyRegistry() {
-        val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
+        val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo?>>(this)
     }
 
     override fun supports(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
@@ -158,17 +156,20 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
 
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if (!ChronicleSettings.getInstance().state.inference.scopeContextForEvents) return null
-        return getScopeContextFromCache(definition)
+        return getScopeContextInternal(definition)
     }
 
-    private fun getScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
-        return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                val value = resolveScopeContext(definition)
-                CachedValueProvider.Result.create(value, getDependencies(definition))
-            }
+    private fun getScopeContextInternal(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
+        return getCachedValueOnDemand(definition, Keys.cachedScopeContextInferenceInfo, ChronicleCapabilities.Cache.scopeContext) {
+            val value = resolveScopeContext(definition)
+            CachedValueProvider.Result.create(value, getDependencies(definition))
         }
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
+        val scriptTracker = ChronicleModificationTrackers.scriptFileFromFilePathPatterns("common/on_actions/**/*.txt")
+        return listOf(ChronicleModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
     private fun resolveScopeContext(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
@@ -185,12 +186,6 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
         if (!r) hasConflict = true
         val resultScopeContextMap = scopeContextMap.orNull() ?: return null
         return ParadoxScopeContextInferenceInfo(resultScopeContextMap, hasConflict)
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
-        val scriptTracker = ChronicleModificationTrackers.scriptFileFromFilePathPatterns("common/on_actions/**/*.txt")
-        return listOf(ChronicleModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
     private fun processQuery(
@@ -260,7 +255,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
 @Optimized
 class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     object Keys : KeyRegistry() {
-        val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
+        val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo?>>(this)
     }
 
     override fun supports(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
@@ -273,13 +268,16 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
     }
 
     private fun getScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
-        return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                val value = resolveScopeContext(definition)
-                CachedValueProvider.Result.create(value, getDependencies(definition))
-            }
+        return getCachedValueOnDemand(definition, Keys.cachedScopeContextInferenceInfo, ChronicleCapabilities.Cache.scopeContext) {
+            val value = resolveScopeContext(definition)
+            CachedValueProvider.Result.create(value, getDependencies(definition))
         }
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
+        val scriptTracker = ChronicleModificationTrackers.scriptFileFromFilePathPatterns("events/**/*.txt")
+        return listOf(ChronicleModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
     private fun resolveScopeContext(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
@@ -297,12 +295,6 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
         if (!r) hasConflict = true
         val resultScopeContextMap = scopeContextMap.takeIf { it.size > 2 } ?: return null
         return ParadoxScopeContextInferenceInfo(resultScopeContextMap, hasConflict)
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
-        val scriptTracker = ChronicleModificationTrackers.scriptFileFromFilePathPatterns("events/**/*.txt")
-        return listOf(ChronicleModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
     private fun processQuery(
@@ -410,7 +402,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
 @Optimized
 class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInferredScopeContextProvider {
     object Keys : KeyRegistry() {
-        val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo>>(Keys)
+        val cachedScopeContextInferenceInfo by registerKey<CachedValue<ParadoxScopeContextInferenceInfo?>>(this)
     }
 
     override fun supports(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): Boolean {
@@ -419,18 +411,20 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
 
     override fun getScopeContext(definition: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo): ParadoxScopeContextInferenceInfo? {
         if (!ChronicleSettings.getInstance().state.inference.scopeContextForOnActions) return null
-        return getScopeContextFromCache(definition)
+        return getScopeContextInternal(definition)
     }
 
-    private fun getScopeContextFromCache(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
-        return CachedValuesManager.getCachedValue(definition, Keys.cachedScopeContextInferenceInfo) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                val value = resolveScopeContext(definition)
-                val dependencies = getDependencies(definition)
-                CachedValueProvider.Result.create(value, dependencies)
-            }
+    private fun getScopeContextInternal(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
+        return getCachedValueOnDemand(definition, Keys.cachedScopeContextInferenceInfo, ChronicleCapabilities.Cache.scopeContext) {
+            val value = resolveScopeContext(definition)
+            CachedValueProvider.Result.create(value, getDependencies(definition))
         }
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
+        val scriptTracker = ChronicleModificationTrackers.scriptFileFromFilePathPatterns("events/**/*.txt")
+        return listOf(ChronicleModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
     private fun resolveScopeContext(definition: ParadoxDefinitionElement): ParadoxScopeContextInferenceInfo? {
@@ -451,12 +445,6 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
         if (!r) hasConflict = true
         val resultScopeContextMap = scopeContextMap.takeIf { it.size > 2 } ?: return null
         return ParadoxScopeContextInferenceInfo(resultScopeContextMap, hasConflict)
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    private fun getDependencies(definition: ParadoxDefinitionElement): List<Any> {
-        val scriptTracker = ChronicleModificationTrackers.scriptFileFromFilePathPatterns("events/**/*.txt")
-        return listOf(ChronicleModificationTrackers.DefinitionScopeContextInference, scriptTracker)
     }
 
     private fun processQuery(

@@ -33,13 +33,18 @@ object ChronicleCapabilities {
     object Cache {
         var arguments: Boolean = getBooleanProperty("chronicle.cache.arguments", true)
         var childOccurrences: Boolean = getBooleanProperty("chronicle.cache.childOccurrences", true)
-        var complexEnumValueInfo: Boolean = getBooleanProperty("chronicle.cache.complexEnumValueInfo", true)
+        var complexEnumValue: Boolean = getBooleanProperty("chronicle.cache.complexEnumValue", true)
         var configContext: Boolean = getBooleanProperty("chronicle.cache.configContext", true)
         var configs: Boolean = getBooleanProperty("chronicle.cache.configs", true)
-        var configSymbolInfos: Boolean = getBooleanProperty("chronicle.cache.configSymbolInfos", true)
-        var defineInfo: Boolean =getBooleanProperty("chronicle.cache.define", true)
+        var configSymbol: Boolean = getBooleanProperty("chronicle.cache.configSymbol", true)
+        var define: Boolean = getBooleanProperty("chronicle.cache.define", true)
         var rowConfig: Boolean = getBooleanProperty("chronicle.cache.rowConfig", true)
-        var textColorInfo: Boolean = getBooleanProperty("chronicle.cache.textColor", true)
+        var textColor: Boolean = getBooleanProperty("chronicle.cache.textColor", true)
+        var definition: Boolean = getBooleanProperty("chronicle.cache.definition", true)
+        var definitionInjection: Boolean = getBooleanProperty("chronicle.cache.definitionInjection", true)
+        var scopeContext: Boolean = getBooleanProperty("chronicle.cache.scopeContext", true)
+        val relatedItems: Boolean = getBooleanProperty("chronicle.cache.relatedItems", true)
+        val presentableItems: Boolean = getBooleanProperty("chronicle.cache.presentableItems", true)
     }
 
     object Test {

@@ -12,7 +12,7 @@ import icu.windea.pls.core.isExactWord
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.core.util.getCachedValue
+import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -71,7 +71,7 @@ object ParadoxTextColorManager {
 
     private fun getInfoInternal(definition: ParadoxDefinitionElement): ParadoxTextColorInfo? {
         if (definition !is ParadoxScriptProperty) return null
-        return getCachedValue(definition, Keys.cachedTextColorInfo, onDemand = ChronicleCapabilities.Cache.textColorInfo) {
+        return getCachedValueOnDemand(definition, Keys.cachedTextColorInfo, onDemand = ChronicleCapabilities.Cache.textColor) {
             runSmartReadAction {
                 val value = resolveInfo(definition)
                 CachedValueProvider.Result.create(value, definition)

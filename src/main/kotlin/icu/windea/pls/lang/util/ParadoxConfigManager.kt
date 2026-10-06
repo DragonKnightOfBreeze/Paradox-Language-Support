@@ -27,7 +27,7 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.ComputedModificationTracker
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getCachedValue
+import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -70,7 +70,7 @@ object ParadoxConfigManager {
     }
 
     private fun getConfigContextInternal(element: ParadoxScriptMember): CwtConfigContext? {
-        return getCachedValue(element, Keys.cachedConfigContext, onDemand = ChronicleCapabilities.Cache.configContext) {
+        return getCachedValueOnDemand(element, Keys.cachedConfigContext, onDemand = ChronicleCapabilities.Cache.configContext) {
             val value = ParadoxConfigService.getConfigContext(element)
             CachedValueProvider.Result.create(value, element, ChronicleModificationTrackers.ConfigResolution)
         }
@@ -117,7 +117,7 @@ object ParadoxConfigManager {
     }
 
     private fun getConfigsCache(element: ParadoxScriptMember): SoftValue<ConcurrentMap<String, List<CwtMemberConfig<*>>>> {
-        return getCachedValue(element, Keys.cachedConfigsCache) {
+        return getCachedValueOnDemand(element, Keys.cachedConfigsCache) {
             // use soft referenced concurrent map to optimize more memory
             val value = SoftValue.ofConcurrentMap<String, List<CwtMemberConfig<*>>>()
             CachedValueProvider.Result.create(value, element, ChronicleModificationTrackers.ConfigResolution)
@@ -149,7 +149,7 @@ object ParadoxConfigManager {
     }
 
     private fun getChildOccurrencesCache(element: ParadoxScriptMember): SoftValue<ConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>> {
-        return getCachedValue(element, Keys.cachedChildOccurrencesCache) {
+        return getCachedValueOnDemand(element, Keys.cachedChildOccurrencesCache) {
             // use soft referenced concurrent map to optimize more memory
             val value = SoftValue.ofConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>()
             CachedValueProvider.Result.create(value, element, ChronicleModificationTrackers.ConfigResolution)
@@ -166,7 +166,7 @@ object ParadoxConfigManager {
     }
 
     private fun getRowConfigInternal(file: ParadoxCsvFile): CwtRowConfig? {
-        return getCachedValue(file, Keys.cachedRowConfig, onDemand = ChronicleCapabilities.Cache.rowConfig) {
+        return getCachedValueOnDemand(file, Keys.cachedRowConfig, onDemand = ChronicleCapabilities.Cache.rowConfig) {
             // when the file content changes, the cache here does not need to be refreshed
             val value = ParadoxConfigService.resolveRowConfig(file)
             CachedValueProvider.Result.create(value, ComputedModificationTracker { file.fileInfo })

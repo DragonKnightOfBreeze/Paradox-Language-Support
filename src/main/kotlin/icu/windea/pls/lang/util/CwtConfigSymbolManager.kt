@@ -12,7 +12,7 @@ import icu.windea.pls.core.collections.mapToArray
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getCachedValue
+import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -49,7 +49,7 @@ object CwtConfigSymbolManager {
     }
 
     private fun getInfoInternal(element: CwtStringExpressionElement): List<CwtConfigSymbolInfo> {
-        return getCachedValue(element, Keys.cachedConfigSymbolInfos, onDemand = ChronicleCapabilities.Cache.configSymbolInfos) {
+        return getCachedValueOnDemand(element, Keys.cachedConfigSymbolInfos, onDemand = ChronicleCapabilities.Cache.configSymbol) {
             runSmartReadAction {
                 val value = CwtConfigSymbolService.resolveInfos(element).optimized()
                 CachedValueProvider.Result.create(value, getInfoDependencies(element))

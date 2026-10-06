@@ -12,7 +12,7 @@ import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getCachedValue
+import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -151,7 +151,7 @@ object ParadoxEventManager {
      * 得到指定事件可能调用的所有事件的名字。
      */
     fun getInvocations(definition: ParadoxDefinitionElement): Set<String> {
-        return getCachedValue(definition, Keys.cachedEventInvocations) {
+        return getCachedValueOnDemand(definition, Keys.cachedEventInvocations) {
             val value = ParadoxEventService.resolveInvocations(definition).optimized()
             CachedValueProvider.Result.create(value, definition)
         }

@@ -11,7 +11,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getCachedValue
+import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -125,7 +125,7 @@ object ParadoxTechnologyManager {
          * 得到指定科技的作为其前提条件的所有科技的名字。
          */
         fun getPrerequisites(definition: ParadoxDefinitionElement): Set<String> {
-            return getCachedValue(definition, Keys.cachedPrerequisites) {
+            return getCachedValueOnDemand(definition, Keys.cachedPrerequisites) {
                 val value = ParadoxTechnologyService.Stellaris.resolvePrerequisites(definition).optimized()
                 CachedValueProvider.Result.create(value, definition)
             }

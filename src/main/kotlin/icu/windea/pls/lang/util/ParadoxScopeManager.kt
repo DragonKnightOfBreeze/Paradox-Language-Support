@@ -1,11 +1,10 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parents
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
@@ -13,8 +12,8 @@ import icu.windea.pls.config.config.resolved
 import icu.windea.pls.config.config.resolvedOrNull
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -33,7 +32,7 @@ import icu.windea.pls.script.psi.isDirectValue
 @Suppress("UNUSED_PARAMETER")
 object ParadoxScopeManager {
     object Keys : KeyRegistry() {
-        val cachedScopeContext by registerKey<CachedValue<ParadoxScopeContext>>(Keys)
+        val cachedScopeContext by registerKey<CachedValue<ParadoxScopeContext?>>(this)
     }
 
     const val maxScopeLinkSize = 5
@@ -63,30 +62,24 @@ object ParadoxScopeManager {
     }
 
     fun getScopeContext(element: ParadoxScriptMember): ParadoxScopeContext? {
-        return getScopeContextFromCache(element)
+        return getScopeContextInternal(element)
     }
 
-    private fun getScopeContextFromCache(element: ParadoxScriptMember): ParadoxScopeContext? {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                val value = ParadoxScopeService.evaluateScopeContextForMember(element)
-                CachedValueProvider.Result.create(value, element.containingFile, ChronicleModificationTrackers.ScopeResolution)
-            }
+    private fun getScopeContextInternal(element: ParadoxScriptMember): ParadoxScopeContext? {
+        return getCachedValueOnDemand(element, Keys.cachedScopeContext, ChronicleCapabilities.Cache.scopeContext) {
+            val value = ParadoxScopeService.evaluateScopeContextForMember(element)
+            CachedValueProvider.Result.create(value, element.containingFile, ChronicleModificationTrackers.ScopeResolution)
         }
     }
 
     fun getScopeContext(element: ParadoxDynamicValueLightElement): ParadoxScopeContext {
-        return getScopeContextFromCache(element)
+        return getScopeContextInternal(element) ?: ParadoxScopeContext.resolveAny()
     }
 
-    private fun getScopeContextFromCache(element: ParadoxDynamicValueLightElement): ParadoxScopeContext {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedScopeContext) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                val value = ParadoxScopeService.evaluateScopeContextForDynamicValue(element)
-                CachedValueProvider.Result.create(value, element)
-            }
+    private fun getScopeContextInternal(element: ParadoxDynamicValueLightElement): ParadoxScopeContext? {
+        return getCachedValueOnDemand(element, Keys.cachedScopeContext, ChronicleCapabilities.Cache.scopeContext) {
+            val value = ParadoxScopeService.evaluateScopeContextForDynamicValue(element)
+            CachedValueProvider.Result.create(value, element)
         }
     }
 

@@ -3,11 +3,11 @@ package icu.windea.pls.lang.util
 import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.isEscapedCharAt
-import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -20,7 +20,7 @@ object ParadoxLocalisationManager {
     object Keys : KeyRegistry() {
         val cachedRelatedScriptedVariables by registerKey<CachedValue<SmartPsiElementPointer<ParadoxScriptScriptedVariable>>>(this)
         val cachedRelatedDefinitions by registerKey<CachedValue<SmartPsiElementPointer<ParadoxDefinitionElement>>>(this)
-        val cachedPresentableText by registerKey<CachedValue<String>>(this)
+        val cachedPresentableText by registerKey<CachedValue<String?>>(this)
     }
 
     @Inferred
@@ -80,10 +80,10 @@ object ParadoxLocalisationManager {
 
     // endregion
 
-    // region Presentations
+    // region Presentable Items
 
     /**
-     * 得到 [element] 毒蝇的本地化的展示文本。
+     * 得到 [element] 对应的本地化的展示文本。
      *
      * @see ParadoxLocalisationService.resolvePresentableText
      */
@@ -91,12 +91,15 @@ object ParadoxLocalisationManager {
         return getPresentableTextInternal(element)
     }
 
+    fun getPresentableText(elements: Collection<ParadoxLocalisationProperty>): Set<String> {
+        if(elements.isEmpty()) return emptySet()
+        return elements.mapNotNullTo(mutableSetOf()) { getPresentableTextInternal(it) }
+    }
+
     private fun getPresentableTextInternal(element: ParadoxLocalisationProperty): String? {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedPresentableText) {
-            runSmartReadAction {
-                val value = ParadoxLocalisationService.resolvePresentableText(element)
-                CachedValueProvider.Result.create(value, element)
-            }
+        return getCachedValueOnDemand(element, Keys.cachedPresentableText, ChronicleCapabilities.Cache.presentableItems) {
+            val value = ParadoxLocalisationService.resolvePresentableText(element)
+            CachedValueProvider.Result.create(value, element)
         }
     }
 }

@@ -2,7 +2,6 @@ package icu.windea.pls.lang.resolve
 
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.collections.orNull
@@ -14,7 +13,6 @@ import icu.windea.pls.lang.match.CwtSubtypeConfigMatchContext
 import icu.windea.pls.lang.match.CwtTypeConfigMatchContext
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
-import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -97,25 +95,5 @@ object ParadoxDefinitionInjectionService {
         val subtypes = ParadoxConfigManager.getSubtypes(subtypeConfigs)
         val declarationConfigContext = ParadoxConfigService.getDeclarationConfigContext(element, configGroup, name, type, subtypes)
         return declarationConfigContext?.getConfig(declarationConfig)
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    fun getInfoDependencies(element: ParadoxDefinitionElement, file: PsiFile, value: ParadoxDefinitionInjectionInfo?): List<Any> {
-        // 由于不能有 rootKey 或 typeKeyPrefix，这里可以直接依赖 element
-        return listOf(element)
-    }
-
-    fun getSubtypeAwareDependencies(element: ParadoxDefinitionElement, definitionInjectionInfo: ParadoxDefinitionInjectionInfo): List<Any> {
-        val subtypes = definitionInjectionInfo.typeConfig?.subtypes
-
-        // 无子类型候选项
-        if (subtypes.isNullOrEmpty()) return listOf(element)
-
-        // 所有子类型候选项都不依赖声明结构（快速匹配）
-        val allFastMatch = subtypes.values.all { it.config.configs.isNullOrEmpty() }
-        if (allFastMatch) return listOf(element)
-
-        // 需要依赖声明结构
-        return listOf(element, ChronicleModificationTrackers.ScriptFile)
     }
 }

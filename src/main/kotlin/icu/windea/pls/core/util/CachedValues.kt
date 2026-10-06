@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.core.runSmartReadAction
 
 // @Suppress("NOTHING_TO_INLINE")
 // inline fun <T> T.withDependencyItems(vararg dependencies: Any): CachedValueProvider.Result<T> {
@@ -20,7 +21,7 @@ import com.intellij.psi.util.CachedValuesManager
 fun <T> createCachedValue(
     project: Project,
     trackValue: Boolean = false,
-    provider: () -> CachedValueProvider.Result<T>,
+    provider: CachedValueProvider<T>,
 ): CachedValue<T> {
     return CachedValuesManager.getManager(project).createCachedValue(provider, trackValue)
 }
@@ -28,9 +29,17 @@ fun <T> createCachedValue(
 fun <T> getCachedValue(
     context: PsiElement,
     key: Key<CachedValue<T>>,
+    provider: CachedValueProvider<T>,
+): T {
+    return CachedValuesManager.getCachedValue(context, key, provider)
+}
+
+fun <T> getCachedValueOnDemand(
+    context: PsiElement,
+    key: Key<CachedValue<T>>,
     onDemand: Boolean = true,
     provider: () -> CachedValueProvider.Result<T>,
 ): T {
-    if (!onDemand) return provider().value
-    return CachedValuesManager.getCachedValue(context, key, provider)
+    if (!onDemand) return runSmartReadAction { provider().value }
+    return CachedValuesManager.getCachedValue(context, key) { runSmartReadAction { provider() } }
 }

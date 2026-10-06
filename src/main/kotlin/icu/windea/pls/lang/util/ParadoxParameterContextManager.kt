@@ -8,7 +8,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.core.util.getCachedValue
+import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -33,7 +33,7 @@ object ParadoxParameterContextManager {
     }
 
     private fun getArgumentsInternal(element: ParadoxScriptBlock): List<Tuple2<String, String>> {
-        return getCachedValue(element, Keys.cachedArguments, ChronicleCapabilities.Cache.arguments) {
+        return getCachedValueOnDemand(element, Keys.cachedArguments, ChronicleCapabilities.Cache.arguments) {
             runSmartReadAction {
                 val value = ParadoxParameterContextService.resolveArguments(element).optimized()
                 CachedValueProvider.Result.create(value, element)

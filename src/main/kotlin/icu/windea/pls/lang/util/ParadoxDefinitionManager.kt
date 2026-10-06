@@ -12,6 +12,7 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.filterFast
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
@@ -212,20 +213,27 @@ object ParadoxDefinitionManager {
         return ParadoxDefinitionService.resolveRelatedLocalisations(definitionInfo)
     }
 
+    // region Presentable Items
+
     /**
      * 得到 [element] 对应的定义的展示名字。
+     *
+     * @see ParadoxLocalisationManager.getPresentableText
      */
     fun getPresentableName(element: ParadoxDefinitionElement): String? {
-        val localisation = getPrimaryLocalisation(element)
-        return localisation?.let { ParadoxLocalisationManager.getPresentableText(it) }
+        val localisation = getPrimaryLocalisation(element) ?: return null
+        return ParadoxLocalisationManager.getPresentableText(localisation)
     }
 
     /**
      * 得到 [element] 对应的定义的所有展示名字。
+     *
+     * @see ParadoxLocalisationManager.getPresentableText
      */
     fun getPresentableNames(element: ParadoxDefinitionElement): Set<String> {
-        val primaryLocalisations = getPrimaryLocalisations(element)
-        if (primaryLocalisations.isEmpty()) return emptySet()
-        return primaryLocalisations.mapNotNull { ParadoxLocalisationManager.getPresentableText(it) }.toSet()
+        val localisations = getPrimaryLocalisations(element).orNull() ?: return emptySet()
+        return ParadoxLocalisationManager.getPresentableText(localisations)
     }
+
+    // endregion
 }

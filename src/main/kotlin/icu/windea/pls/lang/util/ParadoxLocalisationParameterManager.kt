@@ -42,8 +42,7 @@ object ParadoxLocalisationParameterManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedParameterNames) {
             ProgressManager.checkCanceled()
             val value = resolveParameters(element)
-            val dependencies = with(ChronicleModificationTrackers) { listOf(element, ScriptFile) }
-            CachedValueProvider.Result.create(value, dependencies)
+            CachedValueProvider.Result.create(value, element, ChronicleModificationTrackers.ScriptFile)
         }
     }
 

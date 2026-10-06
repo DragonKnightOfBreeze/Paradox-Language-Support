@@ -1,8 +1,10 @@
 package icu.windea.pls.csv.psi
 
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import icu.windea.pls.core.castOrNull
@@ -10,7 +12,6 @@ import icu.windea.pls.core.children
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.getCachedValue
 
 @Suppress("unused")
 object ParadoxCsvPsiService {
@@ -32,7 +33,8 @@ object ParadoxCsvPsiService {
     }
 
     private fun getColumnNamesInternal(element: ParadoxCsvHeader): List<String> {
-        return getCachedValue(element, cachedColumnNamesKey) {
+        return CachedValuesManager.getCachedValue(element, cachedColumnNamesKey) {
+            ProgressManager.checkCanceled()
             val value = element.columnList.map { it.value }.optimized()
             CachedValueProvider.Result.create(value, element)
         }

@@ -86,7 +86,8 @@ object ParadoxParameterManager {
     fun getContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
         // precheck
         if (!ParadoxParameterService.isContext(element)) return null
-                return CachedValuesManager.getCachedValue(element, Keys.cachedParameterContextInfo) {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedParameterContextInfo) {
+            ProgressManager.checkCanceled()
             val value = ParadoxParameterService.getContextInfo(element)
             CachedValueProvider.Result(value, element)
         }

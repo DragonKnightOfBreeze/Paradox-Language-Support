@@ -1,19 +1,19 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.EMPTY_OBJECT
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -21,6 +21,7 @@ import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchOptionsService
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 import icu.windea.pls.lang.resolve.ParadoxDefinitionInjectionService
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
@@ -35,11 +36,11 @@ import icu.windea.pls.script.psi.ParadoxScriptRootBlock
 @Optimized
 object ParadoxDefinitionInjectionManager {
     object Keys : KeyRegistry() {
-        val cachedDefinitionInjectionInfo by registerKey<CachedValue<ParadoxDefinitionInjectionInfo>>(Keys)
-        val cachedSubtypeConfigs by registerKey<CachedValue<List<CwtSubtypeConfig>>>(Keys)
-        val cachedSubtypeConfigsDumb by registerKey<CachedValue<List<CwtSubtypeConfig>>>(Keys)
-        val cachedDeclaration by registerKey<CachedValue<Any>>(Keys) // Any: CwtPropertyConfig | EMPTY_OBJECT
-        val cachedDeclarationDumb by registerKey<CachedValue<Any>>(Keys) // Any: CwtPropertyConfig | EMPTY_OBJECT
+        val cachedDefinitionInjectionInfo by registerKey<CachedValue<ParadoxDefinitionInjectionInfo?>>(this)
+        val cachedSubtypeConfigs by registerKey<CachedValue<List<CwtSubtypeConfig>>>(this)
+        val cachedSubtypeConfigsDumb by registerKey<CachedValue<List<CwtSubtypeConfig>>>(this)
+        val cachedDeclaration by registerKey<CachedValue<CwtPropertyConfig?>>(this)
+        val cachedDeclarationDumb by registerKey<CachedValue<CwtPropertyConfig?>>(this)
     }
 
     /**
@@ -122,58 +123,67 @@ object ParadoxDefinitionInjectionManager {
         if (element.parent !is ParadoxScriptRootBlock) return null
         // mode must exist
         if (getModeFromExpression(element.name).isNullOrEmpty()) return null
-        return getInfoFromCache(element)
+        return getInfoInternal(element)
     }
 
-    private fun getInfoFromCache(element: ParadoxScriptProperty): ParadoxDefinitionInjectionInfo? {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedDefinitionInjectionInfo) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                val file = element.containingFile
-                val value = ParadoxDefinitionInjectionService.resolveInfo(element, file)
-                val dependencies = ParadoxDefinitionInjectionService.getInfoDependencies(element, file, value)
-                CachedValueProvider.Result.create(value, dependencies)
-            }
+    private fun getInfoInternal(element: ParadoxScriptProperty): ParadoxDefinitionInjectionInfo? {
+        return getCachedValueOnDemand(element, Keys.cachedDefinitionInjectionInfo, ChronicleCapabilities.Cache.definition) {
+            val file = element.containingFile
+            val value = ParadoxDefinitionInjectionService.resolveInfo(element, file)
+            CachedValueProvider.Result.create(value, getInfoDependencies(element, file, value))
         }
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun getInfoDependencies(element: ParadoxDefinitionElement, file: PsiFile, value: ParadoxDefinitionInjectionInfo?): List<Any> {
+        // 由于不能有 rootKey 或 typeKeyPrefix，这里可以直接依赖 element
+        return listOf(element)
     }
 
     fun getSubtypeConfigs(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
         val candidates = definitionInjectionInfo.typeConfig?.subtypes
         if (candidates.isNullOrEmpty()) return emptyList()
-        return getSubtypeConfigsFromCache(definitionInjectionInfo, options)
+        return getSubtypeConfigsInternal(definitionInjectionInfo, options)
     }
 
-    private fun getSubtypeConfigsFromCache(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions?): List<CwtSubtypeConfig> {
+    fun getDeclaration(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
+        return getDeclarationInternal(definitionInjectionInfo, options)
+    }
+
+    private fun getSubtypeConfigsInternal(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions?): List<CwtSubtypeConfig> {
         val element = definitionInjectionInfo.element ?: return emptyList()
         val isDumb = ParadoxMatchOptionsService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedSubtypeConfigsDumb else Keys.cachedSubtypeConfigs
-        return CachedValuesManager.getCachedValue(element, cacheKey) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                val value = ParadoxDefinitionInjectionService.resolveSubtypeConfigs(definitionInjectionInfo, finalOptions).optimized()
-                val dependencies = ParadoxDefinitionInjectionService.getSubtypeAwareDependencies(element, definitionInjectionInfo)
-                CachedValueProvider.Result.create(value, dependencies)
-            }
+        return getCachedValueOnDemand(element, cacheKey, ChronicleCapabilities.Cache.definition) {
+            val value = ParadoxDefinitionInjectionService.resolveSubtypeConfigs(definitionInjectionInfo, finalOptions).optimized()
+            CachedValueProvider.Result.create(value, getSubtypeAwareDependencies(element, definitionInjectionInfo))
         }
     }
 
-    fun getDeclaration(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
-        return getDeclarationFromCache(definitionInjectionInfo, options)
-    }
-
-    private fun getDeclarationFromCache(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions?): CwtPropertyConfig? {
+    private fun getDeclarationInternal(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions?): CwtPropertyConfig? {
         val element = definitionInjectionInfo.element ?: return null
         val isDumb = ParadoxMatchOptionsService.isDumb(options)
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedDeclarationDumb else Keys.cachedDeclaration
-        return CachedValuesManager.getCachedValue(element, cacheKey) {
-            runSmartReadAction {
-                val value = ParadoxDefinitionInjectionService.resolveDeclaration(definitionInjectionInfo, finalOptions) ?: EMPTY_OBJECT
-                val dependencies = ParadoxDefinitionInjectionService.getSubtypeAwareDependencies(element, definitionInjectionInfo)
-                CachedValueProvider.Result.create(value, dependencies)
-            }
+        return getCachedValueOnDemand(element, cacheKey, ChronicleCapabilities.Cache.definition) {
+            val value = ParadoxDefinitionInjectionService.resolveDeclaration(definitionInjectionInfo, finalOptions)
+            CachedValueProvider.Result.create(value, getSubtypeAwareDependencies(element, definitionInjectionInfo))
         }.castOrNull()
+    }
+
+    private fun getSubtypeAwareDependencies(element: ParadoxDefinitionElement, definitionInjectionInfo: ParadoxDefinitionInjectionInfo): List<Any> {
+        val subtypes = definitionInjectionInfo.typeConfig?.subtypes
+
+        // 无子类型候选项
+        if (subtypes.isNullOrEmpty()) return listOf(element)
+
+        // 所有子类型候选项都不依赖声明结构（快速匹配）
+        val allFastMatch = subtypes.values.all { it.config.configs.isNullOrEmpty() }
+        if (allFastMatch) return listOf(element)
+
+        // 需要依赖声明结构
+        return listOf(element, ChronicleModificationTrackers.ScriptFile)
     }
 
     /**

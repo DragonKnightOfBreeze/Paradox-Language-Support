@@ -13,7 +13,6 @@ import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtConfigExpressionService
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.CwtConfigManager.Keys
 import icu.windea.pls.config.util.CwtConfigManager.getConfigPath
 import icu.windea.pls.config.util.CwtConfigManager.isInternalFile
 import icu.windea.pls.core.annotations.CaseInsensitive
@@ -29,7 +28,11 @@ import icu.windea.pls.core.substringIn
 import icu.windea.pls.core.substringInLast
 import icu.windea.pls.core.surroundsWith
 import icu.windea.pls.core.toPsiDirectory
+import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -47,6 +50,10 @@ import icu.windea.pls.model.paths.CwtConfigPath
 
 @Optimized
 object CwtConfigService {
+    object Keys : KeyRegistry() {
+        val gameTypeIdFromRepoFile by registerKey<String>(this)
+    }
+
     /**
      * @see CwtConfigFilterProvider.filter
      */
