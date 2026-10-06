@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -17,7 +18,6 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -60,7 +60,6 @@ object ParadoxDefinitionManager {
     }
 
     fun getInfo(element: ParadoxDefinitionElement): ParadoxDefinitionInfo? {
-        // from cache
         return getInfoFromCache(element)
     }
 
@@ -71,7 +70,7 @@ object ParadoxDefinitionManager {
                 val file = element.containingFile
                 val value = ParadoxDefinitionService.resolveInfo(element, file)
                 val dependencies = ParadoxDefinitionService.getInfoDependencies(element, file, value)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, dependencies)
             }
         }
     }
@@ -79,7 +78,6 @@ object ParadoxDefinitionManager {
     fun getSubtypeConfigs(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
         val candidates = definitionInfo.typeConfig.subtypes
         if (candidates.isEmpty()) return emptyList()
-        // from cache
         return getSubtypeConfigsFromCache(definitionInfo, options)
     }
 
@@ -93,13 +91,12 @@ object ParadoxDefinitionManager {
             runSmartReadAction {
                 val value = ParadoxDefinitionService.resolveSubtypeConfigs(definitionInfo, finalOptions).optimized()
                 val dependencies = ParadoxDefinitionService.getSubtypeAwareDependencies(element, definitionInfo)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, dependencies)
             }
         }
     }
 
     fun getDeclaration(definitionInfo: ParadoxDefinitionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
-        // from cache
         return getDeclarationFromCache(definitionInfo, options)
     }
 
@@ -113,7 +110,7 @@ object ParadoxDefinitionManager {
             runSmartReadAction {
                 val value = ParadoxDefinitionService.resolveDeclaration(definitionInfo, finalOptions) ?: EMPTY_OBJECT
                 val dependencies = ParadoxDefinitionService.getSubtypeAwareDependencies(element, definitionInfo)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, dependencies)
             }
         }.castOrNull()
     }
@@ -152,62 +149,57 @@ object ParadoxDefinitionManager {
     }
 
     fun getPrimaryLocalisationKey(element: ParadoxDefinitionElement): String? {
-        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisationKey) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisationKey(it) }
                 val dependencies = ParadoxDefinitionService.getRelatedLocalisationKeyAwareDependencies(element)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, dependencies)
             }
         }
     }
 
     fun getPrimaryLocalisation(element: ParadoxDefinitionElement): ParadoxLocalisationProperty? {
-        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisation) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisation(it) }
                 val dependencies = ParadoxDefinitionService.getRelatedLocalisationAwareDependencies(element)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, dependencies)
             }
         }
     }
 
     fun getPrimaryLocalisations(element: ParadoxDefinitionElement): Set<ParadoxLocalisationProperty> {
-        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryLocalisations) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryLocalisations(it) }.orEmpty()
                 val dependencies = ParadoxDefinitionService.getRelatedLocalisationAwareDependencies(element)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, dependencies)
             }
         }
     }
 
     fun getPrimaryImage(element: ParadoxDefinitionElement): PsiFile? {
-        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryImage) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryImage(it) }
                 val dependencies = ParadoxDefinitionService.getRelatedImageAwareDependencies(element)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, dependencies)
             }
         }
     }
 
     @Suppress("unused")
     fun getPrimaryImages(element: ParadoxDefinitionElement): Set<PsiFile> {
-        // from cache
         return CachedValuesManager.getCachedValue(element, Keys.cachedPrimaryImages) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = element.definitionInfo?.let { ParadoxDefinitionService.resolvePrimaryImages(it) }
                 val dependencies = ParadoxDefinitionService.getRelatedImageAwareDependencies(element)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, dependencies)
             }
         }
     }

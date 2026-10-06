@@ -4,7 +4,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtSubtypeGroup
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
@@ -13,6 +12,7 @@ import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.getCachedValue
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -151,10 +151,9 @@ object ParadoxEventManager {
      * 得到指定事件可能调用的所有事件的名字。
      */
     fun getInvocations(definition: ParadoxDefinitionElement): Set<String> {
-        // from cache
-        return CachedValuesManager.getCachedValue(definition, Keys.cachedEventInvocations) {
+        return getCachedValue(definition, Keys.cachedEventInvocations) {
             val value = ParadoxEventService.resolveInvocations(definition).optimized()
-            CachedValueProvider.Result(value, definition)
+            CachedValueProvider.Result.create(value, definition)
         }
     }
 

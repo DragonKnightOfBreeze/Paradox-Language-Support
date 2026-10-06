@@ -9,6 +9,7 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceService
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.PsiModificationTracker
 import icu.windea.pls.base.ChronicleModificationTrackers
@@ -24,7 +25,6 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.csv.psi.ParadoxCsvPsiService
@@ -333,17 +333,17 @@ object ParadoxExpressionManager {
     fun getReferences(element: ParadoxExpressionElement): Array<out PsiReference> {
         // NOTE 2.1.7 DO NOT just call `ReferenceProvidersRegistry.getReferencesFromProviders()` directly to avoid non-idempotent computation problem
         ProgressManager.checkCanceled()
-        return getReferencesFromCache(element)
+        return getReferencesInternal(element)
     }
 
-    private fun getReferencesFromCache(element: ParadoxExpressionElement): Array<out PsiReference> {
+    private fun getReferencesInternal(element: ParadoxExpressionElement): Array<out PsiReference> {
         val isDumb = ParadoxMatchOptionsService.isDumb()
         val cacheKey = if (isDumb) Keys.cachedReferencesDumb else Keys.cachedReferences
         return CachedValuesManager.getCachedValue(element, cacheKey) {
             ProgressManager.checkCanceled()
             val value = resolveReferences(element)
             val tracker = ChronicleModificationTrackers.expression(element)
-            value.withDependencyItems(element, PsiModificationTracker.MODIFICATION_COUNT, tracker)
+            CachedValueProvider.Result.create(value, element, PsiModificationTracker.MODIFICATION_COUNT, tracker)
         }
     }
 
@@ -385,7 +385,7 @@ object ParadoxExpressionManager {
             ProgressManager.checkCanceled()
             val value = resolveExpressionReferences(element)
             val tracker = ChronicleModificationTrackers.expression(element)
-            value.withDependencyItems(element, tracker)
+            CachedValueProvider.Result.create(value, element, tracker)
         }
     }
 

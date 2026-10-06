@@ -53,9 +53,7 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.impl.source.tree.LightTreeUtil
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
-import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
@@ -125,21 +123,6 @@ inline fun <R> runCatchingCancelable(block: () -> R): Result<R> {
 
 inline fun <T, R> T.runCatchingCancelable(block: T.() -> R): Result<R> {
     return runCatching(block).onFailure { e -> checkCancellation(e) }
-}
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T> createCachedValue(project: Project, trackValue: Boolean = false, provider: CachedValueProvider<T>): CachedValue<T> {
-    return CachedValuesManager.getManager(project).createCachedValue(provider, trackValue)
-}
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T> T.withDependencyItems(vararg dependencies: Any): CachedValueProvider.Result<T> {
-    return CachedValueProvider.Result.create(this, *dependencies)
-}
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T> T.withDependencyItems(dependencies: List<Any>): CachedValueProvider.Result<T> {
-    return CachedValueProvider.Result.create(this, dependencies)
 }
 
 fun <T> Query<T>.process(consumer: Processor<in T>): Boolean {
@@ -220,6 +203,15 @@ fun Iterable<TextRange>.mergeTextRanges(): List<TextRange> {
         }
     }
     return result
+}
+
+// endregion
+
+// region Cache Related Extensions
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun <T> T.withDependencyItems(vararg dependencies: Any): CachedValueProvider.Result<T> {
+    return CachedValueProvider.Result.create(this, *dependencies)
 }
 
 // endregion
@@ -667,13 +659,13 @@ fun <T> runSmartReadAction(
     parentDisposable: Disposable? = null,
     task: Callable<T>,
 ): T {
+    ProgressManager.checkCanceled() // 3.0.4 ensure cancellation check first
     if (application.isReadAccessAllowed) {
         return task.call()
     } else if (application.isDispatchThread) {
         // #363 [RWA] cannot run non-blocking read actions in EDT
         return runReadAction { task.call() }
     }
-
     var action = ReadAction.nonBlocking(task)
     if (parentDisposable != null) action = action.expireWith(parentDisposable)
     return action.executeSynchronously()
@@ -686,13 +678,13 @@ fun <T> runSmartReadAction(
     withDocumentsCommitted: Boolean = false,
     task: Callable<T>,
 ): T {
+    ProgressManager.checkCanceled() // 3.0.4 ensure cancellation check first
     if (application.isReadAccessAllowed && !(inSmartMode && DumbService.isDumb(project) || withDocumentsCommitted)) {
         return task.call()
     } else if (application.isDispatchThread && !(inSmartMode && DumbService.isDumb(project) || withDocumentsCommitted)) {
         // #363 [RWA] cannot run non-blocking read actions on EDT (and it should be impossible to run in smart mode safely in EDT, so skip and expect throwing)
         return runReadAction { task.call() }
     }
-
     var action = ReadAction.nonBlocking(task)
     if (parentDisposable != null) action = action.expireWith(parentDisposable)
     if (inSmartMode) action = action.inSmartMode(project)
@@ -705,6 +697,7 @@ fun <T> runSmartReadActionAsync(
     parentDisposable: Disposable? = null,
     task: Callable<T>,
 ): CancellablePromise<T> {
+    ProgressManager.checkCanceled() // 3.0.4 ensure cancellation check first
     if (application.isReadAccessAllowed) {
         return resolvedCancellablePromise(task.call())
     }
@@ -721,10 +714,10 @@ fun <T> runSmartReadActionAsync(
     withDocumentsCommitted: Boolean = false,
     task: Callable<T>,
 ): CancellablePromise<T> {
+    ProgressManager.checkCanceled() // 3.0.4 ensure cancellation check first
     if (application.isReadAccessAllowed && (!inSmartMode || !DumbService.isDumb(project)) && !withDocumentsCommitted) {
         return resolvedCancellablePromise(task.call())
     }
-
     var action = ReadAction.nonBlocking(task)
     if (parentDisposable != null) action = action.expireWith(parentDisposable)
     if (inSmartMode) action = action.inSmartMode(project)
@@ -742,6 +735,7 @@ fun executeCommand(
     groupId: String? = null,
     action: Runnable,
 ) {
+    ProgressManager.checkCanceled() // 3.0.4 ensure cancellation check first
     CommandProcessor.getInstance().executeCommand(project, action, name, groupId)
 }
 
@@ -751,6 +745,7 @@ fun executeWriteCommand(
     groupId: String? = null,
     action: ThrowableRunnable<Throwable>,
 ) {
+    ProgressManager.checkCanceled() // 3.0.4 ensure cancellation check first
     WriteCommandAction.writeCommandAction(project)
         .withName(name).withGroupId(groupId)
         .run(action)
@@ -763,6 +758,7 @@ fun executeWriteCommand(
     makeWritable: PsiElement? = null,
     action: ThrowableRunnable<Throwable>,
 ) {
+    ProgressManager.checkCanceled() // 3.0.4 ensure cancellation check first
     WriteCommandAction.writeCommandAction(project, makeWritable.to.singletonSetOrEmpty())
         .withName(name).withGroupId(groupId)
         .run(action)
@@ -775,6 +771,7 @@ fun executeWriteCommand(
     makeWritable: Collection<PsiElement> = emptyList(),
     action: ThrowableRunnable<Throwable>,
 ) {
+    ProgressManager.checkCanceled()
     WriteCommandAction.writeCommandAction(project, makeWritable)
         .withName(name).withGroupId(groupId)
         .run(action)

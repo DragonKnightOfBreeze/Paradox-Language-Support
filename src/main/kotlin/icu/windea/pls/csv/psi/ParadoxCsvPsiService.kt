@@ -2,7 +2,7 @@ package icu.windea.pls.csv.psi
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
-import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import icu.windea.pls.core.castOrNull
@@ -10,7 +10,7 @@ import icu.windea.pls.core.children
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.core.util.getCachedValue
 
 @Suppress("unused")
 object ParadoxCsvPsiService {
@@ -23,18 +23,18 @@ object ParadoxCsvPsiService {
 
     fun getColumnNames(file: ParadoxCsvFile): List<String> {
         val header = file.header ?: return emptyList()
-        return getColumnNamesFromCache(header)
+        return getColumnNamesInternal(header)
     }
 
     fun getColumnNames(element: ParadoxCsvColumnContainer): List<String> {
         val header = element.castOrNull<ParadoxCsvHeader>() ?: element.containingFile?.castOrNull<ParadoxCsvFile>()?.header ?: return emptyList()
-        return getColumnNamesFromCache(header)
+        return getColumnNamesInternal(header)
     }
 
-    private fun getColumnNamesFromCache(element: ParadoxCsvHeader): List<String> {
-        return CachedValuesManager.getCachedValue(element, cachedColumnNamesKey) {
+    private fun getColumnNamesInternal(element: ParadoxCsvHeader): List<String> {
+        return getCachedValue(element, cachedColumnNamesKey) {
             val value = element.columnList.map { it.value }.optimized()
-            value.withDependencyItems(element)
+            CachedValueProvider.Result.create(value, element)
         }
     }
 

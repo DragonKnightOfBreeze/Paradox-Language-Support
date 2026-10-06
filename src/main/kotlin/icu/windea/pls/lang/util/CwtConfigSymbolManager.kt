@@ -4,252 +4,60 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.CachedValue
-import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.PsiModificationTracker.*
-import com.intellij.psi.util.startOffset
-import icu.windea.pls.config.CwtConfigType
-import icu.windea.pls.config.CwtConfigTypes
-import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.config.configExpression.CwtDataExpressionRole
-import icu.windea.pls.config.util.CwtConfigManager
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.PsiModificationTracker
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapToArray
-import icu.windea.pls.core.findKeywordsWithTextRanges
-import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.orNull
-import icu.windea.pls.core.removeSurroundingOrNull
+import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.ReadWriteAccess
+import icu.windea.pls.core.util.getCachedValue
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.cwt.psi.isDataExpression
 import icu.windea.pls.lang.references.cwt.CwtConfigSymbolPsiReference
-import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.constants.CwtConfigTextPatternSets
-import icu.windea.pls.model.constants.CwtConfigTextPatterns
-import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
-import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
+import icu.windea.pls.lang.resolve.CwtConfigSymbolService
+import icu.windea.pls.model.CwtConfigSymbolInfo
 
 @Optimized
 object CwtConfigSymbolManager {
     object Keys : KeyRegistry() {
-        val cachedSymbolInfos by registerKey<CachedValue<List<CwtConfigSymbolIndexInfo>>>(Keys)
+        val cachedConfigSymbolInfos by registerKey<CachedValue<List<CwtConfigSymbolInfo>>>(this)
     }
 
     // NOTE 相比 Symbol API，通过实现继承自 CwtMockPsiElement 的 CwtConfigSymbolElement ，应当能更加简单地实现相关功能（且区分读写访问）
 
-    fun getInfos(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
+    fun getInfos(element: CwtStringExpressionElement): List<CwtConfigSymbolInfo> {
         ProgressManager.checkCanceled()
         if (!element.isDataExpression()) return emptyList()
-        val infos = getInfoFromCache(element)
+        val infos = getInfoInternal(element)
         return infos
     }
 
     fun getReferences(element: CwtStringExpressionElement): Array<out PsiReference> {
         ProgressManager.checkCanceled()
         if (!element.isDataExpression()) return PsiReference.EMPTY_ARRAY
-        val infos = getInfoFromCache(element)
+        val infos = getInfoInternal(element)
         if (infos.isEmpty()) return PsiReference.EMPTY_ARRAY
         // val references = infos.mapFast { CwtConfigSymbolPsiReference(element, TextRange.from(it.offset, it.name.length), it) }
         // return references.toArray(PsiReference.EMPTY_ARRAY)
         return infos.mapToArray(PsiReference.EMPTY_ARRAY) { CwtConfigSymbolPsiReference(element, TextRange.from(it.offset, it.name.length), it) }
     }
 
-    private fun getInfoFromCache(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedSymbolInfos) {
-            ProgressManager.checkCanceled()
-            val value = resolveInfos(element)
-            val dependencies = listOf(element, getInstance(element.project).forLanguage(CwtLanguage))
-            value.withDependencyItems(dependencies)
-        }
-    }
-
-    private fun resolveInfos(element: CwtStringExpressionElement): List<CwtConfigSymbolIndexInfo> {
-        val infos = mutableListOf<CwtConfigSymbolIndexInfo>()
-        collectInfos(element, infos)
-        return infos.optimized()
-    }
-
-    private fun collectInfos(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>) {
-        val gameType = getGameType(element) ?: return
-        val expressionString = element.value
-        val quoteOffset = if (element.text.isLeftQuoted()) 1 else 0
-        collectInfosFromDeclarations(element, infos, gameType, expressionString, quoteOffset)
-        collectInfosFromReferences(element, infos, gameType, expressionString, quoteOffset)
-    }
-
-    private fun collectInfosFromDeclarations(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
-        val configType = CwtConfigManager.getConfigType(element) ?: return
-        val symbolConfigType = getSymbolConfigType(configType) ?: return
-        val name = getSymbolName(expressionString, configType) ?: return
-        val nameOffset = expressionString.indexOf(name)
-        if (nameOffset == -1) return
-        val tuples = buildList b@{
-            if (symbolConfigType != CwtConfigTypes.Alias) {
-                this += tupleOf(name, nameOffset, symbolConfigType)
-                return@b
-            }
-
-            // aliases
-            val n1 = name.substringBefore(':').orNull() ?: return@b
-            this += tupleOf(n1, nameOffset, symbolConfigType)
-            // modifiers & effects & triggers
-            if (configType != CwtConfigTypes.Modifier && configType != CwtConfigTypes.Trigger && configType != CwtConfigTypes.Effect) return@b
-            val n2 = name.substringAfter(':').orNull() ?: return@b
-            if (CwtDataExpression.resolve(n2, CwtDataExpressionRole.Value).type != CwtDataTypes.Constant) return@b
-            this += tupleOf(n2, expressionString.indexOf(':') + 1, configType)
-        }
-        tuples.forEachFast f@{ (symbolName, symbolOffset, symbolConfigType) ->
-            val readWriteAccess = ReadWriteAccess.Write
-            val nextOffset = offset + symbolOffset
-            val info = CwtConfigSymbolIndexInfo(symbolName, symbolConfigType.id, readWriteAccess, nextOffset, element.startOffset, gameType)
-            infos += info
-        }
-    }
-
-    private fun collectInfosFromReferences(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
-        // TODO [config-system] 2.0.1-dev+ 实际上可以引用于很多地方，如果需要精确实现，需要考虑进一步完善对规则文件的 schema 的支持
-
-        val configType = CwtConfigManager.getConfigType(element)
-        run {
-            if (configType != null) return@run
-            collectInfosFromSubtypeExpressions(element, infos, gameType, expressionString, offset)
-            collectInfosFromTypeExpressions(element, infos, gameType, expressionString, offset)
-            collectInfosFromCommonDataExpressions(element, infos, gameType, expressionString, offset)
-            collectInfosFromAliasDataExpressions(element, infos, gameType, expressionString, offset)
-        }
-        run {
-            if (configType == null) return@run
-            val symbolConfigType = getSymbolConfigType(configType) ?: return@run
-            if (symbolConfigType != CwtConfigTypes.Alias) return@run
-            val (prefix, suffix, separator) = CwtConfigTextPatterns.alias
-            val s = expressionString.removeSurroundingOrNull(prefix, suffix)?.orNull() ?: return@run
-            val separatorIndex = s.indexOf(separator)
-            if (separatorIndex == -1) return@run
-            val e = s.substring(separatorIndex + 1)
-            val nextOffset = offset + prefix.length + separatorIndex + 1
-            collectInfosFromTypeExpressions(element, infos, gameType, e, nextOffset)
-            collectInfosFromCommonDataExpressions(element, infos, gameType, e, nextOffset)
-        }
-    }
-
-    private fun collectInfosFromSubtypeExpressions(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
-        // 尝试从 typeExpression 中获取
-        val readWriteAccess = ReadWriteAccess.Read
-        val (prefix, suffix) = CwtConfigTextPatterns.definition
-        val text = expressionString.removeSurroundingOrNull(prefix, suffix) ?: return
-        val expression = ParadoxDefinitionTypeExpression.resolve(text)
-        val keywords = mutableSetOf<String>()
-        keywords += expression.type
-        keywords += expression.subtypes
-        val tuples = text.findKeywordsWithTextRanges(keywords)
-        if (tuples.isEmpty()) return
-        tuples.forEachFast { (keyword, rangeInElement) ->
-            val configType = if (keyword == expression.type) CwtConfigTypes.Type else CwtConfigTypes.Subtype
-            val nextOffset = offset + prefix.length + rangeInElement.startOffset
-            val info = CwtConfigSymbolIndexInfo(keyword, configType.id, readWriteAccess, nextOffset, element.startOffset, gameType)
-            infos += info
-        }
-    }
-
-    private fun collectInfosFromTypeExpressions(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
-        // 尝试从 typeExpression 中获取
-        val readWriteAccess = ReadWriteAccess.Read
-        val (prefix, suffix) = CwtConfigTextPatterns.definition
-        val text = expressionString.removeSurroundingOrNull(prefix, suffix) ?: return
-        val expression = ParadoxDefinitionTypeExpression.resolve(text)
-        val keywords = mutableSetOf<String>()
-        keywords += expression.type
-        keywords += expression.subtypes
-        val tuples = text.findKeywordsWithTextRanges(keywords)
-        if (tuples.isEmpty()) return
-        tuples.forEachFast { (keyword, rangeInElement) ->
-            val configType = if (keyword == expression.type) CwtConfigTypes.Type else CwtConfigTypes.Subtype
-            val nextOffset = offset + prefix.length + rangeInElement.startOffset
-            val info = CwtConfigSymbolIndexInfo(keyword, configType.id, readWriteAccess, nextOffset, element.startOffset, gameType)
-            infos += info
-        }
-    }
-
-    private fun collectInfosFromCommonDataExpressions(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
-        val readWriteAccess = ReadWriteAccess.Read
-        run {
-            val (prefix, suffix) = CwtConfigTextPatterns.enum
-            val name = expressionString.removeSurroundingOrNull(prefix, suffix)?.orNull() ?: return@run
-            val nextOffset = offset + prefix.length
-            val info = CwtConfigSymbolIndexInfo(name, CwtConfigTypes.Enum.id, readWriteAccess, nextOffset, element.startOffset, gameType)
-            infos += info
-        }
-        run {
-            val (prefix, suffix) = CwtConfigTextPatterns.union
-            val name = expressionString.removeSurroundingOrNull(prefix, suffix)?.orNull() ?: return@run
-            val nextOffset = offset + prefix.length
-            val info = CwtConfigSymbolIndexInfo(name, CwtConfigTypes.Union.id, readWriteAccess, nextOffset, element.startOffset, gameType)
-            infos += info
-        }
-        run {
-            val patternSet = CwtConfigTextPatternSets.dynamicValueReference
-            patternSet.forEach f@{ pattern ->
-                val (prefix, suffix) = pattern
-                val name = expressionString.removeSurroundingOrNull(prefix, suffix)?.orNull() ?: return@f
-                val nextOffset = offset + prefix.length
-                val info = CwtConfigSymbolIndexInfo(name, CwtConfigTypes.DynamicValue.id, readWriteAccess, nextOffset, element.startOffset, gameType)
-                infos += info
-            }
-        }
-        run {
-            val patternSet = CwtConfigTextPatternSets.singleAliasReference
-            patternSet.forEach f@{ pattern ->
-                val (prefix, suffix) = pattern
-                val name = expressionString.removeSurroundingOrNull(prefix, suffix)?.orNull() ?: return@f
-                val nextOffset = offset + prefix.length
-                val info = CwtConfigSymbolIndexInfo(name, CwtConfigTypes.SingleAlias.id, readWriteAccess, nextOffset, element.startOffset, gameType)
-                infos += info
+    private fun getInfoInternal(element: CwtStringExpressionElement): List<CwtConfigSymbolInfo> {
+        return getCachedValue(element, Keys.cachedConfigSymbolInfos, onDemand = ChronicleCapabilities.Cache.configSymbolInfos) {
+            runSmartReadAction {
+                val value = CwtConfigSymbolService.resolveInfos(element).optimized()
+                CachedValueProvider.Result.create(value, getInfoDependencies(element))
             }
         }
     }
 
-    private fun collectInfosFromAliasDataExpressions(element: CwtStringExpressionElement, infos: MutableList<CwtConfigSymbolIndexInfo>, gameType: ParadoxGameType, expressionString: String, offset: Int) {
-        val readWriteAccess = ReadWriteAccess.Read
-        val patternSet = CwtConfigTextPatternSets.aliasReference
-        patternSet.forEach f@{ pattern ->
-            val (prefix, suffix) = pattern
-            val name = expressionString.removeSurroundingOrNull(prefix, suffix)?.orNull() ?: return@f
-            val nextOffset = offset + prefix.length
-            val info = CwtConfigSymbolIndexInfo(name, CwtConfigTypes.Alias.id, readWriteAccess, nextOffset, element.startOffset, gameType)
-            infos += info
-        }
-    }
-
-    private fun getGameType(element: CwtStringExpressionElement): ParadoxGameType? {
-        return CwtConfigManager.getContainingConfigGroup(element)?.gameType
-    }
-
-    private fun getSymbolConfigType(configType: CwtConfigType): CwtConfigType? {
-        return when (configType) {
-            CwtConfigTypes.Type, CwtConfigTypes.Subtype -> configType
-            CwtConfigTypes.Enum, CwtConfigTypes.ComplexEnum -> CwtConfigTypes.Enum
-            CwtConfigTypes.Union -> configType
-            CwtConfigTypes.DynamicValueType -> configType
-            CwtConfigTypes.SingleAlias -> configType
-            CwtConfigTypes.Alias, CwtConfigTypes.Modifier, CwtConfigTypes.Trigger, CwtConfigTypes.Effect -> CwtConfigTypes.Alias
-            CwtConfigTypes.Macro -> configType
-            else -> null
-        }
-    }
-
-    private fun getSymbolName(text: String, configType: CwtConfigType): String? {
-        return when (configType) {
-            CwtConfigTypes.Alias, CwtConfigTypes.Modifier, CwtConfigTypes.Trigger, CwtConfigTypes.Effect -> text.removeSurroundingOrNull("alias[", "]")?.orNull()
-            else -> CwtConfigManager.getNameByConfigType(text, configType)
-        }
+    private fun getInfoDependencies(element: CwtStringExpressionElement): List<Any> {
+        return listOf(element, PsiModificationTracker.getInstance(element.project).forLanguage(CwtLanguage))
     }
 }

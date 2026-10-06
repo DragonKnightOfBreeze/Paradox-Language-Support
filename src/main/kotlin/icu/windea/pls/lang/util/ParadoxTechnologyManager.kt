@@ -4,7 +4,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.config.CwtSubtypeGroup
@@ -12,6 +11,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.delegated.CwtSubtypeConfig
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.getCachedValue
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
@@ -125,10 +125,9 @@ object ParadoxTechnologyManager {
          * 得到指定科技的作为其前提条件的所有科技的名字。
          */
         fun getPrerequisites(definition: ParadoxDefinitionElement): Set<String> {
-            // from cache
-            return CachedValuesManager.getCachedValue(definition, Keys.cachedPrerequisites) {
+            return getCachedValue(definition, Keys.cachedPrerequisites) {
                 val value = ParadoxTechnologyService.Stellaris.resolvePrerequisites(definition).optimized()
-                CachedValueProvider.Result(value, definition)
+                CachedValueProvider.Result.create(value, definition)
             }
         }
 

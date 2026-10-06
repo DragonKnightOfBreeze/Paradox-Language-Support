@@ -6,6 +6,7 @@ import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.parents
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.ChronicleModificationTrackers
@@ -30,15 +31,14 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.createCachedValue
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createCachedValue
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.registerKeyWithThis
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
@@ -82,9 +82,10 @@ object ParadoxConfigService {
         // rootFile -> cacheKey -> configs
         // 3.0.3 use expireAfterAccess + softValues to optimize memory
         createCachedValue(project) {
-            createNestedCache<VirtualFile, _, _> {
+            val value = createNestedCache<VirtualFile, _, _> {
                 CacheBuilder("expireAfterAccess=1h,softValues").build<String, List<CwtMemberConfig<*>>>().cancelable()
-            }.withDependencyItems(ChronicleModificationTrackers.ConfigResolution)
+            }
+            CachedValueProvider.Result.create(value, ChronicleModificationTrackers.ConfigResolution)
         }
     }
     private val CwtConfigContext.configsDynamicCache: Cache<String, List<CwtMemberConfig<*>>> by registerKey(Keys) {
@@ -95,8 +96,8 @@ object ParadoxConfigService {
         // cacheKey -> declarationConfig
         // 3.0.3 use expireAfterAccess + softValues to optimize memory
         createCachedValue(project) {
-            CacheBuilder("expireAfterAccess=1h,softValues").build<String, CwtPropertyConfig>().cancelable()
-                .withDependencyItems(ModificationTracker.NEVER_CHANGED)
+            val value = CacheBuilder("expireAfterAccess=1h,softValues").build<String, CwtPropertyConfig>().cancelable()
+            CachedValueProvider.Result.create(value, ModificationTracker.NEVER_CHANGED)
         }
     }
 

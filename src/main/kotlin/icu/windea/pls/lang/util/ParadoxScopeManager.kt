@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parents
 import icu.windea.pls.base.ChronicleModificationTrackers
@@ -17,7 +18,6 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.light.ParadoxDynamicValueLightElement
@@ -63,7 +63,6 @@ object ParadoxScopeManager {
     }
 
     fun getScopeContext(element: ParadoxScriptMember): ParadoxScopeContext? {
-        // from cache
         return getScopeContextFromCache(element)
     }
 
@@ -72,13 +71,12 @@ object ParadoxScopeManager {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = ParadoxScopeService.evaluateScopeContextForMember(element)
-                value.withDependencyItems(element.containingFile, ChronicleModificationTrackers.ScopeResolution)
+                CachedValueProvider.Result.create(value, element.containingFile, ChronicleModificationTrackers.ScopeResolution)
             }
         }
     }
 
     fun getScopeContext(element: ParadoxDynamicValueLightElement): ParadoxScopeContext {
-        // from cache
         return getScopeContextFromCache(element)
     }
 
@@ -87,7 +85,7 @@ object ParadoxScopeManager {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = ParadoxScopeService.evaluateScopeContextForDynamicValue(element)
-                value.withDependencyItems(element)
+                CachedValueProvider.Result.create(value, element)
             }
         }
     }

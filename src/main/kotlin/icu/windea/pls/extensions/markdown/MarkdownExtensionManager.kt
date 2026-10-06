@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import icu.windea.pls.core.removePrefixOrNull
@@ -16,7 +17,6 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.selectFile
@@ -51,7 +51,7 @@ object MarkdownExtensionManager {
         return CachedValuesManager.getCachedValue(element, Keys.cachedPathInjectionInfo) {
             ProgressManager.checkCanceled()
             val value = resolvePathInjectionInfo(element)
-            value.withDependencyItems(element)
+            CachedValueProvider.Result.create(value, element)
         }
     }
 

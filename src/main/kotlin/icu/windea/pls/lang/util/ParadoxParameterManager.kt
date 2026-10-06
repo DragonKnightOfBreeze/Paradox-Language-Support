@@ -2,14 +2,11 @@ package icu.windea.pls.lang.util
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
-import com.intellij.psi.util.startOffset
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.CwtDataTypes
@@ -23,15 +20,11 @@ import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.cache.trackedBy
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.allFast
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.collections.forEachReversedFast
 import icu.windea.pls.core.isSamePosition
-import icu.windea.pls.core.select.oneBy
-import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.core.util.Tuple2
@@ -39,7 +32,6 @@ import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionFactory
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExtendedCompletionManager
@@ -55,11 +47,8 @@ import icu.windea.pls.model.ParadoxParameterContextReferenceInfo
 import icu.windea.pls.model.ParadoxParameterInfo
 import icu.windea.pls.model.toInfo
 import icu.windea.pls.script.psi.ParadoxScriptConditionParameter
-import icu.windea.pls.script.psi.ParadoxScriptConditionalBlock
-import icu.windea.pls.script.psi.ParadoxScriptElementTypes
 import icu.windea.pls.script.psi.ParadoxScriptParameter
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
-import icu.windea.pls.script.psi.ParadoxScriptPsiService
 import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
@@ -97,8 +86,7 @@ object ParadoxParameterManager {
     fun getContextInfo(element: ParadoxDefinitionElement): ParadoxParameterContextInfo? {
         // precheck
         if (!ParadoxParameterService.isContext(element)) return null
-        // from cache
-        return CachedValuesManager.getCachedValue(element, Keys.cachedParameterContextInfo) {
+                return CachedValuesManager.getCachedValue(element, Keys.cachedParameterContextInfo) {
             val value = ParadoxParameterService.getContextInfo(element)
             CachedValueProvider.Result(value, element)
         }
@@ -342,71 +330,8 @@ object ParadoxParameterManager {
         return ParadoxParameterService.getInferredContextConfigsFromConfig(parameterElement, fast)
     }
 
-    /**
-     * 得到 [element] 的文本，然后使用指定的一组 [args] 替换其中的占位符。
-     *
-     * 如果 [direct] 为 `true`，则直接将占位符 `$P$` 替换成传入参数 `P` 的值。此时：
-     * - 值可以是多行字符串。
-     * - 如果值是用双引号括起，替换时会被忽略。
-     * - 允许重复的传入参数，按顺序进行替换。
-     *
-     * @param element 用于得到原始文本的 PSI。
-     * @param args 传入参数的键值对。如果值是用双引号括起的，需要保留。
-     */
+    @Deprecated("", ReplaceWith("ParadoxParameterContextManager.replaceTextWithArgs(element, args, direct)"))
     fun replaceTextWithArgs(element: PsiElement, args: List<Tuple2<String, String>>, direct: Boolean): String {
-        if (direct) {
-            val oldText = element.text
-            var newText = oldText
-            args.forEachFast { (k, v) ->
-                newText = newText.replace("$$k$", v.unquote())
-            }
-            return newText
-        } else {
-            val offset = element.startOffset
-            val argMap = args.toMap()
-            val replacements = mutableListOf<Tuple2<TextRange, String>>()
-
-            element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
-                override fun elementFinished(element: PsiElement) {
-                    run {
-                        if (element !is ParadoxScriptConditionalBlock) return@run
-                        val conditionalExpression = element.conditionalExpression ?: return@run
-                        val parameter = conditionalExpression.conditionalParameter
-                        val name = parameter.name
-                        val v = argMap[name] ?: return@run
-                        val revert = v.equals("no", true)
-                        val operator = conditionalExpression.children().oneBy(ParadoxScriptElementTypes.NOT_SIGN) == null
-                        if ((!revert && operator) || (revert && !operator)) {
-                            val start = ParadoxScriptPsiService.findStartElementToExtract(element)
-                            val end = ParadoxScriptPsiService.findEndElementToExtract(element)
-                            if (start != null && end != null) {
-                                element.parent.addRangeAfter(start, end, element)
-                            }
-                        }
-                        element.delete()
-                    }
-                }
-            })
-
-            element.acceptChildren(object : PsiRecursiveElementWalkingVisitor() {
-                override fun visitElement(element: PsiElement) {
-                    run {
-                        if (element !is ParadoxScriptParameter) return@run
-                        val n = element.name ?: return@run
-                        val v0 = argMap[n] ?: return@run
-                        val v = v0
-                        replacements.add(tupleOf(element.textRange.shiftLeft(offset), v))
-                        return
-                    }
-                    super.visitElement(element)
-                }
-            })
-
-            var newText = element.text
-            replacements.forEachReversedFast { (range, v) ->
-                newText = newText.replaceRange(range.startOffset, range.endOffset, v)
-            }
-            return newText
-        }
+        return ParadoxParameterContextManager.replaceTextWithArgs(element, args, direct)
     }
 }

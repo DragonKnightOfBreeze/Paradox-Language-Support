@@ -61,7 +61,10 @@ class CwtConfigSymbolIndex : CwtConfigIndexInfoAwareFileBasedIndex<List<CwtConfi
             private fun visitStringExpressionElement(element: CwtStringExpressionElement) {
                 val infos = CwtConfigSymbolManager.getInfos(element)
                 if (infos.isEmpty()) return
-                infos.forEachFast { info -> addToFileData(info, fileData) }
+                infos.forEachFast { info ->
+                    val indexInfo = with(info) { CwtConfigSymbolIndexInfo(name, type, readWriteAccess, offset, elementOffset, gameType) }
+                    addToFileData(indexInfo, fileData)
+                }
             }
         })
     }

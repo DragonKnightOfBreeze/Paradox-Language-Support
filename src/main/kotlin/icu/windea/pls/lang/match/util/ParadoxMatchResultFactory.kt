@@ -148,7 +148,10 @@ object ParadoxMatchResultFactory {
         // indexing -> should not visit indices -> treat as wildcard match
         if (ParadoxMatchOptionsService.skipIndex()) return ParadoxMatchResult.WildcardMatch
 
-        val key = ParadoxMatchResultService.Keys.cacheForLocalisations
+        val key = when (type) {
+            ParadoxLocalisationType.Normal -> ParadoxMatchResultService.Keys.cacheForLocalisations
+            ParadoxLocalisationType.Synced -> ParadoxMatchResultService.Keys.cacheForSyncedLocalisations
+        }
         val cacheKey = expression
         return ParadoxMatchResultService.getFromCache(element, project, key, cacheKey) {
             ProgressManager.checkCanceled() // check cancellation before lazy match

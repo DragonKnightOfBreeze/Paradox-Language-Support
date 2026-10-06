@@ -10,6 +10,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
@@ -18,7 +19,6 @@ import icu.windea.pls.base.settings.ChronicleProfilesSettings
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 import icu.windea.pls.lang.ParadoxLanguage
@@ -86,7 +86,7 @@ class TigerLintToolService : Disposable {
                 this += file
                 this += getModificationTracker(gameType)
             }
-            value.withDependencyItems(trackers)
+            CachedValueProvider.Result.create(value, trackers)
         }
     }
 
@@ -130,7 +130,7 @@ class TigerLintToolService : Disposable {
                     this += ChronicleModificationTrackers.LocalisationFile
                 }
             }
-            value.withDependencyItems(trackers)
+            CachedValueProvider.Result.create(value, trackers)
         }
     }
 

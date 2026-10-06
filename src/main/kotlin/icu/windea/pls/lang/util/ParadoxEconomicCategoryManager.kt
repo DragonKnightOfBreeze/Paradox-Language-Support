@@ -2,6 +2,7 @@ package icu.windea.pls.lang.util
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.base.annotations.ForGameType
 import icu.windea.pls.config.config.delegated.CwtModifierCategoryConfig
@@ -11,7 +12,6 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.resolve.ParadoxEconomicCategoryService
 import icu.windea.pls.lang.resolve.ParadoxModifierCategoryService
 import icu.windea.pls.model.ParadoxEconomicCategoryInfo
@@ -25,7 +25,6 @@ object ParadoxEconomicCategoryManager {
     }
 
     fun getInfo(definition: ParadoxScriptProperty): ParadoxEconomicCategoryInfo? {
-        // from cache
         return getInfoFromCache(definition)
     }
 
@@ -34,7 +33,7 @@ object ParadoxEconomicCategoryManager {
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = ParadoxEconomicCategoryService.resolveInfo(definition)
-                value.withDependencyItems(definition)
+                CachedValueProvider.Result.create(value, definition)
             }
         }
     }

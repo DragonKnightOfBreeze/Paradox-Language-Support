@@ -7,6 +7,7 @@ import com.intellij.openapi.vfs.toNioPathOrNull
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.config.CwtConfigType
@@ -42,7 +43,6 @@ import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtFile
@@ -117,13 +117,12 @@ object CwtConfigManager {
         if (element.language !== CwtLanguage) return null
         if (element is CwtFile || element is CwtRootBlock) return CwtConfigPath.resolveEmpty()
         val memberElement = element.parentOfType<CwtMember>(withSelf = true) ?: return null
-        // from cache (invalidated on file modification)
         return CachedValuesManager.getCachedValue(element, Keys.cachedConfigPath) {
-            ProgressManager.checkCanceled()
             runSmartReadAction {
+                // invalidated on file modification
                 val file = element.containingFile
                 val value = CwtConfigService.resolveConfigPath(memberElement)?.normalize()
-                value.withDependencyItems(file)
+                CachedValueProvider.Result.create(value, file)
             }
         }
     }
@@ -131,13 +130,13 @@ object CwtConfigManager {
     fun getConfigType(element: PsiElement): CwtConfigType? {
         if (element.language !== CwtLanguage) return null
         val memberElement = element.parentOfType<CwtMember>(withSelf = true) ?: return null
-        // from cache (invalidated on file modification)
         return CachedValuesManager.getCachedValue(memberElement, Keys.cachedConfigType) {
             ProgressManager.checkCanceled()
             runSmartReadAction {
+                // invalidated on file modification
                 val file = memberElement.containingFile
                 val value = CwtConfigService.resolveConfigType(memberElement, file)
-                value.withDependencyItems(file)
+                CachedValueProvider.Result.create(value, file)
             }
         }
     }
@@ -148,13 +147,12 @@ object CwtConfigManager {
 
     fun getDocumentation(config: CwtMemberConfig<*>): String? {
         val memberElement = config.pointer.element ?: return null
-        // from cache (invalidated on file modification)
         return CachedValuesManager.getCachedValue(memberElement, Keys.cachedDocumentation) {
-            ProgressManager.checkCanceled()
             runSmartReadAction {
+                // invalidated on file modification
                 val file = memberElement.containingFile
                 val value = CwtConfigService.getDocumentation(memberElement)
-                value.withDependencyItems(file)
+                CachedValueProvider.Result.create(value, file)
             }
         }
     }

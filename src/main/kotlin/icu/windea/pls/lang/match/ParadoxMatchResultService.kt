@@ -4,14 +4,18 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.CachedValueProvider
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.cache.createNestedCache
-import icu.windea.pls.core.createCachedValue
-import icu.windea.pls.core.util.*
-import icu.windea.pls.core.withDependencyItems
+import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.createCachedValue
+import icu.windea.pls.core.util.getOrPutUserData
+import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.provideDelegate
+import icu.windea.pls.core.util.registerKeyWithThis
 import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectRootFile
 
@@ -33,9 +37,10 @@ object ParadoxMatchResultService {
             // rootFile -> cacheKey -> configMatchResult
             // 3.0.3 use expireAfterAccess to optimize memory
             createCachedValue(project) {
-                createNestedCache<VirtualFile, _, _> {
+                val value = createNestedCache<VirtualFile, _, _> {
                     CacheBuilder("expireAfterAccess=1h").build<String, ParadoxMatchResult>().cancelable()
-                }.withDependencyItems(*dependencies)
+                }
+                CachedValueProvider.Result.create(value, *dependencies)
             }
         }
     }

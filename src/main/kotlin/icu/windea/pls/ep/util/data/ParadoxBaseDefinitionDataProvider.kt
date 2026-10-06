@@ -4,6 +4,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.Key
 import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.annotations.ChronicleAnnotationService
@@ -13,7 +14,6 @@ import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.data.ParadoxScriptData
 import icu.windea.pls.lang.data.ParadoxScriptDataResolver
 import icu.windea.pls.lang.definitionInfo
@@ -50,7 +50,7 @@ class ParadoxBaseDefinitionDataProvider : ParadoxDefinitionDataProvider {
             val trackers = with(ChronicleModificationTrackers) {
                 listOf(element, ScriptedVariables, InlineScripts)
             }
-            value.withDependencyItems(trackers)
+            CachedValueProvider.Result.create(value, trackers)
         }
     }
 

@@ -5,13 +5,13 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.CompositeElement
+import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.text.ColorPatterns
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.codeInsight.color.ParadoxColorFactory
 import icu.windea.pls.script.psi.ParadoxScriptBlock
 import icu.windea.pls.script.psi.ParadoxScriptColor
@@ -116,7 +116,7 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
         return CachedValuesManager.getCachedValue(element, ParadoxColorProvider.Keys.cachedColor) {
             ProgressManager.checkCanceled()
             val value = runCatchingCancelable { doGetColor(element) }.getOrNull()
-            value.withDependencyItems(element)
+            CachedValueProvider.Result.create(value, element)
         }
     }
 
@@ -178,7 +178,7 @@ class ParadoxScriptColorFieldColorProvider : ParadoxColorProvider {
         return CachedValuesManager.getCachedValue(element, ParadoxColorProvider.Keys.cachedColor) {
             ProgressManager.checkCanceled()
             val value = runCatchingCancelable { doGetColor(element) }.getOrNull()
-            value.withDependencyItems(element)
+            CachedValueProvider.Result.create(value, element)
         }
     }
 

@@ -1,10 +1,10 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
-import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.CachedValueProvider
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.isExactLetter
@@ -12,10 +12,10 @@ import icu.windea.pls.core.isExactWord
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.getCachedValue
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.index.constraints.ParadoxDefinitionIndexConstraint
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.intValue
@@ -35,12 +35,12 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 @Optimized
 object ParadoxTextColorManager {
     object Keys : KeyRegistry() {
-        val cachedTextColorInfo by registerKey<CachedValue<ParadoxTextColorInfo>>(Keys)
+        val cachedTextColorInfo by registerKey<CachedValue<ParadoxTextColorInfo?>>(this)
     }
 
     fun getInfo(element: PsiElement): ParadoxTextColorInfo? {
         if (element is ParadoxDefinitionElement) {
-            val info = getInfoFromCache(element)
+            val info = getInfoInternal(element)
             if (info != null) return info
         }
 
@@ -50,7 +50,7 @@ object ParadoxTextColorManager {
             .withConstraint(ParadoxDefinitionIndexConstraint.TextColor)
         val definition = ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.textColor, selector).find()
         if (definition == null) return null
-        return getInfoFromCache(definition)
+        return getInfoInternal(definition)
     }
 
     fun getInfo(name: String, project: Project, contextElement: PsiElement? = null): ParadoxTextColorInfo? {
@@ -58,7 +58,7 @@ object ParadoxTextColorManager {
             .withConstraint(ParadoxDefinitionIndexConstraint.TextColor)
         val definition = ParadoxDefinitionSearch.searchProperty(name, ParadoxDefinitionTypes.textColor, selector).find()
         if (definition == null) return null
-        return getInfoFromCache(definition)
+        return getInfoInternal(definition)
     }
 
     fun getInfos(project: Project, contextElement: PsiElement? = null): List<ParadoxTextColorInfo> {
@@ -66,16 +66,15 @@ object ParadoxTextColorManager {
             .withConstraint(ParadoxDefinitionIndexConstraint.TextColor)
         val definitions = ParadoxDefinitionSearch.searchProperty(null, ParadoxDefinitionTypes.textColor, selector).findAll()
         if (definitions.isEmpty()) return emptyList()
-        return definitions.mapNotNullFast { definition -> getInfoFromCache(definition) } // it.name == it.definitionInfo.name
+        return definitions.mapNotNullFast { definition -> getInfoInternal(definition) } // it.name == it.definitionInfo.name
     }
 
-    private fun getInfoFromCache(definition: ParadoxDefinitionElement): ParadoxTextColorInfo? {
+    private fun getInfoInternal(definition: ParadoxDefinitionElement): ParadoxTextColorInfo? {
         if (definition !is ParadoxScriptProperty) return null
-        return CachedValuesManager.getCachedValue(definition, Keys.cachedTextColorInfo) {
-            ProgressManager.checkCanceled()
+        return getCachedValue(definition, Keys.cachedTextColorInfo, onDemand = ChronicleCapabilities.Cache.textColorInfo) {
             runSmartReadAction {
                 val value = resolveInfo(definition)
-                value.withDependencyItems(definition)
+                CachedValueProvider.Result.create(value, definition)
             }
         }
     }

@@ -1,18 +1,19 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
-import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.CachedValueProvider
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.getCachedValue
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
@@ -25,48 +26,51 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
 @Optimized
 object ParadoxComplexEnumValueManager {
     object Keys : KeyRegistry() {
-        val cachedComplexEnumValueInfo by registerKey<CachedValue<ParadoxComplexEnumValueInfo>>(Keys)
+        val cachedComplexEnumValueInfo by registerKey<CachedValue<ParadoxComplexEnumValueInfo?>>(this)
     }
 
     fun getInfo(element: ParadoxExpressionElement): ParadoxComplexEnumValueInfo? {
         when (element) {
             is ParadoxScriptExpressionElement -> {
-                // fast return
-                if (!element.isResolvableLiteralExpression()) return null
-                // from cache
-                return getInfoFromCache(element)
+                if (!element.isResolvableLiteralExpression()) return null// fast return
+                return getInfoInternal(element)
             }
             is ParadoxCsvExpressionElement -> {
-                // fast return
-                if (element !is ParadoxCsvColumn) return null
-                // from cache
-                return getInfoFromCache(element)
+                if (element !is ParadoxCsvColumn) return null // fast return
+                return getInfoInternal(element)
             }
             else -> return null
         }
     }
 
-    private fun getInfoFromCache(element: ParadoxScriptExpressionElement): ParadoxComplexEnumValueInfo? {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedComplexEnumValueInfo) {
-            ProgressManager.checkCanceled()
+    private fun getInfoInternal(element: ParadoxScriptExpressionElement): ParadoxComplexEnumValueInfo? {
+        return getCachedValue(element, Keys.cachedComplexEnumValueInfo, onDemand = ChronicleCapabilities.Cache.complexEnumValueInfo) {
             runSmartReadAction {
                 val file = element.containingFile
                 val value = ParadoxComplexEnumValueService.resolveInfo(element, file)
-                val dependencies = ParadoxComplexEnumValueService.getInfoDependencies(element, file)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, getInfoDependencies(element, file))
             }
         }
     }
 
-    private fun getInfoFromCache(element: ParadoxCsvColumn): ParadoxComplexEnumValueInfo? {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedComplexEnumValueInfo) {
-            ProgressManager.checkCanceled()
+    private fun getInfoInternal(element: ParadoxCsvColumn): ParadoxComplexEnumValueInfo? {
+        return getCachedValue(element, Keys.cachedComplexEnumValueInfo, onDemand = ChronicleCapabilities.Cache.complexEnumValueInfo) {
             runSmartReadAction {
                 val value = ParadoxComplexEnumValueService.resolveInfo(element)
-                val dependencies = ParadoxComplexEnumValueService.getInfoDependencies(element)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, getInfoDependencies(element))
             }
         }
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun getInfoDependencies(element: ParadoxScriptExpressionElement, file: PsiFile): List<Any> {
+        return listOf(file) // depends on file current only
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun getInfoDependencies(element: ParadoxCsvExpressionElement): List<Any> {
+        if (element is ParadoxCsvColumn) element.parent?.let { return listOf(it) } // depend on current row
+        return listOf(element.containingFile)
     }
 
     fun getPresentableName(name: String, contextElement: PsiElement, locale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig()): String? {

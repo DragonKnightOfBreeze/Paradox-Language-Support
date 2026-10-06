@@ -3,6 +3,7 @@ package icu.windea.pls.ep.scope
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.settings.ChronicleSettings
@@ -17,7 +18,6 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.definitionInfo
@@ -62,8 +62,7 @@ class ParadoxBaseDefinitionInferredScopeContextProvider : ParadoxDefinitionInfer
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = resolveScopeContext(definition)
-                val dependencies = getDependencies(definition)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, getDependencies(definition))
             }
         }
     }
@@ -167,8 +166,7 @@ class ParadoxEventInOnActionInferredScopeContextProvider : ParadoxDefinitionInfe
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = resolveScopeContext(definition)
-                val dependencies = getDependencies(definition)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, getDependencies(definition))
             }
         }
     }
@@ -279,8 +277,7 @@ class ParadoxEventInEventInferredScopeContextProvider : ParadoxDefinitionInferre
             ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = resolveScopeContext(definition)
-                val dependencies = getDependencies(definition)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, getDependencies(definition))
             }
         }
     }
@@ -431,7 +428,7 @@ class ParadoxOnActionInEventInferredScopeContextProvider : ParadoxDefinitionInfe
             runSmartReadAction {
                 val value = resolveScopeContext(definition)
                 val dependencies = getDependencies(definition)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, dependencies)
             }
         }
     }

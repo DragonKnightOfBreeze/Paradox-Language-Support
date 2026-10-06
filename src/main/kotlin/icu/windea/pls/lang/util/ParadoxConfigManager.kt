@@ -4,8 +4,9 @@ import com.google.common.collect.ImmutableList
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
-import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.parentOfType
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.CwtMemberType
@@ -26,11 +27,11 @@ import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.ComputedModificationTracker
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.getCachedValue
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.values.SoftValue
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.csv.ParadoxCsvLanguage
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvFile
@@ -53,10 +54,10 @@ import java.util.concurrent.ConcurrentMap
 @Optimized
 object ParadoxConfigManager {
     object Keys : KeyRegistry() {
-        val cachedConfigContext by registerKey<CachedValue<CwtConfigContext>>(Keys)
-        val cachedConfigsCache by registerKey<CachedValue<SoftValue<ConcurrentMap<String, List<CwtMemberConfig<*>>>>>>(Keys)
-        val cachedChildOccurrencesCache by registerKey<CachedValue<SoftValue<ConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>>>>(Keys)
-        val cachedRowConfig by registerKey<CachedValue<CwtRowConfig>>(Keys)
+        val cachedConfigContext by registerKey<CachedValue<CwtConfigContext?>>(this)
+        val cachedConfigsCache by registerKey<CachedValue<SoftValue<ConcurrentMap<String, List<CwtMemberConfig<*>>>>>>(this)
+        val cachedChildOccurrencesCache by registerKey<CachedValue<SoftValue<ConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>>>>(this)
+        val cachedRowConfig by registerKey<CachedValue<CwtRowConfig?>>(this)
     }
 
     /**
@@ -65,14 +66,13 @@ object ParadoxConfigManager {
     fun getConfigContext(element: PsiElement): CwtConfigContext? {
         if (element.language !== ParadoxScriptLanguage) return null
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return null
-        return getConfigContextFromCache(memberElement)
+        return getConfigContextInternal(memberElement)
     }
 
-    private fun getConfigContextFromCache(element: ParadoxScriptMember): CwtConfigContext? {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedConfigContext) {
-            ProgressManager.checkCanceled()
+    private fun getConfigContextInternal(element: ParadoxScriptMember): CwtConfigContext? {
+        return getCachedValue(element, Keys.cachedConfigContext, onDemand = ChronicleCapabilities.Cache.configContext) {
             val value = ParadoxConfigService.getConfigContext(element)
-            value.withDependencyItems(element, ChronicleModificationTrackers.ConfigResolution)
+            CachedValueProvider.Result.create(value, element, ChronicleModificationTrackers.ConfigResolution)
         }
     }
 
@@ -87,7 +87,7 @@ object ParadoxConfigManager {
     fun getContextConfigs(element: PsiElement, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         if (element.language !== ParadoxScriptLanguage) return emptyList()
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
-        val configContext = getConfigContextFromCache(memberElement) ?: return emptyList()
+        val configContext = getConfigContextInternal(memberElement) ?: return emptyList()
         return configContext.getConfigs(options)
     }
 
@@ -101,17 +101,26 @@ object ParadoxConfigManager {
     fun getConfigs(element: PsiElement, options: ParadoxMatchOptions? = null): List<CwtMemberConfig<*>> {
         if (element.language !== ParadoxScriptLanguage) return emptyList()
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyList()
-        ProgressManager.checkCanceled()
-        val cacheKey = options.toHashString().optimized() // optimized to optimize memory
-        val cache = getConfigsCacheFromCache(memberElement).dereference()
-        return cache.getOrPut(cacheKey) { ParadoxConfigService.getConfigs(memberElement, options).optimized() }
+        return getConfigsInternal(memberElement, options)
     }
 
-    private fun getConfigsCacheFromCache(element: ParadoxScriptMember): SoftValue<ConcurrentMap<String, List<CwtMemberConfig<*>>>> {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedConfigsCache) {
+    private fun getConfigsInternal(element: ParadoxScriptMember, options: ParadoxMatchOptions?): List<CwtMemberConfig<*>> {
+        if (!ChronicleCapabilities.Cache.configs) {
+            return ParadoxConfigService.getConfigs(element, options)
+        }
+        ProgressManager.checkCanceled()
+        val cacheKey = options.toHashString().optimized() // optimized to optimize memory
+        val cache = getConfigsCache(element).dereference()
+        return cache.getOrPut(cacheKey) {
+            ParadoxConfigService.getConfigs(element, options).optimized()
+        }
+    }
+
+    private fun getConfigsCache(element: ParadoxScriptMember): SoftValue<ConcurrentMap<String, List<CwtMemberConfig<*>>>> {
+        return getCachedValue(element, Keys.cachedConfigsCache) {
             // use soft referenced concurrent map to optimize more memory
             val value = SoftValue.ofConcurrentMap<String, List<CwtMemberConfig<*>>>()
-            value.withDependencyItems(element, ChronicleModificationTrackers.ConfigResolution)
+            CachedValueProvider.Result.create(value, element, ChronicleModificationTrackers.ConfigResolution)
         }
     }
 
@@ -122,19 +131,28 @@ object ParadoxConfigManager {
         if (element.language !== ParadoxScriptLanguage) return emptyMap()
         val memberElement = element.parentOfType<ParadoxScriptMember>(withSelf = true) ?: return emptyMap()
         if (configs.isEmpty()) return emptyMap()
+        return getChildOccurrenceInternal(memberElement, configs)
+    }
+
+    private fun getChildOccurrenceInternal(element: ParadoxScriptMember, configs: List<CwtMemberConfig<*>>): Map<CwtDataExpression, ParadoxMatchOccurrence> {
         val childConfigs = configs.flatMapFast { it.configs.orEmpty() }
         if (childConfigs.isEmpty()) return emptyMap()
         ProgressManager.checkCanceled()
+        if (!ChronicleCapabilities.Cache.childOccurrences) {
+            return ParadoxMatchOccurrenceService.getChildOccurrences(element, configs)
+        }
         val cacheKey = CwtConfigKeyManager.getIdentifierKey(childConfigs, "\u0000", 1).optimized() // optimized to optimize memory
-        val cache = getChildOccurrencesCacheFromCache(memberElement).dereference()
-        return cache.getOrPut(cacheKey) { ParadoxMatchOccurrenceService.getChildOccurrences(memberElement, configs).optimized() }
+        val cache = getChildOccurrencesCache(element).dereference()
+        return cache.getOrPut(cacheKey) {
+            ParadoxMatchOccurrenceService.getChildOccurrences(element, configs).optimized()
+        }
     }
 
-    private fun getChildOccurrencesCacheFromCache(element: ParadoxScriptMember): SoftValue<ConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>> {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedChildOccurrencesCache) {
+    private fun getChildOccurrencesCache(element: ParadoxScriptMember): SoftValue<ConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>> {
+        return getCachedValue(element, Keys.cachedChildOccurrencesCache) {
             // use soft referenced concurrent map to optimize more memory
             val value = SoftValue.ofConcurrentMap<String, Map<CwtDataExpression, ParadoxMatchOccurrence>>()
-            value.withDependencyItems(element, ChronicleModificationTrackers.ConfigResolution)
+            CachedValueProvider.Result.create(value, element, ChronicleModificationTrackers.ConfigResolution)
         }
     }
 
@@ -144,15 +162,14 @@ object ParadoxConfigManager {
     fun getRowConfig(element: PsiElement): CwtRowConfig? {
         if (element.language !== ParadoxCsvLanguage) return null
         val file = element.containingFile?.castOrNull<ParadoxCsvFile>() ?: return null
-        // from cache
-        return getRowConfigFromCache(file)
+        return getRowConfigInternal(file)
     }
 
-    private fun getRowConfigFromCache(file: ParadoxCsvFile): CwtRowConfig? {
-        // when the file content changes, the cache here does not need to be refreshed
-        return CachedValuesManager.getCachedValue(file, Keys.cachedRowConfig) {
+    private fun getRowConfigInternal(file: ParadoxCsvFile): CwtRowConfig? {
+        return getCachedValue(file, Keys.cachedRowConfig, onDemand = ChronicleCapabilities.Cache.rowConfig) {
+            // when the file content changes, the cache here does not need to be refreshed
             val value = ParadoxConfigService.resolveRowConfig(file)
-            value.withDependencyItems(ComputedModificationTracker { file.fileInfo })
+            CachedValueProvider.Result.create(value, ComputedModificationTracker { file.fileInfo })
         }
     }
 

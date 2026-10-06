@@ -14,7 +14,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement
 
 object ParadoxLocalisationArgumentManager {
     fun getReferences(element: ParadoxLocalisationArgument): Array<out PsiReference> {
-        // from cache
         return getReferencesFromCache(element)
     }
 

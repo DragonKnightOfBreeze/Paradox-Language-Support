@@ -1,7 +1,8 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.progress.ProgressManager
+import com.intellij.psi.SmartPsiElementPointer
 import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.core.annotations.Inferred
 import icu.windea.pls.core.isEscapedCharAt
@@ -10,7 +11,6 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.resolve.ParadoxLocalisationService
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -18,31 +18,9 @@ import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 object ParadoxLocalisationManager {
     object Keys : KeyRegistry() {
-        val cachedPresentableName by registerKey<CachedValue<String>>(Keys)
-    }
-
-    fun getPresentableText(element: ParadoxLocalisationProperty): String? {
-        // from cache
-        return getPresentableTextFromCache(element)
-    }
-
-    private fun getPresentableTextFromCache(element: ParadoxLocalisationProperty): String? {
-        // invalidate on element modification
-        return CachedValuesManager.getCachedValue(element, Keys.cachedPresentableName) {
-            ProgressManager.checkCanceled()
-            runSmartReadAction {
-                val value = ParadoxLocalisationService.resolvePresentableText(element)
-                value.withDependencyItems(element)
-            }
-        }
-    }
-
-    fun getRelatedScriptedVariables(element: ParadoxLocalisationProperty): List<ParadoxScriptScriptedVariable> {
-        return ParadoxLocalisationService.resolveRelatedScriptedVariables(element)
-    }
-
-    fun getRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxDefinitionElement> {
-        return ParadoxLocalisationService.resolveRelatedDefinitions(element)
+        val cachedRelatedScriptedVariables by registerKey<CachedValue<SmartPsiElementPointer<ParadoxScriptScriptedVariable>>>(this)
+        val cachedRelatedDefinitions by registerKey<CachedValue<SmartPsiElementPointer<ParadoxDefinitionElement>>>(this)
+        val cachedPresentableText by registerKey<CachedValue<String>>(this)
     }
 
     @Inferred
@@ -78,5 +56,47 @@ object ParadoxLocalisationManager {
         val fileName = file.name
         if (fileName.startsWith("name_system_")) return true // e.g., `name_system_l_english.yml`
         return false
+    }
+
+    // region Related Items
+
+    /**
+     * 得到 [element] 对应的本地化的所有相关封装变量。
+     *
+     * @see ParadoxLocalisationService.resolveRelatedScriptedVariables
+     */
+    fun getRelatedScriptedVariables(element: ParadoxLocalisationProperty): List<ParadoxScriptScriptedVariable> {
+        return ParadoxLocalisationService.resolveRelatedScriptedVariables(element)
+    }
+
+    /**
+     * 得到 [element] 对应的本地化的所有相关定义。
+     *
+     * @see ParadoxLocalisationService.resolveRelatedDefinitions
+     */
+    fun getRelatedDefinitions(element: ParadoxLocalisationProperty): List<ParadoxDefinitionElement> {
+        return ParadoxLocalisationService.resolveRelatedDefinitions(element)
+    }
+
+    // endregion
+
+    // region Presentations
+
+    /**
+     * 得到 [element] 毒蝇的本地化的展示文本。
+     *
+     * @see ParadoxLocalisationService.resolvePresentableText
+     */
+    fun getPresentableText(element: ParadoxLocalisationProperty): String? {
+        return getPresentableTextInternal(element)
+    }
+
+    private fun getPresentableTextInternal(element: ParadoxLocalisationProperty): String? {
+        return CachedValuesManager.getCachedValue(element, Keys.cachedPresentableText) {
+            runSmartReadAction {
+                val value = ParadoxLocalisationService.resolvePresentableText(element)
+                CachedValueProvider.Result.create(value, element)
+            }
+        }
     }
 }

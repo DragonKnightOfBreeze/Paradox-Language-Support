@@ -56,16 +56,4 @@ object ParadoxComplexEnumValueService {
         val selector = ParadoxLocalisationSearch.selector(contextElement.project, contextElement).contextSensitive().preferLocale(locale)
         return ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
     }
-
-    @Suppress("UNUSED_PARAMETER")
-    fun getInfoDependencies(element: ParadoxScriptExpressionElement, file: PsiFile): List<Any> {
-        // 需要直接依赖文件
-        return listOf(file)
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    fun getInfoDependencies(element: ParadoxCsvExpressionElement): List<Any> {
-        if (element is ParadoxCsvColumn) element.parent?.let { return listOf(it) } // depend on current row
-        return listOf(element.containingFile)
-    }
 }

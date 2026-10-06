@@ -1,21 +1,21 @@
 package icu.windea.pls.lang.util
 
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
-import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.CachedValueProvider
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.getCachedValue
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.lang.psi.values
@@ -39,7 +39,7 @@ import icu.windea.pls.script.psi.propertyValue
 @Optimized
 object ParadoxDefineManager {
     object Keys : KeyRegistry() {
-        val cachedDefineInfo by registerKey<CachedValue<ParadoxDefineInfo>>(Keys)
+        val cachedDefineInfo by registerKey<CachedValue<ParadoxDefineInfo?>>(this)
     }
 
     @Suppress("unused")
@@ -84,18 +84,16 @@ object ParadoxDefineManager {
     }
 
     fun getInfo(element: ParadoxScriptProperty): ParadoxDefineInfo? {
-        // from cache
-        return getInfoFromCache(element)
+        return getInfoInternal(element)
     }
 
-    private fun getInfoFromCache(element: ParadoxScriptProperty): ParadoxDefineInfo? {
-        // invalidated on file modification
-        return CachedValuesManager.getCachedValue(element, Keys.cachedDefineInfo) {
-            ProgressManager.checkCanceled()
+    private fun getInfoInternal(element: ParadoxScriptProperty): ParadoxDefineInfo? {
+        return getCachedValue(element, Keys.cachedDefineInfo, onDemand = ChronicleCapabilities.Cache.defineInfo) {
             runSmartReadAction {
+                // invalidated on file modification
                 val file = element.containingFile
                 val value = ParadoxDefineService.resolveInfo(element, file)
-                value.withDependencyItems(file)
+                CachedValueProvider.Result.create(value, file)
             }
         }
     }

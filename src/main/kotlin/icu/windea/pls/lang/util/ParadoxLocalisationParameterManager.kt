@@ -3,6 +3,7 @@ package icu.windea.pls.lang.util
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.config.CwtDataTypes
@@ -18,7 +19,6 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.search.ParadoxLocalisationParameterSearch
 import icu.windea.pls.lang.select.selectScope
@@ -35,7 +35,6 @@ object ParadoxLocalisationParameterManager {
     }
 
     fun getParameterNames(element: ParadoxLocalisationProperty): Set<String> {
-        // from cache
         return getParameterNamesFromCache(element)
     }
 
@@ -44,7 +43,7 @@ object ParadoxLocalisationParameterManager {
             ProgressManager.checkCanceled()
             val value = resolveParameters(element)
             val dependencies = with(ChronicleModificationTrackers) { listOf(element, ScriptFile) }
-            value.withDependencyItems(dependencies)
+            CachedValueProvider.Result.create(value, dependencies)
         }
     }
 

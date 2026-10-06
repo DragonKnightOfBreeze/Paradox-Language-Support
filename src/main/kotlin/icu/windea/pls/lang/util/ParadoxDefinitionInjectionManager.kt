@@ -2,6 +2,7 @@ package icu.windea.pls.lang.util
 
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.util.CachedValue
+import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtPropertyConfig
@@ -16,7 +17,6 @@ import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.lang.definitionInjectionInfo
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
 import icu.windea.pls.lang.match.ParadoxMatchOptions
@@ -122,7 +122,6 @@ object ParadoxDefinitionInjectionManager {
         if (element.parent !is ParadoxScriptRootBlock) return null
         // mode must exist
         if (getModeFromExpression(element.name).isNullOrEmpty()) return null
-        // from cache
         return getInfoFromCache(element)
     }
 
@@ -133,7 +132,7 @@ object ParadoxDefinitionInjectionManager {
                 val file = element.containingFile
                 val value = ParadoxDefinitionInjectionService.resolveInfo(element, file)
                 val dependencies = ParadoxDefinitionInjectionService.getInfoDependencies(element, file, value)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, dependencies)
             }
         }
     }
@@ -141,7 +140,6 @@ object ParadoxDefinitionInjectionManager {
     fun getSubtypeConfigs(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): List<CwtSubtypeConfig> {
         val candidates = definitionInjectionInfo.typeConfig?.subtypes
         if (candidates.isNullOrEmpty()) return emptyList()
-        // from cache
         return getSubtypeConfigsFromCache(definitionInjectionInfo, options)
     }
 
@@ -155,13 +153,12 @@ object ParadoxDefinitionInjectionManager {
             runSmartReadAction {
                 val value = ParadoxDefinitionInjectionService.resolveSubtypeConfigs(definitionInjectionInfo, finalOptions).optimized()
                 val dependencies = ParadoxDefinitionInjectionService.getSubtypeAwareDependencies(element, definitionInjectionInfo)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, dependencies)
             }
         }
     }
 
     fun getDeclaration(definitionInjectionInfo: ParadoxDefinitionInjectionInfo, options: ParadoxMatchOptions? = null): CwtPropertyConfig? {
-        // from cache
         return getDeclarationFromCache(definitionInjectionInfo, options)
     }
 
@@ -171,11 +168,10 @@ object ParadoxDefinitionInjectionManager {
         val finalOptions = if (isDumb) ParadoxMatchOptions.DUMB else ParadoxMatchOptions.DEFAULT
         val cacheKey = if (isDumb) Keys.cachedDeclarationDumb else Keys.cachedDeclaration
         return CachedValuesManager.getCachedValue(element, cacheKey) {
-            ProgressManager.checkCanceled()
             runSmartReadAction {
                 val value = ParadoxDefinitionInjectionService.resolveDeclaration(definitionInjectionInfo, finalOptions) ?: EMPTY_OBJECT
                 val dependencies = ParadoxDefinitionInjectionService.getSubtypeAwareDependencies(element, definitionInjectionInfo)
-                value.withDependencyItems(dependencies)
+                CachedValueProvider.Result.create(value, dependencies)
             }
         }.castOrNull()
     }

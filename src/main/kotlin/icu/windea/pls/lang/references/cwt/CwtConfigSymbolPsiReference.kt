@@ -9,7 +9,7 @@ import icu.windea.pls.cwt.psi.CwtPropertyKey
 import icu.windea.pls.cwt.psi.CwtStringExpressionElement
 import icu.windea.pls.lang.codeInsight.completion.cwt.CwtCompletionProvider
 import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
-import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
+import icu.windea.pls.model.CwtConfigSymbolInfo
 
 /**
  * @see CwtConfigSymbolPsiReferenceProvider
@@ -18,7 +18,7 @@ import icu.windea.pls.model.index.CwtConfigSymbolIndexInfo
 class CwtConfigSymbolPsiReference(
     element: CwtStringExpressionElement,
     rangeInElement: TextRange,
-    val info: CwtConfigSymbolIndexInfo,
+    val info: CwtConfigSymbolInfo,
 ) : PsiReferenceBase<CwtStringExpressionElement>(element, rangeInElement) {
     private val project get() = element.project
 

@@ -17,13 +17,13 @@ import icu.windea.pls.core.select.one
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.findByPattern
-import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.resolved
 import icu.windea.pls.lang.search.ParadoxInlineScriptUsageSearch
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
+import icu.windea.pls.lang.util.ParadoxParameterContextManager
 import icu.windea.pls.script.psi.ParadoxScriptLightTreeUtil
 import icu.windea.pls.script.psi.ParadoxScriptMember
 import icu.windea.pls.script.psi.ParadoxScriptProperty
@@ -110,7 +110,7 @@ object ParadoxInlineScriptService {
     fun getInlineScriptArgumentMapFromUsageElement(usageElement: ParadoxScriptProperty, resolve: Boolean = false): Map<String, String> {
         // hardcoded
         val v = usageElement.block ?: return emptyMap()
-        return ParadoxPsiService.getArgumentTupleList(v, "script").toMap()
+        return ParadoxParameterContextManager.getArguments(v, "script").toMap()
     }
 
     fun getInferredContextConfigsFromConfig(expression: String, contextElement: ParadoxScriptMember, context: CwtConfigContext, options: ParadoxMatchOptions? = null, fast: Boolean = true): List<CwtMemberConfig<*>> {

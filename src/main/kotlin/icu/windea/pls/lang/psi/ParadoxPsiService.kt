@@ -1,34 +1,23 @@
 package icu.windea.pls.lang.psi
 
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
 import com.intellij.psi.PsiWhiteSpace
-import com.intellij.psi.util.CachedValue
-import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.siblings
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.children
 import icu.windea.pls.core.containsLineBreak
-import icu.windea.pls.core.optimized
-import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.core.unquote
-import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.Tuple2
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.registerKey
-import icu.windea.pls.core.util.tupleOf
-import icu.windea.pls.core.withDependencyItems
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.ep.resolve.expression.ParadoxPathReferenceExpressionSupport
 import icu.windea.pls.lang.ParadoxLanguage
@@ -37,7 +26,7 @@ import icu.windea.pls.lang.resolve.ParadoxInlineScriptService
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxDefinitionInjectionManager
 import icu.windea.pls.lang.util.ParadoxNameValidators
-import icu.windea.pls.lang.util.ParadoxParameterManager
+import icu.windea.pls.lang.util.ParadoxParameterContextManager
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementFactory
 import icu.windea.pls.localisation.psi.ParadoxLocalisationParameter
@@ -63,10 +52,6 @@ import icu.windea.pls.script.psi.parentProperty
 import icu.windea.pls.script.psi.propertyValue
 
 object ParadoxPsiService {
-    object Keys : KeyRegistry() {
-        val cachedArgumentTupleList by registerKey<CachedValue<List<Tuple2<String, String>>>>(Keys)
-    }
-
     // region Common Methods
 
     fun getOwnedComments(element: PsiElement): List<PsiComment> {
@@ -77,28 +62,9 @@ object ParadoxPsiService {
         return PsiService.getLineCommentText(comments)
     }
 
+    @Deprecated("", ReplaceWith("ParadoxParameterContextManager.getArguments(element, *excludeNames)", "icu.windea.pls.lang.util.ParadoxParameterContextManager"))
     fun getArgumentTupleList(element: ParadoxScriptBlock, vararg excludeNames: String): List<Tuple2<String, String>> {
-        val r = getArgumentTupleListFromCache(element)
-        return if (excludeNames.isEmpty()) r else r.filter { (k) -> k !in excludeNames }
-    }
-
-    private fun getArgumentTupleListFromCache(element: ParadoxScriptBlock): List<Tuple2<String, String>> {
-        return CachedValuesManager.getCachedValue(element, Keys.cachedArgumentTupleList) {
-            ProgressManager.checkCanceled()
-            val value = resolveArgumentTupleList(element).optimized()
-            value.withDependencyItems(element)
-        }
-    }
-
-    private fun resolveArgumentTupleList(element: ParadoxScriptBlock): List<Tuple2<String, String>> {
-        return buildList {
-            for (p in element.properties()) {
-                val k = p.propertyKey.name.orNull() ?: continue
-                if (!ParadoxNameValidators.checkParameterName(k)) continue
-                val v = p.propertyValue?.text ?: continue
-                this += tupleOf(k, v)
-            }
-        }
+        return ParadoxParameterContextManager.getArguments(element, *excludeNames)
     }
 
     // endregion
@@ -157,10 +123,10 @@ object ParadoxPsiService {
                 }
             }
             is ParadoxScriptBlock -> {
-                val args = getArgumentTupleList(valueElement)
+                val args = ParadoxParameterContextManager.getArguments(valueElement)
                 if (args.isNotEmpty()) {
                     val newRef = ParadoxScriptElementFactory.createBlockFromText(project, newText)
-                    newText = ParadoxParameterManager.replaceTextWithArgs(newRef, args, direct = false)
+                    newText = ParadoxParameterContextManager.replaceTextWithArgs(newRef, args, direct = false)
                 }
             }
             else -> return
@@ -198,10 +164,10 @@ object ParadoxPsiService {
                 }
             }
             is ParadoxScriptBlock -> {
-                val args = getArgumentTupleList(valueElement)
+                val args = ParadoxParameterContextManager.getArguments(valueElement)
                 if (args.isNotEmpty()) {
                     val newRef = ParadoxScriptElementFactory.createBlockFromText(project, newText)
-                    newText = ParadoxParameterManager.replaceTextWithArgs(newRef, args, direct = false)
+                    newText = ParadoxParameterContextManager.replaceTextWithArgs(newRef, args, direct = false)
                 }
             }
             else -> return
@@ -226,10 +192,10 @@ object ParadoxPsiService {
         when (valueElement) {
             is ParadoxScriptString -> pass()
             is ParadoxScriptBlock -> {
-                val args = getArgumentTupleList(valueElement, "script")
+                val args = ParadoxParameterContextManager.getArguments(valueElement, "script")
                 if (args.isNotEmpty()) {
                     val newRef = ParadoxScriptElementFactory.createRootBlockFromText(project, newText)
-                    newText = ParadoxParameterManager.replaceTextWithArgs(newRef, args, direct = true)
+                    newText = ParadoxParameterContextManager.replaceTextWithArgs(newRef, args, direct = true)
                 }
             }
             else -> return
