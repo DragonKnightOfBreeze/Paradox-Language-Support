@@ -1,6 +1,7 @@
 package icu.windea.pls.test.features
 
 import com.intellij.testFramework.IndexingTestUtil
+import com.intellij.testFramework.TestDataFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.indexing.FileBasedIndex
@@ -46,8 +47,8 @@ class RelatedItemsTest : BasePlatformTestCase(), ChronicleTestScope {
     @Before
     fun doSetUp() {
         markIntegrationTest()
-        markRootDirectory("feature/relatedItems")
-        markConfigDirectory("feature/relatedItems/.config")
+        markRootDirectory("features/relatedItems")
+        markConfigDirectory("features/relatedItems/.config")
         initInjectedConfigGroups(project, gameType)
     }
 
@@ -259,36 +260,36 @@ class RelatedItemsTest : BasePlatformTestCase(), ChronicleTestScope {
      * 配置本测试所需的全部测试数据文件，并以（最后一个配置的）武器脚本文件作为上下文。
      */
     private fun setUpData(): ParadoxScriptFile {
-        configureFile("localisation/00_weapons_l_english.yml")
-        configureFile("localisation/01_weapons_l_english.yml")
-        configureFile("localisation/00_weapons_l_simp_chinese.yml")
-        configureFile("localisation/00_armor_l_english.yml")
-        configureFile("localisation/00_spells_l_english.yml")
-        configureFile("localisation/00_modifiers_l_english.yml")
-        configureFile("localisation/01_modifiers_l_english.yml")
-        configureFile("localisation/00_modifiers_l_simp_chinese.yml")
-        configureFile("localisation/00_targets_l_english.yml")
+        configureFile("features/relatedItems/localisation/00_weapons_l_english.yml")
+        configureFile("features/relatedItems/localisation/01_weapons_l_english.yml")
+        configureFile("features/relatedItems/localisation/00_weapons_l_simp_chinese.yml")
+        configureFile("features/relatedItems/localisation/00_armor_l_english.yml")
+        configureFile("features/relatedItems/localisation/00_spells_l_english.yml")
+        configureFile("features/relatedItems/localisation/00_modifiers_l_english.yml")
+        configureFile("features/relatedItems/localisation/01_modifiers_l_english.yml")
+        configureFile("features/relatedItems/localisation/00_modifiers_l_simp_chinese.yml")
+        configureFile("features/relatedItems/localisation/00_targets_l_english.yml")
 
-        configureImage("gfx/interface/icons/weapons/flame_blade.dds")
-        configureImage("gfx/interface/icons/weapons/flame_blade_portrait.dds")
-        configureImage("gfx/interface/icons/weapons/frost_hammer.dds")
-        configureImage("gfx/interface/icons/armor/dragon_scale.dds")
-        configureImage("gfx/interface/icons/modifiers/mod_flame_damage_mult.dds")
-        configureImage("gfx/interface/icons/modifiers/mod_frost_resistance_mult.dds")
+        configureImage("features/relatedItems/gfx/interface/icons/weapons/flame_blade.dds")
+        configureImage("features/relatedItems/gfx/interface/icons/weapons/flame_blade_portrait.dds")
+        configureImage("features/relatedItems/gfx/interface/icons/weapons/frost_hammer.dds")
+        configureImage("features/relatedItems/gfx/interface/icons/armor/dragon_scale.dds")
+        configureImage("features/relatedItems/gfx/interface/icons/modifiers/mod_flame_damage_mult.dds")
+        configureImage("features/relatedItems/gfx/interface/icons/modifiers/mod_frost_resistance_mult.dds")
 
-        configureFile("common/weapons/00_weapons.txt")
+        configureFile("features/relatedItems/common/weapons/00_weapons.txt")
         IndexingTestUtil.waitUntilIndexesAreReady(project)
         return myFixture.file as ParadoxScriptFile
     }
 
-    private fun configureFile(path: String) {
-        markFileInfo(gameType, path)
-        myFixture.configureByFile("feature/relatedItems/$path")
+    private fun configureFile(@TestDataFile filePath: String) {
+        markFileInfo(gameType, filePath.removePrefix("features/relatedItems/"))
+        myFixture.configureByFile(filePath)
     }
 
-    private fun configureImage(path: String) {
-        val copied = myFixture.copyFileToProject("feature/relatedItems/$path")
-        copied.injectFileInfo(gameType, path)
+    private fun configureImage(@TestDataFile filePath: String) {
+        val copied = myFixture.copyFileToProject(filePath)
+        copied.injectFileInfo(gameType, filePath.removePrefix("features/relatedItems/"))
         FileBasedIndex.getInstance().requestReindex(copied)
     }
 
