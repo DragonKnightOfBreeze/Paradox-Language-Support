@@ -3,6 +3,12 @@ types = {
         path = "common/test_entities"
         path_extension = .txt
     }
+
+    # 用于测试片段匹配（`DefinitionSnippet` / `LocalisationSnippet`）的类型定义。
+    type[test_type] = {
+        path = "common/test_types"
+        path_extension = .txt
+    }
 }
 
 test_entity = {
@@ -14,4 +20,11 @@ test_entity = {
     value_with_double_equal == int
     ## cardinality = 0..inf
     status = bool
+}
+
+test_type = {
+    # 定义引用片段：脚本表达式为 `test` 时，对应定义 `test_a`（`$_a`）或 `b_test`（`b_$`）。
+    snippet_def = <test_type>|$_a,b_$
+    # 本地化引用片段：脚本表达式为 `test` 时，对应本地化 `test_desc`（`$_desc`）或 `test_effect`（`$_effect`）。
+    snippet_loc = localisation|$_desc,$_effect
 }

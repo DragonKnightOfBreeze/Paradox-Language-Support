@@ -20,15 +20,18 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import icu.windea.pls.script.highlighting.ParadoxScriptHighlighterColors as Colors
 
 /**
- * 片段匹配（`DefinitionSnippet` / `LocalisationSnippet`）的回归测试。
+ * 片段匹配（[DefinitionSnippet][icu.windea.pls.config.CwtDataTypes.DefinitionSnippet] /
+ * [LocalisationSnippet][icu.windea.pls.config.CwtDataTypes.LocalisationSnippet]）的回归测试。
  *
  * 使用自行编写的规则文件和脚本文件（均位于 `features/snippet`）：
  * - `test_type` 类型用于验证定义引用片段，要求存在实际的 `test_type` 定义（`test_a`、`b_foo`）。
  * - `localisation` 引用片段用于验证本地化引用片段，要求存在实际的本地化（`test_desc`、`test_effect`）。
  *
- * 覆盖语义匹配、引用解析（[findReferenceAtCaret]）、代码补全。
+ * 覆盖语义匹配、语义高亮（[ParadoxScriptSemanticHighlightingAnnotator][icu.windea.pls.lang.highlighting.ParadoxScriptSemanticHighlightingAnnotator]）、
+ * 引用解析、代码补全和代码检查。定义引用片段和本地化引用片段的用例放在各自的分组中，且尽可能对齐。
  *
  * @see icu.windea.pls.config.CwtDataTypes.DefinitionSnippet
  * @see icu.windea.pls.config.CwtDataTypes.LocalisationSnippet
@@ -116,6 +119,21 @@ class SnippetMatchTest : BasePlatformTestCase(), ChronicleTestScope {
             // 不存在匹配的定义片段，因而不产生引用
             myFixture.findReferenceAtCaret().expectNull()
         }
+    }
+
+    @Test
+    fun definitionSnippet_semanticAnnotator() {
+        markFileInfo(gameType, "common/test_types/00_test_types.txt")
+        myFixture.configureByText("00_test_types.txt") {
+            """
+            ${info(Colors.DEFINITION)}test_a${infoEnd()} = {}
+            ${info(Colors.DEFINITION)}first_type${infoEnd()} = {
+                snippet_def = ${info(Colors.DEFINITION_REFERENCE_SNIPPET)}test${infoEnd()}
+            }
+            """.trimIndent()
+        }
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting(false, true, false)
     }
 
     @Test
@@ -209,6 +227,56 @@ class SnippetMatchTest : BasePlatformTestCase(), ChronicleTestScope {
         expectScope {
             lookupElementStrings.contains("test").expectTrue()
         }
+    }
+
+    @Test
+    fun localisationSnippet_notMatched_noReference() {
+        configureLocalisationFile()
+        configureDefinitionSnippetScript(
+            """
+            first_type = {
+                snippet_loc = un<caret>known
+            }
+            """
+        )
+
+        expectScope {
+            // 不存在匹配的本地化引用片段，因而不产生引用
+            myFixture.findReferenceAtCaret().expectNull()
+        }
+    }
+
+    @Test
+    fun localisationSnippet_semanticAnnotator() {
+        configureLocalisationFile()
+        markFileInfo(gameType, "common/test_types/00_test_types.txt")
+        myFixture.configureByText("00_test_types.txt") {
+            """
+            ${info(Colors.DEFINITION)}first_type${infoEnd()} = {
+                snippet_loc = ${info(Colors.LOCALISATION_REFERENCE_SNIPPET)}test${infoEnd()}
+            }
+            """.trimIndent()
+        }
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting(false, true, false)
+    }
+
+    @Test
+    fun localisationSnippet_unresolvedExpressionInspection() {
+        configureLocalisationFile()
+        myFixture.enableInspections(UnresolvedExpressionInspection::class.java)
+        markFileInfo(gameType, "common/test_types/00_test_types.txt")
+        myFixture.configureByText("00_test_types.txt") {
+            val expected = $$"localisation|$_desc,$_effect"
+            val m = "Cannot resolve value expression `unknown` (expect matching: $expected)"
+            """
+            first_type = {
+                snippet_loc = ${error(m)}unknown${errorEnd()}
+            }
+            """.trimIndent()
+        }
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
     }
 
     @Test

@@ -77,11 +77,5 @@ data class UnaryTemplateInfo(
             if (nextIndex != -1) return null // require exactly one placeholder
             return UnaryTemplateInfo(expression)
         }
-
-        // TODO 3.0.4 [snippet-match] remove
-        @JvmStatic
-        fun from(expression: String, placeholder: String = "$"): UnaryTemplateInfo? {
-            return create(expression, placeholder)?.normalize()
-        }
     }
 }

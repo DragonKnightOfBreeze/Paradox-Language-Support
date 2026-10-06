@@ -8,7 +8,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.convertPath
 import icu.windea.pls.lang.psi.light.ParadoxDefinitionSnippetLightElement
-import icu.windea.pls.lang.refactoring.rename.naming.ParadoxDefinitionAutomaticRenamer
+import icu.windea.pls.lang.refactoring.rename.naming.ParadoxDefinitionSnippetAutomaticRenamer
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -18,13 +18,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * 定义引用片段的自动重命名测试。
- *
- * 说明：
- * - 重命名目标是脚本中的定义引用片段（引用解析得到的 lightElement）。
- * - 期望在重命名时，自动重命名关联的定义。
- *
- * @see ParadoxDefinitionAutomaticRenamer
+ * @see ParadoxDefinitionSnippetAutomaticRenamer
  * @see ParadoxDefinitionSnippetLightElement
  */
 @RunWith(JUnit4::class)
@@ -38,9 +32,9 @@ class ParadoxDefinitionSnippetRenameTest : BasePlatformTestCase(), ChronicleTest
     fun doSetUp() {
         addAdditionalAllowedRoots(testDataPath)
         markIntegrationTest()
-        markRootDirectory("features/snippet")
-        markConfigDirectory("features/snippet/.config")
-        initInjectedConfigGroups(project, gameType)
+        markRootDirectory("features/refactoring")
+        markConfigDirectory("features/refactoring/.config")
+        initConfigGroups(project, gameType)
     }
 
     @After
@@ -55,8 +49,8 @@ class ParadoxDefinitionSnippetRenameTest : BasePlatformTestCase(), ChronicleTest
     @Test
     fun testRename_DefinitionSnippet_RelatedDefinitions() {
         // Arrange
-        val definitionPath = configureMarkedFile("features/snippet/common/test_types/00_test_types.test.txt")
-        val usagePath = configureMarkedFile("features/snippet/common/test_types/01_usage.test.txt")
+        val definitionPath = configureMarkedFile("features/refactoring/common/test_types/00_test_types.test.txt")
+        val usagePath = configureMarkedFile("features/refactoring/common/test_types/01_usage.test.txt")
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
@@ -73,7 +67,7 @@ class ParadoxDefinitionSnippetRenameTest : BasePlatformTestCase(), ChronicleTest
 
     // endregion
 
-    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/snippet/")): String {
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/refactoring/")): String {
         markFileInfo(gameType, path)
         myFixture.configureByFile(testDataPath)
         return testDataPath

@@ -416,13 +416,18 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             it.metadata.value.expectEquals("entity")
             expectSnippetTemplates(it, $$"$_a", $$"b_$")
         }
-        // TODO 3.0.4 [snippet-match] adjust
-        // templates without a placeholder fall back to the suffix-aware definition
-        // expectDataExpression("<entity>|country,planet", CwtDataTypes.SuffixAwareDefinition) { expectSuffixes(it, "country", "planet") }
-        // an unsupported base falls back to constant
+        // a template without a placeholder is invalid and ignored, so the template list is effectively empty
+        expectDataExpression("<entity>|country,planet", CwtDataTypes.DefinitionSnippet) {
+            it.metadata.value.expectEquals("entity")
+            expectSnippetTemplates(it)
+        }
+        // a template containing multiple placeholders is likewise invalid and ignored
+        expectDataExpression($$"<entity>|a_$b_$", CwtDataTypes.DefinitionSnippet) {
+            it.metadata.value.expectEquals("entity")
+            expectSnippetTemplates(it)
+        }
+        // a base that is neither a definition nor a localisation falls back to constant
         expectDataExpression($$"foo|$_a", CwtDataTypes.Constant) { expectNoMetadata(it) }
-        // a template containing multiple placeholders is invalid, and falls back to the suffix-aware definition
-        // expectDataExpression($$"<entity>|a_$b_$", CwtDataTypes.SuffixAwareDefinition) { expectSuffixes(it, $$"a_$b_$") }
     }
 
     @Test
@@ -435,11 +440,21 @@ class CwtDataExpressionTest : BasePlatformTestCase() {
             it.metadata.value.expectNull()
             expectSnippetTemplates(it, $$"$_desc")
         }
-        // TODO 3.0.4 [snippet-match] adjust
-        // templates without a placeholder fall back to the suffix-aware localisation
-        // expectDataExpression("localisation|key,desc", CwtDataTypes.SuffixAwareLocalisation) { expectSuffixes(it, "key", "desc") }
-        // an empty template list falls back to the plain localisation
-        // expectDataExpression("localisation|", CwtDataTypes.Localisation) { expectNoMetadata(it) }
+        // templates are trimmed
+        expectDataExpression($$"localisation| $_desc , $_effect ", CwtDataTypes.LocalisationSnippet) {
+            it.metadata.value.expectNull()
+            expectSnippetTemplates(it, $$"$_desc", $$"$_effect")
+        }
+        // a template without a placeholder is invalid and ignored, so the template list is effectively empty
+        expectDataExpression("localisation|key,desc", CwtDataTypes.LocalisationSnippet) {
+            it.metadata.value.expectNull()
+            expectSnippetTemplates(it)
+        }
+        // an empty template list is likewise allowed
+        expectDataExpression("localisation|", CwtDataTypes.LocalisationSnippet) {
+            it.metadata.value.expectNull()
+            expectSnippetTemplates(it)
+        }
     }
 
     // endregion

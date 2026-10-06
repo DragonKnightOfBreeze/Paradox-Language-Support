@@ -80,12 +80,6 @@ data class IntRangeInfo(
             val end = values.getOrNull(1)?.trim()?.toIntOrNull()
             return IntRangeInfo(start, end, openStart, openEnd)
         }
-
-        // TODO 3.0.4 [snippet-match] remove
-        @JvmStatic
-        fun from(expression: String): IntRangeInfo? {
-            return create(expression)?.normalize()
-        }
     }
 }
 
@@ -150,12 +144,6 @@ data class FloatRangeInfo(
             val start = values.getOrNull(0)?.trim()?.toFloatOrNull()
             val end = values.getOrNull(1)?.trim()?.toFloatOrNull()
             return FloatRangeInfo(start, end, openStart, openEnd)
-        }
-
-        // TODO 3.0.4 [snippet-match] remove
-        @JvmStatic
-        fun from(expression: String): FloatRangeInfo? {
-            return create(expression)?.normalize()
         }
     }
 }

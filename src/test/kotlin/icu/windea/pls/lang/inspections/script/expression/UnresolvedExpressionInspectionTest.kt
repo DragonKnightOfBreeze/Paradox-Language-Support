@@ -1,6 +1,7 @@
 package icu.windea.pls.lang.inspections.script.expression
 
 import com.intellij.psi.util.parentOfType
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ep.ChronicleEpBundle
@@ -35,6 +36,11 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
 
     @After
     fun doTearDown() = clearIntegrationTest()
+
+    private fun configureLocalisationFile() {
+        markFileInfo(ParadoxGameType.Stellaris, "localisation/00_test_locs.yml")
+        myFixture.configureByFile("features/inspections/localisation/00_test_locs.yml")
+    }
 
     // region basic
 
@@ -587,7 +593,72 @@ class UnresolvedExpressionInspectionTest : BasePlatformTestCase(), ChronicleTest
 
     // region snippetMatch
 
-    // TODO 3.0.4 [test/snippet-match]
+    @Test
+    fun snippetMatch_definitionSnippet_matched_success() {
+        // 定义引用片段采用宽松策略，只要求至少一个模板参数（`test_a`）可以匹配
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_types/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            test_a = {}
+            first_type = {
+                snippet_def = test
+            }
+            """.trimIndent()
+        }
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun snippetMatch_definitionSnippet_unmatched_failed() {
+        // 不存在匹配的定义引用片段，按原有逻辑报告未解析的表达式
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_types/test.txt")
+        myFixture.configureByText("test.txt") {
+            val expected = $$"""<test_type>|$_a,b_$"""
+            val m1 = "Cannot resolve value expression `unknown` (expect matching: $expected)"
+            """
+            first_type = {
+                snippet_def = ${error(m1)}unknown${errorEnd()}
+            }
+            """.trimIndent()
+        }
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun snippetMatch_localisationSnippet_matched_success() {
+        // 本地化引用片段采用宽松策略，只要求至少一个模板参数（`test_desc`）可以匹配
+        configureLocalisationFile()
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_types/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            first_type = {
+                snippet_loc = test
+            }
+            """.trimIndent()
+        }
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun snippetMatch_localisationSnippet_unmatched_failed() {
+        // 不存在匹配的本地化引用片段，按原有逻辑报告未解析的表达式
+        configureLocalisationFile()
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_types/test.txt")
+        myFixture.configureByText("test.txt") {
+            val expected = $$"localisation|$_desc,$_effect"
+            val m1 = "Cannot resolve value expression `unknown` (expect matching: $expected)"
+            """
+            first_type = {
+                snippet_loc = ${error(m1)}unknown${errorEnd()}
+            }
+            """.trimIndent()
+        }
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
 
     // endregion
 

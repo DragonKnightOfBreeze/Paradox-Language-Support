@@ -1,0 +1,18 @@
+# 用于测试片段匹配（`DefinitionSnippet` / `LocalisationSnippet`）相关自动重命名的规则文件。
+#
+# - `snippet_def` 为定义引用片段：脚本表达式为 `test` 时，对应模板 `$_a` 的定义 `test_a`，
+#   或模板 `b_$` 的定义 `b_foo`（实际测试数据仅存在 `test_a`）。
+# - `snippet_loc` 为本地化引用片段：脚本表达式为 `test` 时，对应模板 `$_desc` 的本地化 `test_desc`，
+#   或模板 `$_effect` 的本地化 `test_effect`。
+
+types = {
+    type[test_type] = {
+        path = "common/test_types"
+        path_extension = .txt
+    }
+}
+
+test_type = {
+    snippet_def = <test_type>|$_a,b_$
+    snippet_loc = localisation|$_desc,$_effect
+}

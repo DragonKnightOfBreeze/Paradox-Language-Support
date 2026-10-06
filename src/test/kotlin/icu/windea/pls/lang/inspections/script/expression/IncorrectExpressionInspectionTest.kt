@@ -1,7 +1,9 @@
 package icu.windea.pls.lang.inspections.script.expression
 
+import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import icu.windea.pls.test.dsl.configureByText
@@ -30,6 +32,11 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
 
     @After
     fun doTearDown() = clearIntegrationTest()
+
+    private fun configureLocalisationFile() {
+        markFileInfo(ParadoxGameType.Stellaris, "localisation/00_test_locs.yml")
+        myFixture.configureByFile("features/inspections/localisation/00_test_locs.yml")
+    }
 
     // region basic
 
@@ -68,7 +75,74 @@ class IncorrectExpressionInspectionTest : BasePlatformTestCase(), ChronicleTestS
 
     // region snippetMatch
 
-    // TODO 3.0.4 [test/snippet-match]
+    @Test
+    fun snippetMatch_definitionSnippet_fullMatch_success() {
+        // 定义引用片段的所有模板参数（`test_a`、`b_test`）都能解析为对应类型的定义
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_types/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            test_a = {}
+            b_test = {}
+            first_type = {
+                snippet_def = test
+            }
+            """.trimIndent()
+        }
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun snippetMatch_definitionSnippet_partialMatch_failed() {
+        // 语义匹配阶段采用宽松策略，但代码检查阶段要求所有模板参数都能解析，
+        // 因此缺少 `b_test` 时报告“部分匹配”。
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_types/test.txt")
+        myFixture.configureByText("test.txt") {
+            val m1 = ChronicleEpBundle.message("incorrectExpression.definitionSnippet.desc.1", "b_test")
+            """
+            test_a = {}
+            first_type = {
+                snippet_def = ${warning(m1)}test${warningEnd()}
+            }
+            """.trimIndent()
+        }
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun snippetMatch_localisationSnippet_fullMatch_success() {
+        // 本地化引用片段的所有模板参数（`test_desc`、`test_effect`）都能解析为本地化
+        configureLocalisationFile()
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_types/test.txt")
+        myFixture.configureByText("test.txt") {
+            """
+            first_type = {
+                snippet_loc = test
+            }
+            """.trimIndent()
+        }
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun snippetMatch_localisationSnippet_partialMatch_failed() {
+        // 语义匹配阶段采用宽松策略，但代码检查阶段要求所有模板参数都能解析，
+        // 因此缺少 `partial_effect` 时报告“部分匹配”。
+        configureLocalisationFile()
+        markFileInfo(ParadoxGameType.Stellaris, "common/test_types/test.txt")
+        myFixture.configureByText("test.txt") {
+            val m1 = ChronicleEpBundle.message("incorrectExpression.localisationSnippet.desc.1", "partial_effect")
+            """
+            first_type = {
+                snippet_loc = ${warning(m1)}partial${warningEnd()}
+            }
+            """.trimIndent()
+        }
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
 
     // endregion
 

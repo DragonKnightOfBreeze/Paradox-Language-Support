@@ -8,6 +8,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.convertPath
 import icu.windea.pls.lang.psi.light.ParadoxLocalisationSnippetLightElement
+import icu.windea.pls.lang.refactoring.rename.naming.ParadoxLocalisationSnippetAutomaticRenamer
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.After
@@ -17,12 +18,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * 本地化引用片段的自动重命名测试。
- *
- * 说明：
- * - 重命名目标是脚本中的本地化引用片段（引用解析得到的 lightElement）。
- * - 期望在重命名时，自动重命名关联的本地化。
- *
+ * @see ParadoxLocalisationSnippetAutomaticRenamer
  * @see ParadoxLocalisationSnippetLightElement
  */
 @RunWith(JUnit4::class)
@@ -36,9 +32,9 @@ class ParadoxLocalisationSnippetRenameTest : BasePlatformTestCase(), ChronicleTe
     fun doSetUp() {
         addAdditionalAllowedRoots(testDataPath)
         markIntegrationTest()
-        markRootDirectory("features/snippet")
-        markConfigDirectory("features/snippet/.config")
-        initInjectedConfigGroups(project, gameType)
+        markRootDirectory("features/refactoring")
+        markConfigDirectory("features/refactoring/.config")
+        initConfigGroups(project, gameType)
     }
 
     @After
@@ -53,8 +49,8 @@ class ParadoxLocalisationSnippetRenameTest : BasePlatformTestCase(), ChronicleTe
     @Test
     fun testRename_LocalisationSnippet_RelatedLocalisations() {
         // Arrange
-        val localisationPath = configureMarkedFile("features/snippet/localisation/00_test_locs.test.yml")
-        val usagePath = configureMarkedFile("features/snippet/common/test_types/02_loc_usage.test.txt")
+        val localisationPath = configureMarkedFile("features/refactoring/localisation/00_test_locs.test.yml")
+        val usagePath = configureMarkedFile("features/refactoring/common/test_types/02_loc_usage.test.txt")
 
         // Ensure indexed
         IndexingTestUtil.waitUntilIndexesAreReady(project)
@@ -71,7 +67,7 @@ class ParadoxLocalisationSnippetRenameTest : BasePlatformTestCase(), ChronicleTe
 
     // endregion
 
-    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/snippet/")): String {
+    private fun configureMarkedFile(@TestDataFile testDataPath: String, path: String = testDataPath.removePrefix("features/refactoring/")): String {
         markFileInfo(gameType, path)
         myFixture.configureByFile(testDataPath)
         return testDataPath

@@ -1,289 +1,364 @@
 package icu.windea.pls.core.util
 
-import org.junit.Assert.*
+import icu.windea.pls.test.dsl.expectScope
 import org.junit.Test
 
 /**
- * 纯 Kotlin 单元测试：IntRangeInfo / FloatRangeInfo
+ * 纯 Kotlin 单元测试：[IntRangeInfo] / [FloatRangeInfo]。
  *
  * 覆盖点：
- * - from(...) 表达式解析（四种开/闭端点、缺失端点、负数、空表达式/非法表达式）
- * - contains(...) 包含判断（开/闭边界、无下界/无上界、双无界、start>end 情况）
- * - expression/toString 一致性
+ * - [IntRangeInfo.create] / [FloatRangeInfo.create] 表达式解析（四种开/闭端点、缺失端点、负数、空表达式/非法表达式）
+ * - [RangeInfo.contains] 包含判断（开/闭边界、无下界/无上界、双无界、start > end 情况）
+ * - `expression` / `toString` 一致性
+ * - `normalize` 去重
  *
  * @see RangeInfo
+ * @see IntRangeInfo
+ * @see FloatRangeInfo
  */
 class RangeInfoTest {
-    // --------------- IntRangeInfo.from ---------------
+    // region helpers
+
+    private fun intRange(expression: String): IntRangeInfo = IntRangeInfo.create(expression)!!.normalize()
+
+    private fun floatRange(expression: String): FloatRangeInfo = FloatRangeInfo.create(expression)!!.normalize()
+
+    // endregion
+
+    // region IntRangeInfo.create
 
     @Test
     fun testInt_from_validClosedClosed() {
-        val r = IntRangeInfo.from("[1..10]")!!
-        assertEquals(1, r.start)
-        assertEquals(10, r.end)
-        assertFalse(r.openStart)
-        assertFalse(r.openEnd)
-        assertEquals("[1..10]", r.expression)
-        assertEquals(r.expression, r.toString())
+        expectScope {
+            val r = intRange("[1..10]")
+            r.start.expectEquals(1)
+            r.end.expectEquals(10)
+            r.openStart.expectFalse()
+            r.openEnd.expectFalse()
+            r.expression.expectEquals("[1..10]")
+            r.toString().expectEquals(r.expression)
+        }
     }
 
     @Test
     fun testInt_from_validOpenOpen() {
-        val r = IntRangeInfo.from("(1..10)")!!
-        assertEquals(1, r.start)
-        assertEquals(10, r.end)
-        assertTrue(r.openStart)
-        assertTrue(r.openEnd)
-        assertEquals("(1..10)", r.expression)
+        expectScope {
+            val r = intRange("(1..10)")
+            r.start.expectEquals(1)
+            r.end.expectEquals(10)
+            r.openStart.expectTrue()
+            r.openEnd.expectTrue()
+            r.expression.expectEquals("(1..10)")
+        }
     }
 
     @Test
     fun testInt_from_validOpenClosed() {
-        val r = IntRangeInfo.from("(1..10]")!!
-        assertEquals(1, r.start)
-        assertEquals(10, r.end)
-        assertTrue(r.openStart)
-        assertFalse(r.openEnd)
-        assertEquals("(1..10]", r.expression)
+        expectScope {
+            val r = intRange("(1..10]")
+            r.start.expectEquals(1)
+            r.end.expectEquals(10)
+            r.openStart.expectTrue()
+            r.openEnd.expectFalse()
+            r.expression.expectEquals("(1..10]")
+        }
     }
 
     @Test
     fun testInt_from_validClosedOpen() {
-        val r = IntRangeInfo.from("[1..10)")!!
-        assertEquals(1, r.start)
-        assertEquals(10, r.end)
-        assertFalse(r.openStart)
-        assertTrue(r.openEnd)
-        assertEquals("[1..10)", r.expression)
+        expectScope {
+            val r = intRange("[1..10)")
+            r.start.expectEquals(1)
+            r.end.expectEquals(10)
+            r.openStart.expectFalse()
+            r.openEnd.expectTrue()
+            r.expression.expectEquals("[1..10)")
+        }
     }
 
     @Test
     fun testInt_from_missingBothEnds() {
-        val r = IntRangeInfo.from("[..]")!!
-        assertNull(r.start)
-        assertNull(r.end)
-        assertFalse(r.openStart)
-        assertFalse(r.openEnd)
-        assertEquals("[null..null]", r.expression)
+        expectScope {
+            val r = intRange("[..]")
+            r.start.expectNull()
+            r.end.expectNull()
+            r.openStart.expectFalse()
+            r.openEnd.expectFalse()
+            r.expression.expectEquals("[null..null]")
+        }
     }
 
     @Test
     fun testInt_from_missingStart() {
-        val r = IntRangeInfo.from("[..10]")!!
-        assertNull(r.start)
-        assertEquals(10, r.end)
-        assertEquals("[null..10]", r.expression)
+        expectScope {
+            val r = intRange("[..10]")
+            r.start.expectNull()
+            r.end.expectEquals(10)
+            r.expression.expectEquals("[null..10]")
+        }
     }
 
     @Test
     fun testInt_from_missingEnd() {
-        val r = IntRangeInfo.from("[1..]")!!
-        assertEquals(1, r.start)
-        assertNull(r.end)
-        assertEquals("[1..null]", r.expression)
+        expectScope {
+            val r = intRange("[1..]")
+            r.start.expectEquals(1)
+            r.end.expectNull()
+            r.expression.expectEquals("[1..null]")
+        }
     }
 
     @Test
     fun testInt_from_negativeNumbers() {
-        val r = IntRangeInfo.from("[-5..5)")!!
-        assertEquals(-5, r.start)
-        assertEquals(5, r.end)
-        assertFalse(r.openStart)
-        assertTrue(r.openEnd)
-        assertEquals("[-5..5)", r.expression)
+        expectScope {
+            val r = intRange("[-5..5)")
+            r.start.expectEquals(-5)
+            r.end.expectEquals(5)
+            r.openStart.expectFalse()
+            r.openEnd.expectTrue()
+            r.expression.expectEquals("[-5..5)")
+        }
     }
 
     @Test
     fun testInt_from_invalidExpressions_returnNull() {
-        assertNull(IntRangeInfo.from(""))
-        assertNull(IntRangeInfo.from("[]"))
-        assertNull(IntRangeInfo.from("abc"))
-        assertNull(IntRangeInfo.from("[1..10"))
-        assertNull(IntRangeInfo.from("1..10]"))
+        expectScope {
+            IntRangeInfo.create("").expectNull()
+            IntRangeInfo.create("[]").expectNull()
+            IntRangeInfo.create("abc").expectNull()
+            IntRangeInfo.create("[1..10").expectNull()
+            IntRangeInfo.create("1..10]").expectNull()
+        }
     }
 
-    // --------------- IntRangeInfo.contains ---------------
+    // endregion
+
+    // region IntRangeInfo.contains
 
     @Test
     fun testInt_contains_closedRangeBoundaries() {
-        val r = IntRangeInfo.from("[1..10]")!!
-        assertTrue(1 in r)
-        assertTrue(10 in r)
-        assertFalse(0 in r)
-        assertFalse(11 in r)
+        expectScope {
+            val r = intRange("[1..10]")
+            (1 in r).expectTrue()
+            (10 in r).expectTrue()
+            (0 in r).expectFalse()
+            (11 in r).expectFalse()
+        }
     }
 
     @Test
     fun testInt_contains_openRangeBoundaries() {
-        val r = IntRangeInfo.from("(1..10)")!!
-        assertFalse(1 in r)
-        assertFalse(10 in r)
-        assertTrue(2 in r)
-        assertTrue(9 in r)
+        expectScope {
+            val r = intRange("(1..10)")
+            (1 in r).expectFalse()
+            (10 in r).expectFalse()
+            (2 in r).expectTrue()
+            (9 in r).expectTrue()
+        }
     }
 
     @Test
     fun testInt_contains_leftOpenRightClosed() {
-        val r = IntRangeInfo.from("(1..10]")!!
-        assertFalse(1 in r)
-        assertTrue(10 in r)
+        expectScope {
+            val r = intRange("(1..10]")
+            (1 in r).expectFalse()
+            (10 in r).expectTrue()
+        }
     }
 
     @Test
     fun testInt_contains_leftClosedRightOpen() {
-        val r = IntRangeInfo.from("[1..10)")!!
-        assertTrue(1 in r)
-        assertFalse(10 in r)
+        expectScope {
+            val r = intRange("[1..10)")
+            (1 in r).expectTrue()
+            (10 in r).expectFalse()
+        }
     }
 
     @Test
     fun testInt_contains_unboundedStart() {
-        val r = IntRangeInfo.from("[..10]")!!
-        assertTrue((-100) in r)
-        assertTrue(10 in r)
-        assertFalse(11 in r)
+        expectScope {
+            val r = intRange("[..10]")
+            (-100 in r).expectTrue()
+            (10 in r).expectTrue()
+            (11 in r).expectFalse()
+        }
     }
 
     @Test
     fun testInt_contains_unboundedEnd() {
-        val r = IntRangeInfo.from("[1..]")!!
-        assertTrue(1 in r)
-        assertTrue(1000 in r)
-        assertFalse(0 in r)
+        expectScope {
+            val r = intRange("[1..]")
+            (1 in r).expectTrue()
+            (1000 in r).expectTrue()
+            (0 in r).expectFalse()
+        }
     }
 
     @Test
     fun testInt_contains_unboundedBoth_alwaysTrue() {
-        val r = IntRangeInfo.from("[..]")!!
-        for (v in listOf(-100, 0, 100)) {
-            assertTrue(v in r)
+        expectScope {
+            val r = intRange("[..]")
+            for (v in listOf(-100, 0, 100)) {
+                (v in r).expectTrue()
+            }
         }
     }
 
     @Test
     fun testInt_contains_startGreaterThanEnd_alwaysFalse() {
-        val r = IntRangeInfo.from("[10..1]")!!
-        for (v in listOf(0, 5, 10)) {
-            assertFalse(v in r)
+        expectScope {
+            val r = intRange("[10..1]")
+            for (v in listOf(0, 5, 10)) {
+                (v in r).expectFalse()
+            }
         }
     }
 
-    // --------------- FloatRangeInfo.from ---------------
+    // endregion
+
+    // region FloatRangeInfo.create
 
     @Test
     fun testFloat_from_validClosedClosed() {
-        val r = FloatRangeInfo.from("[1.5..2.5]")!!
-        assertEquals(1.5f, r.start)
-        assertEquals(2.5f, r.end)
-        assertFalse(r.openStart)
-        assertFalse(r.openEnd)
-        assertEquals("[1.5..2.5]", r.expression)
+        expectScope {
+            val r = floatRange("[1.5..2.5]")
+            r.start.expectEquals(1.5f)
+            r.end.expectEquals(2.5f)
+            r.openStart.expectFalse()
+            r.openEnd.expectFalse()
+            r.expression.expectEquals("[1.5..2.5]")
+        }
     }
 
     @Test
     fun testFloat_from_validOpenOpen() {
-        val r = FloatRangeInfo.from("(1.0..2.0)")!!
-        assertEquals(1.0f, r.start)
-        assertEquals(2.0f, r.end)
-        assertTrue(r.openStart)
-        assertTrue(r.openEnd)
-        assertEquals("(1.0..2.0)", r.expression)
+        expectScope {
+            val r = floatRange("(1.0..2.0)")
+            r.start.expectEquals(1.0f)
+            r.end.expectEquals(2.0f)
+            r.openStart.expectTrue()
+            r.openEnd.expectTrue()
+            r.expression.expectEquals("(1.0..2.0)")
+        }
     }
 
     @Test
     fun testFloat_from_missingEndsAndNegative() {
-        val r1 = FloatRangeInfo.from("[..1.0]")!!
-        assertNull(r1.start)
-        assertEquals(1.0f, r1.end)
-        assertEquals("[null..1.0]", r1.expression)
+        expectScope {
+            val r1 = floatRange("[..1.0]")
+            r1.start.expectNull()
+            r1.end.expectEquals(1.0f)
+            r1.expression.expectEquals("[null..1.0]")
 
-        val r2 = FloatRangeInfo.from("[-2.0..]")!!
-        assertEquals(-2.0f, r2.start)
-        assertNull(r2.end)
-        assertEquals("[-2.0..null]", r2.expression)
+            val r2 = floatRange("[-2.0..]")
+            r2.start.expectEquals(-2.0f)
+            r2.end.expectNull()
+            r2.expression.expectEquals("[-2.0..null]")
+        }
     }
 
     @Test
     fun testFloat_from_invalidExpressions_returnNull() {
-        assertNull(FloatRangeInfo.from(""))
-        assertNull(FloatRangeInfo.from("()"))
-        assertNull(FloatRangeInfo.from("abc"))
-        assertNull(FloatRangeInfo.from("(1.0..2.0"))
-        assertNull(FloatRangeInfo.from("1.0..2.0)"))
+        expectScope {
+            FloatRangeInfo.create("").expectNull()
+            FloatRangeInfo.create("()").expectNull()
+            FloatRangeInfo.create("abc").expectNull()
+            FloatRangeInfo.create("(1.0..2.0").expectNull()
+            FloatRangeInfo.create("1.0..2.0)").expectNull()
+        }
     }
 
-    // --------------- FloatRangeInfo.contains ---------------
+    // endregion
+
+    // region FloatRangeInfo.contains
 
     @Test
     fun testFloat_contains_closedAndOpen() {
-        val r1 = FloatRangeInfo.from("[1.5..2.5]")!!
-        assertTrue(1.5f in r1)
-        assertTrue(2.5f in r1)
-        assertFalse(1.49f in r1)
-        assertFalse(2.51f in r1)
+        expectScope {
+            val r1 = floatRange("[1.5..2.5]")
+            (1.5f in r1).expectTrue()
+            (2.5f in r1).expectTrue()
+            (1.49f in r1).expectFalse()
+            (2.51f in r1).expectFalse()
 
-        val r2 = FloatRangeInfo.from("(1.5..2.5)")!!
-        assertFalse(1.5f in r2)
-        assertFalse(2.5f in r2)
-        assertTrue(1.6f in r2)
-        assertTrue(2.4f in r2)
+            val r2 = floatRange("(1.5..2.5)")
+            (1.5f in r2).expectFalse()
+            (2.5f in r2).expectFalse()
+            (1.6f in r2).expectTrue()
+            (2.4f in r2).expectTrue()
+        }
     }
 
     @Test
     fun testFloat_contains_mixedBounds() {
-        val r = FloatRangeInfo.from("(1.0..2.0]")!!
-        assertFalse(1.0f in r)
-        assertTrue(2.0f in r)
-        assertTrue(1.5f in r)
+        expectScope {
+            val r = floatRange("(1.0..2.0]")
+            (1.0f in r).expectFalse()
+            (2.0f in r).expectTrue()
+            (1.5f in r).expectTrue()
+        }
     }
 
     @Test
     fun testFloat_contains_unbounded() {
-        val r1 = FloatRangeInfo.from("[..1.0]")!!
-        assertTrue((-100.0f) in r1)
-        assertTrue(1.0f in r1)
-        assertFalse(1.0001f in r1)
+        expectScope {
+            val r1 = floatRange("[..1.0]")
+            (-100.0f in r1).expectTrue()
+            (1.0f in r1).expectTrue()
+            (1.0001f in r1).expectFalse()
 
-        val r2 = FloatRangeInfo.from("[1.0..]")!!
-        assertTrue(1.0f in r2)
-        assertTrue(100.0f in r2)
-        assertFalse(0.9999f in r2)
+            val r2 = floatRange("[1.0..]")
+            (1.0f in r2).expectTrue()
+            (100.0f in r2).expectTrue()
+            (0.9999f in r2).expectFalse()
+        }
     }
 
     @Test
     fun testFloat_contains_startGreaterThanEnd_alwaysFalse() {
-        val r = FloatRangeInfo.from("[2.0..1.0]")!!
-        for (v in listOf(0.5f, 1.0f, 2.0f)) {
-            assertFalse(v in r)
+        expectScope {
+            val r = floatRange("[2.0..1.0]")
+            for (v in listOf(0.5f, 1.0f, 2.0f)) {
+                (v in r).expectFalse()
+            }
         }
     }
 
-    // --------------- create / from caching ---------------
+    // endregion
+
+    // region create / normalize
 
     @Test
-    fun testInt_createAndFromCaching() {
-        // `create` always produces a new instance (not cached)
-        val c = IntRangeInfo.create("[1..10]")!!
-        assertNotSame(c, IntRangeInfo.create("[1..10]"))
-        assertEquals(c, IntRangeInfo.create("[1..10]"))
-        // `from` is cached by expression string
-        val f = IntRangeInfo.from("[1..10]")!!
-        assertSame(f, IntRangeInfo.from("[1..10]"))
-        assertEquals(c, f)
-        // invalid expressions return null for both
-        assertNull(IntRangeInfo.create("abc"))
-        assertNull(IntRangeInfo.from("abc"))
+    fun testInt_createAndNormalize() {
+        expectScope {
+            // `create` always produces a new instance (not interned)
+            val c = IntRangeInfo.create("[1..10]").expectNotNull()
+            c.expectNotSame(IntRangeInfo.create("[1..10]").expectNotNull())
+            c.expectEquals(IntRangeInfo.create("[1..10]").expectNotNull())
+            // `normalize` is interned by expression string
+            val n = c.normalize()
+            n.expectSame(c.normalize())
+            n.expectSame(intRange("[1..10]"))
+            n.expectEquals(c)
+            // invalid expressions return null for `create`
+            IntRangeInfo.create("abc").expectNull()
+        }
     }
 
     @Test
-    fun testFloat_createAndFromCaching() {
-        val c = FloatRangeInfo.create("[1.5..2.5]")!!
-        assertNotSame(c, FloatRangeInfo.create("[1.5..2.5]"))
-        assertEquals(c, FloatRangeInfo.create("[1.5..2.5]"))
-        val f = FloatRangeInfo.from("[1.5..2.5]")!!
-        assertSame(f, FloatRangeInfo.from("[1.5..2.5]"))
-        assertEquals(c, f)
-        assertNull(FloatRangeInfo.create("abc"))
-        assertNull(FloatRangeInfo.from("abc"))
+    fun testFloat_createAndNormalize() {
+        expectScope {
+            val c = FloatRangeInfo.create("[1.5..2.5]").expectNotNull()
+            c.expectNotSame(FloatRangeInfo.create("[1.5..2.5]").expectNotNull())
+            c.expectEquals(FloatRangeInfo.create("[1.5..2.5]").expectNotNull())
+            val n = c.normalize()
+            n.expectSame(c.normalize())
+            n.expectSame(floatRange("[1.5..2.5]"))
+            n.expectEquals(c)
+            FloatRangeInfo.create("abc").expectNull()
+        }
     }
+
+    // endregion
 }
