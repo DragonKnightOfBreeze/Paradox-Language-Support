@@ -43,7 +43,7 @@ class ParadoxInferredScriptedVariableHintTextProvider : ParadoxHintTextProviderB
 
     override fun doGetHintLocalisation(element: ParadoxScriptScriptedVariable, name: String, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
         val localeToUse = locale ?: ParadoxLocaleManager.getPreferredLocaleConfig()
-        return ParadoxScriptedVariableManager.getRelatedLocalisations(element, localeToUse, preferred = true).firstOrNull()
+        return ParadoxScriptedVariableManager.getRelatedLocalisations(element, localeToUse, onlyOne = true).firstOrNull()
     }
 }
 
@@ -57,7 +57,7 @@ class ParadoxInferredComplexEnumValueHintTextProvider : ParadoxHintTextProviderB
 
     override fun doGetHintLocalisation(element: ParadoxComplexEnumValueLightElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
         val localeToUse = locale ?: ParadoxLocaleManager.getPreferredLocaleConfig()
-        return ParadoxComplexEnumValueManager.getRelatedLocalisations(element, localeToUse, preferred = true).firstOrNull()
+        return ParadoxComplexEnumValueManager.getRelatedLocalisations(element, localeToUse, onlyOne = true).firstOrNull()
     }
 }
 
@@ -71,7 +71,7 @@ class ParadoxInferredDynamicValueHintTextProvider : ParadoxHintTextProviderBase.
 
     override fun doGetHintLocalisation(element: ParadoxDynamicValueLightElement, locale: CwtLocaleConfig?): ParadoxLocalisationProperty? {
         val localeToUse = locale ?: ParadoxLocaleManager.getPreferredLocaleConfig()
-        return ParadoxDynamicValueManager.getRelatedLocalisations(element, localeToUse, preferred = true).firstOrNull()
+        return ParadoxDynamicValueManager.getRelatedLocalisations(element, localeToUse, onlyOne = true).firstOrNull()
     }
 }
 

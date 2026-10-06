@@ -147,7 +147,7 @@ class Issue385Test : BasePlatformTestCase(), ChronicleTestScope {
             r.isNotEmpty().expectTrue()
         }
         expectScope {
-            val r = ParadoxModifierManager.getPresentableNames("weapon_windea_long_sword_damage_mult", contextElement, preferred = true)
+            val r = ParadoxModifierManager.getPresentableNames("weapon_windea_long_sword_damage_mult", contextElement, onlyOne = true)
             r.isNotEmpty().expectTrue()
         }
         expectScope {
@@ -155,7 +155,7 @@ class Issue385Test : BasePlatformTestCase(), ChronicleTestScope {
             r.isNotEmpty().expectTrue()
         }
         expectScope {
-            val r = ParadoxModifierManager.getPresentableNames("weapon_ode_to_THE_DRAGON_KNIGHT_magic_power_mult", contextElement, preferred = true)
+            val r = ParadoxModifierManager.getPresentableNames("weapon_ode_to_THE_DRAGON_KNIGHT_magic_power_mult", contextElement, onlyOne = true)
             r.isNotEmpty().expectTrue()
         }
     }

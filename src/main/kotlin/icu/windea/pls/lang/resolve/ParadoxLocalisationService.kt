@@ -73,14 +73,14 @@ object ParadoxLocalisationService {
         name: String?,
         contextElement: PsiElement,
         preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
-        preferred: Boolean = false,
+        onlyOne: Boolean = false,
     ): List<ParadoxLocalisationProperty> {
         if (name.isNullOrEmpty()) return emptyList()
         val project = contextElement.project
         val result = mutableListOf<ParadoxLocalisationProperty>()
         val selector = ParadoxLocalisationSearch.selector(project, contextElement).contextSensitive().preferLocale(preferredLocale)
         val query = ParadoxLocalisationSearch.searchNormal(name, selector)
-        if (preferred) query.find()?.let { result += it } else query.findAll().let { result += it }
+        if (onlyOne) query.find()?.let { result += it } else query.findAll().let { result += it }
         return result
     }
 

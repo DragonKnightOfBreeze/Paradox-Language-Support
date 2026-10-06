@@ -47,18 +47,18 @@ object ParadoxScriptedVariableManager {
     fun getRelatedLocalisations(
         element: ParadoxScriptScriptedVariable,
         preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
-        preferred: Boolean = false,
+        onlyOne: Boolean = false,
     ): List<ParadoxLocalisationProperty> {
-        return getRelatedLocalisations(element.name, element, preferredLocale, preferred)
+        return getRelatedLocalisations(element.name, element, preferredLocale, onlyOne)
     }
 
     fun getRelatedLocalisations(
         name: String?,
         contextElement: PsiElement,
         preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
-        preferred: Boolean = false,
+        onlyOne: Boolean = false,
     ): List<ParadoxLocalisationProperty> {
-        return ParadoxLocalisationManager.getRelatedLocalisationsFrom(name, contextElement, preferredLocale, preferred)
+        return ParadoxLocalisationManager.getRelatedLocalisationsFrom(name, contextElement, preferredLocale, onlyOne)
     }
 
     // endregion
@@ -68,9 +68,9 @@ object ParadoxScriptedVariableManager {
     fun getPresentableNames(
         element: ParadoxScriptScriptedVariable,
         preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
-        preferred: Boolean = false,
+        onlyOne: Boolean = false,
     ): List<String> {
-        val localisations = getRelatedLocalisations(element, preferredLocale, preferred)
+        val localisations = getRelatedLocalisations(element, preferredLocale, onlyOne)
         return ParadoxLocalisationManager.getPresentableText(localisations)
     }
 
@@ -79,9 +79,9 @@ object ParadoxScriptedVariableManager {
         name: String,
         contextElement: PsiElement,
         preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
-        preferred: Boolean = false,
+        onlyOne: Boolean = false,
     ): List<String> {
-        val localisation = ParadoxComplexEnumValueManager.getRelatedLocalisations(name, contextElement, preferredLocale, preferred)
+        val localisation = ParadoxComplexEnumValueManager.getRelatedLocalisations(name, contextElement, preferredLocale, onlyOne)
         return ParadoxLocalisationManager.getPresentableText(localisation)
     }
 

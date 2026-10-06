@@ -107,9 +107,9 @@ object ParadoxLocalisationManager {
         name: String?,
         contextElement: PsiElement,
         preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
-        preferred: Boolean = false,
+        onlyOne: Boolean = false,
     ): List<ParadoxLocalisationProperty> {
-        return ParadoxLocalisationService.resolveRelatedLocalisationsFrom(name, contextElement, preferredLocale, preferred)
+        return ParadoxLocalisationService.resolveRelatedLocalisationsFrom(name, contextElement, preferredLocale, onlyOne)
     }
 
     // endregion

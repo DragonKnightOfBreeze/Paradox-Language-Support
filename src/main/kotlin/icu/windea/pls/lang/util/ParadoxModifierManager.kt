@@ -154,11 +154,11 @@ object ParadoxModifierManager {
     fun getRelatedLocalisations(
         element: ParadoxModifierLightElement,
         preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
-        preferred: Boolean = false,
+        onlyOne: Boolean = false,
         forName: Boolean = true,
         forDesc: Boolean = true,
     ): List<ParadoxLocalisationProperty> {
-        return getRelatedLocalisations(element.name, element, preferredLocale, preferred, forName, forDesc)
+        return getRelatedLocalisations(element.name, element, preferredLocale, onlyOne, forName, forDesc)
     }
 
     /**
@@ -172,14 +172,14 @@ object ParadoxModifierManager {
         name: String?,
         contextElement: PsiElement,
         preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
-        preferred: Boolean = false,
+        onlyOne: Boolean = false,
         forName: Boolean = true,
         forDesc: Boolean = true,
     ): List<ParadoxLocalisationProperty> {
         if (name.isNullOrEmpty()) return emptyList()
         val nameKeys = if (forName) getModifierNameKeys(name, contextElement) else emptySet()
         val descKeys = if (forDesc) getModifierDescKeys(name, contextElement) else emptySet()
-        return ParadoxModifierService.resolveRelatedLocalisations(nameKeys, descKeys, contextElement, preferredLocale, preferred)
+        return ParadoxModifierService.resolveRelatedLocalisations(nameKeys, descKeys, contextElement, preferredLocale, onlyOne)
     }
 
     // endregion
@@ -193,9 +193,9 @@ object ParadoxModifierManager {
     fun getPresentableNames(
         element: ParadoxModifierLightElement,
         preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
-        preferred: Boolean = false,
+        onlyOne: Boolean = false,
     ): List<String> {
-        val localisation = getRelatedLocalisations(element, preferredLocale, preferred, forName = true, forDesc = false)
+        val localisation = getRelatedLocalisations(element, preferredLocale, onlyOne, forName = true, forDesc = false)
         return ParadoxLocalisationManager.getPresentableText(localisation)
     }
 
@@ -206,9 +206,9 @@ object ParadoxModifierManager {
         name: String,
         contextElement: PsiElement,
         preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
-        preferred: Boolean = false,
+        onlyOne: Boolean = false,
     ): List<String> {
-        val localisation = getRelatedLocalisations(name, contextElement, preferredLocale, preferred, forName = true, forDesc = false)
+        val localisation = getRelatedLocalisations(name, contextElement, preferredLocale, onlyOne, forName = true, forDesc = false)
         return ParadoxLocalisationManager.getPresentableText(localisation)
     }
 

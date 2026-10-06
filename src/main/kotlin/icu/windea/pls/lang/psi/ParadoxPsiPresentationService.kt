@@ -82,7 +82,7 @@ object ParadoxPsiPresentationService {
             returnsNotNull() implies (element is ParadoxScriptScriptedVariable)
         }
         if (element !is ParadoxScriptScriptedVariable) return null
-        return ParadoxScriptedVariableManager.getPresentableNames(element, preferred = true).firstOrNull().orEmpty()
+        return ParadoxScriptedVariableManager.getPresentableNames(element, onlyOne = true).firstOrNull().orEmpty()
     }
 
     /**

@@ -137,12 +137,12 @@ object ParadoxModifierService {
         descKeys: Set<String>,
         contextElement: PsiElement,
         preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
-        preferred: Boolean = false,
+        onlyOne: Boolean = false,
     ): List<ParadoxLocalisationProperty> {
         if (nameKeys.isEmpty() && descKeys.isEmpty()) return emptyList()
         val result = mutableListOf<ParadoxLocalisationProperty>()
-        result.addAll(resolveRelatedLocalisationsFrom(nameKeys, contextElement, preferredLocale, preferred))
-        result.addAll(resolveRelatedLocalisationsFrom(descKeys, contextElement, preferredLocale, preferred))
+        result.addAll(resolveRelatedLocalisationsFrom(nameKeys, contextElement, preferredLocale, onlyOne))
+        result.addAll(resolveRelatedLocalisationsFrom(descKeys, contextElement, preferredLocale, onlyOne))
         return result
     }
 
@@ -157,7 +157,7 @@ object ParadoxModifierService {
         keys: Set<String>,
         contextElement: PsiElement,
         preferredLocale: CwtLocaleConfig = ParadoxLocaleManager.getPreferredLocaleConfig(),
-        preferred: Boolean = false,
+        onlyOne: Boolean = false,
     ): List<ParadoxLocalisationProperty> {
         if (keys.isEmpty()) return emptyList()
         val project = contextElement.project
@@ -168,7 +168,7 @@ object ParadoxModifierService {
             val selector = ParadoxLocalisationSearch.selector(project, contextElement).contextSensitive().preferLocale(preferredLocale)
                 .withConstraint(ParadoxLocalisationIndexConstraint.Modifier) // so ignore case
             val query = ParadoxLocalisationSearch.searchNormal(key, selector)
-            if (preferred) query.find()?.let { result += it } else query.findAll().let { result += it }
+            if (onlyOne) query.find()?.let { result += it } else query.findAll().let { result += it }
             if (result.isNotEmpty()) return result
         }
         return emptyList()

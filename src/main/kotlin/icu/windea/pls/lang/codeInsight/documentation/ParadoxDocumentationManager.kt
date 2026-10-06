@@ -321,7 +321,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.addRelatedLocalisationsForComplexEnumValue(element: ParadoxComplexEnumValueLightElement) {
         val gameType = element.gameType
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
-        val relatedLocalisation = ParadoxComplexEnumValueManager.getRelatedLocalisations(element, usedLocale, preferred = true).firstOrNull()
+        val relatedLocalisation = ParadoxComplexEnumValueManager.getRelatedLocalisations(element, usedLocale, onlyOne = true).firstOrNull()
         // 如果没找到的话，不要在文档中显示相关信息
         run {
             if (relatedLocalisation == null) return@run
@@ -371,7 +371,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.addRelatedLocalisationsForDynamicValue(element: ParadoxDynamicValueLightElement) {
         val gameType = element.gameType
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
-        val relatedLocalisation = ParadoxDynamicValueManager.getRelatedLocalisations(element, usedLocale, preferred = true).firstOrNull()
+        val relatedLocalisation = ParadoxDynamicValueManager.getRelatedLocalisations(element, usedLocale, onlyOne = true).firstOrNull()
         // 如果没找到的话，不要在文档中显示相关信息
         run {
             if (relatedLocalisation == null) return@run
@@ -561,7 +561,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.addRelatedLocalisationsForScriptedVariable(element: ParadoxScriptScriptedVariable, name: String) {
         val gameType = selectGameType(element) ?: return
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
-        val relatedLocalisation = ParadoxScriptedVariableManager.getRelatedLocalisations(element, usedLocale, preferred = true).firstOrNull()
+        val relatedLocalisation = ParadoxScriptedVariableManager.getRelatedLocalisations(element, usedLocale, onlyOne = true).firstOrNull()
         // 如果没找到的话，不要在文档中显示相关信息
         run {
             if (relatedLocalisation == null) return@run
