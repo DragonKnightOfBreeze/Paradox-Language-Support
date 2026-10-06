@@ -1,0 +1,4 @@
+dragon_scale = {
+    icon = "gfx/interface/icons/armor/dragon_scale.dds"
+    defense = 8
+}

@@ -1,0 +1,3 @@
+fireball = {
+    cost = 5
+}

@@ -1,0 +1,5 @@
+l_simp_chinese:
+ mod_flame_damage_mult: "火焰伤害"
+ mod_flame_damage_mult_desc: "提高造成的火焰伤害。"
+ mod_frost_resistance_mult: "寒霜抗性"
+ mod_frost_resistance_mult_desc: "提高寒霜抗性。"

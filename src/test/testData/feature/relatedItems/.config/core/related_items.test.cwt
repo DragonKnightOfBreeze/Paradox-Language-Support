@@ -1,0 +1,66 @@
+# 用于测试 relatedItems/presentableItems 的规则文件。
+#
+# - `weapon` / `armor` / `spell` 用于验证定义的本地化与图片的匹配与解析。
+# - `weapon` 额外声明了非主键图片（`portrait`），用于验证主键过滤。
+# - 若干预定义修正用于验证修正的本地化与图片的匹配与解析。
+
+types = {
+    type[weapon] = {
+        path = "common/weapons"
+        path_extension = .txt
+        localisation = {
+            name = "$"
+            desc = "$_desc"
+        }
+        images = {
+            ## primary
+            icon = icon
+            portrait = portrait
+        }
+    }
+
+    type[armor] = {
+        path = "common/armor"
+        path_extension = .txt
+        localisation = {
+            name = "$"
+            desc = "$_desc"
+        }
+        images = {
+            ## primary
+            icon = icon
+        }
+    }
+
+    type[spell] = {
+        path = "common/spells"
+        path_extension = .txt
+        localisation = {
+            name = "$"
+            desc = "$_desc"
+        }
+    }
+}
+
+weapon = {
+    ## primary
+    icon = filepath
+    ## optional
+    portrait = filepath
+    damage = int
+}
+
+armor = {
+    ## primary
+    icon = filepath
+    defense = int
+}
+
+spell = {
+    cost = int
+}
+
+modifiers = {
+    flame_damage_mult = weapon
+    frost_resistance_mult = armor
+}

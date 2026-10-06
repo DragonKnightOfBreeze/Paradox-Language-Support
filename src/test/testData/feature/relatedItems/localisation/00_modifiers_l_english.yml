@@ -1,0 +1,5 @@
+l_english:
+ mod_flame_damage_mult: "Flame Damage"
+ mod_flame_damage_mult_desc: "Increases flame damage dealt."
+ mod_frost_resistance_mult: "Frost Resistance"
+ mod_frost_resistance_mult_desc: "Increases frost resistance."

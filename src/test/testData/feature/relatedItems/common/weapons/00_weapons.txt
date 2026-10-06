@@ -1,0 +1,10 @@
+flame_blade = {
+    icon = "gfx/interface/icons/weapons/flame_blade.dds"
+    portrait = "gfx/interface/icons/weapons/flame_blade_portrait.dds"
+    damage = 12
+}
+
+frost_hammer = {
+    icon = "gfx/interface/icons/weapons/frost_hammer.dds"
+    damage = 10
+}
