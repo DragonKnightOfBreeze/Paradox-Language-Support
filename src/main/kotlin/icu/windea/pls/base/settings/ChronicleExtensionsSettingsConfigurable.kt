@@ -9,7 +9,7 @@ import icu.windea.pls.base.ChronicleBaseBundle
 import icu.windea.pls.base.help.ChronicleHelpTopics
 import icu.windea.pls.model.constants.ChronicleUrls
 
-class ChronicleExtensionsSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.message("settings")), SearchableConfigurable {
+class ChronicleExtensionsSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.message("settings.extensions")), SearchableConfigurable {
     // private val callbackLock = CallbackLock()
 
     override fun getId() = "chronicle.extensions"

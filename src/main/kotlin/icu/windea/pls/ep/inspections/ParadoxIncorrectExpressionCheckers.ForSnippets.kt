@@ -4,6 +4,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.core.annotations.Optimized
+import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.joinToStringFast
 import icu.windea.pls.core.util.ProcessorScope
@@ -34,11 +35,10 @@ class ParadoxDefinitionSnippetChecker : ParadoxIncorrectExpressionChecker {
         if (templates.isNullOrEmpty()) return true
         val value = element.value
         val project = config.configGroup.project
-        val missingNames = templates.mapNotNullFast { template ->
-            val fullName = template.resolve(value)
-            if (ParadoxMatchFactory.matchesDefinition(element, project, fullName, typeExpression)) null else fullName
-        }
-        if (missingNames.isEmpty()) return true
+        val fullNames = templates.mapNotNullFast { it.resolve(value) }
+        val missingNames = fullNames.filterFast { !ParadoxMatchFactory.matchesDefinition(element, project, it, typeExpression) }
+        if (missingNames.size == fullNames.size) return true // require partially matched first
+        if (missingNames.isEmpty()) return true // skip if full matched
 
         val description = when {
             context.showExpect -> ChronicleEpBundle.message("incorrectExpression.definitionSnippet.desc.1", missingNames.joinToStringFast())
@@ -68,11 +68,10 @@ class ParadoxLocalisationSnippetChecker : ParadoxIncorrectExpressionChecker {
         if (templates.isNullOrEmpty()) return true
         val value = element.value
         val project = config.configGroup.project
-        val missingNames = templates.mapNotNullFast { template ->
-            val fullName = template.resolve(value)
-            if (ParadoxMatchFactory.matchesLocalisation(element, project, fullName)) null else fullName
-        }
-        if (missingNames.isEmpty()) return true
+        val fullNames = templates.mapNotNullFast { it.resolve(value) }
+        val missingNames = fullNames.filterFast { !ParadoxMatchFactory.matchesLocalisation(element, project, it) }
+        if (missingNames.size == fullNames.size) return true // require partially matched first
+        if (missingNames.isEmpty()) return true // skip if full matched
 
         val description = when {
             context.showExpect -> ChronicleEpBundle.message("incorrectExpression.localisationSnippet.desc.1", missingNames.joinToStringFast())

@@ -16,6 +16,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.ParadoxPsiPresentationService
 import icu.windea.pls.lang.search.ParadoxDefineVariableSearch
 import icu.windea.pls.lang.search.util.contextSensitive
+import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 class GotoDefineVariablesHandler : GotoTargetHandler() {
     override fun getFeatureUsedKey(): String {
@@ -26,19 +27,21 @@ class GotoDefineVariablesHandler : GotoTargetHandler() {
         val project = file.project
         val offset = editor.caretModel.offset
         val targets = mutableListOf<PsiElement>()
-        var sourceElement: PsiElement?
-        val element = ParadoxPsiFileService.findScriptProperty(file, offset) ?: return null
-        sourceElement = element
-        val expression = ParadoxPsiPresentationService.getExpressionForDefineVariable(element) ?: return null
-        val defineVariableInfo = element.defineVariableInfo ?: return null
+        val sourceElement = ParadoxPsiFileService.findScriptProperty(file, offset) ?: return null
+        val expression = ParadoxPsiPresentationService.getExpressionForDefineVariable(sourceElement) ?: return null
+        val defineVariableInfo = sourceElement.defineVariableInfo ?: return null
         runWithModalProgressBlocking(project, ChronicleBundle.message("script.goto.defineVariables.search", expression.orAnonymous().escapeXml())) {
             // need read actions here if necessary
             readAction {
-                val selector = ParadoxDefineVariableSearch.selector(project, element).contextSensitive()
+                val selector = ParadoxDefineVariableSearch.selector(project, sourceElement).contextSensitive()
                 val resolved = ParadoxDefineVariableSearch.search(defineVariableInfo.namespace, defineVariableInfo.variable, selector).findAll()
                 targets.addAll(resolved)
             }
         }
+        return getGotoData(targets, sourceElement)
+    }
+
+    private fun getGotoData(targets: MutableList<PsiElement>, sourceElement: ParadoxScriptProperty): GotoData? {
         if (targets.isEmpty()) return null // unavailable
         targets.removeIf { it == sourceElement } // remove current target from targets
         return GotoData(sourceElement, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
