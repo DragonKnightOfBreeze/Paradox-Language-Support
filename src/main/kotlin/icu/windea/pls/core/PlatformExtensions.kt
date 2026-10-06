@@ -53,7 +53,6 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.impl.source.tree.LightTreeUtil
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
-import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
@@ -203,15 +202,6 @@ fun Iterable<TextRange>.mergeTextRanges(): List<TextRange> {
         }
     }
     return result
-}
-
-// endregion
-
-// region Cache Related Extensions
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T> T.withDependencyItems(vararg dependencies: Any): CachedValueProvider.Result<T> {
-    return CachedValueProvider.Result.create(this, *dependencies)
 }
 
 // endregion

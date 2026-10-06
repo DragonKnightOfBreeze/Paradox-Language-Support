@@ -12,10 +12,10 @@ import com.intellij.psi.util.CachedValuesManager
 //     return CachedValueProvider.Result.create(this, *dependencies)
 // }
 //
-@Suppress("NOTHING_TO_INLINE")
-inline fun <T> T.withDependencyItems(dependencies: List<Any>): CachedValueProvider.Result<T> {
-    return CachedValueProvider.Result.create(this, dependencies)
-}
+// @Suppress("NOTHING_TO_INLINE")
+// inline fun <T> T.withDependencyItems(dependencies: List<Any>): CachedValueProvider.Result<T> {
+//     return CachedValueProvider.Result.create(this, dependencies)
+// }
 
 fun <T> createCachedValue(
     project: Project,
