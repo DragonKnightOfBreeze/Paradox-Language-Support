@@ -4,8 +4,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.impl.light.LightElement
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.config.delegated.CwtTypeConfig
 import icu.windea.pls.core.util.UnaryTemplateInfo
 import icu.windea.pls.lang.psi.ParadoxSnippetElement
 import icu.windea.pls.model.ParadoxGameType
@@ -29,6 +31,9 @@ class ParadoxDefinitionSnippetLightElement(
     override val gameType: ParadoxGameType,
     private val project: Project,
 ) : ParadoxLightElementBase(parent), PsiNameIdentifierOwner, ParadoxSnippetElement {
+    val typeConfig: CwtTypeConfig?
+        get() = ChronicleFacade.getConfigGroup(project, gameType).types.get(definitionType)
+
     override fun getIcon(flags: Int) = ChronicleIcons.Nodes.DefinitionSnippet
 
     override fun getText() = name

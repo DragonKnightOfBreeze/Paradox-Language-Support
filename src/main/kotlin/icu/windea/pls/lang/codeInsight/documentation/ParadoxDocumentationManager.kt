@@ -265,6 +265,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.buildDefinitionPartForDefinitionSnippet(element: ParadoxDefinitionSnippetLightElement) {
         // 显示片段文本，以及与各模板参数对应的完整定义引用
         val name = element.name
+        val definitionType = element.definitionType
         val gameType = element.gameType
         definition {
             append(ChronicleStrings.definitionSnippetPrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
@@ -272,8 +273,17 @@ object ParadoxDocumentationManager {
                 val fullName = template.resolve(name)
                 br()
                 append(ChronicleStrings.relatedDefinitionPrefix).append(" ")
-                val link = ReferenceLinkType.Definition.createLink(fullName, element.definitionType, gameType)
+                val link = ReferenceLinkType.Definition.createLink(fullName, definitionType, gameType)
                 psiLinkOrUnresolved(link.escapeXml(), fullName.escapeXml(), context = element)
+                append(": ")
+                val typeConfig = element.typeConfig
+                if (typeConfig != null) {
+                    val categories = ReferenceLinkType.CwtConfig.Categories
+                    val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, typeConfig.name, gameType)
+                    psiLinkOrUnresolved(typeLink.escapeXml(), typeConfig.name.escapeXml())
+                } else {
+                    append(definitionType.escapeXml())
+                }
             }
         }
     }
@@ -301,13 +311,14 @@ object ParadoxDocumentationManager {
             val gameType = element.gameType
             val configGroup = ChronicleFacade.getConfigGroup(element.project, gameType)
             append(ChronicleStrings.complexEnumValuePrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
+            append(": ")
             val complexEnumConfig = configGroup.complexEnums[enumName]
             if (complexEnumConfig != null) {
                 val category = ReferenceLinkType.CwtConfig.Categories.complexEnums
                 val typeLink = ReferenceLinkType.CwtConfig.createLink(category, enumName, gameType)
-                append(": ").psiLinkOrUnresolved(typeLink.escapeXml(), enumName.escapeXml())
+                psiLinkOrUnresolved(typeLink.escapeXml(), enumName.escapeXml())
             } else {
-                append(": ").append(enumName)
+                append(enumName.escapeXml())
             }
 
             // 加上相关本地化的信息：同名的本地化
@@ -356,7 +367,7 @@ object ParadoxDocumentationManager {
                     val typeLink = ReferenceLinkType.CwtConfig.createLink(category, dynamicValueType, gameType)
                     psiLinkOrUnresolved(typeLink.escapeXml(), dynamicValueType.escapeXml())
                 } else {
-                    append(dynamicValueType)
+                    append(dynamicValueType.escapeXml())
                 }
             }
 
@@ -859,7 +870,7 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.buildDefinitionPartForLocalisationLocale(name: String) {
         definition {
             // 加上元素定义信息
-            append(ChronicleStrings.localePrefix).append(" <b>").append(name).append("</b>")
+            append(ChronicleStrings.localePrefix).append(" <b>").append(name.escapeXml()).append("</b>")
         }
     }
 
@@ -945,7 +956,7 @@ object ParadoxDocumentationManager {
             val m = OnceMarker()
             parameterContextInfo.parameters.forEach f@{ (parameterName, elements) ->
                 if (m.mark()) append("<br>")
-                append(parameterName)
+                append(parameterName.escapeXml())
                 val optional = ParadoxParameterManager.isOptional(parameterContextInfo, parameterName)
                 if (optional) append("?") // optional marker
                 // 加上推断得到的类型信息

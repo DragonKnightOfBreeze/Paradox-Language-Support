@@ -193,7 +193,7 @@ private sealed class CwtValueConfigBase : CwtOptionMetadataBase(), CwtValueConfi
     }
 
     override fun delegated(configs: List<CwtMemberConfig<*>>?): CwtValueConfig {
-        val withConfigs = configs != null  // NOTE 2.0.6 configs may be injectable
+        val withConfigs = configs != null // NOTE 2.0.6 configs may be injectable
         val config = when (withConfigs) {
             true -> CwtValueConfigDelegateWithConfigs(this)
                 .also { it.configs = configs } // do not do optimization here

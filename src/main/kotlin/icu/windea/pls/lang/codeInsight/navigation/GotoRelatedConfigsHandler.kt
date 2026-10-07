@@ -1,6 +1,5 @@
 package icu.windea.pls.lang.codeInsight.navigation
 
-import com.intellij.codeInsight.navigation.GotoTargetHandler
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiComment
@@ -8,13 +7,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiWhiteSpace
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.findElementAt
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 
-// com.intellij.testIntegration.GotoTestOrCodeHandler
-
-class GotoRelatedConfigsHandler : GotoTargetHandler() {
+class GotoRelatedConfigsHandler : GotoHandlerBase() {
     override fun getFeatureUsedKey(): String {
         return "navigation.goto.paradoxRelatedConfigs"
     }
@@ -23,17 +19,14 @@ class GotoRelatedConfigsHandler : GotoTargetHandler() {
         // possible for any element in script or localisation files (but related CWT configs may not exist)
 
         val offset = editor.caretModel.offset
-        val element = file.findElementAt(offset) {
+        val sourceElement = file.findElementAt(offset) {
             it.takeIf { e -> e !is PsiWhiteSpace && e !is PsiComment }
         } ?: return null
         val relatedConfigs = ParadoxConfigService.getRelatedConfigs(file, offset)
-        val targets = relatedConfigs.mapNotNull { it.pointer.element }
+        if (relatedConfigs.isEmpty()) return null // unavailable
+        val targets = relatedConfigs.mapNotNullTo(mutableListOf()) { it.pointer.element }
         if (targets.isEmpty()) return null // unavailable
-        return GotoData(element, targets.distinct().toArray(PsiElement.EMPTY_ARRAY), emptyList())
-    }
-
-    override fun shouldSortTargets(): Boolean {
-        return false
+        return getGotoData(sourceElement, targets, removeSource = false)
     }
 
     override fun getChooserTitle(sourceElement: PsiElement, name: String?, length: Int, finished: Boolean): String {

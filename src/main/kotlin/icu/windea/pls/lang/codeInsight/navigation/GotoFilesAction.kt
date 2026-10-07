@@ -1,10 +1,7 @@
 package icu.windea.pls.lang.codeInsight.navigation
 
-import com.intellij.codeInsight.actions.BaseCodeInsightAction
-import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
-import com.intellij.psi.util.PsiUtilBase
-import icu.windea.pls.core.editor
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
 
@@ -12,22 +9,12 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
  * 导航到当前文件的包括自身在内的拥有相同路径的文件。
  * 如果是本地化文件的话，也忽略路径中的语言环境。
  */
-class GotoFilesAction : BaseCodeInsightAction() {
+class GotoFilesAction : GotoActionBase() {
     private val handler = GotoFilesHandler()
 
     override fun getHandler() = handler
 
-    override fun update(e: AnActionEvent) {
-        e.presentation.isEnabledAndVisible = false
-        val project = e.project ?: return
-        val editor = e.editor ?: return
-        val file = PsiUtilBase.getPsiFileInEditor(editor, project) ?: return
-        val visible = isVisible(file)
-        e.presentation.isVisible = visible
-        e.presentation.isEnabled = visible
-    }
-
-    private fun isVisible(file: PsiFile): Boolean {
+    override fun isVisible(file: PsiFile, editor: Editor): Boolean {
         // 忽略不存在文件信息的文件（如注入的文件）
         if (file.fileInfo == null) return false
         // 忽略直接位于游戏或模组的根目录下的文件
