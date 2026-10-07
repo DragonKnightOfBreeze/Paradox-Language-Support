@@ -1,0 +1,55 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    "opencode-vibeguard"
+  ],
+  "mcp": {
+    "git": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "mcp-server-git",
+        "--repository",
+        "D:/Documents/Projects/__Pinned/Paradox-Chronicle"
+      ]
+    },
+    "github": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "environment": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "{env:GITHUB_MCP_API_KEY}",
+        "npm_config_strict_ssl": "false"
+      }
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "environment": {
+        "npm_config_strict_ssl": "false"
+      }
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
+      }
+    },
+    "jetbrains": {
+      "type": "remote",
+      "url": "http://localhost:64342/sse"
+    },
+    "intellij-index": {
+      "type": "remote",
+      "url": "http://127.0.0.1:29170/index-mcp/streamable-http"
+    }
+  }
+}

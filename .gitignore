@@ -13,7 +13,7 @@ local.properties
 
 # excluded ai workflow files
 .opencode
-opencode.json*
+# opencode.json*
 
 # excluded non-public documents
 notebook
