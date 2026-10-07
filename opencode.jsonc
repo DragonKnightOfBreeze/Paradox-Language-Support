@@ -22,7 +22,7 @@
       ],
       "environment": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "{env:GITHUB_MCP_API_KEY}",
-        "npm_config_strict_ssl": "false"
+        "NODE_USE_SYSTEM_CA": "1"
       }
     },
     "sequential-thinking": {
@@ -33,7 +33,7 @@
         "@modelcontextprotocol/server-sequential-thinking"
       ],
       "environment": {
-        "npm_config_strict_ssl": "false"
+        "NODE_USE_SYSTEM_CA": "1"
       }
     },
     "context7": {
