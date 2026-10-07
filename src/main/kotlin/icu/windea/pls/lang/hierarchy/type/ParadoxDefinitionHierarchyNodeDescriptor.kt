@@ -71,7 +71,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
             if (nodeType != NodeType.Definition || element !is ParadoxDefinitionElement) return@run
             if (!hierarchySettings.showEventInfo) return@run
             val eventInfo = getEventInfo(element, hierarchySettings)
-            if(eventInfo.isNullOrEmpty()) return@run
+            if (eventInfo.isNullOrEmpty()) return@run
             myHighlightedText.ending.addText(eventInfo, getRelatedInfoAttributes())
         }
         run {
@@ -79,7 +79,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
             if (nodeType != NodeType.Definition || element !is ParadoxDefinitionElement) return@run
             if (!hierarchySettings.showTechInfo) return@run
             val techInfo = getTechInfo(element, hierarchySettings)
-            if(techInfo.isNullOrEmpty()) return@run
+            if (techInfo.isNullOrEmpty()) return@run
             myHighlightedText.ending.addText(techInfo, getRelatedInfoAttributes())
         }
         run {
@@ -122,7 +122,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
     }
 
     private fun getEventInfo(element: PsiElement, hierarchySettings: ChronicleSettings.HierarchyState): String? {
-        if(element !is ParadoxDefinitionElement) return null
+        if (element !is ParadoxDefinitionElement) return null
         val definitionInfo = element.definitionInfo ?: return null
         val gameType = definitionInfo.gameType
         return buildList {
@@ -142,10 +142,10 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
     }
 
     private fun getTechInfo(element: PsiElement, hierarchySettings: ChronicleSettings.HierarchyState): String? {
-        if(element !is ParadoxDefinitionElement) return null
+        if (element !is ParadoxDefinitionElement) return null
         val definitionInfo = element.definitionInfo ?: return null
         val gameType = definitionInfo.gameType
-        if(gameType != ParadoxGameType.Stellaris) return null // TODO 3.0.x refactor
+        if (gameType != ParadoxGameType.Stellaris) return null // TODO 3.0.x refactor
         val file = element.containingFile
         return buildList {
             run r@{

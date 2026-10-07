@@ -136,7 +136,7 @@ class CwtTemplateDataExpressionSupport : CwtDataExpressionSupport {
     }
 }
 
-class CwtSnippetDataExpressionSupport : CwtDataExpressionSupport,CwtDataExpressionMetadataResolutionScope {
+class CwtSnippetDataExpressionSupport : CwtDataExpressionSupport, CwtDataExpressionMetadataResolutionScope {
     override fun resolve(expressionString: String, role: CwtDataExpressionRole): CwtDataExpression? {
         val separatorIndex = expressionString.indexOf('|')
         if (separatorIndex == -1) return null

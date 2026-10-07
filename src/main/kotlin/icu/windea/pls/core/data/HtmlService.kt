@@ -10,7 +10,7 @@ import org.jsoup.nodes.TextNode
  */
 object HtmlService {
     fun areEquivalent(html1: String, html2: String): Boolean {
-        if(html1 == html2) return true
+        if (html1 == html2) return true
 
         // 使用 parseBodyFragment 避免自动补充完整的 html/head 结构干扰片段对比
         val doc1 = Jsoup.parseBodyFragment(html1)

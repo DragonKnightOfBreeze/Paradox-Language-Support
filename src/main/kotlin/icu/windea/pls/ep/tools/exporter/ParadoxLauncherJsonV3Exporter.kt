@@ -11,7 +11,6 @@ import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxModSource
 import icu.windea.pls.model.tools.ParadoxModSetInfo
-import kotlinx.serialization.builtins.serializer
 import java.nio.file.Path
 import kotlin.io.path.exists
 
