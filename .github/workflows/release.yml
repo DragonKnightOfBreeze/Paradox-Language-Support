@@ -43,35 +43,6 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6.4.0
 
-      # Set environment variables
-      - name: Export Properties
-        id: properties
-        env:
-          RELEASE_BODY: ${{ github.event.release.body }}
-        shell: bash
-        run: |
-          PROPERTIES="$(./gradlew properties --console=plain -q)"
-          PLUGIN_VERSION="$(echo "$PROPERTIES" | grep "^pluginVersion:" | cut -f2- -d ' ')"
-          PLUGIN_PRERELEASE_VERSION="$(echo "$PROPERTIES" | grep "^pluginPreReleaseVersion:" | cut -f2- -d ' ')"
-          PLUGIN_BUILD_METADATA="$(echo "$PROPERTIES" | grep "^pluginBuildMetadata:" | cut -f2- -d ' ')"
-
-          CHANGELOG="$(printf '%s' "$RELEASE_BODY" | sed -e 's/^[[:space:]]*$//g' -e '/./,$!d')"
-
-          echo "pluginVersion: $PLUGIN_VERSION"
-          echo "pluginPrereleaseVersion: $PLUGIN_PRERELEASE_VERSION"
-          echo "pluginBuildMetadata: $PLUGIN_BUILD_METADATA"
-          echo "changelog:"
-          echo "$CHANGELOG"
-
-          {
-            echo "pluginVersion=$PLUGIN_VERSION"
-            echo "pluginPrereleaseVersion=$PLUGIN_PRERELEASE_VERSION"
-            echo "pluginBuildMetadata=$PLUGIN_BUILD_METADATA"
-            echo 'changelog<<EOF'
-            echo "$CHANGELOG"
-            echo 'EOF'
-          } >> "$GITHUB_OUTPUT"
-
       # Publish to JetBrains Marketplace
       - name: Publish Plugin
         env:
