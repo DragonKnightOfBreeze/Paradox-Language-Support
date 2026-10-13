@@ -11,6 +11,8 @@ import icu.windea.pls.lang.references.ParadoxScriptedVariablePsiReference
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.test.ChronicleTestScope
+import icu.windea.pls.test.dsl.ExpectDsl
+import icu.windea.pls.test.dsl.HighlightingDsl
 import icu.windea.pls.test.dsl.configureByText
 import icu.windea.pls.test.dsl.expectScope
 import org.junit.After
@@ -23,6 +25,8 @@ import org.junit.runners.JUnit4
  * 用作展示的平台测试。使用 DSL 风格。
  *
  * @see ChronicleTestScope
+ * @see ExpectDsl
+ * @see HighlightingDsl
  */
 @RunWith(JUnit4::class)
 @TestDataPath("/testData")
@@ -33,7 +37,7 @@ class ChronicleHelloWorldDslTest : BasePlatformTestCase(), ChronicleTestScope {
     fun doSetUp() {
         markIntegrationTest()
         markRootDirectory("chronicle")
-        markConfigDirectory("chronicle/.config") // showcase only, not actually required for this test case
+        markConfigDirectory("chronicle/.config")
         initConfigGroups(project, ParadoxGameType.Stellaris)
     }
 
@@ -115,14 +119,13 @@ class ChronicleHelloWorldDslTest : BasePlatformTestCase(), ChronicleTestScope {
     fun the_waked_highlighting_test() {
         myFixture.enableInspections(DuplicateScriptedVariablesInspection::class.java)
 
-        val tag = ChronicleInspectionBundle.message("script.duplicateScriptedVariables.desc", "answer").toWarningTag()
-
         // tag markers should be surrounding `@v`, rather than `@v = v`
         markFileInfo(ParadoxGameType.Stellaris, "common/tests/greetings")
         myFixture.configureByText("01_greetings.txt") {
+            val m = ChronicleInspectionBundle.message("script.duplicateScriptedVariables.desc", "answer")
             """
-            ${tag.start}@answer${tag.end} = 42
-            ${tag.start}@answer${tag.end} = NaN
+            ${warning(m)}@answer${warningEnd()} = 42
+            ${warning(m)}@answer${warningEnd()} = NaN
             @expected_answer = "greetings"
             the_waked = {
                 on_waked = {
@@ -130,7 +133,7 @@ class ChronicleHelloWorldDslTest : BasePlatformTestCase(), ChronicleTestScope {
                     value = @answer
                 }
             }
-        """.trimIndent()
+            """.trimIndent()
         }
 
         IndexingTestUtil.waitUntilIndexesAreReady(project)
