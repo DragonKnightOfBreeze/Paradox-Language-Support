@@ -1,0 +1,147 @@
+# 架构决策档案 (Architecture Decision Records, ADR)
+
+## 概述 / Overview
+
+本目录存放 Paradox Chronicle 插件的全部**自包含架构决策档案（RFC-style ADRs）**。
+
+每一篇 ADR 记录了针对特定技术选型、文法/语义支持、规则系统或架构演进的决策因果。文档通常自包含：背景与问题分析（Context & Problem）、决策方案（Decision）、关键代码位置（Key Locations）、使用说明（Usage）以及实施任务清单（Checklist）。
+
+---
+
+This directory contains Architecture Decision Records (ADRs) for Paradox Chronicle.
+
+Each ADR documents a distinct architectural decision, design rationale, API conventions, and implementation checklist.
+
+## 目录索引 / Catalog
+
+### 构建
+
+#### 依赖
+
+- [将 JSON 序列化框架从 jackson 改为 kotlinx-serialization](replace-jackson-with-kotlinx-serialization.md)
+
+### 后端（语法支持）
+
+#### 脚本文件
+
+- [概述](script-syntax-summary.md)
+- [引号相关](script-syntax-quotes.md)
+- [字符边界相关](script-syntax-character-edge-cases.md)
+- [条件化块相关](script-syntax-conditional-blocks.md)
+- [高级插值](script-syntax-advanced-interpolations.md)
+- [未整理](script-syntax-misc.md)
+
+#### 完善本地化文件的语法支持
+
+- [概述](localisation-syntax-summary.md)
+- [引号相关](localisation-syntax-quotes.md)
+- [字符边界相关](localisation-syntax-character-edge-cases.md)
+- [字符串变体、标签与上下文标签](localisation-syntax-grammatical.md)
+- [高级富文本](localisation-syntax-advanced-rich-text.md)
+
+#### 完善 CWT 文件的语法支持
+
+- [概述](cwt-syntax-summary.md)
+- [引号相关](cwt-syntax-quotes.md)
+- [字符边界相关](cwt-syntax-character-edge-cases.md)
+
+#### CSV 文件
+
+- [概述](csv-syntax-summary.md)
+- [引号相关](csv-syntax-quotes.md)
+
+### 后端
+
+#### 通用
+
+- [重构 `CwtDataTypes` `CwtConfigTypes` - 改为偏好使用 lambda 式构建器](cwt-data-types-and-config-types-builder.md)
+- [重构作用域和作用域方法 - 改为偏好使用成员方法作为作用域方法，而非带上下文参数的扩展方法](scope-and-scope-methods-refactor.md)
+- [重构 path/expression/complexExpression/config/configExpression - 更改解析器与解析方法的代码风格](expression-parser-and-resolve-style-refactor.md)
+- [关于上下文对象（context object）](context-object.md)
+- [集合选型（collection selection）](collection-selection.md)
+- [懒加载的魔法与24字节的摩擦](lazy-value-magic.md)
+- [引号模式与引号处理](quote-pattern.md)
+- [转义模式与转义处理](escape-pattern.md)
+- [颜色处理](color-pattern.md)
+- [区分“语法宏”与“语义宏”](macro.md)
+
+#### 通用基础设施
+
+- [刷新文件与重解析文件](refresh-and-reparse-files.md)
+
+#### 语言基础设施
+
+- [重新设计 PSI 接口（脚本文件）](script-psi-interface-redesign.md)
+- [重新设计 PSI 接口（本地化文件）](localisation-psi-interface-redesign.md)
+- [重新设计 PSI 接口（CWT 文件）](cwt-psi-interface-redesign.md)
+- [完善脚本文件的 lexer](script-lexer-refactor.md)
+- [完善本地化文件的 lexer](localisation-lexer-refactor.md)
+- [完善 lexer 的重置逻辑](lexer-reset.md)
+
+#### 规则系统
+
+- [支持并集规则](union-configs.md)
+- [并集规则和别名规则的规则展开](expansion-of-union-configs-and-alias-configs.md)
+- [重构 `CwtDataExpression` （元数据不应公开可变，以及其他）](data-expression-refactor.md)
+- [重命名：`optionData` -> `optionMetadata`](option-metadata.md)
+- [模板表达式与模式匹配的相关重构](template-expression-and-pattern-match.md)
+- [关于作为通配策略的数据类型的相关重构](wildcard-data-types.md)
+- [支持位置感知的数据类型](location-aware-data-types.md)
+- [支持片段匹配](snippet-match.md)
+- [支持匹配带前缀标签的脚本表达式](prefix-tag-match.md)
+
+#### 分析层
+
+- [优化 rootInfo 和 rootMetadata 的解析逻辑](root-info-and-metadata-resolution.md)
+
+#### 索引
+
+- [为合并索引引入线程本地的上下文](merged-index-thread-context.md)
+
+#### 匹配与解析
+
+- [重构规则上下文，以提供更严格的对无法解析的表达式的代码检查](config-context-refactor.md)
+- [完善规则匹配的预处理和后续处理逻辑](config-match-processing.md)
+
+#### 其他语义相关
+
+- [完善作用域的匹配和合并逻辑，兼容并集作用域](union-scopes.md)
+- [引入 `ParadoxAnnotatedData`](annotated-data-api.md)
+- [引入 `ParadoxData` 和 `ParadoxDataSource`](data-api.md)
+- [重构 service/manager 层的 relatedItems/presentableItems 相关的方法](related-items-and-presentable-items.md)
+
+#### 语言构造支持
+
+- [增强对定值（define）的支持](define-support.md)
+- [增强对数据类型 `ShaderEffect` 和 `MeshLocator` 的支持](shader-effect-and-mesh-locator-support.md)
+- [[CK3/VIC3/EU5] 完善对定值引用表达式（defineReferenceExpression）和数组定值表达式（arrayDefineReferenceExpression）的支持](define-reference-expression-support.md)
+- [[CK3/VIC3/EU5] 完善对标签集表达式（tagsExpression）的支持](tags-expression-support.md)
+- [完善对 CSV 文件与 rowConfig 的支持](csv-and-row-config-support.md)
+- [支持内联定义](inline-definition.md)
+
+#### 语言功能支持
+
+- [语句操作服务 & 相关的意向动作和代码检查](statement-operations-intentions-and-inspections.md)
+- [不正确的文件编码的代码检查](incorrect-file-encoding-inspection.md)
+- [内联脚本文件的文件级别提示](inline-script-file-level-hints.md)
+- [重构和完善各个 `ElementDescriptionProvider` 和 `FindUsagesProvider`](element-descriptions.md)
+- [重构和完善与 `ItemPresentation` 相关的代码](item-presentations.md)
+- [整理部分语言功能的入口，移动到更合适的位置](language-feature-entry-arrangement.md)
+- [修复来自 `UnresolvedExpressionInspection` 的误报](unresolved-expression-inspection-fix.md)
+- [修复来自 `MissingExpressionInspection` 的误报](missing-expression-inspection-fix.md)
+- [修复来自 `TooManyExpressionInspection` 的误报](too-many-expression-inspection-fix.md)
+
+#### 工具
+
+- [特殊路径与链接](special-paths-and-urls.md)
+
+### 测试
+
+#### 通用
+
+- [重构测试作用域方法，提取到 `ChronicleTestScope`](test-scope.md)
+
+## 关联与扩展设计 / Related Specs & Analysis
+
+- **系统设计规范**：参见 [documents/design/ (系统设计规范)](../../design/README.md)
+- **性能与内存基准**：参见 [documents/notes/analysis/ (性能与内存分析)](../analysis/README.md)
