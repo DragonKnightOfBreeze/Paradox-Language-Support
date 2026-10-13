@@ -15,17 +15,17 @@ As you embark on this journey, keep serious, cautious, and curious.
 ### What the plugin supports
 
 Following custom languages are supported by the plugin:
-- **Paradox Script** (`PARADOX_SCRIPT`) - used for providing game data and writing game logic.
-- **Paradox Localisation** (`PARADOX_LOCALISATION`) - used for providing i18n text.
-- **Paradox CSV** (`PARADOX_CSV`) - used for describing table data.
+- **Paradox Script** (`PARADOX_SCRIPT`, mainly `*.txt`) - used for providing game data and writing game logic.
+- **Paradox Localisation** (`PARADOX_LOCALISATION`, `*.yml`) - used for providing i18n text.
+- **Paradox CSV** (`PARADOX_CSV`, `*.csv`) - used for describing table data.
 - **CWT** (`CWT`, `*.cwt`) - used for writing CWT config files which drive semantics (completion, inspections, navigation, docs, etc.).
 
 In addition to language features, the plugin also includes:
 - **Image support** (DDS/TGA) with optional tool-based rendering/conversion.
-- **Tool integrations** (e.g. ImageMagick, Tiger lint, Translation plugin).
+- **Tool integrations** (e.g., ImageMagick, Tiger lint, Translation plugin).
 - **AI integration** (LangChain4j-based) focused on localisation translation/polishing workflows.
 - A substantial internal **extension point (EP)** architecture.
-- A **code injection** subsystem.
+- A internal **code injection** subsystem.
 
 ### Key points
 
@@ -43,7 +43,6 @@ In addition to language features, the plugin also includes:
 - `src/test/kotlin`, `src/test/java`, `src/test/resources`: test codes and test resources.
 - `src/test/testData/`: test data files (e.g., test-specific cwt config files and script files).
 - `src/main/resources/META-INF/plugin.xml`: plugin entry (registrations are split into `META-INF/*.xml`).
-- `src/main/resources/META-INF/*.xml`: plugin registrations.
 
 ## Setup and build commands (Windows)
 
@@ -100,29 +99,29 @@ The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`. 
 
 ### IntelliJ platform test patterns
 
-- **Parsing tests** (syntax/PSI snapshots): use `ParsingTestCase`, comparing the parsed tree output against a stored snapshot (e.g. `icu.windea.pls.script.ParadoxScriptParsingTest`).
+- **Parsing tests** (syntax/PSI snapshots): use `ParsingTestCase`, comparing the parsed tree output against a stored snapshot (e.g., `icu.windea.pls.script.ParadoxScriptParsingTest`).
 - **Fixture-based tests**: use `BasePlatformTestCase` + `myFixture.configureByText(fileName, text)` (preferred for simple cases) or `myFixture.configureByFile(filePath)` (for more complex, file-based cases).
 - **Highlighting tests** (annotators/inspections): build the text to check highlighting programmatically with the help of needed scope methods, then call `myFixture.checkHighlighting(...)`.
 
 ### Test data conventions
 
 - Most platform/integration tests use test data under `src/test/testData`.
-- Recommended (not universally enforced) naming: `*.test.txt` / `*.test.yml` / `*.test.cwt` / `*.test.csv`, in `snake_case`, optionally with a `.{gameTypeId}` segment to pin a game type (e.g. `example.stellaris.txt`).
+- Recommended naming: in `snake_case`, with correct extension, and optionally with a `.{gameTypeId}` segment to pin a game type (e.g., `example.txt` `example.stellaris.yml`).
 - For `ParsingTestCase`-based tests, the input file is `<caseName>.test.txt` while the expected PSI-tree snapshot file is `<caseName>.txt` (no `.test.` segment).
-- Some feature tests provide a test-local `.config/` directory under test data to simulate config groups (e.g. `features/index/.config`, `features/inspections/.config`); config files must live in a subdirectory of `.config/` (e.g. `core/`, `stellaris/`), never directly inside it.
-- `src/test/testData/issues/<issueNumber>[_shortDesc]/` holds regression test data for GitHub-issue-specific tests (see `icu.windea.pls.test.issues.IssueNNNTest` below), typically with a `README.md` describing the scenario.
-- `src/test/testData/chronicle/` is a self-contained showcase "game/mod" content tree (see Snapshot tests below) and follows common file naming (e.g. `00_events.txt`) instead of the `.test.` convention, since it simulates real game/mod content rather than being a narrow test fixture.
+- Some feature tests provide a test-local `.config/` directory under test data to simulate config groups (e.g., `features/index/.config`, `features/inspections/.config`); config files must live in a subdirectory of `.config/` (e.g., `core/`, `stellaris/`), never directly inside it.
+- `src/test/testData/issues/` holds regression test data for GitHub-issue-specific tests (see `icu.windea.pls.test.issues.IssueNNNTest` below).
+- `src/test/testData/chronicle/` is a self-contained showcase "game/mod" content tree to simulates real game/mod content (see *Snapshot tests* below).
 
 ### About test scope
 
-The plugin is config-driven. Many features (e.g. type inference, scope inference, macros) depend on **CWT config groups** and a simulated “game/mod context”.
+The plugin is config-driven. Many features (e.g., type inference, scope inference, macros) depend on **CWT config groups** and a simulated “game/mod context”.
 
-A set of scope methods, defined in interface `icu.windea.pls.test.ChronicleTestScope`, makes these tests deterministic. It's mixed into test classes via interface composition (not a shared base class): `class XxxTest : BasePlatformTestCase(), ChronicleTestScope`. There is no common `ChronicleBasePlatformTestCase`; only a few narrower abstract bases exist for specific test families (e.g. `ParadoxComplexExpressionTest`).
+A set of scope methods, defined in interface `icu.windea.pls.test.ChronicleTestScope`, makes these tests deterministic. It's mixed into test classes via interface composition (not a shared base class): `class XxxTest : BasePlatformTestCase(), ChronicleTestScope`. There is no common `ChronicleBasePlatformTestCase`; only a few narrower abstract bases exist for specific test families (e.g., `ParadoxComplexExpressionTest`).
 
 Key `ChronicleTestScope` methods:
 - `findElementAtCaret()` / `findReferenceAtCaret()` are `CodeInsightTestFixture` extensions for caret-based lookups.
-- `addAdditionalAllowedRoots(...)` whitelists extra filesystem roots for VFS access checks (used e.g. to reach a real local Steam/game path in `ParadoxModImporterTest`).
-- `markIntegrationTest()` / `clearIntegrationTest()` toggle integration-test-only behavior (inferring file type/game type from file name) and clean up injected state.
+- `addAdditionalAllowedRoots(...)` whitelists extra filesystem roots for VFS access checks (used e.g., to reach a real local Steam/game path in `ParadoxModImporterTest`).
+- `markIntegrationTest()` / `clearIntegrationTest()` toggle integration-test-only behavior (inferring file type and game type from file name) and clean up injected state.
 - `markRootDirectory(relPath)` / `markConfigDirectory(relPath)` inject the root/config directory path, relative to the test data directory (`src/test/testData`).
 - `createRootInfo(gameType, gameVersion = null)` builds an injected root info, optionally pinned to a specific game version - useful for testing version-gated behavior.
 - `markFileInfo(gameType or rootInfo, path, entry = "", group = null)` (for a file to be configured afterward, e.g. via `myFixture.configureByFile`) and `VirtualFile.injectFileInfo(...)` (for an already-existing `VirtualFile`) inject per-file metadata; both have an overload taking a pre-built `ParadoxRootInfo` (from `createRootInfo`) instead of a bare `gameType`.
@@ -190,7 +189,7 @@ Some tests are intentionally **disabled by default** and only run when explicitl
   - `icu.windea.pls.lang.match` - Semantic-level matching. Mainly based on indices, reference resolution and configs.
   - `icu.windea.pls.lang.resolve` - Semantic-level resolution. Mainly based on indices, reference resolution and configs.
   - `icu.windea.pls.lang.util` - High-level managers and special components.
-- `icu.windea.pls.integrations` - The integration module. Provides integrations to third-party tools (e.g, image processing tools and linting tools).
+- `icu.windea.pls.integrations` - The integration module. Provides integrations to third-party tools (e.g., image processing tools and linting tools).
 - `icu.windea.pls.extensions` - The extension module. Provides integrations and extensions to third-party plugins (e.g., JSON and Markdown).
 - `icu.windea.pls.tools` - The tool module. Provides several bundled utilities and integrations (e.g., game launchers and config generators).
 - `icu.windea.pls.ep` - Various EP interfaces and implementations to provide language construct support, language feature support and several QoL features.
@@ -208,8 +207,8 @@ Notes on `icu.windea.pls.lang.match` and `icu.windea.pls.lang.resolve`:
 
 Notes on `icu.windea.pls.config.manipulation` and `icu.windea.pls.lang.manipulation`:
 - These packages hold "manipulation"-focused services plus related model classes, enums, and extension methods.
-- The code here typically transforms or directly mutates the state of a target (a config object, PSI, etc.)
-- It can happen at several different stages/levels (building the resolve context, performing semantic resolution, invoking a language feature).
+- The code here typically transforms or directly mutates the state of a target (a config object, PSI, etc.).
+- It can happen at several different stages/levels (building the resolution context, performing semantic resolution, invoking a language feature, etc.).
 - It also serves as infrastructure for parts of semantic resolution as well as some refactorings, intentions, and quick fixes.
 
 Notes on `Service` vs `Manager` vs `Util`:
@@ -225,7 +224,7 @@ Notes on `Service` vs `Manager` vs `Util`:
 
 Here are some common conversions:
 - Prefer using prefix for language and domain specific class names (e.g., `Cwt...` `Paradox...` `ParadoxScript...`).
-- prefer using verb form for actions and intentions (e.g, `CopyDefinitionNameIntention`).
+- prefer using verb form for actions and intentions (e.g., `CopyDefinitionNameIntention`).
 - Prefer word-based or prefix-based abbreviations (e.g., for `scopeContext`: `context`, `sc` or just `c` is good, `ctx` is bad).
 
 For more details, see: `agents/context/naming-conventions.md`
@@ -240,20 +239,21 @@ For more details, see: `agents/context/importing-conventions.md`
 
 ### Comments
 
-- Write documentation comments in Chinese by default, unless explicitly requested, or need to be consistent with the context or relevant location.
-- Write normal comments in Chinese or English, based on the context or relevant location.
+- Write doc comments for Java and Kotlin in Chinese by default, unless explicitly requested, or need to be consistent with the context.
+- Write doc comments for other languages in English by default, unless explicitly requested, or need to be consistent with the context.
+- Write normal comments in Chinese or English, based on the context.
 - Prefer KDoc style for Kotlin.
 - When referencing types like `PsiElement` in KDoc, prefer KDoc links like `[PsiElement]`.
-- Prefer natural-language descriptions over embedding literal code snippets; reference key code locations instead (e.g. via `@see`) when necessary.
+- Prefer natural-language descriptions over embedding literal code snippets; reference key code locations instead (e.g., via `@see`) when necessary.
 - Avoid documenting member properties individually - fold them into the containing class/interface KDoc (using `@property`) unless a property truly needs detailed documentation.
-- Avoid overly long parameter-by-parameter docs (`@param`) unless truly necessary; prefer describing the method as a whole and referencing parameters inline (e.g. `[param]`) when needed.
+- Avoid overly long parameter-by-parameter docs (`@param`) unless truly necessary; prefer describing the method as a whole and referencing parameters inline (e.g., `[param]`) when needed.
 
 ### Caching
 
 - Prefer `icu.windea.pls.core.util.CachesKt.CacheBuilder` for caching (if `ConcurrentHashMap` it not enough).
 - Prefer `com.github.benmanes.caffeine.cache.Interner` for string interning.
 - Global caches in `icu.windea.pls.core`: usually strong values with size + TTL.
-- Very large caches (e.g. config objects): usually soft values.
+- Very large caches (e.g., config objects): usually soft values.
 - IDE-lifecycle-tied caches: usually soft values.
 
 ### Indexing
@@ -314,15 +314,16 @@ For detailed language syntax and recommended examples, see:
 For the documents and examples, see:
 - `docs/en/config.md` (the config system document)
 - `docs/en/ref-config-format.md` (the config format manual)
-- `src/test/testData/chronicle/` (the easter-egg config directory)
 - `cwt/cwtools-stellaris-config/` (the real-game config directory for Stellaris, also available for other game types)
+- `src/test/testData/` (there are also various test config files under the test data directory)
 
 ## Agent instructions
 
 ### Communication
 
-- **IMPORTANT**: Communicate with the maintainer in **Chinese**.
-- **TIP**: Meanwhile, write documents, doc comments and normal comments in Chinese or/and English, depending on the specific scenario.
+- Communicate with the maintainer in Chinese or English, depends on what language is used in the conversation. **NOTE**: Chinese is usually used by the maintainer.
+- Write documents in Chinese or/and English, depending on the specific scenario. **NOTE**: Chinese is usually used for maintainer documents.
+- Write doc comments and normal comments in Chinese or English, depending on previous requirements, or based on the context.
 
 ### Markdown specifics
 
@@ -356,8 +357,8 @@ For the documents and examples, see:
 
 ### JetBrains MCP server
 
-When you need to **drive IDE actions** (not just code intelligence), prefer the built-in JetBrains MCP server tools when available.
+When you need to **drive IDE actions**, prefer the built-in JetBrains MCP server tools when available.
 
 ### IDE Index MCP server
 
-When doing **code navigation/refactoring** on symbols, prefer the IDE Index MCP server tools (semantic/index-based) instead of text-based grep when available.
+When you need to **do code navigation, code refactoring, code inspections and so on**, prefer the IDE Index MCP server tools when available, instead of text-based grep.
