@@ -1,7 +1,6 @@
 ---
 description: Cleanup existing tests
 agent: build
-model: deepseek/deepseek-v4-pro
 ---
 
 For all existing tests in this project:
