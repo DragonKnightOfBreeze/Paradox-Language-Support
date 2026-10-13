@@ -2,11 +2,17 @@
 
 ## Unreleased
 
-- [ ] 优化图片处理逻辑和命令行执行逻辑，适用取消检查，以避免可能的 IDE 冻结 / Optimize the image processing logic and command-line execution logic, apply cancellation checks, to avoid possible IDE freeze ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
 - [ ] 优化合并索引的构建逻辑，减少耗时 / Optimize the building logic of the merged index to reduce time consumption
 - [ ] 分析与优化构建索引时的性能和内存占用 / Analyze and optimize performance and memory during indexing
 - [ ] 分析与优化完成项目分析后的性能和内存占用 / Analyze and optimize performance and memory after finishing project analysis
 - [ ] 完善测试用例 / Improve test cases
+
+## 3.0.5
+
+- [ ] 在快速文档中直接渲染片段的相关本地化 / Render related localisations directly in quick docs ([#432](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/432)) 
+- [ ] 优化命令行执行逻辑和图片处理逻辑，适用取消检查和超时限制，以避免可能的 IDE 冻结 / Optimize the command-line execution logic and image processing logic, and apply cancellation checks and timeout limits, to avoid possible IDE freezes([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
+- [ ] 补充基准测试 / Add more benchmarks
+- [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 3.0.4
 
