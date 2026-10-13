@@ -18,7 +18,10 @@
   <depends optional="true" config-file="chronicle-extension-translation.xml">cn.yiiguxing.plugin.translate</depends>
 
   <!-- Chapters of the guide book -->
-  <xi:include href="/META-INF/chronicle-inject.xml"/> <!-- Chapter of the code injection magic needs to be put at the very front -->
+  <!-- - Chapter of various infrastructures should be put at the front -->
+  <!-- - Chapter of the code injection magic should be put at the start -->
+  <!-- - Chapter of the extension point magic should be put at the end -->
+  <xi:include href="/META-INF/chronicle-inject.xml"/>
   <xi:include href="/META-INF/chronicle-base.xml"/>
   <xi:include href="/META-INF/chronicle-cwt.xml"/>
   <xi:include href="/META-INF/chronicle-script.xml"/>
@@ -33,5 +36,5 @@
   <xi:include href="/META-INF/chronicle-extensions.xml"/>
   <xi:include href="/META-INF/chronicle-ai.xml"/>
   <xi:include href="/META-INF/chronicle-tools.xml"/>
-  <xi:include href="/META-INF/chronicle-ep.xml"/> <!-- Chapter of the extension point magic is put at the end -->
+  <xi:include href="/META-INF/chronicle-ep.xml"/>
 </idea-plugin>
