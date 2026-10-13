@@ -1,11 +1,13 @@
-# 领域：模组导入导出
+# 模组导入与导出设计规范 (Mod Import/Export)
+
+> 注：本文档记录模组导入导出子系统的设计与实现规范。
 
 ## 概述
 
 目前用于：
 
 - 在游戏或模组设置的对话框中，从各种数据文件导入模组信息到模组依赖列表中。
-- 在游戏或模组设置的对话框中，从模组依赖列表导出模组信息各种数据文件。
+- 在游戏或模组设置的对话框中，从模组依赖列表导出模组信息到各种数据文件。
 
 IMM 参考链接：
 
@@ -32,10 +34,10 @@ IMM 参考链接：
 
 模组导出器实现：
 
-- `icu.windea.pls.ep.tools.exporter.ParadoxJsonBasedModExporter` - 基于 JSON 的模组导入器
+- `icu.windea.pls.ep.tools.exporter.ParadoxJsonBasedModExporter` - 基于 JSON 的模组导出器
   - [x] `icu.windea.pls.ep.tools.exporter.ParadoxGameJsonExporter` - 基于 `dlc_load.json` 或 `content_load.json`
   - [x] `icu.windea.pls.ep.tools.exporter.ParadoxLauncherJsonV2Exporter` - 基于 `playlist.json`，版本：V2（< 2021.10）
   - [x] `icu.windea.pls.ep.tools.exporter.ParadoxLauncherJsonV3Exporter` - 基于 `playlist.json`，版本：V3（≥ 2021.10）
-- `icu.windea.pls.ep.tools.exporter.ParadoxDbBasedModExporter` - 基于 SQLite 的模组导入器
+- `icu.windea.pls.ep.tools.exporter.ParadoxDbBasedModExporter` - 基于 SQLite 的模组导出器
   - [x] `icu.windea.pls.ep.tools.exporter.ParadoxLauncherDbExporter` - 基于 `launcher-v2.sqlite`，版本：V2，V4，V5
   - [x] `icu.windea.pls.ep.tools.exporter.ParadoxLauncherBetaDbExporter` - 基于 `launcher-v2_openbeta.sqlite`，版本：V2，V4，V5

@@ -1,4 +1,4 @@
-# 模板引擎（Prompt Template Engine）
+# 提示词模板引擎 (Prompt Template Engine)
 
 > 面向插件作者、协作者与用户的说明文档。
 
