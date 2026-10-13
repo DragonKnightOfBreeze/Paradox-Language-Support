@@ -10,7 +10,7 @@
         "uvx",
         "mcp-server-git",
         "--repository",
-        "D:/Documents/Projects/__Pinned/Paradox-Chronicle"
+        "{env:PROJECT_PATH_CHRONICLE}"
       ]
     },
     "github": {
