@@ -5,9 +5,9 @@
 此文档用于记录已经放到开发路线图上的待办事项，包括问题修复、优化项、重构项、文档更新，等等。
 
 备注：
-- 此文档中的内容相比想法记录笔记（`documents/notes/想法记录.md`）更加详细与规范。
+- 此文档中的内容相比想法记录笔记（`documents/notes/ideas.md`）更加详细与规范。
 - 此文档中的内容相比更新日志（`CHANGELOG.md`）拥有更多细节，包括更多未被明确提及的更新内容（比如各类重构），以及更多的补充说明（比如相关的分析与决策）。
-- 此文档中的特定内容可能链接到其他维护者笔记，例如架构决策笔记（`documents/notes/架构决策.md`）。
+- 此文档中的特定内容可能链接到其他维护者笔记，例如架构决策档案（`documents/notes/adr/`）。
 - 此文档中的内容主要按主题分类，对于已经完成或者正在进行中的内容，将会标注具体的版本和时间戳。
 - 应当按照主题来划分更新计划，而不是严格地预定未来某个版本在正式开始开发时，预期包含哪些功能。
 
@@ -136,7 +136,7 @@
 - [x] P2 完善引用约束，在必要时兼容并集类型和别名类型，避免一些语言功能因未兼容而无法适用
 - [x] P2 优化索引逻辑（对于 `ParadoxComplexEnumValueIndex` `ParadoxDefinitionIndex` `ParadoxDefinitionInjectionIndex`，需要保留声明顺序）
 - [x] P2 完善本地化文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[b]`）的支持
-  - 参见：[架构决策.md#localisation-lexer-refactor](架构决策.md#localisation-lexer-refactor)
+  - 参见：[adr/localisation-lexer-refactor.md](adr/localisation-lexer-refactor.md)
 - [x] P3 API 变更：将 EP `unresolvedExpressionDecorator` 改为 `unresolvedExpressionChecker`
 - [x] 在脚本文件中的用引号括起的字符串表达式中，提供括号匹配和补全 ([#351](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/351))
 - [x] False positives for unresolved text format references in localisation files ([#357](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/357))
@@ -169,9 +169,9 @@
 - [x] P2 链接前缀（即动态链接的名字，如 `event_target`）应忽略大小写
 - [x] P2 修复复杂表达式中的后续代码补全不再生效的BUG
 - [x] P2 分析与优化构建索引时的性能和内存占用
-  - 参见：[性能分析](analysis/性能分析.md)
+  - 参见：[性能分析](analysis/performance-profiling.md)
 - [x] P2 分析与优化完成项目分析后的性能和内存占用
-  - 参见：[性能分析](analysis/性能分析.md)
+  - 参见：[性能分析](analysis/performance-profiling.md)
 
 #### 任务（次要）
 
@@ -179,11 +179,11 @@
 - [x] 重命名：显示文本/localizedText -> 展示文本/presentableText
 - [x] P2 优化索引逻辑：使用更精确的 inputFilter，避免在不必要时仍然更新索引（参见 `FileBasedIndexExtension` 的文档注释）
 - [x] P2 重构测试作用域方法，提取到 `ChronicleTestScope`
-  - 参见：[架构决策.md#test-scope](架构决策.md#test-scope)
+  - 参见：[adr/test-scope.md](adr/test-scope.md)
 - [x] P2 重构 `CwtDataExpression` （元数据不应公开可变，以及其他）
-  - 参见：[架构决策.md#data-expression-refactor](架构决策.md#data-expression-refactor)
+  - 参见：[adr/data-expression-refactor.md](adr/data-expression-refactor.md)
 - [x] P2 重命名：`optionData` -> `optionMetadata`
-  - 参见：[架构决策.md#option-metadata](架构决策.md#option-metadata)
+  - 参见：[adr/option-metadata.md](adr/option-metadata.md)
 - [x] P4 修复规则文件中，仅单行的 `####` 切换视图异常 ([#336](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/336))
   - 参见：`com.intellij.codeInsight.documentation.render.DocRenderPassFactory.calcText`
 - [x] 重命名：`CwtDataTypes.TemplateExpression` -> `CwtDataTypes.Template`
@@ -200,15 +200,15 @@
 - [x] P1 优化：将 `CwtConfigManipulationService.expandConfigExpression` 改为 processor 模式，以优化性能
 - [x] P2 修复：修复 `AccessorDelegates` 中调用基于静态方法的 `KFunction` 时错误地传入了 null target 的问题
 - [x] P1 优化：为合并索引提供专门的上下文对象，直接在其中缓存 expressionReferences，并且跳过不需要的逻辑，重构相关代码
-  - 参见：[性能分析.md#a6](analysis/性能分析.md#a6)
+  - 参见：[performance-profiling.md#a6](analysis/performance-profiling.md#a6)
 - [x] P1 优化：在 `ParadoxFilePathSearch` 中额外提供限定了文件扩展名的查询方法，以优化查询性能
-  - 参见：[性能分析.md#b1](analysis/性能分析.md#b1)
+  - 参见：[performance-profiling.md#b1](analysis/performance-profiling.md#b1)
 - [x] P1 优化：为 `ParadoxCompositeLocalisationIconSupport.fromDefinition` 中注册过的定义类型提供单独的索引约束
-  - 参见：[性能分析.md#b1](analysis/性能分析.md#b1)
+  - 参见：[performance-profiling.md#b1](analysis/performance-profiling.md#b1)
 - [x] P1 优化：为定义和本地化提供单独的、对应已有的索引约束（`indexConstraint`）的受限索引（`constrainedIndex`）
-  - 参见：[性能分析.md#b1](analysis/性能分析.md#b1)
+  - 参见：[performance-profiling.md#b1](analysis/performance-profiling.md#b1)
 - [x] P1 优化：查询定义和复杂枚举值时，如果指定了类型信息，在访问文件索引之前，预先对文件进行过滤
-  - 参见：[性能分析.md#b1](analysis/性能分析.md#b1)
+  - 参见：[performance-profiling.md#b1](analysis/performance-profiling.md#b1)
 
 ### v3.0.2 {#v3-0-2}
 
@@ -224,11 +224,11 @@
 
 - [x] P2 清理和完善各个 lexer 和 parser
 - [x] P2 完善脚本文件的 lexer：不区分颜色类型的大小写（如 `RGB { 0 255 255}`） ([#399](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/399))
-  - 参见：[架构决策.md#script-lexer-refactor](架构决策.md#script-lexer-refactor)
+  - 参见：[adr/script-lexer-refactor.md](adr/script-lexer-refactor.md)
 - [x] P2 完善脚本文件的 lexer：完善对高级插值语法的支持（如 `a_$b$_[[c]d]_e`）
-  - 参见：[架构决策.md#script-lexer-refactor](架构决策.md#script-lexer-refactor)
+  - 参见：[adr/script-lexer-refactor.md](adr/script-lexer-refactor.md)
 - [x] P2 完善作用域的匹配和合并逻辑，兼容并集作用域
-  - 参见：[架构决策.md#union-scopes](架构决策.md#union-scopes)
+  - 参见：[adr/union-scopes.md](adr/union-scopes.md)
 - [x] P3 完善字面量的加括号/去括号（quote/unquote）逻辑，进行更严格的检查以避免意外行为
   - 新增 `PsiQuoteAwareElement` 接口，提供方法 canQuote/canUnquote/needQuote 等。
   - 提供更完善的 setName/setValue/elementManipulator/quoteIntention/unquoteIntetion 的实现。
@@ -242,7 +242,7 @@
   - 新增 `CwtDataTypeSets.ModifierTemplateAware`，作为可用于生成修正的模板表达式的片段可使用的一组数据类型。
   - 重构 `ParadoxFilePathSearch`，新增查询参数 `ignoreCase` `ignoreExtension`。
 - [x] P2 Missing error on invalid syntax which can cause cascading errors in-game ([#386](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/386))
-  - 参见：[架构决策.md#config-context-refactor](架构决策.md#config-context-refactor)
+  - 参见：[adr/config-context-refactor.md](adr/config-context-refactor.md)
 - [x] P3 complex_enum的匹配问题 ([#389](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/389))
 - [x] P3 Bug: Broken syntax highlighting on event targets ([#390](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/390))
 - [x] P3 重构 expressionSupport/expressionService：改为传入 rangeInExpression 而非 rangeInElement（前者会忽略括起的双引号），从而减少混淆和困扰
@@ -278,11 +278,11 @@
   - [x] 插件设置相关的代码（状态/UI/管理器/迁移器）都应当统一移动到 `icu.windea.pls.base.settings`（未来还需要考虑进一步的重构）
   - [x] 将设置策略（settings strategies）统一移动到 `icu.windea.pls.model.policies`，以及其他相关重构
 - [x] P3 进一步的对引号处理的相关重构：引入 `QuotePattern`
-  - 参见：[架构决策.md#quote-pattern](架构决策.md#quote-pattern)
+  - 参见：[adr/quote-pattern.md](adr/quote-pattern.md)
 - [x] P4 同样地，考虑引入 `EscapePattern`
-  - 参见：[架构决策.md#escape-pattern](架构决策.md#escape-pattern)
+  - 参见：[adr/escape-pattern.md](adr/escape-pattern.md)
 - [x] P2 引入 `ParadoxAnnotatedData`。
-  - 参见：[架构决策.md#annotated-data-api](架构决策.md#annotated-data-api)
+  - 参见：[adr/annotated-data-api.md](adr/annotated-data-api.md)
 - [x] P3 重构：将部分底层工具类重命名为 `...Factory`，并在必要时重命名其中的方法
   - `CwtCompletionLookupProvider` -> `CwtCompletionFactory`
   - `ParadoxCompletionLookupProvider` -> `ParadoxCompletionFactory`
@@ -315,23 +315,23 @@
 - [x] P2 ~~为了提供更好的语法支持，需要对脚本文件（以及 CWT 文件）中的双引号使用单独的词元（`LEFT_QUOTE` `RIGHT_QUOTE`）~~
   - ~~尽量在语法级别兼容缺失的情况，通过 syntaxAnnotator 报告错误。~~
   - 回退：这会带来不必要的额外的复杂性，并且可能会降低扫描时的性能。
-  - 参见：[架构决策.md#script-syntax-quotes](架构决策.md#script-syntax-quotes)
-  - 参见：[架构决策.md#cwt-syntax-quotes](架构决策.md#cwt-syntax-quotes)
+  - 参见：[adr/script-syntax-quotes.md](adr/script-syntax-quotes.md)
+  - 参见：[adr/cwt-syntax-quotes.md](adr/cwt-syntax-quotes.md)
 - [x] P2 为了提供更好的语法支持，需要对脚本文件（以及 CWT 文件）中未用引号括起的属性键/值/等等，允许未出现在文本两侧的 `?` 和 `!`，尽管 `?=` `!=` 可能是有效的运算符
-  - 参见：[架构决策.md#script-syntax-character-edge-cases](架构决策.md#script-syntax-character-edge-cases)
-  - 参见：[架构决策.md#cwt-syntax-character-edge-cases](架构决策.md#cwt-syntax-character-edge-cases)
+  - 参见：[adr/script-syntax-character-edge-cases.md](adr/script-syntax-character-edge-cases.md)
+  - 参见：[adr/cwt-syntax-character-edge-cases.md](adr/cwt-syntax-character-edge-cases.md)
 - [x] P3 移除 `ParadoxScriptHighlightingAnnotator.annotateParameterValue`（没有必要，直接使用 `PARADOX_SCRIPT.ARGUMENT` 的语法高亮即可）
 
 #### 发布前检查
 
-- [x] （IDEA 2025.2）启动IDE时报错 `Cannot find scheme: Islands Dark from plugins: icu.windea.pls;icu.windea.pls` ([P17](问题追踪.md#p17))
+- [x] （IDEA 2025.2）启动IDE时报错 `Cannot find scheme: Islands Dark from plugins: icu.windea.pls;icu.windea.pls` ([P17](issues/p17-cannot-find-scheme-islands-dark.md))
   - 这可能与 `runIde` 时使用的 IDE 版本有关，需要使用最新版本的 IDE 验证。
   - 经验证，在 IDEA 2026.2.1 上不存在此问题（Color Scheme 设置页面的代码高亮符合预期）。应当是 IDE 版本兼容性问题，可以忽略。
-- [x] （IDEA 2025.2）启动IDE或打开项目时的明显卡顿？需要研究。 ([P18](问题追踪.md#p18))
+- [x] （IDEA 2025.2）启动IDE或打开项目时的明显卡顿？需要研究。 ([P18](issues/p18-startup-freeze-profiling.md))
   - 需要借助 profiler 进行进一步的分析。
   - 经验证，在 IDEA 2026.2.1 上不存在此问题（至少数秒内就能一切就绪）。可能是 IDE 版本兼容性问题。
   - 相关的分析笔记：[分析_启动冻结_线程转储1871846717_3.0.2.md](../ai-notes/analysis/分析_启动冻结_线程转储1871846717_3.0.2.md)
-- [x] 与 `ParadoxLocalisationFindUsagesProvider` 有关的 SOF ([P19](问题追踪.md#p19))
+- [x] 与 `ParadoxLocalisationFindUsagesProvider` 有关的 SOF ([P19](issues/p19-localisation-find-usages-sof.md))
   - 直接将 `FindUsagesProvider` 中的相关方法委托给 `ElementDescriptionUtil.getElementDescription` 可能导致意外的 SOF。考虑显式检查或显式实现。
   - 相关的分析笔记：[分析_本地化查找用法SOF_P19_3.0.2.md](../ai-notes/analysis/分析_本地化查找用法SOF_P19_3.0.2.md)
 - [x] 对于本地化文件，属性名和参数名可以以数字开始。
@@ -363,19 +363,19 @@
 
 #### 后续
 
-- [x] 减少 `CwtFileBasedConfigGroupProcessor` 中的 `readAction` 的数量。每次处理时仅按照步骤分为总计4个。不再在解析和处理文件时，分别对每个文件执行1次 `readAction`。 ([P18](问题追踪.md#p18))
-- [x] 重构和完善各个 `ElementDescriptionProvider` 和 `FindUsagesProvider`，避免意外的 SOF，优化描述。 ([P19](问题追踪.md#p19))
-  - 参见：[架构决策.md#element-descriptions](架构决策.md#element-descriptions)
+- [x] 减少 `CwtFileBasedConfigGroupProcessor` 中的 `readAction` 的数量。每次处理时仅按照步骤分为总计4个。不再在解析和处理文件时，分别对每个文件执行1次 `readAction`。 ([P18](issues/p18-startup-freeze-profiling.md))
+- [x] 重构和完善各个 `ElementDescriptionProvider` 和 `FindUsagesProvider`，避免意外的 SOF，优化描述。 ([P19](issues/p19-localisation-find-usages-sof.md))
+  - 参见：[adr/element-descriptions.md](adr/element-descriptions.md)
 - [x] 整理部分语言功能的入口，移动到更合适的位置
-  - 参见：[架构决策.md#language-feature-entry-arrangement](架构决策.md#language-feature-entry-arrangement)
+  - 参见：[adr/language-feature-entry-arrangement.md](adr/language-feature-entry-arrangement.md)
 - [x] 引用修正图标的本地化图标也需要忽略大小写（如 `£MOD_SHIP_SPEED_MULT£`） ([#385](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/385))
 - [x] 新增代码检查 `UnsupportedScriptedVariableInspection`（不支持在条件化块中声明封装变量） & 在文法级别兼容条件化块中的封装变量
 - [x] 完善 lexer 的重置逻辑
-  - 参见：[架构决策.md#lexer-reset](架构决策.md#lexer-reset)
+  - 参见：[adr/lexer-reset.md](adr/lexer-reset.md)
 - [x] 基于继承关系的匹配采用并集策略（这意味着父作用域匹配子作用域，同时子作用域也匹配父作用域）
-  - 参见：[架构决策.md#union-scopes](架构决策.md#union-scopes)
+  - 参见：[adr/union-scopes.md](adr/union-scopes.md)
 - [x] 初步兼容本地化文本中可以使用的一些特殊语法
-  - 参见：[架构决策.md#localisation-syntax-grammatical](架构决策.md#localisation-syntax-grammatical)
+  - 参见：[adr/localisation-syntax-grammatical.md](adr/localisation-syntax-grammatical.md)
 - [x] 完善 `WordSelectionHandler` 和 `WordSelectionFilter`
   - 从而，例如，修复光标位于 `{...}` 中的 `{` 时，进行 *Extend Selection* 后，结束偏移会非预期地位于 `}` 所在行的行尾（而非 `}` 的结束偏移）的问题。
 - [x] 添加 `ParadoxSubtypesMismatchedDefinitionUnresolvedExpressionChecker`
@@ -385,7 +385,7 @@
 - [x] 引入并应用 `Throwable.checkCancellation()`，以通过统一的方式，检查当前异常是否代表着一个取消异常（兼容 `InvocationTargetException`）
 - [x] 修复 `CwtConfigExpressionManipulationService.mergeDataExpression` 无法正确合并非常量数据类型的，表达式字符串相同的数据表达式的问题
 - [x] 修复来自 `UnresolvedExpressionInspection` 的误报
-  - 参见：[架构决策.md#unresolved-expression-inspection-fix](架构决策.md#unresolved-expression-inspection-fix)
+  - 参见：[adr/unresolved-expression-inspection-fix.md](adr/unresolved-expression-inspection-fix.md)
 
 ### v3.0.3 {#v3-0-3}
 
@@ -404,10 +404,10 @@
   - [x] 原因与解决方案：需要为 `CwtConfigContext` 新增字段 `declaration`，用于标记是否是某种声明（定义/定义注入/定值变量/等等）的规则上下文。
   - [x] 补充并通过回归测试 `Issue412Test`
 - [x] P4 区分“语法宏”与“语义宏”，考虑为“语法宏”引入额外的 PSI 接口（如 `ParadoxScriptMacro`），更新相关文档和注释
-  - 参见：[架构决策.md#macro](架构决策.md#macro)
+  - 参见：[adr/macro.md](adr/macro.md)
 - [x] P2 将 `configExpression` 和可能的 `config` 移出 `matchContext`，从而简化代码、减少上下文对象的创建
 - [x] P2 重构和完善与 `ItemPresentation` 相关的代码
-  - 参见：[架构决策.md#item-presentations](架构决策.md#item-presentations)
+  - 参见：[adr/item-presentations.md](adr/item-presentations.md)
 - [x] P3 完善语言注入的相关逻辑
 - [x] P1 修复要匹配的表达式带参数时，可能无法正确地匹配常量字符串的问题（例如 `triggered_$PARAM$_modifier` VS `triggered_ship_modifier`）
   - 参见：`icu.windea.pls.ep.match.expression.ParadoxScriptConstantExpressionMatcher.match`
@@ -417,11 +417,11 @@
 - [x] P1 在获取作为上下文的规则或者匹配的规则时，仅在需要进一步匹配时才会内联（并匹配）别名规则（aliasConfig），从而在一定程度上优化性能
 - [x] P3 修复来自语言注入的代码高亮可能错误地被直接的代码高亮覆盖的问题（例如，来自 `ParadoxScriptValueArgumentValueNode.getAttributesKey` 的代码高亮）
 - [x] P2 修复某些来自 `MissingExpressionInspection` 的误报
-  - 参见：[架构决策.md#missing-expression-inspection-fix](架构决策.md#missing-expression-inspection-fix)
+  - 参见：[adr/missing-expression-inspection-fix.md](adr/missing-expression-inspection-fix.md)
 - [x] P2 修复某些来自 `TooManyExpressionInspection` 的误报
-  - 参见：[架构决策.md#too-many-expression-inspection-fix](架构决策.md#too-many-expression-inspection-fix)
+  - 参见：[adr/too-many-expression-inspection-fix.md](adr/too-many-expression-inspection-fix.md)
 - [x] P3 从脚本成员评估作用域上下文时，跳过表达式（通常是属性键）带参数的情况
-- [x] P1 优化表达式带参数时，并集规则（unionConfig）和别名规则（aliasConfig）的匹配与展开的逻辑，从而避免意外的 OOM ([P21](问题追踪.md#p21))
+- [x] P1 优化表达式带参数时，并集规则（unionConfig）和别名规则（aliasConfig）的匹配与展开的逻辑，从而避免意外的 OOM ([P21](issues/p21-inline-script-inspections-oom.md))
   - [x] 在 `ParadoxConfigExpansionService` 中，新增 `expandAndMatchUnion` `expandMatchedUnion` `expandAndMatchAliasKeys` `expandMatchedAliasKeys` 并应用，移除旧的相关方法
   - [x] 在 `ParadoxConfigExpansionService.expandAndMatchAliasKeys` 中，如果表达式带参数，预先通过正则匹配来过滤 aliasKey（通过遍历 `configGroup.aliasModel.name2ConstKeys[aliasName]`），以降低时间复杂度
 - [x] P3 匹配数据类型 `Parameter`（`$parameter`）时，要求必须形如标识符，并且不允许带参数
@@ -429,7 +429,7 @@
 - [x] P3 模板表达式与模式匹配的相关重构
   - 将“模式感知/patternAware”的数据类型，重命名为“模式/pattern”数据类型分类。
   - 将“模板/template”数据类型移出“模式/pattern”数据类型分类。
-  - 参见：[架构决策.md#template-expression-and-pattern-match](架构决策.md#template-expression-and-pattern-match)
+  - 参见：[adr/template-expression-and-pattern-match.md](adr/template-expression-and-pattern-match.md)
 - [x] P2 将数据表达式 `wildcard_scalar` 改为 `$literal`（匹配任意作为字面量的表达式）
 
 #### 任务（次要）
@@ -442,9 +442,9 @@
   - 对于部分数据类型，可能会展开为多个 PSI 引用，此时即使带参数，也要尽可能地对可确定的文本范围进行引用解析。
   - 已检查（主要适用于 expressionReference），参见 `ParadoxExpressionService.resolveScriptExpression` 等处。
 - [x] P2 完善规则匹配的预处理和后续处理逻辑：如果匹配候选项存在很多个，需要考虑在超出阈值时进行回退
-  - 参见：[架构决策.md#config-match-processing](架构决策.md#config-match-processing)
+  - 参见：[adr/config-match-processing.md](adr/config-match-processing.md)
 - [x] P2 完善规则匹配的预处理和后续处理逻辑：如果匹配得到的规则最终仍然存在多个，在一些情况下，需要进一步的过滤
-  - 参见：[架构决策.md#config-match-processing](架构决策.md#config-match-processing)
+  - 参见：[adr/config-match-processing.md](adr/config-match-processing.md)
 
 ### v3.0.4 {#v3-0-4}
 
@@ -460,14 +460,14 @@
 
 - [x] P1 初步支持片段匹配，新增数据类型 `DefinitionSnippet` 和 `LocalisationSnippet`，以匹配作为完整的定义引用或本地化引用的一部分的字符串（数据表达式示例：`<sprite>|GFX_$` `localisation|$_desc`） ([#340](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/340) [#413](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/413))
   - 参见：[#snippet-match](#snippet-match)
-  - 参见：[架构决策.md#snippet-match](架构决策.md#snippet-match)
+  - 参见：[adr/snippet-match.md](adr/snippet-match.md)
 - [x] P2 完善规则匹配逻辑，新增数据类型 `WildcardAny` 和 `WildcardLiteral`，作为特殊变体，当匹配候选项过多，或者无法进一步确定时使用（数据表达式：`$$any` `$$literal`）
-  - 参见：[架构决策.md#wildcard-data-types](架构决策.md#wildcard-data-types)
+  - 参见：[adr/wildcard-data-types.md](adr/wildcard-data-types.md)
 - [x] P2 整理和完善与规则匹配和数据类型相关的注释和文档
 - [x] P3 将 JSON 序列化框架从 jackson 改为 kotlinx-serialization
-  - 参见：[架构决策.md#replace-jaskson-with-kotlinx-serialization](架构决策.md#replace-jaskson-with-kotlinx-serialization)
+  - 参见：[adr/replace-jackson-with-kotlinx-serialization.md](adr/replace-jackson-with-kotlinx-serialization.md)
 - [x] P3 不再显式排除 jackson 依赖，以解决插件在 IDEA 2026.3 eap 中存在的兼容性问题
-  - 参见：[架构决策.md#replace-jaskson-with-kotlinx-serialization](架构决策.md#replace-jaskson-with-kotlinx-serialization)
+  - 参见：[adr/replace-jackson-with-kotlinx-serialization.md](adr/replace-jackson-with-kotlinx-serialization.md)
 - [x] P2 修复回归BUG [#418](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/418)
   - 原因：在 `ParadoxLanguageInjectionService.acceptLocalisationTextInjection` 中，对 `ParadoxLocalisationManager.isRichLocalisationText` 的调用没有正确地取反。
   - 原因：在 `ParadoxLocalisationTextInlayRenderContext.truncatedSmallText` 中，需要进行额外的特殊处理，以去除本地化文本开始的空白。
@@ -480,20 +480,20 @@
   - 原因：对于模板表达式中的代码补全，除了需要为引用片段（如定义引用）提供以外，也需要为常量片段提供，而先前并未做到。这要求优化 incomplete 模式下的匹配和解析逻辑。
 - [x] P3 将优先级规则（priority config）重命名为覆盖规则（override config），同步更改相关的代码、文档和规则文件
 - [x] P3 确认各个游戏的覆盖策略，完善相关的规则文件（`00_overrides.cwt` 和 `overrides.cwt`）
-- [x] P4 修复意外行为：Markdown 文件中的部分内联代码（如 `ArrayList()`）可以通过查找用法指向到意外位置（如 `effects.cwt` 中的部分 effect） ([P22](问题追踪.md#p22))
+- [x] P4 修复意外行为：Markdown 文件中的部分内联代码（如 `ArrayList()`）可以通过查找用法指向到意外位置（如 `effects.cwt` 中的部分 effect） ([P22](issues/p22-markdown-find-usages-unexpected-behavior.md))
   - 结论：在 `icu.windea.pls.lang.navigation.CwtConfigSymbolChooseByNameContributor.processElementsWithName` 中，未按参数 `name` 过滤查询结果。
 - [x] P2 优化模板表达式的匹配与解析逻辑，以更好地支持不完整模式（incomplete-mode） ([#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/430))
 
 #### 任务（次要）
 
 - [x] P3 引入 `ColorPattern`（迁移自 `ColorService`）
-  - 参见：[架构决策.md#color-pattern](架构决策.md#color-pattern)
+  - 参见：[adr/color-pattern.md](adr/color-pattern.md)
 - [x] P3 将 `ChronicleCapacities` `ChronicleTestCapacities` 合并为 `ChronicleCapabilities`，修正拼写错误，以及进一步的重构
   - 需要提供属于不同分类的、更加灵活的、可配置的能力项，并且允许在运行时调整（比如缓存行为）。
 - [x] P3 重构 manager 层的基于缓存（`CachedValue`）的方法
   - 组合使用 `getCachedValueOnDemand`（onDemand + readAction），优化代码，可以按需禁用缓存行为
 - [x] P3 重构 service/manager 层的 relatedItems/presentableItems 相关的方法
-  - 参见：[架构决策.md#related-items-and-presentable-items](架构决策.md#related-items-and-presentable-items)
+  - 参见：[adr/related-items-and-presentable-items.md](adr/related-items-and-presentable-items.md)
   - 规范化 API，按需使用合适的缓存策略。
   - 注意这里如果直接缓存了 `PsiElement`，需要确保不会发生内存泄露（例如，依赖项包含 `PsiModificationTracker.MODIFICATION_COUNT`）。
 - [x] P3 考虑将“优先级规则/priorityConfig”重命名为“覆盖规则/overrideConfig”，同步更改规则文件和文档
@@ -575,11 +575,11 @@
 #### 内容
 
 - [ ] P1 优化：引入 `ParadoxMergedIndexThreadContext`，以在构建合并索引时，避免不必要的对常规缓存的访问（configContext/configs/definitionInfo/等等）
-  - 参见：[性能分析.md#a7](analysis/性能分析.md#a7)
-  - 参见：[架构决策.md#merged-index-thread-context](架构决策.md#merged-index-thread-context)
+  - 参见：[performance-profiling.md#a7](analysis/performance-profiling.md#a7)
+  - 参见：[adr/merged-index-thread-context.md](adr/merged-index-thread-context.md)
 - [ ] P1 优化：引入 `ParadoxMergedIndexThreadContext`，以在构建合并索引时，避免不必要的计算（memberPath/rootKeys）
-  - 参见：[性能分析.md#a7](analysis/性能分析.md#a7)
-  - 参见：[架构决策.md#merged-index-thread-context](架构决策.md#merged-index-thread-context)
+  - 参见：[performance-profiling.md#a7](analysis/performance-profiling.md#a7)
+  - 参见：[adr/merged-index-thread-context.md](adr/merged-index-thread-context.md)
 
 ### command-line-and-image-processing-optimization
 
@@ -613,8 +613,8 @@
 #### 内容
 
 - [x] P1/MS 通过新增数据类型“定义引用片段/definitionReferenceSnippet”和“本地化引用片段/localisationReferenceSnippet”，以支持片段匹配
-  - 参见：[架构决策.md#location-aware-data-types](架构决策.md#location-aware-data-types) - 已变更
-  - 参见：[架构决策.md#snippet-match](架构决策.md#snippet-match)
+  - 参见：[adr/location-aware-data-types.md](adr/location-aware-data-types.md) - 已变更
+  - 参见：[adr/snippet-match.md](adr/snippet-match.md)
 
 ### prefix-tag-match
 
@@ -627,7 +627,7 @@
 #### 内容
 
 - [ ] P2/MS 初步支持匹配带前缀标签的脚本表达式（"前缀标签"指目标脚本表达式之前紧邻的作为前缀的字符串，例如 `k = list v` 中的 `list`） ([#263](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/263))
-  - 参见：[架构决策.md#prefix-tag-match](架构决策.md#prefix-tag-match)
+  - 参见：[adr/prefix-tag-match.md](adr/prefix-tag-match.md)
 
 ### inline-definitions
 
@@ -640,7 +640,7 @@
 #### 内容
 
 - [ ] P2/MS 初步支持内联定义（即通过内联脚本声明的定义，其名字可以取决于传入的参数值） ([#194](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/194))
-  - 参见：[架构决策.md#inline-definition](架构决策.md#inline-definition)
+  - 参见：[adr/inline-definition.md](adr/inline-definition.md)
 
 ### minor-syntax-enhancement
 
@@ -654,7 +654,7 @@
 
 - [ ] P3 [hoi4] 初步兼容通配参数（如 `[?PARAM]`），包括语法、代码高亮、索引、参数化判断等
   - 引入 `ParadoxScriptWildcardParameter`，并实现 `ParadoxScriptConditionParameter`。
-  - 参见：[架构决策.md#script-syntax-advanced-interpolations](架构决策.md#script-syntax-advanced-interpolations)
+  - 参见：[adr/script-syntax-advanced-interpolations.md](adr/script-syntax-advanced-interpolations.md)
   - 考虑到其似乎没有对应的传入参数，视为 conditionParameter 而非常规的 parameter。
   - 需要创建对应的 Issue。
 - [ ] P3 分离出代码高亮的配置项分组（语义高亮、抑制插值内容/注入内容的首尾语法错误、等等
@@ -678,15 +678,15 @@
 #### 内容
 
 - [x] P2 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持 (v3.0.2)
-  - 参见：[架构决策.md#script-lexer-refactor](架构决策.md#script-lexer-refactor)
+  - 参见：[adr/script-lexer-refactor.md](adr/script-lexer-refactor.md)
 - [x] P2 完善本地化文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[b]`）的支持 (v3.0.0)
-  - 参见：[架构决策.md#localisation-lexer-refactor](架构决策.md#localisation-lexer-refactor)
+  - 参见：[adr/localisation-lexer-refactor.md](adr/localisation-lexer-refactor.md)
 - [ ] P2 完善脚本文件的 lexer：将 *颜色/颜色字段/color/color field* （如 `rgb { 255 255 255 }`）切分为更具体的一组词元
-  - 参见：[架构决策.md#script-lexer-refactor](架构决策.md#script-lexer-refactor)
+  - 参见：[adr/script-lexer-refactor.md](adr/script-lexer-refactor.md)
 - [ ] P3 对于脚本文件中的特殊语法（插值），研究在不同游戏中的支持情况，从而进行相关的重构和优化
-  - 参见：[架构决策.md#script-syntax-advanced-interpolations](架构决策.md#script-syntax-advanced-interpolations)
+  - 参见：[adr/script-syntax-advanced-interpolations.md](adr/script-syntax-advanced-interpolations.md)
 - [ ] P3 对于本地化文件中的特殊语法（富文本），研究在不同游戏中的支持情况，从而进行相关的重构和优化
-  - 参见：[架构决策.md#localisation-syntax-advanced-rich-text](架构决策.md#localisation-syntax-advanced-rich-text)
+  - 参见：[adr/localisation-syntax-advanced-rich-text.md](adr/localisation-syntax-advanced-rich-text.md)
 
 ### data-api
 
@@ -697,7 +697,7 @@
 #### 内容
 
 - [ ] P2 引入 `ParadoxData` 和 `ParadoxDataSource`
-  - 参见：[架构决策.md#data-api](架构决策.md#data-api)
+  - 参见：[adr/data-api.md](adr/data-api.md)
 
 ### api-refactors
 
@@ -708,7 +708,7 @@
 #### 内容
 
 - [x] P2 重构和完善与 `ItemPresentation` 相关的代码
-  - 参见：[架构决策.md#item-presentations](架构决策.md#item-presentations)
+  - 参见：[adr/item-presentations.md](adr/item-presentations.md)
 - [x] P3 考虑将 JSON 序列化框架从 jackson 改为 kotlinx-serialization
   - 主要目的是为了未来能够更加轻松地接入 ktor/rpc/web-view。
 - [ ] P3 考虑进一步重构 select API
@@ -729,7 +729,7 @@
   - 考虑提供 `ParadoxDataManager`，用于从表达式的模型或 PSI 转换为指定类型的数据。
   - 考虑在未来另外提供 `ParadoxJsonDataManager`。
   - 目前仅按需提供特定游戏类型和定义类型的定义数据模型类。
-  - 已变更方案，参见：[架构决策.md#data-api](架构决策.md#data-api)
+  - 已变更方案，参见：[adr/data-api.md](adr/data-api.md)
 - [ ] P2 考虑规范化可视化（visualization）的相关API
   - 可视化：基于HTML/Swing/WebView的进阶图形展示。
   - 相关代码应主要位于 `icu.windea.pls.lang.visualization`。

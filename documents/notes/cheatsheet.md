@@ -17,7 +17,7 @@
 // problem
 // Insert a problem tracking link
 
-[P$ID$](问题追踪.md#p$ID$)
+[P$ID$](issues/p$ID$.md)
 ```
 
 ### 内存友好的懒加载属性
