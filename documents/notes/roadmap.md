@@ -330,10 +330,10 @@
 - [x] （IDEA 2025.2）启动IDE或打开项目时的明显卡顿？需要研究。 ([P18](issues/p18-startup-freeze-profiling.md))
   - 需要借助 profiler 进行进一步的分析。
   - 经验证，在 IDEA 2026.2.1 上不存在此问题（至少数秒内就能一切就绪）。可能是 IDE 版本兼容性问题。
-  - 相关的分析笔记：[分析_启动冻结_线程转储1871846717_3.0.2.md](../ai-notes/analysis/分析_启动冻结_线程转储1871846717_3.0.2.md)
+  - 相关的分析笔记：[analysis-startup-freeze-thread-dump-1871846717.md](../ai-notes/analysis/analysis-startup-freeze-thread-dump-1871846717.md)
 - [x] 与 `ParadoxLocalisationFindUsagesProvider` 有关的 SOF ([P19](issues/p19-localisation-find-usages-sof.md))
   - 直接将 `FindUsagesProvider` 中的相关方法委托给 `ElementDescriptionUtil.getElementDescription` 可能导致意外的 SOF。考虑显式检查或显式实现。
-  - 相关的分析笔记：[分析_本地化查找用法SOF_P19_3.0.2.md](../ai-notes/analysis/分析_本地化查找用法SOF_P19_3.0.2.md)
+  - 相关的分析笔记：[analysis-p19-localisation-find-usages-sof.md](../ai-notes/analysis/analysis-p19-localisation-find-usages-sof.md)
 - [x] 对于本地化文件，属性名和参数名可以以数字开始。
   - [x] 需要补充并通过额外的语法测试。
 - [x] 同样的，出于对齐的考虑，对于脚本文件，各种参数名也应可以以数字开始。
