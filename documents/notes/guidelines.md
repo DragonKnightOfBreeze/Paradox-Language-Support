@@ -446,8 +446,8 @@ TODO：
 
 ### 图标设计
 
-参见：[图标设计.md](/documents/references/图标设计.md)
+参见：[图标设计.md](/documents/design/icon-design.md)
 
 ### 配色方案
 
-参见：[配色方案.md](/documents/references/配色方案.md)
+参见：[配色方案.md](/documents/design/color-scheme.md)

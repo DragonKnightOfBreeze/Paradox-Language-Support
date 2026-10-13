@@ -10,7 +10,7 @@
 
 初步结论：
 - 直接将 `FindUsagesProvider` 中的相关方法委托给 `ElementDescriptionUtil.getElementDescription` 可能导致意外的 SOF。考虑显式检查或显式实现。
-- 相关的分析笔记：[analysis-p19-localisation-find-usages-sof.md](../ai-notes/analysis/analysis-p19-localisation-find-usages-sof.md)。
+- 相关的分析笔记：[analysis-p19-localisation-find-usages-sof.md](../../ai-notes/analysis/analysis-p19-localisation-find-usages-sof.md)。
 
 修复方向建议（来自 deepseek）：
 1. **最稳妥**：`getType`/`getNodeText` 不再无条件委托；对 EP 未覆盖的元素返回自带默认值（如 `TypePresentationService` 结果或固定字符串）。

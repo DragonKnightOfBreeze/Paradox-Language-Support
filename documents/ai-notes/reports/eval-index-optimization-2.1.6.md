@@ -5,7 +5,7 @@
 
 基于 JFR 性能分析报告（2026-03-16 ~ 2026-03-17，Stellaris / VIC3 / EU5 游戏目录）
 
-前序评估：[评估：索引性能优化_2.1.3.md](评估：索引性能优化_2.1.3.md)
+前序评估：[eval-index-optimization-2.1.3.md](eval-index-optimization-2.1.3.md)
 
 ## 一、优化背景与目标
 
