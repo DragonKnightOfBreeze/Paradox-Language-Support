@@ -37,8 +37,8 @@ In addition to language features, the plugin also includes:
 
 - `agents/`: agent workflow files (commands, context, rules, skills, etc.).
 - `cwt/`: CWT config directories (core + per-game repositories).
-- `docs/`: reference documentation (including language syntax guidance and config format guidance).
-- `documents/`: maintainer documentation (including ai-generated docs and maintainer-written docs).
+- `docs/`: public reference documentation site source (VuePress 2).
+- `documents/`: internal maintainer documentation (design specs, ADRs, problem tracking, guidelines, and ai-notes).
 - `src/main/kotlin`, `src/main/java`, `src/main/resources`: plugin source.
 - `src/test/kotlin`, `src/test/java`, `src/test/resources`: test codes and test resources.
 - `src/test/testData/`: test data files (e.g., test-specific cwt config files and script files).
@@ -330,6 +330,17 @@ For the documents and examples, see:
 - Prefer `-` for unordered lists.
 - Prefer `**bold**` for emphasis.
 - Prefer starting from `###` (H3) in responses (not in documents), unless there is a strong reason to use `#` and `##`.
+
+### Maintainer documents routing (on-demand reading)
+
+Maintainer documentation in `documents/` is primarily written in Chinese with English kebab-case file paths. Do not read the entire `documents/` directory at once; instead, inspect specific documents on demand when working on related tasks:
+- **System design specs** (UI, colors, language abstractions, template engine): check `documents/design/` (see `documents/design/README.md`).
+- **Architectural decisions & rationale**: check `documents/notes/adr/` (see `documents/notes/adr/README.md`).
+- **Hard bug diagnostics & post-mortems** (P1~Pnn): check `documents/notes/issues/` (see `documents/notes/issues/README.md`).
+- **Troubleshooting & environment workarounds**: check `documents/notes/solutions/` (see `documents/notes/solutions/README.md`).
+- **Coding & architecture guidelines** (module dependencies, EP patterns): check `documents/notes/guidelines.md`.
+- **Roadmap & version status**: check `documents/notes/roadmap.md`.
+- **AI-generated exploration & study notes**: check `documents/ai-notes/` (archived as-is).
 
 ### IntelliJ plugin specifics
 

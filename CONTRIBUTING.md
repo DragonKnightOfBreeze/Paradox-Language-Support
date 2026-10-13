@@ -25,8 +25,8 @@ Please read the relevant material before opening an issue or a pull request. A l
 
 - Project overview and usage: [`README.md`](README.md) / [`README_zh.md`](README_zh.md)
 - General guidance for agents: [`AGENTS.md`](AGENTS.md)
-- Maintainer documents (written in Simplified Chinese): [`documents`](documents)
-- Reference documentation: [`docs`](docs)
+- Maintainer documents (internal architecture specs, ADRs, guidelines; written primarily in Simplified Chinese): [`documents`](documents/README.md)
+- Public reference documentation: [`docs`](docs/README.md)
   - [Reference Documentation Website](https://windea.icu/Paradox-Language-Support)
   - The config system: [`docs/en/config.md`](docs/en/config.md)
   - Language syntax reference: [`docs/en/ref-syntax.md`](docs/en/ref-syntax.md)
