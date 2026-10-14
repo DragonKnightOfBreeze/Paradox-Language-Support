@@ -2,7 +2,7 @@
 
 ## 概述
 
-本目录存放针对外部第三方库、平台 SDK 与前沿 AI 技术（Gradle, Kotlin, MCP, LangChain4j, RAG, 提示工程等）的学习与理解备忘。
+本目录存放针对外部第三方库、平台 SDK 与相关开发技术（Gradle, Kotlin, MCP, LSP, LangChain4j, RAG, 提示工程等）的学习与理解备忘。
 
 ## 目录索引
 

@@ -527,7 +527,7 @@
   - 考虑重新分类各种笔记，包括分析、设计、报告、架构决策、问题追踪等。
   - 使用更加规范化的目录结构。
   - 提供更加完善的目录导航（`documents/README.md`）。
-  - 同步更新 `AGENTS.md` `CONTRIBUTION.md` 以及其他相关笔记。
+  - 同步更新 `AGENTS.md` `CONTRIBUTING.md` 以及其他相关笔记。
 - [ ] P1 提供 `PushStream`
   - 提供简洁、灵活且更加符合直觉的 API 调用方式，同时保持性能
   - 零开销的推模式流（区别于 Iterator/Stream/Sequence 等拉模式流）
