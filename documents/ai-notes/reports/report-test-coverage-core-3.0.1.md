@@ -1,4 +1,4 @@
-# 测试覆盖度报告：`icu.windea.pls.core`
+# 报告：测试覆盖度 - `icu.windea.pls.core`
 
 > - 版本：v3.0.1
 > - 日期：2026-07-27

@@ -6,11 +6,11 @@
 
 ## 索引
 
-- [规则系统 覆盖规则 — 更新记录](analysis/analysis-cwt-override-rules-updates.md)
-- [规则系统 覆盖规则](analysis/analysis-cwt-override-rules.md)
-- [领域：规则系统 规则](analysis/analysis-cwt-rules.md)
-- [领域：模组导入导出](analysis/analysis-mod-import-export.md)
-- [领域：模组开发 作用域](analysis/analysis-mod-scopes.md)
-- [分析：代理内置 shell 执行 Gradle 命令的行为（Windows）](analysis/analysis-opencode-windows-gradle-timeout.md)
-- [分析：与 `ParadoxLocalisationFindUsagesProvider` 有关的 SOF（P19）](analysis/analysis-p19-localisation-find-usages-sof.md)
-- [分析：IDE 启动冻结（P18，线程转储 1871846717）](analysis/analysis-startup-freeze-thread-dump-1871846717.md)
+- [规则系统 覆盖规则 — 更新记录](analysis/cwt-override-rules-updates.md)
+- [规则系统 覆盖规则](analysis/cwt-override-rules.md)
+- [规则系统 规则](analysis/cwt-rules.md)
+- [模组导入导出](analysis/mod-import-export.md)
+- [模组开发 作用域](analysis/mod-scopes.md)
+- [代理内置 shell 执行 Gradle 命令的行为（Windows）](analysis/opencode-windows-gradle-timeout.md)
+- [与 `ParadoxLocalisationFindUsagesProvider` 有关的 SOF（P19）](analysis/p19-localisation-find-usages-sof.md)
+- [IDE 启动冻结（P18，线程转储 1871846717）](analysis/startup-freeze-thread-dump-1871846717.md)

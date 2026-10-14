@@ -8,5 +8,5 @@
 
 ## 索引
 
-- [性能分析 ](analysis/performance-profiling.md) - 构建索引与完成项目分析时的耗时剖析与优化轮次
-- [内存分析 ](analysis/memory-profiling.md) - 构建索引与完成项目分析时的堆内存占用与优化轮次
+- [性能分析](analysis/performance-profiling.md) - 构建索引与完成项目分析时的耗时剖析与优化轮次
+- [内存分析](analysis/memory-profiling.md) - 构建索引与完成项目分析时的堆内存占用与优化轮次

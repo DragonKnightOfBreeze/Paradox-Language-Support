@@ -1,4 +1,4 @@
-# 分析：与 `ParadoxLocalisationFindUsagesProvider` 有关的 SOF（P19）
+# 与 `ParadoxLocalisationFindUsagesProvider` 有关的 SOF（P19）
 
 > 版本：v3.0.2
 > 日期：2026-09-02

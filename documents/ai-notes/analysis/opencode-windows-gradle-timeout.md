@@ -1,4 +1,4 @@
-# 分析：代理内置 shell 执行 Gradle 命令的行为（Windows）
+# 代理内置 shell 执行 Gradle 命令的行为（Windows）
 
 > 修订时间：2026-10-05（初版 2026-10-02 的结论有误，本版直接修订，不保留原结论）
 > 范围：通过内置 shell、IDEA Terminal、IDEA Run Configuration 三种方式执行 `./gradlew test`

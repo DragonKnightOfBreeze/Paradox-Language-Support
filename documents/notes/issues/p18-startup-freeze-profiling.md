@@ -37,7 +37,7 @@ icu.windea.pls.config.config.CwtFileConfigResolver.resolve(VirtualFile, CwtConfi
 
 初步结论：
 - 经验证，在 IDEA 2026.2.1 上不存在此问题（至少数秒内就能一切就绪）。可能是 IDE 版本兼容性问题。
-- 相关的分析笔记：[analysis-startup-freeze-thread-dump-1871846717.md](../../ai-notes/analysis/analysis-startup-freeze-thread-dump-1871846717.md)
+- 相关的分析笔记：[analysis-startup-freeze-thread-dump-1871846717.md](../../ai-notes/analysis/startup-freeze-thread-dump-1871846717.md)
 
 后续建议（来自 deepseek）：
 - 若需要兼容 2025.2，可考虑防御性优化：把逐文件 `readAction` 合并为分组/批量读动作；项目打开时懒初始化非 core 游戏分组；限制 `forEachConcurrent` 的并发度。
