@@ -1,4 +1,6 @@
-# Maintainer Documentation System
+# Maintainer Documentation
+
+[By the dragon knight a coffee ☕](https://afdian.com/a/dk_breeze)
 
 [English](README.md) | [中文](README_zh.md)
 
@@ -6,7 +8,7 @@
 
 ## Overview
 
-This directory stores public-facing maintainer documentation for the **Paradox Chronicle** plugin (public portion).
+This directory stores public-facing maintainer documentation of **Paradox Chronicle** (public portion).
 
 Unlike end-user documentation in `docs/` or the root `README.md`, documents here are intended for **project maintainers and AI coding agents**. They record in-depth architectural specifications, historical Architecture Decision Records (ADRs), diagnostic post-mortems, profiling benchmarks, and development roadmaps.
 
@@ -67,8 +69,8 @@ Living technical specifications for UI visual assets, syntax abstractions, and s
 Authoritative knowledge base maintained directly by the core maintainer. **In principle, documents here must be written by humans** to preserve genuine cognitive rigor. Architecture Decision Records (ADRs) adopt a self-contained RFC style that remains immutable once implemented.
 
 Key entry points and sibling indexes:
-- [Roadmap](notes/roadmap.md) - Version-by-version development progress, refactoring plans, and completed tasks
 - [Guidelines](notes/guidelines.md) - Architectural layers, module dependency constraints, and coding conventions
+- [Roadmap](notes/roadmap.md) - Version-by-version development progress, refactoring plans, and completed tasks
 - [Ideas](notes/ideas.md) - Brainstorming pool and long-term backlog
 - [Cheatsheet](notes/cheatsheet.md) - Live templates, regular expressions, and CLI shortcuts
 - [Architecture Decision Records (ADR)](notes/adr.md) - Central catalog of self-contained architectural decision files

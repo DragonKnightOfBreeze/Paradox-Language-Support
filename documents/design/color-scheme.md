@@ -1,4 +1,4 @@
-# 配色方案 (Color Scheme)
+# 配色方案
 
 > - 更新版本：v3.0.4
 > - 更新日期：2026-10-04
@@ -12,7 +12,7 @@
 - `icu.windea.pls.csv.editor.ParadoxCsvHighlighterColors`
 - `icu.windea.pls.lang.editor.ParadoxSemanticHighlighterColors`
 
-## CWT 语言
+## CWT 语言 (CWT)
 
 - CWT.BRACES
   - 继承自：DEFAULT_BRACES
@@ -41,7 +41,7 @@
 - CWT.BAD_CHARACTER
   - 继承自：BAD_CHARACTER
 
-## 脚本语言
+## 脚本语言 (Paradox Script)
 
 - PARADOX_SCRIPT.BRACES
   - 继承自：DEFAULT_BRACES
@@ -103,7 +103,7 @@
 - PARADOX_SCRIPT.BAD_CHARACTER
   - 继承自：BAD_CHARACTER
 
-## 本地化语言
+## 本地化语言 (Paradox Localisation)
 
 - PARADOX_LOCALISATION.OPERATOR
   - 继承自：DEFAULT_OPERATION_SIGN
@@ -176,7 +176,7 @@
 - PARADOX_LOCALISATION.BAD_CHARACTER
   - 继承自：BAD_CHARACTER
 
-## CSV 语言
+## CSV 语言 (Paradox CSV)
 
 - PARADOX_CSV.SEPARATOR
   - 继承自：DEFAULT_SEMICOLON
@@ -197,7 +197,7 @@
 - PARADOX_CSV.BAD_CHARACTER
   - 继承自：BAD_CHARACTER
 
-## 语义
+## 语义 (Semantic)
 
 - PARADOX_SCRIPT.SEMANTIC_OPERATOR
   - 继承自：DEFAULT_OPERATION_SIGN

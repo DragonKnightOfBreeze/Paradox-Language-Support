@@ -9,6 +9,8 @@
 [Discord](https://discord.gg/vBpbET2bXT) |
 [群聊](https://qm.qq.com/q/oRPgLwrTZm)
 
+---
+
 ## 概述
 
 Paradox Chronicle（曾用名：Paradox Language Support）是为 Paradox Interactive 游戏模组开发者设计的 IntelliJ IDEA 插件。

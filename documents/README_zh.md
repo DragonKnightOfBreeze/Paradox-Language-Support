@@ -1,4 +1,6 @@
-# 维护者文档体系
+# 维护者文档
+
+[By the dragon knight a coffee ☕](https://afdian.com/a/dk_breeze)
 
 [English](README.md) | [中文](README_zh.md)
 
@@ -6,7 +8,7 @@
 
 ## 概述
 
-此目录存放 **Paradox Chronicle** 插件面向维护者的公开文档（公开部分）。
+此目录存放 **Paradox Chronicle** 面向维护者的公开文档（公开部分）。
 
 不同于项目根目录下的通用文档以及 `docs/` 目录下面向终端用户的参考文档站点，本目录下的文档面向**项目维护者与 AI 协同代理**。记录深入的系统设计规范、架构决策档案、疑难排查日志、性能基准剖析以及版本路线图。
 
@@ -61,15 +63,15 @@ documents/
 - [领域名词与术语表](design/terminology.md) - 核心术语英汉对照与标准命名
 - [拼写检查机制设计](design/spellchecking.md) - 词元拆分与文法级拼写检查
 - [脚本片段注入机制设计](design/script-injection.md) - 跨语言注入与动态规则上下文构建
-- [外部检查工具集成：Tiger](design/tool-integration-tiger.md) - ck3-tiger 校验工具集成架构
+- [外部检查工具集成：Tiger](design/tool-integration-tiger.md) - tiger 校验工具集成架构
 
 ### 2. notes/ (维护者笔记)
 
 由项目核心维护者编写、审阅与维护的权威知识库。**原则上必须由人类编写（除极少数格式整理等特殊情况）**，以保证其思考的真实性与权威性。架构决策（ADR）采用自包含 RFC 风格，一经实施即封存，永不过期。
 
 核心看板与伴生索引入口：
-- [开发路线](notes/roadmap.md) - 按版本追踪的任务计划、重构待办与完成项
 - [开发规范](notes/guidelines.md) - 插件的代码架构约定、模块依赖约束与编码规范
+- [开发路线](notes/roadmap.md) - 按版本追踪的任务计划、重构待办与完成项
 - [想法记录](notes/ideas.md) - 随时记录的灵感池与长期待办事项
 - [实用技巧](notes/cheatsheet.md) - 实时模板、常用正则与脚本速查手册
 - [架构决策索引](notes/adr.md) - 自包含架构决策档案的分类目录与索引

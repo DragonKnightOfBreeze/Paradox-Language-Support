@@ -8,6 +8,8 @@
 [Plugin Home](https://plugins.jetbrains.com/plugin/16825) |
 [Discord](https://discord.gg/vBpbET2bXT)
 
+---
+
 ## Overview
 
 Paradox Chronicle (formerly Paradox Language Support) is the IntelliJ IDEA plugin designed for mod developers of Paradox Interactive games.

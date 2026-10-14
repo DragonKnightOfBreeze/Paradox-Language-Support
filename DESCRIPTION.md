@@ -46,7 +46,7 @@ Paradox Chronicle（曾用名：Paradox Language Support）是为 Paradox Intera
 - **工具集成**：集成 [Image Magick](https://www.imagemagick.org)、[Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)、[Tiger](https://github.com/amtep/tiger) 等实用工具，提升开发效率。
 - **AI 辅助**：初步集成 AI 技术，适用于本地化文本的翻译和润色。
 
-<br/>
+---
 
 [By the dragon knight a coffee ☕](https://afdian.com/a/dk_breeze)
 

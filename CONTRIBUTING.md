@@ -24,22 +24,21 @@ As you embark on this journey, keep serious, cautious, and curious.
 Please read the relevant material before opening an issue or a pull request. A little reading up front saves a lot of back-and-forth later.
 
 - Project overview and usage:
-  - [`README.md`](README.md) / [`README_zh.md`](README_zh.md)
+  - [`README.md`](README.md) and [`README_zh.md`](README_zh.md)
 - General guidance for agents:
   - [`AGENTS.md`](AGENTS.md)
 - Reference documentation (under `docs/`):
-  - [`docs/README.md`](docs/README.md) / [`docs/README_zh.md`](docs/README_zh.md)
+  - [`docs/README.md`](docs/README.md) and [`docs/README_zh.md`](docs/README_zh.md)
   - The config system: [`docs/en/config.md`](docs/en/config.md)
   - Language syntax reference: [`docs/en/ref-syntax.md`](docs/en/ref-syntax.md)
   - Config format reference: [`docs/en/ref-config-format.md`](docs/en/ref-config-format.md)
   - [Reference Documentation Website](https://windea.icu/Paradox-Language-Support)
   - Built on VuePress 2, and provides documentation in both Chinese and English.
 - Maintainer documents (under `documents/`):
-  - [`documents/README.md`](documents/README.md) / [`documents/README_zh.md`](documents/README_zh.md)
+  - [`documents/README.md`](documents/README.md) and [`documents/README_zh.md`](documents/README_zh.md)
   - Development guidelines: [`documents/notes/guidelines.md`](documents/notes/guidelines.md)
   - Project roadmap: [`documents/roadmap.md`](documents/notes/roadmap.md)
   - Architecture decision records: [`documents/notes/adr.md`](documents/notes/adr.md)
-  - System design specifications: [`documents/design/`](documents/README.md#1-design-system-design-specifications)
   - Primarily written in Simplified Chinese for core maintenance efficiency.
   - Non-Chinese contributors are encouraged to use AI assistants or translation engines, while English contributions to maintainer notes are also welcome.
 - IntelliJ Platform background:

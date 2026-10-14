@@ -1,4 +1,4 @@
-# 语言抽象设计规范 (Language Abstractions)
+# 语言抽象设计规范
 
 > 本文档规范各语言（Paradox Script, Localisation 等）在文法级别与语义级别的抽象层级与 PSI 模型对应关系。
 

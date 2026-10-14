@@ -1,10 +1,14 @@
-# Reference Documentation Site (docs/)
+# Reference Documentation
+
+[By the dragon knight a coffee ☕](https://afdian.com/a/dk_breeze)
 
 [English](README.md) | [中文](README_zh.md)
 
+---
+
 ## Overview
 
-This directory contains the source code for the public-facing **reference documentation site** of Paradox Chronicle, intended for mod developers and plugin users.
+This directory contains the source code for the public-facing reference documentation site of **Paradox Chronicle**, intended for mod developers and plugin users.
 
 The site is built with **VuePress 2** and automatically deployed to [GitHub Pages (https://windea.icu/Paradox-Language-Support)](https://windea.icu/Paradox-Language-Support).
 

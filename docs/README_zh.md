@@ -1,10 +1,14 @@
-# 参考文档站点 (docs/)
+# 参考文档
+
+[By the dragon knight a coffee ☕](https://afdian.com/a/dk_breeze)
 
 [English](README.md) | [中文](README_zh.md)
 
+---
+
 ## 概述
 
-本目录存放 **Paradox Chronicle** 面向模组开发者和插件用户的**公开参考文档站点源码**。
+本目录存放 **Paradox Chronicle** 面向模组开发者和插件用户的公开参考文档站点源码。
 
 文档站点基于 **VuePress 2** 构建，并自动化部署至 [GitHub Pages (https://windea.icu/Paradox-Language-Support)](https://windea.icu/Paradox-Language-Support)。
 

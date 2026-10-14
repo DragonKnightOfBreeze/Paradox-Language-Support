@@ -35,13 +35,19 @@ In addition to language features, the plugin also includes:
 
 ### Project structure (high level)
 
+- `README.md` and `README_zh.md`: overview and usage for this project.
+- `CONTRIBUTING.md`: guidance for contributors.
+- `AGENTS.md`: guidance for agents.
 - `agents/`: agent workflow files (commands, context, etc.).
 - `cwt/`: CWT config directories (core + per-game repositories).
-- `docs/`: reference documentation (public; VuePress 2; including language syntax reference and config format reference).
-- `documents/`: maintainer documentation (internal; including guidelines, roadmap, ADRs, design specs, and ai-generated notes).
+  - `cwt/README.md`: introduce to respective config repositories.
+- `docs/`: reference documentation (including language syntax reference, config format reference, etc.).
+  - `docs/README.md` and `docs/README_zh.md`: introduce to reference documentation (toc, routing, setup, etc.). 
+- `documents/`: maintainer documentation (including guidelines, roadmap, ADRs, design specs, etc.).
+  - `documents/README.md` and `documents/README_zh.md`: introduce to maintainer documentation (toc, routing, principles, etc.).
 - `src/main/kotlin`, `src/main/java`, `src/main/resources`: plugin source.
 - `src/test/kotlin`, `src/test/java`, `src/test/resources`: test codes and test resources.
-- `src/test/testData/`: test data files (e.g., test-specific cwt config files and script files).
+- `src/test/testData/`: test data files (e.g., test-specific config files and script files).
 - `src/main/resources/META-INF/plugin.xml`: plugin entry (registrations are split into `META-INF/*.xml`).
 
 ## Setup and build commands (Windows)
@@ -156,9 +162,9 @@ For the showcase test demonstrating `ChronicleTestScope` usage in DSL-style, see
 
 Package `icu.windea.pls.test.chronicle` hosts a family of "snapshot" tests driven by the showcase content tree `src/test/testData/chronicle/`:
 
-- `ChronicleSnapshotTest` - abstract base providing `computeDataFilePaths()` over the `chronicle/` directory.
-- `ChronicleInspectionBasedSnapshotTest` - runs every bundled `LocalInspectionTool` (filtered to this plugin) over all files under `chronicle/` and asserts no warnings/errors are produced.
-- `ChronicleAnnotatedSnapshotTest` - renders script/CSV files via `ParadoxScriptTextAnnotatedRenderer` / `ParadoxCsvTextAnnotatedRenderer` and diffs the result against expected files under `chronicle/.annotated/**/*.annotated.*`.
+- `ChronicleSnapshotTest`: abstract base providing `computeDataFilePaths()` over the `chronicle/` directory.
+- `ChronicleInspectionBasedSnapshotTest`: runs every bundled `LocalInspectionTool` (filtered to this plugin) over all files under `chronicle/` and asserts no warnings/errors are produced.
+- `ChronicleAnnotatedSnapshotTest`: renders script/CSV files via `ParadoxScriptTextAnnotatedRenderer` / `ParadoxCsvTextAnnotatedRenderer` and diffs the result against expected files under `chronicle/.annotated/**/*.annotated.*`.
 
 ### Optional / on-demand tests (assume-based)
 
@@ -178,21 +184,21 @@ Some tests are intentionally **disabled by default** and only run when explicitl
 
 ### Modules
 
-- `icu.windea.pls.core` - General infrastructure. Including common extensions, utilities and components for stdlib, platform and third-party libraries.
-- `icu.windea.pls.base` - Infrastructure for the plugin itself and platform integration. Including internal state management, external data processing, environment detection, high-level platform integration, etc.
-- `icu.windea.pls.cwt` - Infrastructure to support the CWT language. Usually semantic-free.
-- `icu.windea.pls.script` - Infrastructure to support the script language. Usually semantic-free.
-- `icu.windea.pls.localisation` - Infrastructure to support the localization language. Usually semantic-free.
-- `icu.windea.pls.csv` - Infrastructure to support the CSV language. Usually semantic-free.
-- `icu.windea.pls.config` - Infrastructure for the config system. Including config, config expression, config group, etc.
-- `icu.windea.pls.lang` - The semantic module. Including semantic matching, semantic resolution, language construct support, language feature support, domain-specific logic, etc.
-  - `icu.windea.pls.lang.match` - Semantic-level matching. Mainly based on indices, reference resolution and configs.
-  - `icu.windea.pls.lang.resolve` - Semantic-level resolution. Mainly based on indices, reference resolution and configs.
-  - `icu.windea.pls.lang.util` - High-level managers and special components.
-- `icu.windea.pls.integrations` - The integration module. Provides integrations to third-party tools (e.g., image processing tools and linting tools).
-- `icu.windea.pls.extensions` - The extension module. Provides integrations and extensions to third-party plugins (e.g., JSON and Markdown).
-- `icu.windea.pls.tools` - The tool module. Provides several bundled utilities and integrations (e.g., game launchers and config generators).
-- `icu.windea.pls.ep` - Various EP interfaces and implementations to provide language construct support, language feature support and several QoL features.
+- `icu.windea.pls.core`: General infrastructure. Including common extensions, utilities and components for stdlib, platform and third-party libraries.
+- `icu.windea.pls.base`: Infrastructure for the plugin itself and platform integration. Including internal state management, external data processing, environment detection, high-level platform integration, etc.
+- `icu.windea.pls.cwt`: Infrastructure to support the CWT language. Usually semantic-free.
+- `icu.windea.pls.script`: Infrastructure to support the script language. Usually semantic-free.
+- `icu.windea.pls.localisation`: Infrastructure to support the localization language. Usually semantic-free.
+- `icu.windea.pls.csv`: Infrastructure to support the CSV language. Usually semantic-free.
+- `icu.windea.pls.config`: Infrastructure for the config system. Including config, config expression, config group, etc.
+- `icu.windea.pls.lang`: The semantic module. Including semantic matching, semantic resolution, language construct support, language feature support, domain-specific logic, etc.
+  - `icu.windea.pls.lang.match`: Semantic-level matching. Mainly based on indices, reference resolution and configs.
+  - `icu.windea.pls.lang.resolve`: Semantic-level resolution. Mainly based on indices, reference resolution and configs.
+  - `icu.windea.pls.lang.util`: High-level managers and special components.
+- `icu.windea.pls.integrations`: The integration module. Provides integrations to third-party tools (e.g., image processing tools and linting tools).
+- `icu.windea.pls.extensions`: The extension module. Provides integrations and extensions to third-party plugins (e.g., JSON and Markdown).
+- `icu.windea.pls.tools`: The tool module. Provides several bundled utilities and integrations (e.g., game launchers and config generators).
+- `icu.windea.pls.ep`: Various EP interfaces and implementations to provide language construct support, language feature support and several QoL features.
 
 ### Notes
 
@@ -212,9 +218,9 @@ Notes on `icu.windea.pls.config.manipulation` and `icu.windea.pls.lang.manipulat
 - It also serves as infrastructure for parts of semantic resolution as well as some refactorings, intentions, and quick fixes.
 
 Notes on `Service` vs `Manager` vs `Util`:
-- `Service` - lower-level, may include domain analysis/matching/resolution logic that's delegated to concrete EP implementations.
-- `Manager` - higher-level, exposes ready-to-use domain methods, which may depend on the corresponding `Service` methods.
-- `Util` - narrowly-scoped helper methods usable only for a specific component/feature, or only in a handful of specific scenarios.
+- `Service`: lower-level, may include domain analysis/matching/resolution logic that's delegated to concrete EP implementations.
+- `Manager`: higher-level, exposes ready-to-use domain methods, which may depend on the corresponding `Service` methods.
+- `Util`: narrowly-scoped helper methods usable only for a specific component/feature, or only in a handful of specific scenarios.
 - `Service` and `Manager` don't need to be declared as IntelliJ services, they can be declared as plain Kotlin singleton objects if stateless.
 - Caching logic usually lives at the `Manager` level, `Service`-level code is usually a direct fetch/resolve without caching.
 
