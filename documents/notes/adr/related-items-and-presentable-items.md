@@ -1,8 +1,6 @@
 # 重构 service/manager 层的 relatedItems/presentableItems 相关的方法
 
-> 所属模块：`后端 > 其他语义相关`
-> 上级导航：[架构决策索引 (ADR Index)](README.md)
-
+> - 模块：后端 > 其他语义相关
 > - 版本：v3.0.4
 > - 日期：2026-10-06
 > - 状态：已实施（告一段落）

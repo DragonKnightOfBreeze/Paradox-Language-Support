@@ -1,7 +1,6 @@
 # 如何为 gradlew 配置代理
 
-> 所属类别：`前端（参考文档）`
-> 上级导航：[问题解决与避坑索引 (Solutions Index)](README.md)
+> - 模块：前端（参考文档）
 
 #### 方法1：在 `gradle.properties` 中配置（推荐） 
 

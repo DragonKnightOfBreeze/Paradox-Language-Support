@@ -1,7 +1,5 @@
 # P7 `Indexing process should not rely on non-indexed file data.` 对于子定义
 
-> 上级导航：[问题追踪与分析索引 (Issues Index)](README.md)
-
 > - 状态：已解决
 
 堆栈跟踪：[stack-trace-6](../assets/stack-trace-6.txt)

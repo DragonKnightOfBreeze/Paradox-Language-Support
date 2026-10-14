@@ -1,8 +1,6 @@
 # 支持位置感知的数据类型
 
-> 所属模块：`后端 > 规则系统`
-> 上级导航：[架构决策索引 (ADR Index)](README.md)
-
+> - 模块：后端 > 规则系统
 > - 状态：已变更，参见 [#snippet-match](##snippet-match)
 > - 相关问题：[#340](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/340) [#413](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/413)
 

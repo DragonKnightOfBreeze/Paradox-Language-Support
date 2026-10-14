@@ -1,7 +1,6 @@
 # 对于 non-declarative 的内嵌提示，使用 `psiSingleReference` 不会自动更改配色
 
-> 所属类别：`后端`
-> 上级导航：[问题解决与避坑索引 (Solutions Index)](README.md)
+> - 模块：后端
 
 对于 `PresentationFactory.psiSingleReference`，按住 ctrl 并将鼠标放到对应的文本上，不会自动更改配色为 `EditorColors.REFERENCE_HYPERLINK_COLOR`
 

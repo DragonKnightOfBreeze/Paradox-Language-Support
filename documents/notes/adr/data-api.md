@@ -1,8 +1,6 @@
 # 引入 `ParadoxData` 和 `ParadoxDataSource`
 
-> 所属模块：`后端 > 其他语义相关`
-> 上级导航：[架构决策索引 (ADR Index)](README.md)
-
+> - 模块：后端 > 其他语义相关
 > - 版本：v3.0.3+
 > - 日期：2026-09-15+
 > - 状态：TODO

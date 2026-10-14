@@ -1,7 +1,5 @@
 # P15 测试过程中的 `java.lang.AssertionError: Indexing timeout`
 
-> 上级导航：[问题追踪与分析索引 (Issues Index)](README.md)
-
 > - 版本：v3.0.0
 > - 日期：2026-07-13
 > - 状态：已解决

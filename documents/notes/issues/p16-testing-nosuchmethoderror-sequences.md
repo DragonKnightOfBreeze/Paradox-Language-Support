@@ -1,7 +1,5 @@
 # P16 测试过程中的 `java.lang.NoSuchMethodError: 'kotlin.sequences.Sequence kotlin.sequences.SequencesKt.sequenceOf(java.lang.Object)'`
 
-> 上级导航：[问题追踪与分析索引 (Issues Index)](README.md)
-
 `com.intellij.util.indexing.UnindexedFilesScannerExecutorImpl` L160 可能会抛出异常：[stack-trace-202607132250.txt](../assets/stack-trace-202607132250.txt)
 
 > - IDE 版本：IDEA 2025.2

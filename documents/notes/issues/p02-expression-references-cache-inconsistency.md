@@ -1,7 +1,5 @@
 # P2 `ParadoxExpressionManager.getExpressionReferences` 中使用的缓存可能不一致的问题
 
-> 上级导航：[问题追踪与分析索引 (Issues Index)](README.md)
-
 > - 状态：不再复现
 
 堆栈跟踪：[stack-trace-2](../assets/stack-trace-2.txt)

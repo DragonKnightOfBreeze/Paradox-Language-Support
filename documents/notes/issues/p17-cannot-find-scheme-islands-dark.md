@@ -1,7 +1,5 @@
 # P17 启动IDE时报错 `Cannot find scheme: Islands Dark from plugins: icu.windea.pls;icu.windea.pls`
 
-> 上级导航：[问题追踪与分析索引 (Issues Index)](README.md)
-
 > - IDE 版本：IDEA 2025.2
 > - 版本：v3.0.2
 > - 日期：2026-09-02

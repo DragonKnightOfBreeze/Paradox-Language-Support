@@ -1,7 +1,5 @@
 # P3 涉及内联脚本与适用语言注入的参数时，IDE可能卡死的问题
 
-> 上级导航：[问题追踪与分析索引 (Issues Index)](README.md)
-
 > - 状态：不再复现
 
 堆栈跟踪：[stack-trace-3](../assets/stack-trace-3.txt)

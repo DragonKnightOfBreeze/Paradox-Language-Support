@@ -1,7 +1,5 @@
 # P19 与 `ParadoxLocalisationFindUsagesProvider` 有关的 SOF
 
-> 上级导航：[问题追踪与分析索引 (Issues Index)](README.md)
-
 > - 版本：v3.0.2
 > - 日期：2026-09-05
 > - 状态：已解决

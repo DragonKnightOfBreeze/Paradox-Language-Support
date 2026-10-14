@@ -1,8 +1,6 @@
 # 重构和完善各个 `ElementDescriptionProvider` 和 `FindUsagesProvider`
 
-> 所属模块：`后端 > 语言功能支持`
-> 上级导航：[架构决策索引 (ADR Index)](README.md)
-
+> - 模块：后端 > 语言功能支持
 > - 版本：v3.0.2
 > - 日期：2026-09-03
 > - 状态：已实施

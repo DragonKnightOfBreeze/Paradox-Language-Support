@@ -1,8 +1,6 @@
 # 将 JSON 序列化框架从 jackson 改为 kotlinx-serialization
 
-> 所属模块：`构建 > 依赖`
-> 上级导航：[架构决策索引 (ADR Index)](README.md)
-
+> - 模块：构建 > 依赖
 > - 版本：v3.0.4
 > - 日期：2026-10-02
 > - 状态：已实施

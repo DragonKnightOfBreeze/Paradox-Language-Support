@@ -1,8 +1,6 @@
 # 重构 `CwtDataTypes` `CwtConfigTypes` - 改为偏好使用 lambda 式构建器
 
-> 所属模块：`后端 > 通用`
-> 上级导航：[架构决策索引 (ADR Index)](README.md)
-
+> - 模块：后端 > 通用
 > - 版本：v2.1.8
 > - 日期：2026-05-04
 > - 状态：已实施

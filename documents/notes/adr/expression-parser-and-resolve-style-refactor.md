@@ -1,8 +1,6 @@
 # 重构 path/expression/complexExpression/config/configExpression - 更改解析器与解析方法的代码风格
 
-> 所属模块：`后端 > 通用`
-> 上级导航：[架构决策索引 (ADR Index)](README.md)
-
+> - 模块：后端 > 通用
 > - 版本：v2.1.10
 > - 日期：2026-06-14
 > - 状态：已实施

@@ -1,7 +1,5 @@
 # P6 来自的 `ParadoxTextBasedTargetSearcher` 和 fastutil 的索引越界异常
 
-> 上级导航：[问题追踪与分析索引 (Issues Index)](README.md)
-
 > - 状态：已解决
 
 堆栈跟踪：[stack-trace-5](../assets/stack-trace-5.txt)

@@ -1,7 +1,5 @@
 # P9 对于对应多个 PSI 引用的脚本表达式（如 `religion:catholic`），光标位置的用法高亮可能不正确
 
-> 上级导航：[问题追踪与分析索引 (Issues Index)](README.md)
-
 > - 状态：已解决
 
 ```

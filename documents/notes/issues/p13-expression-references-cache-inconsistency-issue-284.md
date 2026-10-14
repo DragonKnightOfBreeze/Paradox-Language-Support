@@ -1,7 +1,5 @@
 # P13 表达式 PSI 引用的缓存不一致的问题 & `Issue284Test.testScopeLinkInEffect` 可能无法通过
 
-> 上级导航：[问题追踪与分析索引 (Issues Index)](README.md)
-
 > - 版本：v2.1.8
 > - 日期：2026-05-06
 > - 状态：可能已解决
