@@ -1,6 +1,6 @@
 # Prism 自定义语法（SSR 扩展，避免 window.Prism 依赖）
 
-> - 模块：后端相关
+> - 模块：前端（参考文档）
 
 - **背景**
   - 文档中的代码块需要自定义高亮：**CWT config file**、Paradox Script、Paradox Localisation、Paradox CSV。

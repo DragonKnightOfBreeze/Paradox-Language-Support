@@ -4,7 +4,7 @@
 
 本目录记录针对具体 Bug、死锁、线程卡死或偶发异常的现场勘查快照，以及关于规则系统、作用域等领域内部机制的深度分析。
 
-## 索引
+## 目录索引
 
 - [规则系统 覆盖规则 — 更新记录](analysis/cwt-override-rules-updates.md)
 - [规则系统 覆盖规则](analysis/cwt-override-rules.md)

@@ -1,6 +1,6 @@
 # 平台不再提供 Jackson 导致 IDEA 2026.3 EAP 兼容性问题（迁移到 kotlinx-serialization）（2026-09-30）
 
-> - 模块：前端相关（参考文档）
+> - 模块：前端（参考文档）
 
 > 备注（2026-10-01）：可以通过配置 `allowComments = true` 以允许注释。
 

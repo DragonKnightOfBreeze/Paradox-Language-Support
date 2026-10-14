@@ -2,7 +2,7 @@
 
 ## 概述
 
-本目录存放 Paradox Chronicle 插件的全部**自包含架构决策档案（RFC-style ADRs）**。
+本目录存放 Paradox Chronicle 插件的已有的**自包含架构决策档案（RFC-style ADRs）**。
 
 每一篇 ADR 记录了针对特定技术选型、文法/语义支持、规则系统或架构演进的决策因果。文档通常自包含：背景与问题分析（Context & Problem）、决策方案（Decision）、关键代码位置（Key Locations）、使用说明（Usage）以及实施任务清单（Checklist）。
 
@@ -108,8 +108,8 @@
 
 - [增强对定值（define）的支持](adr/define-support.md)
 - [增强对数据类型 `ShaderEffect` 和 `MeshLocator` 的支持](adr/shader-effect-and-mesh-locator-support.md)
-- [[CK3/VIC3/EU5] 完善对定值引用表达式（defineReferenceExpression）和数组定值表达式（arrayDefineReferenceExpression）的支持](define-reference-expression-support.md)
-- [[CK3/VIC3/EU5] 完善对标签集表达式（tagsExpression）的支持](tags-expression-support.md)
+- [[CK3/VIC3/EU5] 完善对定值引用表达式（defineReferenceExpression）和数组定值表达式（arrayDefineReferenceExpression）的支持](adr/define-reference-expression-support.md)
+- [[CK3/VIC3/EU5] 完善对标签集表达式（tagsExpression）的支持](adr/tags-expression-support.md)
 - [完善对 CSV 文件与 rowConfig 的支持](adr/csv-and-row-config-support.md)
 - [支持内联定义](adr/inline-definition.md)
 

@@ -1,8 +1,6 @@
-# 功能实现
+# 学习笔记：VuePress 语法高亮
 
-## 前端相关（参考文档）
-
-### VuePress 2 + PrismJS 自定义语言高亮
+## VuePress 2 + PrismJS 自定义语言高亮
 
 - **目录结构**：
   - `docs/.vuepress/highlighters/prism/` 自定义语言定义（JS）：如 `prism-cwt.js`、`prism-paradox-script.js` 等。
@@ -24,7 +22,7 @@
   - https://prismjs.com
   - https://prismjs.com/extending#language-definitions
 
-### VuePress 2 + Shiki 自定义语言高亮
+## VuePress 2 + Shiki 自定义语言高亮
 
 - **目录结构**：
   - `docs/.vuepress/highlighters/text-mate/` TextMate 语法（`*.tmLanguage.json`）。
@@ -45,13 +43,13 @@
   - SSR 警告如 `skipToContent`、`routerLocales` 与主题本地化相关，可后续在主题配置中补齐，和 Shiki/Prism 无关。
   - 自定义语言未生效：优先检查 `scopeName` 是否与 TextMate 语法一致、`langs` 是否为 lazy 工厂函数。
 
-### TextMate 语法与 Prism 规则的对齐
+## TextMate 语法与 Prism 规则的对齐
 
 - **未加引号字符串**：在 TextMate 中补充了 `string.unquoted.*` 规则，避免与 `# = { } [] () ,` 等冲突。
 - **布尔/运算符/标点**：补齐了 `yes/no`、算术运算符、括号/方括号/逗号等标记，匹配 Prism 行为。
 - **本地化语言**：保留在引号内的颜色标记（`§X...§!`）、参数（`$name$`）、命令（`[Get...]`）、文本格式与图标等规则。
 
-### 参考链接
+## 参考链接
 
 - **Shiki**：
   - https://github.com/shikijs/shiki
@@ -62,5 +60,3 @@
 - **项目内参考**：
   - `docs/.vuepress/plugins/` 与 `docs/.vuepress/highlighters/` 目录
   - `docs/en/ref-syntax.md`、`docs/zh/ref-syntax.md`
-
-## 后端相关

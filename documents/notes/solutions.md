@@ -32,4 +32,3 @@
 - [按条件忽略的测试被不正确地忽略了](solutions/conditional-tests-ignored.md)
 - [需要在单元测试（集成测试）中加载并获取规则数据](solutions/load-configs-in-tests.md)
 - [测试代码补全时的注意事项](solutions/testing-code-completion-notes.md)
-

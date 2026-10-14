@@ -28,11 +28,10 @@
 ### 来自 CWTools 的 Github 仓库
 
 - [x] [The tool cannot recognize in-script flag variables (Vic3) · Issue #76 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/76)
-- [x] [[Stellaris\] Could support tech@level grammar? · Issue #58 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/58)
+- [x] [\[Stellaris\] Could support tech@level grammar? · Issue #58 · cwtools/cwtools-vscode (github.com)](https://github.com/cwtools/cwtools-vscode/issues/58)
 - [x] [Parsing issues in Vic3 · Issue #53 · cwtools/cwtools (github.com)](https://github.com/cwtools/cwtools/issues/53)
 
-
-## 疑难问题深度分析 (P1~Pnn)
+## 疑难问题分析
 
 - [P1 索引时报错 `Indexing process should not rely on non-indexed file data.`](issues/p01-indexing-rely-on-non-indexed-data.md)
 - [P2 `ParadoxExpressionManager.getExpressionReferences` 中使用的缓存可能不一致的问题](issues/p02-expression-references-cache-inconsistency.md)

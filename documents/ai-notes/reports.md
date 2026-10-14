@@ -4,7 +4,7 @@
 
 本目录存放关于项目自身复杂度评估、索引性能优化评估、代码风格约定以及自动化测试覆盖率的调研报告。
 
-## 索引
+## 目录索引
 
 - [评估：基础规则内存设计（v2.1.7-dev）](reports/eval-base-rules-memory-design-2.1.7.md)
 - [评估：索引性能优化（v2.1.3-dev）](reports/eval-index-optimization-2.1.3.md)

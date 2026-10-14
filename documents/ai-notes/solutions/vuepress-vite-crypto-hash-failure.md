@@ -1,6 +1,6 @@
 # VuePress docs:dev 启动失败（Vite 7 与 Node 版本不兼容，crypto.hash is not a function）
 
-> - 模块：前端相关（参考文档）
+> - 模块：前端（参考文档）
 
 - **背景**
   - 使用 VuePress 2 搭建文档，`docs/package.json` 主要版本：

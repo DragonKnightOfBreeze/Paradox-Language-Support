@@ -1,6 +1,6 @@
 # ProfilesSettings 持久化迁移到 SQLite（Ktorm + DbBackedStateMap）（2025-08-31）
 
-> - 模块：后端相关
+> - 模块：后端
 
 - **背景**
   - 先前 `PlsProfilesSettings` 的多个 Map 字段依赖 IntelliJ `BaseState` 的 XML 持久化。为提升可维护性与一致性，迁移到 SQLite。
