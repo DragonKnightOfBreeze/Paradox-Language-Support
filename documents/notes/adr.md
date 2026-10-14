@@ -137,5 +137,5 @@
 
 ## 关联与扩展设计
 
-- **系统设计规范**：参见 [documents/design/ (系统设计规范)](adr/../design.md)
-- **性能与内存基准**：参见 [documents/notes/analysis/ (性能与内存分析)](adr/analysis.md)
+- **系统设计规范**：参见 [系统设计规范](../design.md)
+- **性能与内存基准**：参见 [性能与内存分析](analysis.md)
