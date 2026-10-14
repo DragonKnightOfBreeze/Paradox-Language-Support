@@ -29,25 +29,27 @@ Please read the relevant material before opening an issue or a pull request. A l
   - [`AGENTS.md`](AGENTS.md)
 - Reference documentation (under `docs/`):
   - [`docs/README.md`](docs/README.md) and [`docs/README_zh.md`](docs/README_zh.md)
-  - The config system: [`docs/en/config.md`](docs/en/config.md)
-  - Language syntax reference: [`docs/en/ref-syntax.md`](docs/en/ref-syntax.md)
-  - Config format reference: [`docs/en/ref-config-format.md`](docs/en/ref-config-format.md)
+  - The config system: [`docs/en/config.md`](docs/en/config.md) and [`docs/zh/config.md`](docs/zh/config.md)
+  - Language syntax reference: [`docs/en/ref-syntax.md`](docs/en/ref-syntax.md) and [`docs/zh/ref-syntax.md`](docs/zh/ref-syntax.md)
+  - Config format reference: [`docs/en/ref-config-format.md`](docs/en/ref-config-format.md) and [`docs/zh/ref-config-format.md`](docs/zh/ref-config-format.md)
   - [Reference Documentation Website](https://windea.icu/Paradox-Language-Support)
   - Built on VuePress 2, and provides documentation in both Chinese and English.
 - Maintainer documents (under `documents/`):
   - [`documents/README.md`](documents/README.md) and [`documents/README_zh.md`](documents/README_zh.md)
   - Development guidelines: [`documents/notes/guidelines.md`](documents/notes/guidelines.md)
-  - Project roadmap: [`documents/roadmap.md`](documents/notes/roadmap.md)
+  - Project roadmap: [`documents/notes/roadmap.md`](documents/notes/roadmap.md)
   - Architecture decision records: [`documents/notes/adr.md`](documents/notes/adr.md)
   - Primarily written in Simplified Chinese for core maintenance efficiency.
   - Non-Chinese contributors are encouraged to use AI assistants or translation engines, while English contributions to maintainer notes are also welcome.
+- Plugin entry:
+  - [plugin.xml](src/main/resources/META-INF/plugin.xml)
 - IntelliJ Platform background:
   - [IntelliJ Platform SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html)
   - Getting started from the [Quick Start Guide](https://plugins.jetbrains.com/docs/intellij/plugins-quick-start.html) and the [Developing a Plugin](https://plugins.jetbrains.com/docs/intellij/developing-plugins.html) docs
   - In particular the [PSI](https://plugins.jetbrains.com/docs/intellij/psi.html) docs and the [Custom Language Support](https://plugins.jetbrains.com/docs/intellij/custom-language-support.html) docs
 - Upstream CWT tooling and configs:
   - [CWTools](https://github.com/cwtools/cwtools)
-  - [The respective config repositories](cwt/README.md)
+  - [Respective config repositories](cwt/README.md)
 
 ## What We Accept
 
