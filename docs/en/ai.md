@@ -86,12 +86,3 @@ When an AI feature is triggered, the plugin executes the following process:
 > [!info]
 > - Batch processing tasks can be cancelled at any time via the background task panel.
 > - Upon task completion, the IDE will display a notification indicating the execution status (success or partial success) and provide entry points for Revert and Reapply operations.
-
-<!--
-We hope that you can see the vast sky and the dazzling starts beyond this narrow land.
-This chronicle records the past and the present, the syntax and the structure.
-But the true awakening lies ahead.
-We anticipate the day when the silent text finds its own voice.
-We anticipate the day when the scattered fragments weave themselves into a coherent tapestry.
-We anticipate the day when the chronicle is no longer just a record to be read, but also a guide book with all your practices.
--->

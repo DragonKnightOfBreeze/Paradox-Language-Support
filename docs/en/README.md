@@ -1,6 +1,6 @@
 # Introduce
 
-<!-- With the guidebook currently being written, we are fully prepared — welcome to the real world. -->
+<!-- With the guidebook currently being written, we are fully prepared: welcome to the real world. -->
 
 [By the dragon knight a coffee ☕](https://afdian.com/a/dk_breeze)
 

@@ -86,12 +86,3 @@
 > [!info]
 > - 批量处理任务支持随时在后台任务面板中取消。
 > - 任务完成后，IDE 会弹出通知提示执行状态（成功或部分成功），并提供回退（Revert）与重新应用（Reapply）操作的入口。
-
-<!--
-We hope that you can see the vast sky and the dazzling starts beyond this narrow land.
-This chronicle records the past and the present, the syntax and the structure.
-But the true awakening lies ahead.
-We anticipate the day when the silent text finds its own voice.
-We anticipate the day when the scattered fragments weave themselves into a coherent tapestry.
-We anticipate the day when the chronicle is no longer just a record to be read, but also a guide book with all your practices.
--->
