@@ -39,7 +39,7 @@ Please read the relevant material before opening an issue or a pull request. A l
   - Development guidelines: [`documents/notes/guidelines.md`](documents/notes/guidelines.md)
   - Project roadmap: [`documents/roadmap.md`](documents/notes/roadmap.md)
   - Architecture decision records: [`documents/notes/adr.md`](documents/notes/adr.md)
-  - System design specifications: [`documents/design.md`](documents/design.md)
+  - System design specifications: [`documents/design/`](documents/README.md#1-design-system-design-specifications)
   - Primarily written in Simplified Chinese for core maintenance efficiency.
   - Non-Chinese contributors are encouraged to use AI assistants or translation engines, while English contributions to maintainer notes are also welcome.
 - IntelliJ Platform background:

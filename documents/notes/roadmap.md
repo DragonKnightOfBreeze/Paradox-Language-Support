@@ -528,6 +528,10 @@
   - 使用更加规范化的目录结构。
   - 提供更加完善的目录导航（`documents/README.md`）。
   - 同步更新 `AGENTS.md` `CONTRIBUTING.md` 以及其他相关笔记。
+- [ ] P2 分别为参考文档和维护者文档提供对应目录顶层的 `README.md` 以及 `README_zh.md`。
+  - 分别位于 `docs/` 和 `documents/`。
+  - 通过置顶的链接导航栏提供语言切换。
+  - 同步更新 `AGENTS.md` 和 `CONTRIBUTING.md`。
 - [ ] P1 提供 `PushStream`
   - 提供简洁、灵活且更加符合直觉的 API 调用方式，同时保持性能
   - 零开销的推模式流（区别于 Iterator/Stream/Sequence 等拉模式流）

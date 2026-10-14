@@ -337,7 +337,7 @@ Do not read the entire `documents/` directory at once, instead, read specific do
 - **Troubleshooting & environment workarounds**: check `documents/notes/solutions/` (see `documents/notes/solutions.md`).
 - **Performance & memory benchmarks**: check `documents/notes/analysis/` (see `documents/notes/analysis.md`).
 - **AI-generated notes**: check `documents/ai-notes/` (archived as-is; see `analysis.md`, `reports.md` `solutions.md`, etc.).
-- **System design specs** (UI, colors, language abstractions): check `documents/design/` (see `documents/design.md`).
+- **System design specs** (UI, colors, language abstractions): check `documents/design/` (see `documents/README.md`).
 
 ## Agent instructions
 
