@@ -2,8 +2,6 @@
 
 [English](README.md) | [中文](README_zh.md)
 
----
-
 ## Overview
 
 This directory contains the source code for the public-facing **reference documentation site** of Paradox Chronicle, intended for mod developers and plugin users.
@@ -40,8 +38,3 @@ To build the static site:
 ```bash
 pnpm build
 ```
-
-## Notice
-
-- **Do not commit internal maintainer notes, design drafts, or debugging logs to this directory**.
-- For internal plugin architecture, Architecture Decision Records (ADRs), code conventions, and in-depth diagnostics, see `documents/`.
