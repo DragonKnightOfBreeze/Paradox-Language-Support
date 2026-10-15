@@ -153,7 +153,7 @@ dependencies {
     implementation("org.javassist:javassist:3.33.0-GA")
 
     // kotlinx-serialization - https://github.com/Kotlin/kotlinx.serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
     // AI integration
 
