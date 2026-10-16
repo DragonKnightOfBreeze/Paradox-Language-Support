@@ -7,21 +7,19 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderC
-import icu.windea.pls.core.codeInsight.navigation.setTargets
-import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.actions.ChronicleActions
-import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
+import icu.windea.pls.lang.codeInsight.markers.ParadoxLineMarkerProvider
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxScriptedVariableManager
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
 /**
  * 提供封装变量（scriptedVariable）的相关本地化（relatedLocalisation，对应 localisation）的装订线图标。
  */
-class ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
+class ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider : ParadoxLineMarkerProvider() {
     override fun getName() = ChronicleBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations")
 
     override fun getIcon() = ChronicleIcons.Gutter.RelatedLocalisations
@@ -29,30 +27,35 @@ class ParadoxScriptedVariableRelatedLocalisationsLineMarkerProvider : ParadoxRel
     override fun getGroup() = ChronicleBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
-        // 何时显示装订线图标：element 是 scriptedVariable，且存在同名本地化
         if (element !is ParadoxScriptScriptedVariable) return
-        val locationElement = element.scriptedVariableName.idElement ?: return
         val name = element.name?.orNull() ?: return
-        // 目标：同名本地化
-        val locale = ParadoxLocaleManager.getPreferredLocaleConfig()
-        val targets = ParadoxScriptedVariableManager.getRelatedLocalisations(element, locale)
-        if (targets.isEmpty()) return
 
         ProgressManager.checkCanceled()
-        val icon = ChronicleIcons.Gutter.RelatedLocalisations
-        val prefix = ChronicleStrings.relatedLocalisationPrefix
-        val tooltip = "$prefix $name"
-        val lineMarkerInfo = NavigationGutterIconBuilderC.createForPsi(icon) { createGotoRelatedItem(targets) }
-            .setTooltipText(tooltip)
-            .setPopupTitle(ChronicleBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations.title"))
-            .setTargets { targets.optimized() }
-            .setAlignment(GutterIconRenderer.Alignment.LEFT)
-            .setNamer { ChronicleBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations") }
-            .createLineMarkerInfo(locationElement)
+
+        val anchorElement = element.scriptedVariableName.idElement ?: return
+        val project = element.project
+        val targets = computeTargets(element)
+        if (targets.isEmpty()) return // same-name localisations should exist
+        val tooltip = computeTooltip(name)
+
+        val title = ChronicleBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations.title", name)
+        val findUsagesTitle = ChronicleBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations.findUsagesTitle", name)
+        val navHandler = createNavigationHandler(title, findUsagesTitle, project) { targets }
+        val lineMarkerInfo = createInfo(anchorElement, { tooltip }, navHandler, GutterIconRenderer.Alignment.LEFT) { targets }
         result.add(lineMarkerInfo)
 
-        // 绑定导航动作 & 在单独的分组中显示对应的意向动作
+        // bind navigation actions & show the corresponding intent actions in a separate group
         val actionText = ChronicleBundle.message("script.gutterIcon.scriptedVariableRelatedLocalisations.action")
         NavigateAction.setNavigateAction(lineMarkerInfo, actionText, ChronicleActions.GotoRelatedLocalisations)
+    }
+
+    private fun computeTargets(element: ParadoxScriptScriptedVariable): List<ParadoxLocalisationProperty> {
+        val locale = ParadoxLocaleManager.getPreferredLocaleConfig()
+        return ParadoxScriptedVariableManager.getRelatedLocalisations(element, locale)
+    }
+
+    private fun computeTooltip(name: String): String {
+        val prefix = ChronicleStrings.relatedLocalisationPrefix
+        return "$prefix $name"
     }
 }

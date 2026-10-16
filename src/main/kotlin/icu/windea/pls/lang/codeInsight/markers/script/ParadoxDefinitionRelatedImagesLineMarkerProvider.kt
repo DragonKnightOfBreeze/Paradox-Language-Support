@@ -7,21 +7,20 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderC
-import icu.windea.pls.core.codeInsight.navigation.setTargets
-import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.actions.ChronicleActions
-import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
+import icu.windea.pls.lang.codeInsight.markers.ParadoxLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 提供定义（definition）的相关图片（relatedImages，对应定义或图片）的装订线图标。
  */
-class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
+class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxLineMarkerProvider() {
     override fun getName() = ChronicleBundle.message("script.gutterIcon.definitionRelatedImages")
 
     override fun getIcon() = ChronicleIcons.Gutter.RelatedImages
@@ -29,25 +28,45 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxRelatedItemLineM
     override fun getGroup() = ChronicleBundle.message("script.gutterIcon.definitionRelatedImages.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
-        // 何时显示装订线图标：element 是 definition，且 definitionInfo.images 不为空，且计算得到的 keys 不为空
         if (element !is ParadoxScriptProperty) return
-        val locationElement = element.propertyKey.idElement ?: return
         val definitionInfo = element.definitionInfo ?: return
-        val imageInfos = definitionInfo.images
-        if (imageInfos.isEmpty()) return
 
-        // 显示在提示中 & 可导航：定义名或文件路径，不包括没有对应的图片的项，按解析顺序排序
+        // ignore inline definitions and injected definitions
+        if (definitionInfo.source == ParadoxDefinitionSource.Inline || definitionInfo.source == ParadoxDefinitionSource.Injection) return
+        // ignore definitions that without related image infos
+        if (definitionInfo.images.isEmpty()) return
+
         ProgressManager.checkCanceled()
-        val icon = ChronicleIcons.Gutter.RelatedImages
-        val prefix = ChronicleStrings.relatedImagePrefix
+
+        val anchorElement = element.propertyKey.idElement ?: return
+        val project = definitionInfo.project
+        val resolvedElements = mutableSetOf<PsiElement>()
         val tooltipLines = mutableSetOf<String>()
-        val keys = mutableSetOf<String>()
-        val targets = mutableSetOf<PsiElement>() // 这里需要考虑基于引用相等去重
+        compute(element, definitionInfo, resolvedElements, tooltipLines)
+        if (resolvedElements.isEmpty()) return // resolved images should exist
+        val targets = resolvedElements
+        val tooltip = tooltipLines.joinToString("<br>")
+
+        val title = ChronicleBundle.message("script.gutterIcon.definitionRelatedImages.title", definitionInfo.name)
+        val findUsagesTitle = ChronicleBundle.message("script.gutterIcon.definitionRelatedImages.findUsagesTitle", definitionInfo.name)
+        val navHandler = createNavigationHandler(title, findUsagesTitle, project) { targets }
+        val lineMarkerInfo = createInfo(anchorElement, { tooltip }, navHandler, GutterIconRenderer.Alignment.LEFT) { targets }
+        result.add(lineMarkerInfo)
+
+        // bind navigation actions & show the corresponding intent actions in a separate group
+        val actionText = ChronicleBundle.message("script.gutterIcon.definitionRelatedImages.action")
+        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, ChronicleActions.GotoRelatedImages)
+    }
+
+    private fun compute(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, resolved: MutableSet<PsiElement>, tooltipLines: MutableSet<String>): MutableSet<PsiElement> {
+        val prefix = ChronicleStrings.relatedImagePrefix
+        val imageInfos = definitionInfo.images
+        val toDistinct = HashSet<String>(imageInfos.size)
         for ((key, locationExpression) in imageInfos) {
             ProgressManager.checkCanceled()
             val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo) ?: continue
-            targets.addAll(resolveResult.elements)
-            if (!keys.add(key)) return
+            resolved.addAll(resolveResult.elements)
+            if (!toDistinct.add(key)) break
             when (resolveResult) {
                 is CwtImageLocationResolveResult.Static -> {
                     if (resolveResult.elements.isEmpty()) continue
@@ -58,20 +77,6 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxRelatedItemLineM
                 }
             }
         }
-        if (keys.isEmpty()) return
-        if (targets.isEmpty()) return
-        ProgressManager.checkCanceled()
-        val lineMarkerInfo = NavigationGutterIconBuilderC.createForPsi(icon) { createGotoRelatedItem(targets) }
-            .setTooltipText(tooltipLines.joinToString("<br>"))
-            .setPopupTitle(ChronicleBundle.message("script.gutterIcon.definitionRelatedImages.title"))
-            .setTargets { targets.optimized() }
-            .setAlignment(GutterIconRenderer.Alignment.LEFT)
-            .setNamer { ChronicleBundle.message("script.gutterIcon.definitionRelatedImages") }
-            .createLineMarkerInfo(locationElement)
-        result.add(lineMarkerInfo)
-
-        // 绑定导航动作 & 在单独的分组中显示对应的意向动作
-        val actionText = ChronicleBundle.message("script.gutterIcon.definitionRelatedImages.action")
-        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, ChronicleActions.GotoRelatedImages)
+        return resolved
     }
 }

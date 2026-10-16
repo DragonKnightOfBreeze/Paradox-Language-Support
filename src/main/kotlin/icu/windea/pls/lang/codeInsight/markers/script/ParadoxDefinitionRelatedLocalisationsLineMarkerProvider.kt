@@ -7,24 +7,23 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.core.codeInsight.navigation.NavigationGutterIconBuilderC
-import icu.windea.pls.core.codeInsight.navigation.setTargets
-import icu.windea.pls.core.optimized
 import icu.windea.pls.lang.actions.ChronicleActions
-import icu.windea.pls.lang.codeInsight.markers.ParadoxRelatedItemLineMarkerProvider
+import icu.windea.pls.lang.codeInsight.markers.ParadoxLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.ParadoxDefinitionSource
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 /**
  * 提供定义（definition）的相关本地化（relatedLocalisations，对应本地化）的装订线图标。
  */
-class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedItemLineMarkerProvider() {
+class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxLineMarkerProvider() {
     override fun getName() = ChronicleBundle.message("script.gutterIcon.definitionRelatedLocalisations")
 
     override fun getIcon() = ChronicleIcons.Gutter.RelatedLocalisations
@@ -32,26 +31,46 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedIt
     override fun getGroup() = ChronicleBundle.message("script.gutterIcon.definitionRelatedLocalisations.group")
 
     override fun collectNavigationMarkers(element: PsiElement, result: MutableCollection<in RelatedItemLineMarkerInfo<*>>) {
-        // 何时显示装订线图标：element 是 definition，且 definitionInfo.localisation 不为空，且计算得到的 keys 不为空
         if (element !is ParadoxScriptProperty) return
-        val locationElement = element.propertyKey.idElement ?: return
         val definitionInfo = element.definitionInfo ?: return
-        val localisationInfos = definitionInfo.localisations
-        if (localisationInfos.isEmpty()) return
 
-        // 显示在提示中 & 可导航：去重后的一组本地化的键名，不包括没有对应的本地化的项，按解析顺序排序
+        // ignore inline definitions and injected definitions
+        if (definitionInfo.source == ParadoxDefinitionSource.Inline || definitionInfo.source == ParadoxDefinitionSource.Injection) return
+        // ignore definitions that without related localisation infos
+        if (definitionInfo.localisations.isEmpty()) return
+
         ProgressManager.checkCanceled()
-        val icon = ChronicleIcons.Gutter.RelatedLocalisations
-        val prefix = ChronicleStrings.relatedLocalisationPrefix
+
+        val anchorElement = element.propertyKey.idElement ?: return
+        val project = definitionInfo.project
+        val resolvedElements = mutableSetOf<ParadoxLocalisationProperty>()
         val tooltipLines = mutableSetOf<String>()
-        val keys = mutableSetOf<String>()
-        val targets = mutableSetOf<ParadoxLocalisationProperty>() // 这里需要考虑基于引用相等去重
+        compute(element, definitionInfo, resolvedElements, tooltipLines)
+        if (resolvedElements.isEmpty()) return // resolved localisations should exist
+        val targets = resolvedElements
+        val tooltip = tooltipLines.joinToString("<br>")
+
+        val title = ChronicleBundle.message("script.gutterIcon.definitionRelatedLocalisations.title", definitionInfo.name)
+        val findUsagesTitle = ChronicleBundle.message("script.gutterIcon.definitionRelatedLocalisations.findUsagesTitle", definitionInfo.name)
+        val navHandler = createNavigationHandler(title, findUsagesTitle, project) { targets }
+        val lineMarkerInfo = createInfo(anchorElement, { tooltip }, navHandler, GutterIconRenderer.Alignment.LEFT) { targets }
+        result.add(lineMarkerInfo)
+
+        // bind navigation actions & show the corresponding intent actions in a separate group
+        val actionText = ChronicleBundle.message("script.gutterIcon.definitionRelatedLocalisations.action")
+        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, ChronicleActions.GotoRelatedLocalisations)
+    }
+
+    private fun compute(element: ParadoxScriptProperty, definitionInfo: ParadoxDefinitionInfo, resolved: MutableSet<ParadoxLocalisationProperty>, tooltipLines: MutableSet<String>) {
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
+        val prefix = ChronicleStrings.relatedLocalisationPrefix
+        val localisationInfos = definitionInfo.localisations
+        val toDistinct = HashSet<String>(localisationInfos.size)
         for ((key, locationExpression) in localisationInfos) {
             ProgressManager.checkCanceled()
             val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(preferredLocale) } ?: continue
-            targets.addAll(resolveResult.elements)
-            if (!keys.add(key)) return
+            resolved.addAll(resolveResult.elements)
+            if (!toDistinct.add(key)) break
             when (resolveResult) {
                 is CwtLocalisationLocationResolveResult.Static -> {
                     if (resolveResult.elements.isEmpty()) continue
@@ -62,20 +81,5 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxRelatedIt
                 }
             }
         }
-        if (keys.isEmpty()) return
-        if (targets.isEmpty()) return
-        ProgressManager.checkCanceled()
-        val lineMarkerInfo = NavigationGutterIconBuilderC.createForPsi(icon) { createGotoRelatedItem(targets) }
-            .setTooltipText(tooltipLines.joinToString("<br>"))
-            .setPopupTitle(ChronicleBundle.message("script.gutterIcon.definitionRelatedLocalisations.title"))
-            .setTargets { targets.optimized() }
-            .setAlignment(GutterIconRenderer.Alignment.LEFT)
-            .setNamer { ChronicleBundle.message("script.gutterIcon.definitionRelatedLocalisations") }
-            .createLineMarkerInfo(locationElement)
-        result.add(lineMarkerInfo)
-
-        // 绑定导航动作 & 在单独的分组中显示对应的意向动作
-        val actionText = ChronicleBundle.message("script.gutterIcon.definitionRelatedLocalisations.action")
-        NavigateAction.setNavigateAction(lineMarkerInfo, actionText, ChronicleActions.GotoRelatedLocalisations)
     }
 }
