@@ -3,6 +3,7 @@ package icu.windea.pls.ep.codeInsight.documentation
 import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.annotations.ForGameType
+import icu.windea.pls.config.CwtConfigTypeCategories
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.escapeXml
@@ -53,7 +54,7 @@ class ParadoxTemplateModifierQuickDocProvider : ParadoxModifierQuickDocProvider 
 
             br().indent()
             append(ChronicleBundle.message("doc.text.fromTemplate")).append(" ")
-            val templateLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.modifiers, templateString, gameType)
+            val templateLink = ReferenceLinkType.CwtConfig.createLink(CwtConfigTypeCategories.modifiers, templateString, gameType)
             psiLinkOrUnresolved(templateLink.escapeXml(), templateString.escapeXml())
 
             // 加上生成源信息
@@ -75,12 +76,12 @@ class ParadoxTemplateModifierQuickDocProvider : ParadoxModifierQuickDocProvider 
                             append(": ")
 
                             val type = definitionTypes.first()
-                            val typeLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.types, type, gameType)
+                            val typeLink = ReferenceLinkType.CwtConfig.createLink(CwtConfigTypeCategories.types, type, gameType)
                             psiLinkOrUnresolved(typeLink.escapeXml(), type.escapeXml())
                             for ((index, t) in definitionTypes.withIndex()) {
                                 if (index == 0) continue
                                 append(", ")
-                                val subtypeLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.types, "$type/$t", gameType)
+                                val subtypeLink = ReferenceLinkType.CwtConfig.createLink(CwtConfigTypeCategories.types, "$type/$t", gameType)
                                 psiLinkOrUnresolved(subtypeLink.escapeXml(), t.escapeXml())
                             }
                         }
@@ -90,15 +91,15 @@ class ParadoxTemplateModifierQuickDocProvider : ParadoxModifierQuickDocProvider 
                             append(ChronicleBundle.message("doc.text.generatedFromEnumValue"))
                             append(" ")
                             if (configGroup.enums.containsKey(enumName)) {
-                                val link = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.enums, "$enumName/$enumValueName", gameType)
+                                val link = ReferenceLinkType.CwtConfig.createLink(CwtConfigTypeCategories.enums, "$enumName/$enumValueName", gameType)
                                 psiLinkOrUnresolved(link.escapeXml(), enumName.escapeXml(), context = element)
                                 append(": ")
-                                val typeLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.enums, enumName, gameType)
+                                val typeLink = ReferenceLinkType.CwtConfig.createLink(CwtConfigTypeCategories.enums, enumName, gameType)
                                 psiLinkOrUnresolved(typeLink.escapeXml(), enumName.escapeXml(), context = element)
                             } else if (configGroup.complexEnums.containsKey(enumName)) {
                                 append(enumValueName.escapeXml())
                                 append(": ")
-                                val typeLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.complexEnums, enumName, gameType)
+                                val typeLink = ReferenceLinkType.CwtConfig.createLink(CwtConfigTypeCategories.complexEnums, enumName, gameType)
                                 psiLinkOrUnresolved(typeLink.escapeXml(), enumName.escapeXml(), context = element)
                             } else {
                                 // unexpected
@@ -112,10 +113,10 @@ class ParadoxTemplateModifierQuickDocProvider : ParadoxModifierQuickDocProvider 
                             val valueName = configExpression.metadata.value!!
                             append(ChronicleBundle.message("doc.text.generatedFromDynamicValue"))
                             if (configGroup.dynamicValueTypes.containsKey(valueName)) {
-                                val link = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.values, "$dynamicValueType/$valueName", gameType)
+                                val link = ReferenceLinkType.CwtConfig.createLink(CwtConfigTypeCategories.values, "$dynamicValueType/$valueName", gameType)
                                 psiLinkOrUnresolved(link.escapeXml(), valueName.escapeXml(), context = element)
                                 append(": ")
-                                val typeLink = ReferenceLinkType.CwtConfig.createLink(ReferenceLinkType.CwtConfig.Categories.values, dynamicValueType, gameType)
+                                val typeLink = ReferenceLinkType.CwtConfig.createLink(CwtConfigTypeCategories.values, dynamicValueType, gameType)
                                 psiLinkOrUnresolved(typeLink.escapeXml(), valueName.escapeXml(), context = element)
                             } else {
                                 append(valueName.escapeXml())

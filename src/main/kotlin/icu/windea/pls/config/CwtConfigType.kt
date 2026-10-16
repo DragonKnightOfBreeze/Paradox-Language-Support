@@ -25,7 +25,7 @@ import javax.swing.Icon
  * - 所有实例通过 [Builder] 构建并注册到 [entries] 中。
  *
  * @property id 唯一标识符。
- * @property category 所属分类。
+ * @property category 所属分类（参见 [CwtConfigTypeCategories]）。
  * @property isReference 是否表示一个可引用的规则声明。
  * @property icon 在 IDE 中展示时使用的图标。
  * @property prefix 用于导航和展示的前缀文本。
@@ -35,10 +35,10 @@ import javax.swing.Icon
  */
 class CwtConfigType private constructor(
     val id: String,
-    val category: String? = null,
     val isReference: Boolean = false,
-    val icon: Icon? = null,
+    val category: String? = null,
     val prefix: String? = null,
+    val icon: Icon? = null,
     @Nls val description: String? = null,
 ) {
     // NOTE 2.1.1 为了与 `CwtDataType` 保持一致，这里直接使用引用相等
@@ -50,18 +50,19 @@ class CwtConfigType private constructor(
 
     class Builder(
         private val id: String,
-        private val category: String? = null,
         private var isReference: Boolean = false,
-        private var icon: Icon? = null,
+        private var category: String? = null,
         private var prefix: String? = null,
+        private var icon: Icon? = null,
         private var description: String? = null,
     ) {
         fun reference() = apply { isReference = true }
-        fun icon(value: Icon) = apply { icon = value }
+        fun category(value: String) = apply { category = value }
         fun prefix(value: String) = apply { prefix = value }
+        fun icon(value: Icon) = apply { icon = value }
         fun description(value: String) = apply { description = value }
 
-        fun build(): CwtConfigType = CwtConfigType(id, category, isReference, icon, prefix, description).also { _entries[id] = it }
+        fun build(): CwtConfigType = CwtConfigType(id, isReference, category, prefix, icon, description).also { _entries[id] = it }
         inline fun build(block: Builder.() -> Unit): CwtConfigType = also { block() }.build()
     }
 
@@ -72,6 +73,6 @@ class CwtConfigType private constructor(
         val entries: Map<String, CwtConfigType> get() = _entries
 
         @JvmStatic
-        fun builder(id: String, category: String? = null): Builder = Builder(id, category)
+        fun builder(id: String): Builder = Builder(id)
     }
 }

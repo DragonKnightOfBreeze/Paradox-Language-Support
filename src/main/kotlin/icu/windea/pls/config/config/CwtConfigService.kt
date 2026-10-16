@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.CwtConfigType
+import icu.windea.pls.config.CwtConfigTypeCategories
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtConfigExpressionService
@@ -21,12 +22,14 @@ import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.isNotNullOrEmpty
+import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.splitByBlank
 import icu.windea.pls.core.substringIn
 import icu.windea.pls.core.substringInLast
 import icu.windea.pls.core.surroundsWith
+import icu.windea.pls.core.toDelimitedList
 import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
@@ -297,25 +300,6 @@ object CwtConfigService {
         }
     }
 
-    fun resolveNameByConfigType(text: String, configType: CwtConfigType): String? {
-        return when (configType) {
-            CwtConfigTypes.Type -> text.removeSurroundingOrNull("type[", "]")
-            CwtConfigTypes.Subtype -> text.removeSurroundingOrNull("subtype[", "]")
-            CwtConfigTypes.Row -> text.removeSurroundingOrNull("row[", "]")
-            CwtConfigTypes.Enum -> text.removeSurroundingOrNull("enum[", "]")
-            CwtConfigTypes.ComplexEnum -> text.removeSurroundingOrNull("complex_enum[", "]")
-            CwtConfigTypes.Union -> text.removeSurroundingOrNull("union[", "]")
-            CwtConfigTypes.DynamicValueType -> text.removeSurroundingOrNull("value[", "]")
-            CwtConfigTypes.SingleAlias -> text.removeSurroundingOrNull("single_alias[", "]")
-            CwtConfigTypes.Alias -> text.removeSurroundingOrNull("alias[", "]")
-            CwtConfigTypes.Trigger -> text.removeSurroundingOrNull("alias[trigger:", "]")
-            CwtConfigTypes.Effect -> text.removeSurroundingOrNull("alias[effect:", "]")
-            CwtConfigTypes.Modifier -> text.removeSurroundingOrNull("alias[modifier:", "]") ?: text
-            CwtConfigTypes.Macro -> text.removeSurroundingOrNull("macro[", "]")
-            else -> text
-        }?.orNull()
-    }
-
     fun getDocumentation(element: CwtMember): String? {
         val ownedComments = CwtPsiService.getOwnedDocComments(element)
         val documentation = CwtPsiService.getDocCommentText(ownedComments)
@@ -431,5 +415,106 @@ object CwtConfigService {
     fun collectLiterals(config: CwtMemberConfig<*>, configGroup: CwtConfigGroup, result: MutableSet<String>) {
         val configExpression = config.configExpression
         CwtConfigExpressionService.collectLiterals(configExpression, configGroup, result)
+    }
+
+    fun getNameByConfigType(text: String, configType: CwtConfigType): String? {
+        return when (configType) {
+            CwtConfigTypes.Type -> text.removeSurroundingOrNull("type[", "]")
+            CwtConfigTypes.Subtype -> text.removeSurroundingOrNull("subtype[", "]")
+            CwtConfigTypes.Row -> text.removeSurroundingOrNull("row[", "]")
+            CwtConfigTypes.Enum -> text.removeSurroundingOrNull("enum[", "]")
+            CwtConfigTypes.ComplexEnum -> text.removeSurroundingOrNull("complex_enum[", "]")
+            CwtConfigTypes.Union -> text.removeSurroundingOrNull("union[", "]")
+            CwtConfigTypes.DynamicValueType -> text.removeSurroundingOrNull("value[", "]")
+            CwtConfigTypes.SingleAlias -> text.removeSurroundingOrNull("single_alias[", "]")
+            CwtConfigTypes.Alias -> text.removeSurroundingOrNull("alias[", "]")
+            CwtConfigTypes.Trigger -> text.removeSurroundingOrNull("alias[trigger:", "]")
+            CwtConfigTypes.Effect -> text.removeSurroundingOrNull("alias[effect:", "]")
+            CwtConfigTypes.Modifier -> text.removeSurroundingOrNull("alias[modifier:", "]") ?: text
+            CwtConfigTypes.Macro -> text.removeSurroundingOrNull("macro[", "]")
+            else -> text
+        }?.orNull()
+    }
+
+    fun getConfigByLinkPath(configGroup: CwtConfigGroup, linkPath: String): CwtConfig<*>? {
+        val subPaths = linkPath.toDelimitedList('/')
+        val category = subPaths.getOrNull(0) ?: return null
+        val name = subPaths.getOrNull(1) ?: return null
+        return when (category) {
+            CwtConfigTypeCategories.types -> {
+                if (subPaths.size > 3) return null
+                val subtype = subPaths.getOrNull(2)
+                configGroup.types[name]?.letIf(subtype != null) { it.subtypes[subtype] }
+            }
+            CwtConfigTypeCategories.rows -> {
+                if (subPaths.size > 2) return null
+                configGroup.rows[name]
+            }
+            CwtConfigTypeCategories.values -> {
+                if (subPaths.size > 3) return null
+                val value = subPaths.getOrNull(2)
+                configGroup.dynamicValueTypes[name]?.letIf(value != null) { it.valueConfigMap[value] }
+            }
+            CwtConfigTypeCategories.enums -> {
+                if (subPaths.size > 3) return null
+                val value = subPaths.getOrNull(2)
+                configGroup.enums[name]?.letIf(value != null) { it.valueConfigMap[value] }
+            }
+            CwtConfigTypeCategories.complexEnums -> {
+                if (subPaths.size > 2) return null
+                configGroup.complexEnums[name]
+            }
+            CwtConfigTypeCategories.unions -> {
+                if (subPaths.size > 2) return null
+                configGroup.unions[name]
+            }
+            CwtConfigTypeCategories.links -> {
+                if (subPaths.size > 2) return null
+                configGroup.links[name]
+            }
+            CwtConfigTypeCategories.localisationLinks -> {
+                if (subPaths.size > 2) return null
+                configGroup.localisationLinks[name]
+            }
+            CwtConfigTypeCategories.localisationPromotions -> {
+                if (subPaths.size > 2) return null
+                configGroup.localisationPromotions[name]
+            }
+            CwtConfigTypeCategories.localisationCommands -> {
+                if (subPaths.size > 2) return null
+                configGroup.localisationCommands[name]
+            }
+            CwtConfigTypeCategories.modifiers -> {
+                if (subPaths.size > 2) return null
+                configGroup.modifiers[name]
+            }
+            CwtConfigTypeCategories.modifierCategories -> {
+                if (subPaths.size > 2) return null
+                configGroup.modifierCategories[name]
+            }
+            CwtConfigTypeCategories.scopes -> {
+                if (subPaths.size > 2) return null
+                configGroup.scopes[name]
+            }
+            CwtConfigTypeCategories.scopeGroups -> {
+                if (subPaths.size > 2) return null
+                configGroup.scopeGroups[name]
+            }
+            CwtConfigTypeCategories.databaseObjectTypes -> {
+                if (subPaths.size > 2) return null
+                configGroup.databaseObjectTypes[name]
+            }
+            CwtConfigTypeCategories.systemScopes -> {
+                if (subPaths.size > 2) return null
+                configGroup.systemScopes[name]
+            }
+            CwtConfigTypeCategories.locales -> {
+                if (subPaths.size > 2) return null
+                configGroup.locales[name]
+            }
+            else -> {
+                null
+            }
+        }
     }
 }

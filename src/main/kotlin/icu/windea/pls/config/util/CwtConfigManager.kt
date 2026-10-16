@@ -142,10 +142,6 @@ object CwtConfigManager {
         }
     }
 
-    fun getNameByConfigType(text: String, configType: CwtConfigType): String? {
-        return CwtConfigService.resolveNameByConfigType(text, configType)?.optimized() // optimized to optimize memory
-    }
-
     fun getDocumentation(config: CwtMemberConfig<*>): String? {
         val memberElement = config.pointer.element ?: return null
         return getDocumentationInternal(memberElement)
@@ -307,5 +303,13 @@ object CwtConfigManager {
             }
         }
         return if (maxCount == 1) selected else null
+    }
+
+    fun getNameByConfigType(text: String, configType: CwtConfigType): String? {
+        return CwtConfigService.getNameByConfigType(text, configType)
+    }
+
+    fun getConfigByLinkPath(configGroup: CwtConfigGroup, linkPath: String): CwtConfig<*>? {
+        return CwtConfigService.getConfigByLinkPath(configGroup, linkPath)
     }
 }

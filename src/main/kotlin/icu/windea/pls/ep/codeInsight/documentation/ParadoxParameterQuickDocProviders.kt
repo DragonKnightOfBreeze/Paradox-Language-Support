@@ -1,6 +1,7 @@
 package icu.windea.pls.ep.codeInsight.documentation
 
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.config.CwtConfigTypeCategories
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.orAnonymous
@@ -37,19 +38,18 @@ class ParadoxDefinitionParameterQuickDocProvider : ParadoxParameterQuickDocProvi
         }
         // 加上所属定义信息
         val gameType = element.gameType
-        val categories = ReferenceLinkType.CwtConfig.Categories
         br().indent()
         append(ChronicleBundle.message("doc.text.ofDefinition")).append(" ")
         val link = ReferenceLinkType.Definition.createLink(definitionName, definitionType.first(), gameType)
         psiLinkOrUnresolved(link.escapeXml(), definitionName.escapeXml(), context = element)
         append(": ")
         val type = definitionType.first()
-        val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, type, gameType)
+        val typeLink = ReferenceLinkType.CwtConfig.createLink(CwtConfigTypeCategories.types, type, gameType)
         psiLinkOrUnresolved(typeLink.escapeXml(), type.escapeXml())
         for ((index, t) in definitionType.withIndex()) {
             if (index == 0) continue
             append(", ")
-            val subtypeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, "$type/$t", gameType)
+            val subtypeLink = ReferenceLinkType.CwtConfig.createLink(CwtConfigTypeCategories.types, "$type/$t", gameType)
             psiLinkOrUnresolved(subtypeLink.escapeXml(), t.escapeXml())
         }
 

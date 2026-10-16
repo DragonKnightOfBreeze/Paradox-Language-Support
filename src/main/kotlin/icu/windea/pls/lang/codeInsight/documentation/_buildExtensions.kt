@@ -6,6 +6,7 @@ import com.intellij.codeInsight.documentation.DocumentationManagerUtil
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.config.CwtConfigTypeCategories
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.escapeXml
@@ -138,8 +139,7 @@ fun DocumentationBuilder.getModifierCategoriesText(modifierCategories: Set<Strin
         val m = OnceMarker()
         for (modifierCategory in modifierCategories) {
             if (m.mark()) append(", ")
-            val category = ReferenceLinkType.CwtConfig.Categories.modifierCategories
-            val link = ReferenceLinkType.CwtConfig.createLink(category, modifierCategory, gameType)
+            val link = ReferenceLinkType.CwtConfig.createLink(CwtConfigTypeCategories.modifierCategories, modifierCategory, gameType)
             psiLinkOrUnresolved(link.escapeXml(), modifierCategory.escapeXml(), context = contextElement)
         }
         append("</pre>")
@@ -182,25 +182,23 @@ private fun DocumentationBuilder.buildScopeDoc(scopeId: String, gameType: Parado
     if (ParadoxScope.resolve(scopeId).isUnsure()) {
         append(scopeId)
     } else {
-        val category = ReferenceLinkType.CwtConfig.Categories.scopes
-        val link = ReferenceLinkType.CwtConfig.createLink(category, scopeId, gameType)
+        val link = ReferenceLinkType.CwtConfig.createLink(CwtConfigTypeCategories.scopes, scopeId, gameType)
         psiLinkOrUnresolved(link.escapeXml(), scopeId.escapeXml(), context = contextElement)
     }
     return this
 }
 
 private fun DocumentationBuilder.buildScopeContextDoc(scopeContext: ParadoxScopeContext, gameType: ParadoxGameType, contextElement: PsiElement): DocumentationBuilder {
-    val categories = ReferenceLinkType.CwtConfig.Categories
     val m = OnceMarker()
     scopeContext.toScopeMap().forEach { (systemScope, scope) ->
         if (m.mark()) br()
-        val systemScopeLink = ReferenceLinkType.CwtConfig.createLink(categories.systemScopes, systemScope, gameType)
+        val systemScopeLink = ReferenceLinkType.CwtConfig.createLink(CwtConfigTypeCategories.systemScopes, systemScope, gameType)
         psiLinkOrUnresolved(systemScopeLink.escapeXml(), systemScope.escapeXml(), context = contextElement)
         append(" = ")
         if (scope.isUnsure()) {
             append(scope.id)
         } else {
-            val scopeLink = ReferenceLinkType.CwtConfig.createLink(categories.scopes, scope.id, gameType)
+            val scopeLink = ReferenceLinkType.CwtConfig.createLink(CwtConfigTypeCategories.scopes, scope.id, gameType)
             psiLinkOrUnresolved(scopeLink.escapeXml(), scope.id.escapeXml(), context = contextElement)
         }
     }

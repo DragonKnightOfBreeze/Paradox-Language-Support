@@ -480,100 +480,100 @@ class CwtConfigServiceTest : BasePlatformTestCase() {
 
     // endregion
 
-    // region resolveNameByConfigType
+    // region getNameByConfigType
 
     @Test
-    fun testResolveNameByConfigType_type() {
-        assertEquals("army", CwtConfigService.resolveNameByConfigType("type[army]", CwtConfigTypes.Type))
+    fun testGetNameByConfigType_type() {
+        assertEquals("army", CwtConfigService.getNameByConfigType("type[army]", CwtConfigTypes.Type))
     }
 
     @Test
-    fun testResolveNameByConfigType_subtype() {
-        assertEquals("has_species", CwtConfigService.resolveNameByConfigType("subtype[has_species]", CwtConfigTypes.Subtype))
+    fun testGetNameByConfigType_subtype() {
+        assertEquals("has_species", CwtConfigService.getNameByConfigType("subtype[has_species]", CwtConfigTypes.Subtype))
     }
 
     @Test
-    fun testResolveNameByConfigType_row() {
-        assertEquals("my_row", CwtConfigService.resolveNameByConfigType("row[my_row]", CwtConfigTypes.Row))
+    fun testGetNameByConfigType_row() {
+        assertEquals("my_row", CwtConfigService.getNameByConfigType("row[my_row]", CwtConfigTypes.Row))
     }
 
     @Test
-    fun testResolveNameByConfigType_enum() {
-        assertEquals("my_enum", CwtConfigService.resolveNameByConfigType("enum[my_enum]", CwtConfigTypes.Enum))
+    fun testGetNameByConfigType_enum() {
+        assertEquals("my_enum", CwtConfigService.getNameByConfigType("enum[my_enum]", CwtConfigTypes.Enum))
     }
 
     @Test
-    fun testResolveNameByConfigType_complexEnum() {
-        assertEquals("my_ce", CwtConfigService.resolveNameByConfigType("complex_enum[my_ce]", CwtConfigTypes.ComplexEnum))
+    fun testGetNameByConfigType_complexEnum() {
+        assertEquals("my_ce", CwtConfigService.getNameByConfigType("complex_enum[my_ce]", CwtConfigTypes.ComplexEnum))
     }
 
     @Test
-    fun testResolveNameByConfigType_union() {
-        assertEquals("loc_or_text", CwtConfigService.resolveNameByConfigType("union[loc_or_text]", CwtConfigTypes.Union))
+    fun testGetNameByConfigType_union() {
+        assertEquals("loc_or_text", CwtConfigService.getNameByConfigType("union[loc_or_text]", CwtConfigTypes.Union))
     }
 
     @Test
-    fun testResolveNameByConfigType_dynamicValueType() {
-        assertEquals("my_value", CwtConfigService.resolveNameByConfigType("value[my_value]", CwtConfigTypes.DynamicValueType))
+    fun testGetNameByConfigType_dynamicValueType() {
+        assertEquals("my_value", CwtConfigService.getNameByConfigType("value[my_value]", CwtConfigTypes.DynamicValueType))
     }
 
     @Test
-    fun testResolveNameByConfigType_singleAlias() {
-        assertEquals("my_sa", CwtConfigService.resolveNameByConfigType("single_alias[my_sa]", CwtConfigTypes.SingleAlias))
+    fun testGetNameByConfigType_singleAlias() {
+        assertEquals("my_sa", CwtConfigService.getNameByConfigType("single_alias[my_sa]", CwtConfigTypes.SingleAlias))
     }
 
     @Test
-    fun testResolveNameByConfigType_alias() {
-        assertEquals("my_alias", CwtConfigService.resolveNameByConfigType("alias[my_alias]", CwtConfigTypes.Alias))
+    fun testGetNameByConfigType_alias() {
+        assertEquals("my_alias", CwtConfigService.getNameByConfigType("alias[my_alias]", CwtConfigTypes.Alias))
     }
 
     @Test
-    fun testResolveNameByConfigType_trigger() {
-        assertEquals("my_trigger", CwtConfigService.resolveNameByConfigType("alias[trigger:my_trigger]", CwtConfigTypes.Trigger))
+    fun testGetNameByConfigType_trigger() {
+        assertEquals("my_trigger", CwtConfigService.getNameByConfigType("alias[trigger:my_trigger]", CwtConfigTypes.Trigger))
     }
 
     @Test
-    fun testResolveNameByConfigType_effect() {
-        assertEquals("my_effect", CwtConfigService.resolveNameByConfigType("alias[effect:my_effect]", CwtConfigTypes.Effect))
+    fun testGetNameByConfigType_effect() {
+        assertEquals("my_effect", CwtConfigService.getNameByConfigType("alias[effect:my_effect]", CwtConfigTypes.Effect))
     }
 
     @Test
-    fun testResolveNameByConfigType_modifier_aliasForm() {
+    fun testGetNameByConfigType_modifier_aliasForm() {
         // alias[modifier:*] 格式
-        assertEquals("my_modifier", CwtConfigService.resolveNameByConfigType("alias[modifier:my_modifier]", CwtConfigTypes.Modifier))
+        assertEquals("my_modifier", CwtConfigService.getNameByConfigType("alias[modifier:my_modifier]", CwtConfigTypes.Modifier))
     }
 
     @Test
-    fun testResolveNameByConfigType_modifier_plainText() {
+    fun testGetNameByConfigType_modifier_plainText() {
         // 纯文本格式（来自 modifiers/* 或 types/type[*]/modifiers/**）
-        assertEquals("my_modifier", CwtConfigService.resolveNameByConfigType("my_modifier", CwtConfigTypes.Modifier))
+        assertEquals("my_modifier", CwtConfigService.getNameByConfigType("my_modifier", CwtConfigTypes.Modifier))
     }
 
     @Test
-    fun testResolveNameByConfigType_macro() {
-        assertEquals("my_dir", CwtConfigService.resolveNameByConfigType("macro[my_dir]", CwtConfigTypes.Macro))
+    fun testGetNameByConfigType_macro() {
+        assertEquals("my_dir", CwtConfigService.getNameByConfigType("macro[my_dir]", CwtConfigTypes.Macro))
     }
 
     @Test
-    fun testResolveNameByConfigType_otherType_passthrough() {
+    fun testGetNameByConfigType_otherType_passthrough() {
         // 其他类型直接返回原文本
-        assertEquals("my_link", CwtConfigService.resolveNameByConfigType("my_link", CwtConfigTypes.Link))
-        assertEquals("my_scope", CwtConfigService.resolveNameByConfigType("my_scope", CwtConfigTypes.Scope))
-        assertEquals("my_locale", CwtConfigService.resolveNameByConfigType("my_locale", CwtConfigTypes.Locale))
+        assertEquals("my_link", CwtConfigService.getNameByConfigType("my_link", CwtConfigTypes.Link))
+        assertEquals("my_scope", CwtConfigService.getNameByConfigType("my_scope", CwtConfigTypes.Scope))
+        assertEquals("my_locale", CwtConfigService.getNameByConfigType("my_locale", CwtConfigTypes.Locale))
     }
 
     @Test
-    fun testResolveNameByConfigType_wrongPrefix() {
+    fun testGetNameByConfigType_wrongPrefix() {
         // 前缀不匹配时返回 null
-        assertNull(CwtConfigService.resolveNameByConfigType("wrong[army]", CwtConfigTypes.Type))
-        assertNull(CwtConfigService.resolveNameByConfigType("type[army]", CwtConfigTypes.Subtype))
+        assertNull(CwtConfigService.getNameByConfigType("wrong[army]", CwtConfigTypes.Type))
+        assertNull(CwtConfigService.getNameByConfigType("type[army]", CwtConfigTypes.Subtype))
     }
 
     @Test
-    fun testResolveNameByConfigType_emptyName() {
+    fun testGetNameByConfigType_emptyName() {
         // 空名称返回 null
-        assertNull(CwtConfigService.resolveNameByConfigType("type[]", CwtConfigTypes.Type))
-        assertNull(CwtConfigService.resolveNameByConfigType("", CwtConfigTypes.Link))
+        assertNull(CwtConfigService.getNameByConfigType("type[]", CwtConfigTypes.Type))
+        assertNull(CwtConfigService.getNameByConfigType("", CwtConfigTypes.Link))
     }
 
     // endregion

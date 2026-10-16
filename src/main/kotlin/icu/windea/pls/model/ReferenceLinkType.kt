@@ -1,5 +1,6 @@
 package icu.windea.pls.model
 
+import icu.windea.pls.config.CwtConfigTypeCategories
 import icu.windea.pls.ep.resolve.ReferenceLinkProvider
 
 /**
@@ -14,37 +15,30 @@ abstract class ReferenceLinkType(
      * e.g.,
      * - `cwt:stellaris:types/civic_or_origin`
      * - `cwt:stellaris:types/civic_or_origin/origin`
-     * - `cwt:stellaris:values/some_dynamic_value_type`
-     * - `cwt:stellaris:values/some_dynamic_value_type/some_value`
      * - `cwt:stellaris:enums/some_enum`
      * - `cwt:stellaris:enums/some_enum/some_value`
      * - `cwt:stellaris:complex_enums/some_complex_enum`
      * - `cwt:stellaris:complex_enums/some_complex_enum/some_value`
-     * - `cwt:stellaris:scopes/some_scope`
-     * - `cwt:stellaris:system_scopes/some_system_scope`
+     * - `cwt:stellaris:values/some_dynamic_value_type`
+     * - `cwt:stellaris:values/some_dynamic_value_type/some_value`
      * - `cwt:stellaris:links/some_link`
      * - `cwt:stellaris:localisation_links/some_localisation_link`
+     * - `cwt:stellaris:localisation_promotions/some_localisation_promotion`
      * - `cwt:stellaris:localisation_commands/some_localisation_command`
-     * - `cwt:stellaris:modifier_categories/some_modifier_category`
      * - `cwt:stellaris:modifiers/some_modifier`
+     * - `cwt:stellaris:modifier_categories/some_modifier_category`
+     * - `cwt:stellaris:scopes/some_scope`
+     * - `cwt:stellaris:scope_groups/some_scope_groups`
+     * - `cwt:stellaris:system_scopes/some_system_scope`
+     * - etc.
      */
     data object CwtConfig : ReferenceLinkType("cwt:") {
+        /**
+         * @param category 规则类型的分类（参见 [CwtConfigTypeCategories]）。
+         * @param name 规则的名字。
+         */
         fun createLink(category: String, name: String, gameType: ParadoxGameType = ParadoxGameType.Core): String {
             return "$prefix${gameType.id}:$category/$name"
-        }
-
-        object Categories {
-            const val types = "types"
-            const val values = "values"
-            const val enums = "enums"
-            const val complexEnums = "complex_enums"
-            const val scopes = "scopes"
-            const val systemScopes = "system_scopes"
-            const val links = "links"
-            const val localisationLinks = "localisation_links"
-            const val localisationCommands = "localisation_commands"
-            const val modifierCategories = "modifier_categories"
-            const val modifiers = "modifiers"
         }
     }
 

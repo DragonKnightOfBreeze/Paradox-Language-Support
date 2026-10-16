@@ -55,8 +55,9 @@ object CwtConfigTypes {
      * @see CwtTypeConfig
      */
     val Type = CwtConfigType.builder("Type").build {
-        icon(ChronicleIcons.Configs.Type)
+        category(CwtConfigTypeCategories.types)
         prefix("(type)")
+        icon(ChronicleIcons.Configs.Type)
         description(ChronicleBundle.message("config.description.type"))
     }
     /**
@@ -68,8 +69,8 @@ object CwtConfigTypes {
      * @see CwtSubtypeConfig
      */
     val Subtype = CwtConfigType.builder("Subtype").build {
-        icon(ChronicleIcons.Configs.Type)
         prefix("(subtype)")
+        icon(ChronicleIcons.Configs.Type)
         description(ChronicleBundle.message("config.description.subtype"))
     }
     /**
@@ -81,8 +82,9 @@ object CwtConfigTypes {
      * @see CwtRowConfig
      */
     val Row = CwtConfigType.builder("Row").build {
-        icon(ChronicleIcons.Configs.Row)
+        category(CwtConfigTypeCategories.rows)
         prefix("(row)")
+        icon(ChronicleIcons.Configs.Row)
         description(ChronicleBundle.message("config.description.row"))
     }
     /**
@@ -94,8 +96,8 @@ object CwtConfigTypes {
      * @see CwtDefineNamespaceConfig
      */
     val DefineNamespace = CwtConfigType.builder("DefineNamespace").build {
-        icon(ChronicleIcons.Configs.DefineNamespace)
         prefix("(define namespace)")
+        icon(ChronicleIcons.Configs.DefineNamespace)
         description(ChronicleBundle.message("config.description.defineNamespace"))
     }
     /**
@@ -107,8 +109,8 @@ object CwtConfigTypes {
      * @see CwtDefineVariableConfig
      */
     val DefineVariable = CwtConfigType.builder("DefineVariable").build {
-        icon(ChronicleIcons.Configs.DefineVariable)
         prefix("(define variable)")
+        icon(ChronicleIcons.Configs.DefineVariable)
         description(ChronicleBundle.message("config.description.defineVariable"))
     }
     /**
@@ -120,8 +122,9 @@ object CwtConfigTypes {
      * @see CwtEnumConfig
      */
     val Enum = CwtConfigType.builder("Enum").build {
-        icon(ChronicleIcons.Configs.Enum)
+        category(CwtConfigTypeCategories.enums)
         prefix("(enum)")
+        icon(ChronicleIcons.Configs.Enum)
         description(ChronicleBundle.message("config.description.enum"))
     }
     /**
@@ -132,9 +135,9 @@ object CwtConfigTypes {
      *
      * @see CwtEnumConfig
      */
-    val EnumValue = CwtConfigType.builder("EnumValue", "enums").reference().build {
-        icon(ChronicleIcons.Configs.EnumValue)
+    val EnumValue = CwtConfigType.builder("EnumValue").reference().build {
         prefix("(enum value)")
+        icon(ChronicleIcons.Configs.EnumValue)
         description(ChronicleBundle.message("config.description.enumValue"))
     }
     /**
@@ -146,8 +149,9 @@ object CwtConfigTypes {
      * @see CwtComplexEnumConfig
      */
     val ComplexEnum = CwtConfigType.builder("ComplexEnum").build {
-        icon(ChronicleIcons.Configs.ComplexEnum)
+        category(CwtConfigTypeCategories.complexEnums)
         prefix("(complex enum)")
+        icon(ChronicleIcons.Configs.ComplexEnum)
         description(ChronicleBundle.message("config.description.complexEnum"))
     }
     /**
@@ -159,8 +163,9 @@ object CwtConfigTypes {
      * @see CwtUnionConfig
      */
     val Union = CwtConfigType.builder("Union").reference().build {
-        icon(ChronicleIcons.Configs.Union)
+        category(CwtConfigTypeCategories.unions)
         prefix("(union)")
+        icon(ChronicleIcons.Configs.Union)
         description(ChronicleBundle.message("config.description.union"))
     }
     /**
@@ -171,9 +176,9 @@ object CwtConfigTypes {
      *
      * @see CwtUnionConfig
      */
-    val UnionValue = CwtConfigType.builder("UnionValue", "unions").reference().build {
-        icon(ChronicleIcons.Configs.UnionValue)
+    val UnionValue = CwtConfigType.builder("UnionValue").reference().build {
         prefix("(union value)")
+        icon(ChronicleIcons.Configs.UnionValue)
         description(ChronicleBundle.message("config.description.unionValue"))
     }
     /**
@@ -185,8 +190,9 @@ object CwtConfigTypes {
      * @see CwtDynamicValueTypeConfig
      */
     val DynamicValueType = CwtConfigType.builder("DynamicValueType").build {
-        icon(ChronicleIcons.Configs.DynamicValueType)
+        category(CwtConfigTypeCategories.values)
         prefix("(dynamic value type)")
+        icon(ChronicleIcons.Configs.DynamicValueType)
         description(ChronicleBundle.message("config.description.dynamicValueType"))
     }
     /**
@@ -197,9 +203,9 @@ object CwtConfigTypes {
      *
      * @see CwtDynamicValueTypeConfig
      *  */
-    val DynamicValue = CwtConfigType.builder("DynamicValue", "values").reference().build {
-        icon(ChronicleIcons.Configs.DynamicValue)
+    val DynamicValue = CwtConfigType.builder("DynamicValue").reference().build {
         prefix("(dynamic value)")
+        icon(ChronicleIcons.Configs.DynamicValue)
         description(ChronicleBundle.message("config.description.dynamicValue"))
     }
     /**
@@ -213,8 +219,8 @@ object CwtConfigTypes {
      * @see CwtAliasConfig
      */
     val Alias = CwtConfigType.builder("Alias").build {
-        icon(ChronicleIcons.Configs.Alias)
         prefix("(alias)")
+        icon(ChronicleIcons.Configs.Alias)
         description(ChronicleBundle.message("config.description.alias"))
     }
     /**
@@ -226,8 +232,8 @@ object CwtConfigTypes {
      * @see CwtSingleAliasConfig
      */
     val SingleAlias = CwtConfigType.builder("SingleAlias").build {
-        icon(ChronicleIcons.Configs.Alias)
         prefix("(single alias)")
+        icon(ChronicleIcons.Configs.Alias)
         description(ChronicleBundle.message("config.description.singleAlias"))
     }
     /**
@@ -239,8 +245,8 @@ object CwtConfigTypes {
      * @see CwtMacroConfig
      */
     val Macro = CwtConfigType.builder("Macro").build {
-        icon(ChronicleIcons.Configs.Macro)
         prefix("(macro)")
+        icon(ChronicleIcons.Configs.Macro)
         description(ChronicleBundle.message("config.description.macro"))
     }
     /**
@@ -252,8 +258,9 @@ object CwtConfigTypes {
      * @see CwtLinkConfig
      */
     val Link = CwtConfigType.builder("Link").reference().build {
-        icon(ChronicleIcons.Configs.Link)
+        category(CwtConfigTypeCategories.links)
         prefix("(link)")
+        icon(ChronicleIcons.Configs.Link)
         description(ChronicleBundle.message("config.description.link"))
     }
     /**
@@ -265,8 +272,9 @@ object CwtConfigTypes {
      * @see CwtLinkConfig
      */
     val LocalisationLink = CwtConfigType.builder("LocalisationLink").reference().build {
-        icon(ChronicleIcons.Configs.Link)
+        category(CwtConfigTypeCategories.localisationLinks)
         prefix("(localisation link)")
+        icon(ChronicleIcons.Configs.Link)
         description(ChronicleBundle.message("config.description.localisationLink"))
     }
     /**
@@ -278,8 +286,9 @@ object CwtConfigTypes {
      * @see CwtLocalisationPromotionConfig
      */
     val LocalisationPromotion = CwtConfigType.builder("LocalisationPromotion").reference().build {
-        icon(ChronicleIcons.Configs.LocalisationPromotion)
+        category(CwtConfigTypeCategories.localisationPromotions)
         prefix("(localisation promotion)")
+        icon(ChronicleIcons.Configs.LocalisationPromotion)
         description(ChronicleBundle.message("config.description.localisationPromotion"))
     }
     /**
@@ -291,22 +300,10 @@ object CwtConfigTypes {
      * @see CwtLocalisationCommandConfig
      *  */
     val LocalisationCommand = CwtConfigType.builder("LocalisationCommand").reference().build {
-        icon(ChronicleIcons.Configs.LocalisationCommand)
+        category(CwtConfigTypeCategories.localisationCommands)
         prefix("(localisation command)")
+        icon(ChronicleIcons.Configs.LocalisationCommand)
         description(ChronicleBundle.message("config.description.localisationCommand"))
-    }
-    /**
-     * 修正分类规则。
-     *
-     * 路径定位：
-     * - `modifier_categories/{name}`。其中 `{name}` 匹配规则名称。
-     *
-     * @see CwtModifierCategoryConfig
-     */
-    val ModifierCategory = CwtConfigType.builder("ModifierCategory").reference().build {
-        icon(ChronicleIcons.Configs.ModifierCategory)
-        prefix("(modifier category)")
-        description(ChronicleBundle.message("config.description.modifierCategory"))
     }
     /**
      * 修正规则。
@@ -319,9 +316,24 @@ object CwtConfigTypes {
      * @see CwtModifierConfig
      */
     val Modifier = CwtConfigType.builder("Modifier").reference().build {
-        icon(ChronicleIcons.Configs.Modifier)
+        category(CwtConfigTypeCategories.modifiers)
         prefix("(modifier)")
+        icon(ChronicleIcons.Configs.Modifier)
         description(ChronicleBundle.message("config.description.modifier"))
+    }
+    /**
+     * 修正分类规则。
+     *
+     * 路径定位：
+     * - `modifier_categories/{name}`。其中 `{name}` 匹配规则名称。
+     *
+     * @see CwtModifierCategoryConfig
+     */
+    val ModifierCategory = CwtConfigType.builder("ModifierCategory").reference().build {
+        category(CwtConfigTypeCategories.modifierCategories)
+        prefix("(modifier category)")
+        icon(ChronicleIcons.Configs.ModifierCategory)
+        description(ChronicleBundle.message("config.description.modifierCategory"))
     }
     /**
      * 触发器规则。
@@ -332,8 +344,8 @@ object CwtConfigTypes {
      * @see CwtAliasConfig
      */
     val Trigger = CwtConfigType.builder("Trigger").reference().build {
-        icon(ChronicleIcons.Configs.Trigger)
         prefix("(trigger)")
+        icon(ChronicleIcons.Configs.Trigger)
         description(ChronicleBundle.message("config.description.trigger"))
     }
     /**
@@ -345,8 +357,8 @@ object CwtConfigTypes {
      * @see CwtAliasConfig
      */
     val Effect = CwtConfigType.builder("Effect").reference().build {
-        icon(ChronicleIcons.Configs.Effect)
         prefix("(effect)")
+        icon(ChronicleIcons.Configs.Effect)
         description(ChronicleBundle.message("config.description.effect"))
     }
     /**
@@ -358,8 +370,9 @@ object CwtConfigTypes {
      * @see CwtScopeConfig
      */
     val Scope = CwtConfigType.builder("Scope").reference().build {
-        icon(ChronicleIcons.Configs.Scope)
+        category(CwtConfigTypeCategories.scopes)
         prefix("(scope)")
+        icon(ChronicleIcons.Configs.Scope)
         description(ChronicleBundle.message("config.description.scope"))
     }
     /**
@@ -371,8 +384,9 @@ object CwtConfigTypes {
      * @see CwtScopeGroupConfig
      */
     val ScopeGroup = CwtConfigType.builder("ScopeGroup").reference().build {
-        icon(ChronicleIcons.Configs.ScopeGroup)
+        category(CwtConfigTypeCategories.scopeGroups)
         prefix("(scope group)")
+        icon(ChronicleIcons.Configs.ScopeGroup)
         description(ChronicleBundle.message("config.description.scopeGroup"))
     }
     /**
@@ -384,8 +398,9 @@ object CwtConfigTypes {
      * @see CwtDatabaseObjectTypeConfig
      */
     val DatabaseObjectType = CwtConfigType.builder("DatabaseObjectType").reference().build {
-        icon(ChronicleIcons.Configs.DatabaseObjectType)
+        category(CwtConfigTypeCategories.databaseObjectTypes)
         prefix("(database object type)")
+        icon(ChronicleIcons.Configs.DatabaseObjectType)
         description(ChronicleBundle.message("config.description.databaseObjectType"))
     }
     /**
@@ -397,8 +412,9 @@ object CwtConfigTypes {
      * @see CwtSystemScopeConfig
      */
     val SystemScope = CwtConfigType.builder("SystemScope").reference().build {
-        icon(ChronicleIcons.Configs.SystemScope)
+        category(CwtConfigTypeCategories.systemScopes)
         prefix("(system scope)")
+        icon(ChronicleIcons.Configs.SystemScope)
         description(ChronicleBundle.message("config.description.systemScope"))
     }
     /**
@@ -410,8 +426,9 @@ object CwtConfigTypes {
      * @see CwtLocaleConfig
      */
     val Locale = CwtConfigType.builder("Locale").reference().build {
-        icon(ChronicleIcons.Configs.Locale)
+        category(CwtConfigTypeCategories.locales)
         prefix("(locale)")
+        icon(ChronicleIcons.Configs.Locale)
         description(ChronicleBundle.message("config.description.locale"))
     }
 
@@ -428,8 +445,8 @@ object CwtConfigTypes {
      * @see CwtExtendedScriptedVariableConfig
      */
     val ExtendedScriptedVariable = CwtConfigType.builder("ExtendedScriptedVariable").build {
-        icon(ChronicleIcons.Configs.ExtendedScriptedVariable)
         prefix("(scripted variable config)")
+        icon(ChronicleIcons.Configs.ExtendedScriptedVariable)
     }
     /**
      * 定义的扩展规则。
@@ -440,8 +457,8 @@ object CwtConfigTypes {
      * @see CwtExtendedDefinitionConfig
      */
     val ExtendedDefinition = CwtConfigType.builder("ExtendedDefinition").build {
-        icon(ChronicleIcons.Configs.ExtendedDefinition)
         prefix("(definition config)")
+        icon(ChronicleIcons.Configs.ExtendedDefinition)
     }
     /**
      * 游戏规则（game rule）的扩展规则。
@@ -452,8 +469,8 @@ object CwtConfigTypes {
      * @see CwtExtendedGameRuleConfig
      */
     val ExtendedGameRule = CwtConfigType.builder("ExtendedGameRule").build {
-        icon(ChronicleIcons.Configs.ExtendedGameRule)
         prefix("(game rule config)")
+        icon(ChronicleIcons.Configs.ExtendedGameRule)
     }
     /**
      * 动作触发（on action）的扩展规则。
@@ -464,8 +481,8 @@ object CwtConfigTypes {
      * @see CwtExtendedOnActionConfig
      */
     val ExtendedOnAction = CwtConfigType.builder("ExtendedOnAction").build {
-        icon(ChronicleIcons.Configs.ExtendedOnAction)
         prefix("(on action config)")
+        icon(ChronicleIcons.Configs.ExtendedOnAction)
     }
     /**
      * 参数（parameter）的扩展规则。
@@ -476,8 +493,8 @@ object CwtConfigTypes {
      * @see CwtExtendedParameterConfig
      */
     val ExtendedParameter = CwtConfigType.builder("ExtendedParameter").build {
-        icon(ChronicleIcons.Configs.ExtendedParameter)
         prefix("(parameter config)")
+        icon(ChronicleIcons.Configs.ExtendedParameter)
     }
     /**
      * 复杂枚举值（complex enum value）的扩展规则。
@@ -488,8 +505,8 @@ object CwtConfigTypes {
      * @see CwtExtendedComplexEnumValueConfig
      */
     val ExtendedComplexEnumValue = CwtConfigType.builder("ExtendedComplexEnumValue").build {
-        icon(ChronicleIcons.Configs.ExtendedComplexEnumValue)
         prefix("(complex enum value config)")
+        icon(ChronicleIcons.Configs.ExtendedComplexEnumValue)
     }
     /**
      * 动态值（dynamic value）的扩展规则。
@@ -500,8 +517,8 @@ object CwtConfigTypes {
      * @see CwtExtendedDynamicValueConfig
      */
     val ExtendedDynamicValue = CwtConfigType.builder("ExtendedDynamicValue").build {
-        icon(ChronicleIcons.Configs.ExtendedDynamicValue)
         prefix("(dynamic value config)")
+        icon(ChronicleIcons.Configs.ExtendedDynamicValue)
     }
     /**
      * 内联脚本（inline script）的扩展规则。
@@ -512,8 +529,8 @@ object CwtConfigTypes {
      * @see CwtExtendedInlineScriptConfig
      */
     val ExtendedInlineScript = CwtConfigType.builder("ExtendedInlineScript").build {
-        icon(ChronicleIcons.Configs.ExtendedInlineScript)
         prefix("(inline script config)")
+        icon(ChronicleIcons.Configs.ExtendedInlineScript)
     }
 
     // endregion

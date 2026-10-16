@@ -19,14 +19,12 @@ import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.escapeXml
-import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.pass
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.substringIn
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtOption
 import icu.windea.pls.cwt.psi.CwtOptionKey
@@ -225,24 +223,26 @@ object CwtDocumentationManager {
             append("<b>").append(finalName.orAnonymous().escapeXml()).append("</b>")
 
             // type
-            if (configType?.category != null) {
-                val typeElement = element.parentOfType<CwtProperty>()
-                val typeName = typeElement?.name?.substringIn('[', ']')?.orNull()
-                if (typeName.isNotNullOrEmpty()) {
-                    // 在脚本文件中显示为链接
-                    if (configGroup != null) {
-                        val gameType = configGroup.gameType
-                        val typeLink = ReferenceLinkType.CwtConfig.createLink(configType.category, typeName, gameType)
-                        append(": ").psiLinkOrUnresolved(typeLink.escapeXml(), typeName.escapeXml(), context = typeElement)
-                    } else {
-                        append(": ").append(typeName.escapeXml())
-                    }
+            run {
+                // 将作为父节点的属性节点视为类型元素
+                val typeElement = element.parentOfType<CwtProperty>() ?: return@run
+                val configTypeOfTypeElement = CwtConfigManager.getConfigType(typeElement) ?: return@run
+                val categoryOfTypeElement = configTypeOfTypeElement.category ?: return@run
+                val typeName = CwtConfigManager.getNameByConfigType(typeElement.name, configTypeOfTypeElement)
+                if (typeName.isNullOrEmpty()) return@run
+                // 在脚本文件中显示为链接
+                if (configGroup != null) {
+                    val typeLink = ReferenceLinkType.CwtConfig.createLink(categoryOfTypeElement, typeName, configGroup.gameType)
+                    append(": ").psiLinkOrUnresolved(typeLink.escapeXml(), typeName.escapeXml(), context = typeElement)
+                } else {
+                    append(": ").append(typeName.escapeXml())
                 }
             }
 
-            // source prefix + source name
-            val sourceName = if (finalName == name) null else name.orNull()
-            if (sourceName != null) {
+            // source
+            run {
+                val sourceName = if (finalName == name) null else name
+                if (sourceName.isNullOrEmpty()) return@run
                 val sourcePrefix = when {
                     element is CwtProperty -> ChronicleStrings.sourcePropertyPrefix
                     element is CwtString -> ChronicleStrings.sourceValuePrefix
@@ -254,7 +254,8 @@ object CwtDocumentationManager {
                 }
             }
 
-            if (configGroup != null) {
+            run {
+                if (configGroup == null) return@run
                 if (referenceElement != null && configType == CwtConfigTypes.Modifier) {
                     addModifierRelatedLocalisations(referenceElement, name, configGroup)
                     addModifierIcon(referenceElement, name, configGroup)

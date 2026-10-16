@@ -4,6 +4,7 @@ import com.intellij.codeInsight.documentation.DocumentationManagerUtil
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.config.CwtConfigTypeCategories
 import icu.windea.pls.config.config.delegated.CwtLinkConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.delegated.CwtSystemScopeConfig
@@ -39,89 +40,11 @@ class CwtConfigLinkProvider : ReferenceLinkProvider {
         ProgressManager.checkCanceled()
         val (gameType0, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
         val gameType = gameType0 ?: selectGameType(contextElement) ?: ParadoxGameType.Core
-        val tokens = remain.split('/')
-        val category = tokens.getOrNull(0) ?: return null
+        val linkPath = remain.orNull() ?: return null
         val project = contextElement.project
         val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
-        val categories = ReferenceLinkType.CwtConfig.Categories
-        return when (category) {
-            categories.types -> {
-                if (tokens.isEmpty() || tokens.size > 3) return null
-                val name = tokens.getOrNull(1)
-                val subtypeName = tokens.getOrNull(2)
-                val config = when {
-                    name == null -> null
-                    subtypeName == null -> configGroup.types[name]
-                    else -> configGroup.types.getValue(name).subtypes[subtypeName]
-                } ?: return null
-                config.pointer.element
-            }
-            categories.values -> {
-                if (tokens.isEmpty() || tokens.size > 3) return null
-                val name = tokens.getOrNull(1) ?: return null
-                val valueName = tokens.getOrNull(2)
-                val config = configGroup.dynamicValueTypes[name] ?: return null
-                if (valueName == null) return config.pointer.element
-                config.valueConfigMap.get(valueName)?.pointer?.element
-            }
-            categories.enums -> {
-                if (tokens.isEmpty() || tokens.size > 3) return null
-                val name = tokens.getOrNull(1) ?: return null
-                val valueName = tokens.getOrNull(2)
-                val config = configGroup.enums[name] ?: return null
-                if (valueName == null) return config.pointer.element
-                config.valueConfigMap.get(valueName)?.pointer?.element
-            }
-            categories.complexEnums -> {
-                if (tokens.isEmpty() || tokens.size > 2) return null
-                val name = tokens.getOrNull(1) ?: return null
-                val config = configGroup.complexEnums[name] ?: return null
-                config.pointer.element
-            }
-            categories.scopes -> {
-                if (tokens.isEmpty() || tokens.size > 2) return null
-                val name = tokens.getOrNull(1) ?: return null
-                val config = configGroup.scopeAliasMap[name] ?: return null
-                config.pointer.element
-            }
-            categories.systemScopes -> {
-                if (tokens.isEmpty() || tokens.size > 2) return null
-                val name = tokens.getOrNull(1) ?: return null
-                val config = configGroup.systemScopes[name] ?: return null
-                config.pointer.element
-            }
-            categories.links -> {
-                if (tokens.isEmpty() || tokens.size > 2) return null
-                val name = tokens.getOrNull(1) ?: return null
-                val config = configGroup.links[name] ?: return null
-                config.pointer.element
-            }
-            categories.localisationLinks -> {
-                if (tokens.isEmpty() || tokens.size > 2) return null
-                val name = tokens.getOrNull(1) ?: return null
-                val config = configGroup.localisationLinks[name] ?: return null
-                config.pointer.element
-            }
-            categories.localisationCommands -> {
-                if (tokens.isEmpty() || tokens.size > 2) return null
-                val name = tokens.getOrNull(1) ?: return null
-                val config = configGroup.localisationCommands[name] ?: return null
-                config.pointer.element
-            }
-            categories.modifierCategories -> {
-                if (tokens.isEmpty() || tokens.size > 2) return null
-                val name = tokens.getOrNull(1) ?: return null
-                val config = configGroup.modifierCategories[name] ?: return null
-                config.pointer.element
-            }
-            categories.modifiers -> {
-                if (tokens.isEmpty() || tokens.size > 2) return null
-                val name = tokens.getOrNull(1) ?: return null
-                val config = configGroup.modifiers[name] ?: return null
-                config.pointer.element
-            }
-            else -> null
-        }
+        val config = CwtConfigManager.getConfigByLinkPath(configGroup, linkPath)
+        return config?.pointer?.element
     }
 
     override fun getUnresolvedMessage(link: String): String {
@@ -133,26 +56,25 @@ class CwtConfigLinkProvider : ReferenceLinkProvider {
         val config = element.getUserData(CwtConfigManager.Keys.config) ?: return null // retrieve config from user data
         // 这里目前仅支持可能用到的那些
         val linkType = ReferenceLinkType.CwtConfig
-        val categories = ReferenceLinkType.CwtConfig.Categories
         val builder = StringBuilder()
         when {
             config is CwtSystemScopeConfig -> {
                 val gameType = config.configGroup.gameType
                 val name = config.name
-                val link = linkType.createLink(categories.systemScopes, name, gameType)
+                val link = linkType.createLink(CwtConfigTypeCategories.systemScopes, name, gameType)
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }
             config is CwtLinkConfig -> {
                 val gameType = config.configGroup.gameType
                 val name = config.name
-                val category = if (config.isLocalisationLink) categories.localisationLinks else categories.links
+                val category = if (config.isLocalisationLink) CwtConfigTypeCategories.localisationLinks else CwtConfigTypeCategories.links
                 val link = linkType.createLink(category, name, gameType)
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }
             config is CwtLocalisationCommandConfig -> {
                 val gameType = config.configGroup.gameType
                 val name = config.name
-                val link = linkType.createLink(categories.localisationCommands, name, gameType)
+                val link = linkType.createLink(CwtConfigTypeCategories.localisationCommands, name, gameType)
                 DocumentationManagerUtil.createHyperlink(builder, link, name, plainLink)
             }
         }
@@ -165,8 +87,9 @@ class ParadoxScriptedVariableLinkProvider : ReferenceLinkProvider {
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
-        val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
-        val name = remain
+        val (gameType0, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
+        val gameType = gameType0
+        val name = remain.orNull() ?: return null
         val project = contextElement.project
         val selector = ParadoxScriptedVariableSearch.selector(project, contextElement).contextSensitive()
             .withGameType(gameType)
@@ -194,7 +117,8 @@ class ParadoxDefinitionLinkProvider : ReferenceLinkProvider {
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
-        val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
+        val (gameType0, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
+        val gameType = gameType0
         val tokens = remain.split('/')
         if (tokens.isEmpty() || tokens.size > 2) return null
         val typeExpression = if (tokens.size == 2) tokens.getOrNull(0) else null
@@ -230,8 +154,9 @@ class ParadoxLocalisationLinkProvider : ReferenceLinkProvider {
 
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         ProgressManager.checkCanceled()
-        val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
-        val name = remain
+        val (gameType0, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
+        val gameType = gameType0
+        val name = remain.orNull() ?: return null
         val project = contextElement.project
         val selector = ParadoxLocalisationSearch.selector(project, contextElement).contextSensitive().preferLocale(selectLocale(contextElement))
             .withGameType(gameType)
@@ -262,8 +187,9 @@ class ParadoxFilePathLinkProvider : ReferenceLinkProvider {
     override fun resolve(link: String, contextElement: PsiElement): PsiElement? {
         // can be resolved to file or directory
         ProgressManager.checkCanceled()
-        val (gameType, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
-        val filePath = remain
+        val (gameType0, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
+        val gameType = gameType0
+        val filePath = remain.orNull() ?: return null
         val project = contextElement.project
         val selector = ParadoxFilePathSearch.selector(project, contextElement).contextSensitive()
             .withGameType(gameType)
@@ -286,7 +212,7 @@ class ParadoxModifierLinkProvider : ReferenceLinkProvider {
         ProgressManager.checkCanceled()
         val (gameType0, remain) = getGameTypeAndRemain(link.drop(linkPrefix.length))
         val gameType = gameType0 ?: selectGameType(contextElement) ?: ParadoxGameType.Core
-        val name = remain
+        val name = remain.orNull() ?: return null
         val project = contextElement.project
         val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
         return ParadoxModifierManager.resolveModifier(name, contextElement, configGroup)
