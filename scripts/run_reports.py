@@ -4,7 +4,7 @@
 """run_reports.py — Facade runner: generate all six audit reports in Markdown format.
 
 Runs each of the six audit scripts with --markdown, saving output to:
-  documents/reports/{timestamp}/{script_name}.md
+  documents/reports/statistics/{timestamp}/{script_name}.md
 
 Usage:
   python scripts/run_reports.py
@@ -40,7 +40,7 @@ def main() -> None:
     scripts_dir = os.path.join(repo_root, "scripts")
 
     ts      = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out_dir = os.path.join(repo_root, "documents", "reports", ts)
+    out_dir = os.path.join(repo_root, "documents", "reports", "statistics", ts)
     os.makedirs(out_dir, exist_ok=True)
 
     print(f"Output directory: {out_dir}")
