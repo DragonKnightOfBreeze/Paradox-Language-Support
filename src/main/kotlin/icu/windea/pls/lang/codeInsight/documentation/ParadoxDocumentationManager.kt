@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.parentOfType
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
@@ -74,7 +73,7 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptPropertyKey
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 
-@Suppress("unused")
+@Suppress("UNUSED_PARAMETER")
 object ParadoxDocumentationManager {
     private const val SECTIONS_INFO = 0
     private const val SECTIONS_IMAGES = 1
@@ -267,16 +266,28 @@ object ParadoxDocumentationManager {
         val name = element.name
         val definitionType = element.definitionType
         val gameType = element.gameType
+        val typeConfig = element.typeConfig
         definition {
             append(ChronicleStrings.definitionSnippetPrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
+            append(": ")
+            if (typeConfig != null) {
+                val categories = ReferenceLinkType.CwtConfig.Categories
+                val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, typeConfig.name, gameType)
+                psiLinkOrUnresolved(typeLink.escapeXml(), typeConfig.name.escapeXml())
+            } else {
+                append(definitionType.escapeXml())
+            }
+
+            // 加上相关定义的信息
             for (template in element.snippetTemplates) {
+                val templateString = template.toString()
                 val fullName = template.resolve(name)
+
                 br()
                 append(ChronicleStrings.relatedDefinitionPrefix).append(" ")
                 val link = ReferenceLinkType.Definition.createLink(fullName, definitionType, gameType)
-                psiLinkOrUnresolved(link.escapeXml(), fullName.escapeXml(), context = element)
+                append(templateString).append(" = ").psiLinkOrUnresolved(link.escapeXml(), fullName.escapeXml(), context = element)
                 append(": ")
-                val typeConfig = element.typeConfig
                 if (typeConfig != null) {
                     val categories = ReferenceLinkType.CwtConfig.Categories
                     val typeLink = ReferenceLinkType.CwtConfig.createLink(categories.types, typeConfig.name, gameType)
@@ -291,25 +302,37 @@ object ParadoxDocumentationManager {
     private fun DocumentationBuilder.buildDefinitionPartForLocalisationSnippet(element: ParadoxLocalisationSnippetLightElement) {
         // 显示片段文本，以及与各模板参数对应的完整本地化引用
         val name = element.name
-        val gameType = element.gameType
         definition {
             append(ChronicleStrings.localisationSnippetPrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
+
+            // 加上相关本地化的信息
             for (template in element.snippetTemplates) {
+                val templateString = template.toString()
                 val fullName = template.resolve(name)
+
                 br()
                 append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
-                val link = ReferenceLinkType.Localisation.createLink(fullName, gameType)
-                psiLinkOrUnresolved(link.escapeXml(), fullName.escapeXml(), context = element)
+                val link = ReferenceLinkType.Localisation.createLink(fullName, element.gameType)
+                append(templateString).append(" = ").psiLinkOrUnresolved(link.escapeXml(), fullName.escapeXml(), context = element)
+
+                run {
+                    if (hint) return@run
+                    if (!ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForComplexEnumValues) return@run
+                    val sections = getSections(SECTIONS_LOC)
+                    val relatedLocalisation = ParadoxLocalisationManager.getRelatedLocalisationsFrom(fullName, element, onlyOne = true).firstOrNull()
+                    if (relatedLocalisation == null) return@run
+                    sections[templateString] = ParadoxLocalisationTextQuickDocRenderer().render(relatedLocalisation)
+                }
             }
         }
     }
 
     private fun DocumentationBuilder.buildDefinitionPartForComplexEnumValue(element: ParadoxComplexEnumValueLightElement) {
+        val name = element.name
+        val enumName = element.enumName
+        val gameType = element.gameType
+        val configGroup = element.configGroup
         definition {
-            val name = element.name
-            val enumName = element.enumName
-            val gameType = element.gameType
-            val configGroup = ChronicleFacade.getConfigGroup(element.project, gameType)
             append(ChronicleStrings.complexEnumValuePrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
             append(": ")
             val complexEnumConfig = configGroup.complexEnums[enumName]
@@ -330,44 +353,43 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addRelatedLocalisationsForComplexEnumValue(element: ParadoxComplexEnumValueLightElement) {
+        // 如果没找到的话，不要在文档中显示相关信息
         val gameType = element.gameType
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
         val relatedLocalisation = ParadoxComplexEnumValueManager.getRelatedLocalisations(element, usedLocale, onlyOne = true).firstOrNull()
-        // 如果没找到的话，不要在文档中显示相关信息
+        if (relatedLocalisation == null) return
+
+        br()
+        append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
+        val link = ReferenceLinkType.Localisation.createLink(relatedLocalisation.name, gameType)
+        append("name = ").psiLinkOrUnresolved(link.escapeXml(), relatedLocalisation.name.escapeXml(), context = element)
+
         run {
-            if (relatedLocalisation == null) return@run
-            br()
-            append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
-            val link = ReferenceLinkType.Localisation.createLink(relatedLocalisation.name, gameType)
-            append("name = ").psiLinkOrUnresolved(link.escapeXml(), relatedLocalisation.name.escapeXml(), context = element)
-        }
-        if (hint) return
-        if (!ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForComplexEnumValues) return
-        val sections = getSections(SECTIONS_LOC)
-        run {
-            if (relatedLocalisation == null) return@run
+            if (hint) return@run
+            if (!ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForComplexEnumValues) return@run
+            val sections = getSections(SECTIONS_LOC)
             sections["name"] = ParadoxLocalisationTextQuickDocRenderer().render(relatedLocalisation)
         }
     }
 
     private fun DocumentationBuilder.buildDefinitionPartForDynamicValue(element: ParadoxDynamicValueLightElement) {
         val name = element.name
-        val dynamicValueTypes = element.types
+        val types = element.types
         val gameType = element.gameType
-        val configGroup = ChronicleFacade.getConfigGroup(element.project, gameType)
+        val configGroup = element.configGroup
         definition {
             append(ChronicleStrings.dynamicValuePrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
             append(": ")
             val m = OnceMarker()
-            for (dynamicValueType in dynamicValueTypes) {
+            for (type in types) {
                 if (m.mark()) append(" | ")
-                val valueConfig = configGroup.dynamicValueTypes[dynamicValueType]
+                val valueConfig = configGroup.dynamicValueTypes[type]
                 if (valueConfig != null) {
                     val category = ReferenceLinkType.CwtConfig.Categories.values
-                    val typeLink = ReferenceLinkType.CwtConfig.createLink(category, dynamicValueType, gameType)
-                    psiLinkOrUnresolved(typeLink.escapeXml(), dynamicValueType.escapeXml())
+                    val typeLink = ReferenceLinkType.CwtConfig.createLink(category, type, gameType)
+                    psiLinkOrUnresolved(typeLink.escapeXml(), type.escapeXml())
                 } else {
-                    append(dynamicValueType.escapeXml())
+                    append(type.escapeXml())
                 }
             }
 
@@ -380,22 +402,21 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addRelatedLocalisationsForDynamicValue(element: ParadoxDynamicValueLightElement) {
+        // 如果没找到的话，不要在文档中显示相关信息
         val gameType = element.gameType
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
         val relatedLocalisation = ParadoxDynamicValueManager.getRelatedLocalisations(element, usedLocale, onlyOne = true).firstOrNull()
-        // 如果没找到的话，不要在文档中显示相关信息
+        if (relatedLocalisation == null) return
+
+        br()
+        append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
+        val link = ReferenceLinkType.Localisation.createLink(relatedLocalisation.name, gameType)
+        append("name = ").psiLinkOrUnresolved(link.escapeXml(), relatedLocalisation.name.escapeXml(), context = element)
+
         run {
-            if (relatedLocalisation == null) return@run
-            br()
-            append(ChronicleStrings.relatedLocalisationPrefix).append(" ")
-            val link = ReferenceLinkType.Localisation.createLink(relatedLocalisation.name, gameType)
-            append("name = ").psiLinkOrUnresolved(link.escapeXml(), relatedLocalisation.name.escapeXml(), context = element)
-        }
-        if (hint) return
-        if (!ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForDynamicValues) return
-        val sections = getSections(SECTIONS_LOC)
-        run {
-            if (relatedLocalisation == null) return@run
+            if (hint) return@run
+            if (!ChronicleSettings.getInstance().state.documentation.renderRelatedLocalisationsForDynamicValues) return@run
+            val sections = getSections(SECTIONS_LOC)
             sections["name"] = ParadoxLocalisationTextQuickDocRenderer().render(relatedLocalisation)
         }
     }
@@ -428,6 +449,7 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.buildDefinitionPartForModifier(element: ParadoxModifierLightElement) {
         val name = element.name
+        val configGroup = element.configGroup
         definition {
             run {
                 // 显示来自 EP 的快速文档
@@ -437,7 +459,6 @@ object ParadoxDocumentationManager {
                 append(ChronicleStrings.modifierPrefix).append(" <b>").append(name.orAnonymous().escapeXml()).append("</b>")
             }
 
-            val configGroup = ChronicleFacade.getConfigGroup(element.project, element.gameType)
             addModifierRelatedLocalisations(element, name, configGroup)
             addModifierIcon(element, name, configGroup)
             addModifierScope(element, name, configGroup)
@@ -446,8 +467,8 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierRelatedLocalisations(element: ParadoxModifierLightElement, name: String, configGroup: CwtConfigGroup) {
-        val gameType = configGroup.gameType
         val project = configGroup.project
+        val gameType = configGroup.gameType
         val usedLocale = ParadoxLocaleManager.getResolvedLocaleConfigInDocumentation(element)
         val nameLocalisation = run {
             val keys = ParadoxModifierManager.getModifierNameKeys(name, element)
@@ -496,8 +517,8 @@ object ParadoxDocumentationManager {
     }
 
     private fun DocumentationBuilder.addModifierIcon(element: ParadoxModifierLightElement, name: String, configGroup: CwtConfigGroup) {
-        val gameType = configGroup.gameType
         val project = configGroup.project
+        val gameType = configGroup.gameType
         val iconFile = run {
             val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
             paths.firstNotNullOfOrNull { path ->

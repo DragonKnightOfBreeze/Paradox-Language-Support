@@ -552,7 +552,7 @@
 
 #### 任务（次要）
 
-- [ ] P3/FAST 在本地化片段的快速文档中渲染相关本地化 ([#432](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/432))
+- [x] P3/FAST 在快速文档中直接渲染片段的相关本地化 ([#432](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/432))
   - 因为片段对应的相关定义/相关本地化可以存在多个，目前仅考虑直接在快速文档中渲染相关本地化。
   - 同本地化的快速文档一样，使用“文本”作为左侧的章节标题。
 - [ ] P4/FAST 点击装订线图标后，也在弹出提示的标题中显示目标数量

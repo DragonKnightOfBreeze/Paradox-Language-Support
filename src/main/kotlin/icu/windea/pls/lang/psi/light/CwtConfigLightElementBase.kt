@@ -6,6 +6,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.ResolveScopeManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
+import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.model.ParadoxGameType
@@ -16,6 +18,8 @@ import javax.swing.Icon
  */
 abstract class CwtConfigLightElementBase(parent: PsiElement) : LightElementBase(parent), ItemPresentation {
     abstract val gameType: ParadoxGameType
+
+    val configGroup: CwtConfigGroup get() = ChronicleFacade.getConfigGroup(project, gameType)
 
     final override fun getResolveScope(): GlobalSearchScope {
         return ResolveScopeManager.getElementResolveScope(this)

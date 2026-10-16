@@ -154,6 +154,18 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
                 .bindSelected(settings::renderLineComment)
             contextHelp(ChronicleBaseBundle.message("settings.documentation.renderLineComment.tip"))
         }
+        // renderRelatedLocalisationsForComplexEnumValues
+        row {
+            checkBox(ChronicleBaseBundle.message("settings.documentation.renderRelatedLocalisationsForComplexEnumValues"))
+                .bindSelected(settings::renderRelatedLocalisationsForComplexEnumValues)
+            contextHelp(ChronicleBaseBundle.message("settings.documentation.renderRelatedLocalisationsForComplexEnumValues.tip"))
+        }
+        // renderRelatedLocalisationsForDynamicValues
+        row {
+            checkBox(ChronicleBaseBundle.message("settings.documentation.renderRelatedLocalisationsForDynamicValues"))
+                .bindSelected(settings::renderRelatedLocalisationsForDynamicValues)
+            contextHelp(ChronicleBaseBundle.message("settings.documentation.renderRelatedLocalisationsForDynamicValues.tip"))
+        }
         // renderRelatedLocalisationsForScriptedVariables
         row {
             checkBox(ChronicleBaseBundle.message("settings.documentation.renderRelatedLocalisationsForScriptedVariables"))
@@ -189,18 +201,6 @@ class ChronicleSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.mess
             checkBox(ChronicleBaseBundle.message("settings.documentation.renderLocalisationForLocalisations"))
                 .bindSelected(settings::renderLocalisationForLocalisations)
             contextHelp(ChronicleBaseBundle.message("settings.documentation.renderLocalisationForLocalisations.tip"))
-        }
-        // renderRelatedLocalisationsForComplexEnumValues
-        row {
-            checkBox(ChronicleBaseBundle.message("settings.documentation.renderRelatedLocalisationsForComplexEnumValues"))
-                .bindSelected(settings::renderRelatedLocalisationsForComplexEnumValues)
-            contextHelp(ChronicleBaseBundle.message("settings.documentation.renderRelatedLocalisationsForComplexEnumValues.tip"))
-        }
-        // renderRelatedLocalisationsForDynamicValues
-        row {
-            checkBox(ChronicleBaseBundle.message("settings.documentation.renderRelatedLocalisationsForDynamicValues"))
-                .bindSelected(settings::renderRelatedLocalisationsForDynamicValues)
-            contextHelp(ChronicleBaseBundle.message("settings.documentation.renderRelatedLocalisationsForDynamicValues.tip"))
         }
         // showScopes
         row {
