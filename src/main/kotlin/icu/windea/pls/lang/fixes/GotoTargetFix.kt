@@ -10,6 +10,7 @@ import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.SmartPsiElementPointer
+import com.intellij.util.OpenSourceUtil
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import org.jetbrains.annotations.Nls
 
@@ -28,7 +29,9 @@ class GotoTargetFix(
 
     override fun invoke(project: Project, psiFile: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         val element = targetElement ?: return
-        element.navigate(true)
+        // NOTE 3.0.5 [compatibility] `Navigatable.navigate(boolean)` is override-only since IDEA-263
+        //  - Use `OpenSourceUtil.navigate(...)` instead
+        OpenSourceUtil.navigate(element)
     }
 
     override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo {

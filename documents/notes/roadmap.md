@@ -549,6 +549,8 @@
   - 可以指定执行超时。
 - [ ] P3 优化图片处理逻辑 ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
   - 进行图片IO（渲染/转换/等等）时，也进行取消检查（抵达字节大小阈值时）。
+- [x] P1 修复插件在 IDEA 2026.3 EAP 中存在的兼容性问题
+  - 参见：`com.intellij.util.OpenSourceUtil`
 
 #### 任务（次要）
 

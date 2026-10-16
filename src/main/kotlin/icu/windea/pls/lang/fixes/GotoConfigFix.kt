@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.util.OpenSourceUtil
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.isEmpty
@@ -34,7 +35,9 @@ class GotoConfigFix(
 
     override fun invoke(project: Project, psiFile: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         val element = configElement ?: return
-        element.navigate(true)
+        // NOTE 3.0.5 [compatibility] `Navigatable.navigate(boolean)` is override-only since IDEA-263
+        //  - Use `OpenSourceUtil.navigate(...)` instead
+        OpenSourceUtil.navigate(element)
     }
 
     override fun generatePreview(project: Project, previewDescriptor: ProblemDescriptor): IntentionPreviewInfo {

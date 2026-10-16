@@ -15,6 +15,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReference
 import com.intellij.psi.util.PsiEditorUtil
 import com.intellij.ui.SimpleTextAttributes
+import com.intellij.util.OpenSourceUtil
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.core.orAnonymous
@@ -116,16 +117,20 @@ class ParadoxCallHierarchyNodeDescriptor(
     override fun navigate(requestFocus: Boolean) {
         if (!navigateToReference) {
             val element = psiElement
-            if (element is Navigatable && (element as Navigatable).canNavigate()) {
-                (element as Navigatable).navigate(requestFocus)
+            if (element is Navigatable && element.canNavigate()) {
+                // NOTE 3.0.5 [compatibility] `Navigatable.navigate(boolean)` is override-only since IDEA-263
+                //  - Use `OpenSourceUtil.navigate(...)` instead
+                OpenSourceUtil.navigate(requestFocus, element)
             }
             return
         }
         val firstReference: PsiReference = references.get(0)
         val element = firstReference.element
         val callElement = element.parent
-        if (callElement is Navigatable && (callElement as Navigatable).canNavigate()) {
-            (callElement as Navigatable).navigate(requestFocus)
+        if (callElement is Navigatable && callElement.canNavigate()) {
+            // NOTE 3.0.5 [compatibility] `Navigatable.navigate(boolean)` is override-only since IDEA-263
+            //  - Use `OpenSourceUtil.navigate(...)` instead
+            OpenSourceUtil.navigate(requestFocus, callElement)
         } else {
             val psiFile = callElement.containingFile
             if (psiFile?.virtualFile == null) return

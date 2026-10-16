@@ -9,7 +9,7 @@ import com.intellij.openapi.ui.popup.util.BaseListPopupStep
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.core.castOrNull
+import com.intellij.util.OpenSourceUtil
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.icon
 
@@ -58,7 +58,10 @@ abstract class NavigateToFix(
             editor.caretModel.moveToOffset(navigationElement.textOffset)
             editor.scrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
         } else {
-            navigationElement.castOrNull<NavigatablePsiElement>()?.navigate(true)
+            // NOTE 3.0.5 [compatibility] `Navigatable.navigate(boolean)` is override-only since IDEA-263
+            //  - Use `OpenSourceUtil.navigate(...)` instead
+            if(navigationElement !is NavigatablePsiElement) return
+            OpenSourceUtil.navigate(navigationElement)
         }
     }
 

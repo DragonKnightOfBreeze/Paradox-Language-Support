@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.Presentation
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
+import com.intellij.util.OpenSourceUtil
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
@@ -32,7 +33,9 @@ class GotoSuperDefinitionActionHandler : PresentableCodeInsightActionHandler {
     override fun invoke(project: Project, editor: Editor, file: PsiFile) {
         val superDefinition = findSuperDefinition(editor, file) ?: return
         val navigatable = EditSourceUtil.getDescriptor(superDefinition) ?: return
-        navigatable.navigate(true)
+        // NOTE 3.0.5 [compatibility] `Navigatable.navigate(boolean)` is override-only since IDEA-263
+        //  - Use `OpenSourceUtil.navigate(...)` instead
+        OpenSourceUtil.navigate(navigatable)
     }
 
     override fun update(editor: Editor, file: PsiFile, presentation: Presentation?) {
