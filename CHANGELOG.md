@@ -11,7 +11,7 @@
 
 - [x] 在快速文档中直接渲染片段的相关本地化 / Render related localisations directly in quick docs for snippets ([#432](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/432)) 
 - [ ] 优化命令行执行逻辑和图片处理逻辑，适用取消检查和超时限制，以避免可能的 IDE 冻结 / Optimize the command-line execution logic and image processing logic, and apply cancellation checks and timeout limits, to avoid possible IDE freezes([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
-- [ ] 补充基准测试 / Add more benchmarks
+- [ ] 完善基准测试 / Improve more benchmarks
 - [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 3.0.4

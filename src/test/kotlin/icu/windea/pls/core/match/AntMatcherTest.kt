@@ -9,9 +9,28 @@ import org.junit.Test
 class AntMatcherTest {
     @Test
     fun matches_basic() {
-        Assert.assertTrue(AntMatcher.matches("foo/bar/baz", "foo/**"))
         Assert.assertTrue(AntMatcher.matches("foo/bar", "foo/*"))
+        Assert.assertTrue(AntMatcher.matches("foo/bar/baz", "foo/**"))
         Assert.assertFalse(AntMatcher.matches("foo/bar/baz", "foo/*"))
+    }
+
+    @Test
+    fun matches_question_mark() {
+        Assert.assertTrue(AntMatcher.matches("foo/bar", "foo/b?r"))
+        Assert.assertFalse(AntMatcher.matches("foo/ba", "foo/b?r"))
+    }
+
+    @Test
+    fun matches_ignoreCase() {
+        Assert.assertTrue(AntMatcher.matches("FOO/BAR", "foo/*", ignoreCase = true))
+        Assert.assertFalse(AntMatcher.matches("FOO/BAR", "foo/*", ignoreCase = false))
+    }
+
+    @Test
+    fun matches_trimSeparator_and_empty() {
+        Assert.assertTrue(AntMatcher.matches("/foo/bar/", "foo/**"))
+        Assert.assertFalse(AntMatcher.matches("foo", ""))
+        Assert.assertTrue(AntMatcher.matches("foo", "**"))
     }
 
     @Test

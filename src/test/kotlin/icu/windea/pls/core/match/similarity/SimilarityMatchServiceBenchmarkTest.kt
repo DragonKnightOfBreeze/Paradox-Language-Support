@@ -13,6 +13,7 @@ import kotlin.system.measureTimeMillis
 /**
  * @see SimilarityMatchService
  */
+@Suppress("unused")
 class SimilarityMatchServiceBenchmarkTest {
     @Before
     fun doSetUp() {
@@ -24,80 +25,6 @@ class SimilarityMatchServiceBenchmarkTest {
         }
         // 尽量清理缓存，避免不同测试方法之间的相互影响（统计不会被重置，后续取增量）
         cache().invalidateAll()
-    }
-
-    /**
-     * 场景E：更细粒度容量边界（4800/4900/5000/5100/5200）。
-     * 断言：<=5000 时第二轮全命中；>5000 时第二轮命中恰好为 5000。
-     */
-    @Test
-    fun capacityBoundarySweep() {
-        val sizes = listOf(4_800, 4_900, 5_000, 5_100, 5_200)
-        val candidates = buildCandidates(seed = 41, size = 12_000)
-        val opts = SimilarityMatchOptions.DEFAULT
-        for (size in sizes) {
-            cache().invalidateAll()
-            val inputs = buildUniqueInputs(seed = 43 + size, size = size)
-            // 第一轮：填充
-            for (input in inputs) {
-                SimilarityMatchService.findBestMatches(input, candidates, opts)
-            }
-            val s1 = stats()
-            // 第二轮：测命中
-            for (input in inputs) {
-                SimilarityMatchService.findBestMatches(input, candidates, opts)
-            }
-            val s2 = stats()
-            val delta = s2 - s1
-            val estSize = cache().estimatedSize()
-            println("[capacityBoundarySweep#$size] second hits=${delta.hits} / ${inputs.size}, estimatedSize=${estSize}")
-            if (size <= 5_000) {
-                Assert.assertEquals("<=5000 should fully hit on second round", size.toLong(), delta.hits)
-            } else {
-                val lowerBound = (5_000 * 0.98).toLong() // TinyLFU 可能导致冷启动下轻微欠填充
-                Assert.assertTrue(">5000 should hit close to capacity on second round (>=${lowerBound}, <=5000), actual=${delta.hits}",
-                    delta.hits in lowerBound..5_000L)
-            }
-        }
-    }
-
-    /**
-     * 场景F：Key 构造路径压测。比较“带缓存冷启动调用”与“直接调用内部实现（绕过缓存）”的耗时差。
-     * 为减少抖动：每个规模测 5 次取平均。仅打印指标，不做严格性能断言。
-     */
-    @Test
-    fun keyConstructionOverheadPressure() {
-        val sizes = listOf(2_000, 5_000, 10_000, 20_000)
-        val opts = SimilarityMatchOptions.DEFAULT
-        val optsDirect = opts.copy(cached = false)
-        for (size in sizes) {
-            val candidates = buildCandidates(seed = 53 + size, size = size)
-            // 多次采样取平均
-            val rounds = 5
-            var coldTotal = 0L
-            var directTotal = 0L
-            repeat(rounds) { r ->
-                // 冷启动（避免命中）：使用唯一输入并清理缓存
-                cache().invalidateAll()
-                val input = "a" + r.toString() + "_" + size.toString()
-                val tCold = measureTimeMillis {
-                    SimilarityMatchService.findBestMatches(input, candidates, opts)
-                }
-                coldTotal += tCold
-                val tDirect = measureTimeMillis {
-                    SimilarityMatchService.findBestMatches(input, candidates, optsDirect)
-                }
-                directTotal += tDirect
-            }
-            val coldAvg = coldTotal / rounds.toDouble()
-            val directAvg = directTotal / rounds.toDouble()
-            val overhead = coldAvg - directAvg
-            val ratio = if (directAvg > 0.0) coldAvg / directAvg else Double.NaN
-            println("[keyConstructionOverheadPressure#$size] coldAvg=${"%.2f".format(coldAvg)}ms, directAvg=${"%.2f".format(directAvg)}ms, overhead=${"%.2f".format(overhead)}ms, ratio=${"%.3f".format(ratio)}")
-            // 保守断言，确保可测：两侧均应 > 0
-            Assert.assertTrue("expected coldAvg > 0", coldAvg > 0)
-            Assert.assertTrue("expected directAvg > 0", directAvg > 0)
-        }
     }
 
     /**
@@ -191,7 +118,6 @@ class SimilarityMatchServiceBenchmarkTest {
      * 场景C：超过缓存容量时的淘汰行为采样（不做严格性能断言）。
      * 预期：第二轮命中数小于输入总数，且不超过最大容量 5000。
      */
-    @Suppress("unused")
     @Test
     fun capacityEvictionBehaviorSample() {
         val inputs = buildUniqueInputs(seed = 23, size = 6_000) // 超过 maximumSize=5000
@@ -222,7 +148,6 @@ class SimilarityMatchServiceBenchmarkTest {
     /**
      * 场景D：多种选项组合冒烟测试，验证不同组合下第二轮存在有效命中。
      */
-    @Suppress("unused")
     @Test
     fun optionsMatrixSmoke() {
         val optionsList = listOf(
@@ -251,6 +176,80 @@ class SimilarityMatchServiceBenchmarkTest {
             val delta2 = s2 - s1
             println("[optionsMatrixSmoke#$i] hits=${delta2.hits}, misses=${delta2.misses}, hitRate=${"%.4f".format(delta2.hitRate)}")
             Assert.assertTrue("expected some hits in second round for options #$i", delta2.hits > 0)
+        }
+    }
+
+    /**
+     * 场景E：更细粒度容量边界（4800/4900/5000/5100/5200）。
+     * 断言：<=5000 时第二轮全命中；>5000 时第二轮命中恰好为 5000。
+     */
+    @Test
+    fun capacityBoundarySweep() {
+        val sizes = listOf(4_800, 4_900, 5_000, 5_100, 5_200)
+        val candidates = buildCandidates(seed = 41, size = 12_000)
+        val opts = SimilarityMatchOptions.DEFAULT
+        for (size in sizes) {
+            cache().invalidateAll()
+            val inputs = buildUniqueInputs(seed = 43 + size, size = size)
+            // 第一轮：填充
+            for (input in inputs) {
+                SimilarityMatchService.findBestMatches(input, candidates, opts)
+            }
+            val s1 = stats()
+            // 第二轮：测命中
+            for (input in inputs) {
+                SimilarityMatchService.findBestMatches(input, candidates, opts)
+            }
+            val s2 = stats()
+            val delta = s2 - s1
+            val estSize = cache().estimatedSize()
+            println("[capacityBoundarySweep#$size] second hits=${delta.hits} / ${inputs.size}, estimatedSize=${estSize}")
+            if (size <= 5_000) {
+                Assert.assertEquals("<=5000 should fully hit on second round", size.toLong(), delta.hits)
+            } else {
+                val lowerBound = (5_000 * 0.98).toLong() // TinyLFU 可能导致冷启动下轻微欠填充
+                Assert.assertTrue(">5000 should hit close to capacity on second round (>=${lowerBound}, <=5000), actual=${delta.hits}",
+                    delta.hits in lowerBound..5_000L)
+            }
+        }
+    }
+
+    /**
+     * 场景F：Key 构造路径压测。比较“带缓存冷启动调用”与“直接调用内部实现（绕过缓存）”的耗时差。
+     * 为减少抖动：每个规模测 5 次取平均。仅打印指标，不做严格性能断言。
+     */
+    @Test
+    fun keyConstructionOverheadPressure() {
+        val sizes = listOf(2_000, 5_000, 10_000, 20_000)
+        val opts = SimilarityMatchOptions.DEFAULT
+        val optsDirect = opts.copy(cached = false)
+        for (size in sizes) {
+            val candidates = buildCandidates(seed = 53 + size, size = size)
+            // 多次采样取平均
+            val rounds = 5
+            var coldTotal = 0L
+            var directTotal = 0L
+            repeat(rounds) { r ->
+                // 冷启动（避免命中）：使用唯一输入并清理缓存
+                cache().invalidateAll()
+                val input = "a" + r.toString() + "_" + size.toString()
+                val tCold = measureTimeMillis {
+                    SimilarityMatchService.findBestMatches(input, candidates, opts)
+                }
+                coldTotal += tCold
+                val tDirect = measureTimeMillis {
+                    SimilarityMatchService.findBestMatches(input, candidates, optsDirect)
+                }
+                directTotal += tDirect
+            }
+            val coldAvg = coldTotal / rounds.toDouble()
+            val directAvg = directTotal / rounds.toDouble()
+            val overhead = coldAvg - directAvg
+            val ratio = if (directAvg > 0.0) coldAvg / directAvg else Double.NaN
+            println("[keyConstructionOverheadPressure#$size] coldAvg=${"%.2f".format(coldAvg)}ms, directAvg=${"%.2f".format(directAvg)}ms, overhead=${"%.2f".format(overhead)}ms, ratio=${"%.3f".format(ratio)}")
+            // 保守断言，确保可测：两侧均应 > 0
+            Assert.assertTrue("expected coldAvg > 0", coldAvg > 0)
+            Assert.assertTrue("expected directAvg > 0", directAvg > 0)
         }
     }
 

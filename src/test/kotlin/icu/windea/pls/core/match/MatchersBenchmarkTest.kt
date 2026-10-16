@@ -10,11 +10,11 @@ import kotlin.system.measureTimeMillis
  * @see AntMatcher
  * @see AntFromRegexMatcher
  */
+@Suppress("DEPRECATION")
 class MatchersBenchmarkTest {
     @Before
     fun doSetUp() = ChronicleAssume.includeBenchmark()
 
-    @Suppress("DEPRECATION")
     @Test
     fun antBenchmarkTest() {
         val patterns = listOf(

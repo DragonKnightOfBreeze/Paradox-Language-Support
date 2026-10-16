@@ -712,8 +712,20 @@
   - 因为片段对应的相关定义/相关本地化可以存在多个，目前仅考虑直接在快速文档中渲染相关本地化。
   - 同本地化的快速文档一样，使用“文本”作为左侧的章节标题。
 - [x] P4/FAST 3.0.5 点击装订线图标后，也在弹出提示的标题中显示目标数量
-- [ ] P4 3.0.5 编写基准测试，以验证标有 `@Fast` 的扩展方法相比常规版本的性能表现，并输出报告文档
-  - [ ] `CollectionFastExtensions.kt`
-  - [ ] `CollectionFastExtraExtensions.kt`
-  - [ ] `StdlibFastExtensions.kt`
-  - [ ] `StdlibFsstExtraExtensions.kt`
+
+## 2026-10-16
+
+- [ ] P4 完善基准测试
+  - [ ] 改为使用 `ChronicleAssume.includeBenchmark()` + JMH
+  - [ ] 输出带时间戳的测试报告到 `documents/reports/benchmarks/{timestamp}/`（并编写相关的 python 脚本）
+- [ ] P4 完善已有的基准测试
+  - [ ] `icu.windea.pls.core.match.MatchersBenchmarkTest` -> `AntMatcherBenchmarkTest` + `AntFromRegexBenchmarkTest`
+  - [ ] `icu.windea.pls.core.match.similarity.SimilarityMatchServiceBenchmarkTest`
+- [ ] P4 编写基准测试，以验证标有 `@Fast` 的扩展方法相比常规版本的性能表现，并输出报告文档
+  - [ ] `icu.windea.pls.core.StdlibFastExtensionsBenchmarkTest`
+  - [ ] `icu.windea.pls.core.StdlibFsstExtraExtensionsBenchmarkTest`
+  - [ ] `icu.windea.pls.core.collections.CollectionFastExtensionsBenchmarkTest`
+  - [ ] `icu.windea.pls.core.collections.CollectionFastExtraExtensionsBenchmarkTest`
+- [ ] P4 编写基准测试，以验证查询/遍历时的性能表现，报告文档并输出
+  - 目前包括：List/Stream/Sequence/Query/PushStream
+  - 关于这里使用的 Query/PushStream：直接在测试代码中实现并使用

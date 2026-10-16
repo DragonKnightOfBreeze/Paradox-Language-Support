@@ -135,6 +135,10 @@
 
 - [重构测试作用域方法，提取到 `ChronicleTestScope`](adr/test-scope.md)
 
+#### 基准测试
+
+- [完善基准测试](adr/add-benchmarks.md)
+
 ### 分析与设计
 
 #### 调优
