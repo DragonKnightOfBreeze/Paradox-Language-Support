@@ -4,11 +4,6 @@ import icu.windea.pls.ChronicleCapabilities
 import org.junit.Assume
 
 object ChronicleAssume {
-    fun includeBenchmark() {
-        val v = ChronicleCapabilities.Test.includeAll || ChronicleCapabilities.Test.includeBenchmark
-        Assume.assumeTrue("Benchmarks are not included", v)
-    }
-
     fun includeAi() {
         val v = ChronicleCapabilities.Test.includeAll || ChronicleCapabilities.Test.includeAi
         Assume.assumeTrue("AI tests are not included", v)

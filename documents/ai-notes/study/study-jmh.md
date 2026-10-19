@@ -48,7 +48,7 @@
 | `me.champeau.jmh` | `0.7.3` | JMH Gradle 插件（2025-01 发布） |
 | `org.jetbrains.kotlinx:kotlinx-benchmark` | `0.5.0` | Kotlin 的基准工具，JVM 端底层仍使用 JMH |
 
-> 注意：`kotlinx-benchmark` 适合 Kotlin Multiplatform；本项目只需要 JVM 基准，直接使用 JMH 更简单，也便于与现有 `ChronicleAssume` 测试机制结合。
+> 注意：`kotlinx-benchmark` 适合 Kotlin Multiplatform；本项目只需要 JVM 基准，直接使用 JMH 更简单，也便于复用现有 Gradle 与测试基础设施。
 
 ---
 
@@ -384,23 +384,45 @@ java -jar benchmarks.jar -f 1 -wi 5 -i 5 -w 1s -r 1s
 
 ### 目录与任务
 
-- 基准类放在 `src/jmh/kotlin`，由 JMH Gradle Plugin 编译和生成：
+- 基于 JMH 的基准类放在 `src/jmh/kotlin`，由 JMH Gradle Plugin 编译和生成：
   - `AntMatcherBenchmark`
   - `AntFromRegexBenchmark`
+  - `SimilarityMatchServiceBenchmark`
+- 用于验证基准相关行为的 JUnit 测试放在 `src/test/kotlin`，以 `BenchmarkTest` 结尾：
+  - `SimilarityMatchServiceBenchmarkTest`
+- 通用启动器位于 `src/jmh/kotlin/icu/windea/pls/test/ChronicleBenchmarkLauncher.kt`。
+- 启动器会扫描 `chronicle.benchmark.classesDir` 下以 `Benchmark` 结尾、且包含 `@Benchmark` 方法的类；没有参数时运行全部。
 - 通过 `benchmark` Gradle 任务运行：
 
 ```bash
-./gradlew benchmark -Dchronicle.test.include.benchmark=true --no-daemon --console=plain
+./gradlew benchmark --no-daemon --console=plain
 ```
 
-> 在 PowerShell 中，`-D` 参数需要加引号，否则会被 PowerShell 当作参数名截断：
->
-> ```powershell
-> .\gradlew benchmark "-Dchronicle.test.include.benchmark=true" --no-daemon --console=plain
-> ```
+按需过滤（类似 `--tests`，可重复）：
 
-- 结果写入 `build/reports/benchmarks/<BenchmarkClassName>.txt`。
-- 启动器位于 `src/test/kotlin/icu/windea/pls/core/match/MatchersBenchmarkLauncher.kt`，它调用 `ChronicleAssume.includeBenchmark()` 来控制是否执行。
+```bash
+./gradlew benchmark --benchmarks=AntMatcherBenchmark --no-daemon --console=plain
+./gradlew benchmark --benchmarks=AntMatcherBenchmark.matches --no-daemon --console=plain
+./gradlew benchmark --benchmarks="icu.windea.pls.core.match.*Benchmark" --no-daemon --console=plain
+```
+
+> 在 PowerShell 中，包含 `*` 或 `?` 的参数建议加引号，避免被 shell 展开。
+
+- 原始 JSON 结果写入 `build/reports/benchmarks/<FQN>.json`。
+- 生成带时间戳的报告：
+
+```bash
+./gradlew benchmarkReport --no-daemon --console=plain
+# 或者复用已有结果，不重新运行基准：
+./gradlew benchmarkReport -x benchmark --no-daemon --console=plain
+```
+
+报告输出到 `documents/reports/benchmarks/yyyyMMdd_HHmmss/`，包含：
+
+- 原始 JSON
+- `summary.md`
+- 每类 `<SimpleName>.txt`
+- `metadata.md`
 
 ### 为什么不用普通 JUnit 直接跑 JMH
 
@@ -415,28 +437,42 @@ CreateProcess error=206, 文件名或扩展名太长。
 因此本项目采用：
 
 - **JMH Gradle Plugin** 负责基准编译与生成；
-- **独立的 `benchmark` JavaExec 任务**使用精简的 classpath 运行启动器；
-- 启动器仍然通过 `ChronicleAssume.includeBenchmark()` 保持“受限测试”的语义。
+- **独立的 `benchmark` JavaExec 任务**使用精简的 classpath 运行通用启动器；
+- 新的门禁就是 `benchmark` Gradle 任务本身，不再使用 `ChronicleAssume.includeBenchmark()`。
+
+另外，IntelliJ Platform 在运行时提供 Guava 和 fastutil，但基准进程不包含平台 classpath，因此需要在 `jmh` 配置中显式声明这两个依赖。
 
 ### 本次验证结果
 
-环境：JDK `21.0.6`（JBR）、Windows、JMH `1.37`、`AverageTime`、5 次预热 + 5 次测量、`@Fork(2)`。
+环境：JDK `21.0.6`（JBR）、Windows、JMH `1.37`、`AverageTime`、`@Fork(2)`。
 
-| 基准 | 分数（ns/op） | 误差（99.9%） |
+AntMatcher / 正则实现（短路径基准为 5 次预热 + 5 次测量，其余为 3 次预热 + 3 次测量）：
+
+| 基准 | AntMatcher（ns/op） | AntFromRegex（ns/op） |
 |---|---:|---:|
-| `AntMatcherBenchmark.baseline` | 0.784 | ±0.024 |
-| `AntMatcherBenchmark.matches` | 175.856 | ±1.670 |
-| `AntMatcherBenchmark.matchesIgnoreCase` | 129.402 | ±2.598 |
-| `AntFromRegexBenchmark.baseline` | 0.793 | ±0.022 |
-| `AntFromRegexBenchmark.matches` | 181.468 | ±8.253 |
-| `AntFromRegexBenchmark.matchesIgnoreCase` | 210.153 | ±37.421 |
+| `baseline` | 0.740 ±0.006 | 0.743 ±0.006 |
+| `matches` | 174.544 ±2.615 | 177.315 ±4.374 |
+| `matchesIgnoreCase` | 127.194 ±6.040 | 174.763 ±2.503 |
+| `matchesDeepMemberPath` | 348.307 ±11.917 | 543.083 ±13.953 |
+| `matchesLongFilePath` | 624.807 ±78.867 | 1754.937 ±254.371 |
+| `matchesFirstInPatternSet` | 1021.082 ±109.588 | 645.911 ±41.189 |
+| `matchesMiss` | 112.311 ±8.905 | 143.011 ±22.418 |
+| `matchesUniquePatterns` | 128.570 ±11.613 | 799.742 ±132.351 |
+
+Similarity（候选规模参数化，`us/op`）：
+
+| 基准 | 2000 | 5000 | 10000 |
+|---|---:|---:|---:|
+| `findBestMatchesWarm` | 38.240 ±0.925 | 116.572 ±7.606 | 258.392 ±6.096 |
+| `findBestMatchesDirect` | 120.269 ±81.464 | 297.762 ±7.587 | 628.133 ±50.826 |
 
 结论：
 
-- 在正则缓存已预热的前提下，`AntMatcher.matches` 为 `175.9 ns/op`，`AntFromRegexMatcher.matches` 为 `181.5 ns/op`，两者非常接近，`AntMatcher` 约有 **3%** 的优势。
-- `AntFromRegexMatcher.matchesIgnoreCase` 的方差明显偏大（`210.2 ± 37.4 ns/op`），单次结果不足以得出稳定结论；需要更多 fork/迭代或 profiler 进一步分析。
-- 该结果**不支持**“纯 Kotlin 实现耗时约为正则实现一半”的旧结论。正则缓存命中后，两个实现的单次调用成本处于同一量级。
-- 第一次运行曾出现较大抖动（`AntMatcher.matches` 约 `447 ns/op`），后续运行稳定在 `175 ns/op` 左右。这说明**基准结果必须结合运行环境、预热和 fork 数解读**，不能只取单次结果。
+- 短路径、缓存已热、单模式匹配时，`AntMatcher` 与正则实现基本持平（`174.5` vs `177.3 ns/op`）。
+- 深层成员路径、长文件路径、未命中、大量唯一模式等场景下，`AntMatcher` 通常更快；尤其是唯一模式场景（`128.6` vs `799.7 ns/op`），正则缓存成本明显。
+- 在“依次尝试多个简单模式并提前命中”的场景下，正则实现反而更快（`645.9` vs `1021.1 ns/op`），说明不能给出“纯 Kotlin 永远更快”的结论。
+- `SimilarityMatchService` 的 warm 路径约为 direct 路径的 30%~40%，缓存收益明显；候选规模增长时，两者都近似线性增长。`candidateSize=2000` 的 direct 结果方差较大，解读时应以 warm 路径和更大规模的结果为主。
+- `AntMatcher` 的价值不仅是性能，还包括纯 Kotlin、无正则依赖、语义清晰、行为可预测、调试简单以及不依赖静态正则缓存。
 
 ---
 
@@ -450,32 +486,38 @@ CreateProcess error=206, 文件名或扩展名太长。
   - 或使用独立、精简 classpath 的 `JavaExec` 任务；
   - 不要把 JMH 直接塞进依赖整个 IntelliJ Platform 测试框架的 `Test` 任务。
 
-### 2. 第一次运行结果明显偏慢/偏快
+### 2. 基准进程缺少 IntelliJ Platform 提供的依赖
+
+- 现象：`NoClassDefFoundError: com/google/common/hash/Hashing` 或 `it/unimi/dsi/fastutil/...`。
+- 原因：Guava、fastutil 等由 IntelliJ Platform 在运行时提供，不在项目的 `runtimeClasspath` 中；基准进程不包含平台 classpath。
+- 解决：在 `jmh` 配置中显式声明所需依赖，例如 Guava 和 fastutil。
+
+### 3. 第一次运行结果明显偏慢/偏快
 
 - 原因：JIT 编译、类加载、后台编译/索引、GC、CPU 调度。
 - 解决：增加预热迭代；在系统空闲时重跑；使用多次 fork；不要用第一次结果做结论。
 
-### 3. 结果被死代码消除
+### 4. 结果被死代码消除
 
 - 现象：某个基准异常快，甚至接近 `0 ns/op`。
 - 解决：返回结果给 JMH，或使用 `Blackhole.consume`。
 
-### 4. 常量折叠
+### 5. 常量折叠
 
 - 现象：输入是编译期常量，JIT 直接算出结果。
 - 解决：把输入放到 `@State` 字段；必要时通过 `@Param` 或运行时生成输入。
 
-### 5. Kotlin 类/方法没有 `open`
+### 6. Kotlin 类/方法没有 `open`
 
 - 现象：JMH 生成失败，或运行时报无法继承/重写。
 - 解决：显式 `open`，或对 `@State` 使用 `allOpen`。
 
-### 6. 缓存类基准混淆了冷/热路径
+### 7. 缓存类基准混淆了冷/热路径
 
 - 现象：同一实现两次运行差异巨大。
 - 解决：明确基准目标；冷路径用 `SingleShotTime` 或每次清理缓存；热路径确保预热已填充缓存，并在报告中注明。
 
-### 7. `@Param` 没有生效
+### 8. `@Param` 没有生效
 
 - 原因：Kotlin 属性注解没有落到字段上。
 - 解决：使用 `@field:Param`、`@JvmField`，或改为普通字段。

@@ -14,13 +14,10 @@ import org.openjdk.jmh.annotations.Warmup
 import org.openjdk.jmh.infra.Blackhole
 import java.util.concurrent.TimeUnit
 
-private const val OPERATIONS = 11 * 11
-
 /**
  * [AntMatcher] 的基准测试。
  *
- * 每个基准方法都会遍历 11 个模式与 11 个路径的组合，因此需要通过
- * [OperationsPerInvocation] 将单次调用折算为单次匹配操作。
+ * 既包含固定的微基准，也包含更接近实际使用的成员路径、文件路径和模式集合场景。
  *
  * @see AntMatcher
  */
@@ -31,59 +28,96 @@ private const val OPERATIONS = 11 * 11
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(2)
 @Threads(1)
-@OperationsPerInvocation(OPERATIONS)
 open class AntMatcherBenchmark {
-    private val patterns = listOf(
-        "foo/bar/baz",
-        "foo/*/baz",
-        "foo/**/baz",
-        "**/baz",
-        "foo/bar?baz",
-        "foo/*/bar/**/baz",
-        "**",
-        "foo/bar/*",
-        "foo/bar/**",
-        "foo/bar/ba*",
-        "foo/bar/ba?",
-    )
-
-    private val paths = listOf(
-        "foo/bar/baz",
-        "foo/abc/baz",
-        "foo/bar/abc/baz",
-        "foo/bar/baz/qux",
-        "foo/barbaz",
-        "foo/bar/xyz/baz",
-        "foo/bar/abc/def/baz",
-        "foo/bar/ba",
-        "foo/bar/baa",
-        "foo/bar/baz",
-        "foo/bar/baZ",
-    )
-
     @Benchmark
+    @OperationsPerInvocation(AntMatcherBenchmarkData.BASE_OPERATIONS)
     open fun baseline(blackhole: Blackhole) {
-        for (pattern in patterns) {
-            for (path in paths) {
+        for (pattern in AntMatcherBenchmarkData.patterns) {
+            for (path in AntMatcherBenchmarkData.paths) {
                 blackhole.consume(pattern.isNotEmpty() && path.isNotEmpty())
             }
         }
     }
 
     @Benchmark
+    @OperationsPerInvocation(AntMatcherBenchmarkData.BASE_OPERATIONS)
     open fun matches(blackhole: Blackhole) {
-        for (pattern in patterns) {
-            for (path in paths) {
+        for (pattern in AntMatcherBenchmarkData.patterns) {
+            for (path in AntMatcherBenchmarkData.paths) {
                 blackhole.consume(AntMatcher.matches(path, pattern))
             }
         }
     }
 
     @Benchmark
+    @OperationsPerInvocation(AntMatcherBenchmarkData.BASE_OPERATIONS)
     open fun matchesIgnoreCase(blackhole: Blackhole) {
-        for (pattern in patterns) {
-            for (path in paths) {
+        for (pattern in AntMatcherBenchmarkData.patterns) {
+            for (path in AntMatcherBenchmarkData.paths) {
                 blackhole.consume(AntMatcher.matches(path, pattern, ignoreCase = true))
+            }
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(AntMatcherBenchmarkData.DEEP_OPERATIONS)
+    open fun matchesDeepMemberPath(blackhole: Blackhole) {
+        for (pattern in AntMatcherBenchmarkData.deepPatterns) {
+            for (path in AntMatcherBenchmarkData.deepPaths) {
+                blackhole.consume(AntMatcher.matches(path, pattern))
+            }
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(AntMatcherBenchmarkData.LONG_OPERATIONS)
+    open fun matchesLongFilePath(blackhole: Blackhole) {
+        for (pattern in AntMatcherBenchmarkData.longPatterns) {
+            for (path in AntMatcherBenchmarkData.longPaths) {
+                blackhole.consume(AntMatcher.matches(path, pattern))
+            }
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(AntMatcherBenchmarkData.PATTERN_SET_PATH_COUNT)
+    open fun matchesFirstInPatternSet(blackhole: Blackhole) {
+        var matched = false
+        for (path in AntMatcherBenchmarkData.patternSetPaths) {
+            for (pattern in AntMatcherBenchmarkData.patternSet) {
+                if (AntMatcher.matches(path, pattern)) {
+                    matched = true
+                    break
+                }
+            }
+        }
+        blackhole.consume(matched)
+    }
+
+    @Benchmark
+    @Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(AntMatcherBenchmarkData.UNIQUE_PATTERN_COUNT)
+    open fun matchesUniquePatterns(blackhole: Blackhole) {
+        for (pattern in AntMatcherBenchmarkData.uniquePatterns) {
+            blackhole.consume(AntMatcher.matches(AntMatcherBenchmarkData.UNIQUE_PATH, pattern))
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(AntMatcherBenchmarkData.MISS_OPERATIONS)
+    open fun matchesMiss(blackhole: Blackhole) {
+        for (pattern in AntMatcherBenchmarkData.missPatterns) {
+            for (path in AntMatcherBenchmarkData.paths) {
+                blackhole.consume(AntMatcher.matches(path, pattern))
             }
         }
     }
