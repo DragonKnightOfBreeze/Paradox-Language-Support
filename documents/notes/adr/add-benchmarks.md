@@ -40,7 +40,7 @@
 - 通过 `./gradlew benchmarkReport` 输出报告（包括原始报告文件，以及从中提取的总结、元数据信息等）。
 - 输出到 `documents/reports/benchmarks/{timestamp}/` 目录下。
 
-## 关于基准测试的启动器 `ChronicleBenchmarkLauncher`
+### 关于基准测试的启动器 `ChronicleBenchmarkLauncher`
 
 说明：
 - 位于以下目录中：`src/jmh/kotlin`
@@ -113,6 +113,8 @@ allOpen {
 待评估：
 - [ ] P3 考虑优化 `icu.windea.pls.core.match.TextMatcher.matchesDateField` - 通过加入预检查来达成快速返回
   - 由于参数 `pattern` 是允许自定义的，需要一些额外的处理。
+- [ ] P3 `SimilarityMatchServiceBenchmarkTest` 中的断言可能会在 CI 中失败（当前的全部4个单测方法）
+  - 参见：https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/actions/runs/39277543449/job/118149061308
 
 ## 参见
 
