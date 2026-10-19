@@ -45,8 +45,8 @@ In addition to language features, the plugin also includes:
   - `docs/README.md` and `docs/README_zh.md`: introduce to reference documentation (toc, routing, setup, etc.). 
 - `documents/`: maintainer documentation (including guidelines, roadmap, ADRs, design specs, etc.).
   - `documents/README.md` and `documents/README_zh.md`: introduce to maintainer documentation (toc, routing, principles, etc.).
-- `src/main/kotlin`, `src/main/java`, `src/main/resources`: plugin source.
-- `src/test/kotlin`, `src/test/java`, `src/test/resources`: test codes and test resources.
+- `src/main/kotlin/`, `src/main/java/`, `src/main/resources/`: plugin source.
+- `src/test/kotlin/`, `src/test/java/`, `src/test/resources/`: test codes and test resources.
 - `src/test/testData/`: test data files (e.g., test-specific config files and script files).
 - `src/main/resources/META-INF/plugin.xml`: plugin entry (registrations are split into `META-INF/*.xml`).
 
@@ -326,10 +326,10 @@ For the documents and examples, see:
 
 ### Introduce 
 
-- Besides public reference documentation under `docs/`, there is also internal maintainer documentation under `documents`, which involves various topics and scopes.
+- Besides public reference documentation under `docs/`, there is also internal maintainer documentation under `documents/`, which involves various topics and scopes.
 - Maintainer documents are primarily written in Chinese with English kebab-case file paths.
-- Documents under `documents/notes` must be entirely written by humans, in principle and in most situations.
-- Documents under `documents/ai-notes` are written by AI agents, and are essentially archived as-is.
+- Documents under `documents/notes/` must be entirely written by humans, in principle and in most situations.
+- Documents under `documents/ai-notes/` are written by AI agents, and are essentially archived as-is.
 
 ### Routing (on-demand reading)
 

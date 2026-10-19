@@ -40,7 +40,7 @@ intellijPlatform {
 
         description = MarkdownSupport.toHtml(projectDir.resolve("DESCRIPTION.md").readText())
 
-        // 从 CHANGELOG.md 中提取当前版本的变更说明，并转换为 HTML
+        // Extract change notes for the current version from CHANGELOG.md, then converts the result to HTML
         changeNotes = providers.gradleProperty("pluginVersion").map { pluginVersion ->
             val changelogText = projectDir.resolve("CHANGELOG.md").readText()
             val sectionText = ChangelogSupport.extractSectionForVersion(changelogText, pluginVersion)
@@ -93,7 +93,7 @@ dependencies {
         val platformVersion = providers.gradleProperty("platformVersion")
         val platformUseInstaller = providers.gradleProperty("platformUseInstaller").getOrElse("true").toBoolean()
 
-        // IDE 安装器不提供 EAP 版本，针对 EAP 需要切换到多平台归档（useInstaller = false）
+        // The IDE installer does not provide EAP versions, so for EAP, we need to switch to the multi-platform archive (useInstaller = false).
         // https://github.com/JetBrains/intellij-platform-plugin
         create(platformType, platformVersion) { useInstaller = platformUseInstaller }
 

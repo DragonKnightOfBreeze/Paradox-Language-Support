@@ -134,7 +134,7 @@ Paradox Chronicle（曾用名：Paradox Language Support）是为 Paradox Intera
 ### 社区 & 模组资源
 
 - [Paradox Mods](https://mods.paradoxplaza.com) - Paradox 游戏的官方模组平台
-- [Paradox Forums:](https://forum.paradoxplaza.com) - Paradox 游戏的官方论坛
+- [Paradox Forums](https://forum.paradoxplaza.com) - Paradox 游戏的官方论坛
 
 ### 教程 & 百科
 
