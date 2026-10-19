@@ -385,8 +385,8 @@ java -jar benchmarks.jar -f 1 -wi 5 -i 5 -w 1s -r 1s
 ### 目录与任务
 
 - 基准类放在 `src/jmh/kotlin`，由 JMH Gradle Plugin 编译和生成：
-  - `AntMatcherBenchmarkTest`
-  - `AntFromRegexBenchmarkTest`
+  - `AntMatcherBenchmark`
+  - `AntFromRegexBenchmark`
 - 通过 `benchmark` Gradle 任务运行：
 
 ```bash
@@ -424,12 +424,12 @@ CreateProcess error=206, 文件名或扩展名太长。
 
 | 基准 | 分数（ns/op） | 误差（99.9%） |
 |---|---:|---:|
-| `AntMatcherBenchmarkTest.baseline` | 0.784 | ±0.024 |
-| `AntMatcherBenchmarkTest.matches` | 175.856 | ±1.670 |
-| `AntMatcherBenchmarkTest.matchesIgnoreCase` | 129.402 | ±2.598 |
-| `AntFromRegexBenchmarkTest.baseline` | 0.793 | ±0.022 |
-| `AntFromRegexBenchmarkTest.matches` | 181.468 | ±8.253 |
-| `AntFromRegexBenchmarkTest.matchesIgnoreCase` | 210.153 | ±37.421 |
+| `AntMatcherBenchmark.baseline` | 0.784 | ±0.024 |
+| `AntMatcherBenchmark.matches` | 175.856 | ±1.670 |
+| `AntMatcherBenchmark.matchesIgnoreCase` | 129.402 | ±2.598 |
+| `AntFromRegexBenchmark.baseline` | 0.793 | ±0.022 |
+| `AntFromRegexBenchmark.matches` | 181.468 | ±8.253 |
+| `AntFromRegexBenchmark.matchesIgnoreCase` | 210.153 | ±37.421 |
 
 结论：
 

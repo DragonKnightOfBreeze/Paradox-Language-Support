@@ -10,13 +10,13 @@ import java.io.File
 /**
  * 用于在受限测试中运行 JMH 基准测试的启动器。
  *
- * 基准测试类位于 `src/jmh/kotlin`（`AntMatcherBenchmarkTest`、`AntFromRegexBenchmarkTest`），
+ * 基准测试类位于 `src/jmh/kotlin`（`AntMatcherBenchmark`、`AntFromRegexBenchmark`），
  * 通过 `ChronicleAssume.includeBenchmark()` 控制是否执行。
  */
 object MatchersBenchmarkLauncher {
     private val benchmarkClassNames = listOf(
-        "icu.windea.pls.core.match.AntMatcherBenchmarkTest",
-        "icu.windea.pls.core.match.AntFromRegexBenchmarkTest",
+        "icu.windea.pls.core.match.AntMatcherBenchmark",
+        "icu.windea.pls.core.match.AntFromRegexBenchmark",
     )
 
     @JvmStatic
