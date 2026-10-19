@@ -1,8 +1,6 @@
 import groovy.json.JsonSlurper
-import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
-import org.intellij.markdown.html.HtmlGenerator
-import org.intellij.markdown.parser.CancellationToken
-import org.intellij.markdown.parser.MarkdownParser
+import icu.windea.pls.gradle.markdown.ChangelogSupport
+import icu.windea.pls.gradle.markdown.MarkdownSupport
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.extensions.excludeCoroutines
 import org.jetbrains.intellij.platform.gradle.extensions.excludeKotlinStdlib
@@ -12,30 +10,19 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-buildscript {
-    dependencies {
-        // Provides the IntelliJ Markdown parser for build-time markdown-to-HTML conversion
-        classpath("org.jetbrains:markdown-jvm:0.7.16") // https://github.com/JetBrains/markdown
-    }
-}
-
 plugins {
-    val kotlinVersion = providers.gradleProperty("kotlinVersion")
-    val intellijVersion = providers.gradleProperty("intellijVersion")
-    val koverVersion = providers.gradleProperty("koverVersion")
-
-    id("org.jetbrains.kotlin.jvm") version kotlinVersion // https://kotlinlang.org/docs/gradle.html
-    id("org.jetbrains.kotlin.plugin.serialization") version kotlinVersion // https://kotlinlang.org/docs/serialization.html
-    id("org.jetbrains.intellij.platform") version intellijVersion // https://github.com/JetBrains/intellij-platform-gradle-plugin
-    id("org.jetbrains.intellij.platform.grammarkit") version intellijVersion // https://github.com/JetBrains/intellij-platform-gradle-plugin
-    id("org.jetbrains.kotlinx.kover") version koverVersion // https://github.com/Kotlin/kotlinx-kover
-    // id("org.jetbrains.changelog") version "2.5.0" // https://github.com/JetBrains/gradle-changelog-plugin
+    id("org.jetbrains.kotlin.jvm") // https://kotlinlang.org/docs/gradle.html
+    id("org.jetbrains.kotlin.plugin.serialization") // https://kotlinlang.org/docs/serialization.html
+    id("org.jetbrains.intellij.platform") // https://github.com/JetBrains/intellij-platform-gradle-plugin
+    id("org.jetbrains.intellij.platform.grammarkit") // https://github.com/JetBrains/intellij-platform-gradle-plugin
+    id("org.jetbrains.kotlinx.kover") // https://github.com/Kotlin/kotlinx-kover
+    // id("org.jetbrains.changelog") // https://github.com/JetBrains/gradle-changelog-plugin
 
     // Used to run benchmarks (JMH-based)
-    id("me.champeau.jmh") version "0.7.3" // https://github.com/melix/jmh-gradle-plugin
+    id("me.champeau.jmh") // https://github.com/melix/jmh-gradle-plugin
 
     // Used to download CWT config ZIPs (HTTPS) on demand when local repositories are missing, to support CI environments
-    id("de.undercouch.download") version "5.7.0" // https://github.com/michel-kraemer/gradle-download-task
+    id("de.undercouch.download") // https://github.com/michel-kraemer/gradle-download-task
 }
 
 abstract class ChronicleBenchmarkTask : JavaExec() {
@@ -215,15 +202,13 @@ intellijPlatform {
         name = providers.gradleProperty("pluginName")
         version = providers.gradleProperty("pluginVersion")
 
-        description = projectDir.resolve("DESCRIPTION.md").readText().let(::markdownToHTML)
+        description = MarkdownSupport.toHtml(projectDir.resolve("DESCRIPTION.md").readText())
 
-        // Extract change notes for the current version from CHANGELOG.md
-        // Finds the matching h2 section by version, processes items (strips [x]/[X], removes [ ] and HIDDEN),
-        // then converts the result to HTML
+        // 从 CHANGELOG.md 中提取当前版本的变更说明，并转换为 HTML
         changeNotes = providers.gradleProperty("pluginVersion").map { pluginVersion ->
             val changelogText = projectDir.resolve("CHANGELOG.md").readText()
-            val sectionText = extractChangelogForVersion(changelogText, pluginVersion)
-            if (sectionText.isBlank()) "" else markdownToHTML(sectionText)
+            val sectionText = ChangelogSupport.extractSectionForVersion(changelogText, pluginVersion)
+            if (sectionText.isBlank()) "" else MarkdownSupport.toHtml(sectionText)
         }
 
         ideaVersion {
@@ -441,101 +426,6 @@ kotlin {
         )
     }
 }
-
-// region Markdown
-
-// Custom markdown-to-HTML conversion using IntelliJ Markdown parser
-private fun markdownToHTML(markdown: String): String {
-    // Normalize text to LF, because a Markdown library currently fully supports only this line separator
-    val text = markdown.normalizeLineSeparator()
-    val flavour = GFMFlavourDescriptor()
-    val parser = MarkdownParser(flavour, cancellationToken = CancellationToken.NonCancellable)
-    val ast = parser.buildMarkdownTreeFromString(text as CharSequence)
-    return HtmlGenerator(text, ast, flavour).generateHtml().normalizeLineSeparator()
-}
-
-// Normalize text to LF
-private fun String.normalizeLineSeparator() = replace("\\R".toRegex(), "\n")
-
-// Extract and process the changelog section for a given version from the changelog document
-private fun extractChangelogForVersion(fullChangelog: String, targetVersion: String): String {
-    // Match h2 headings: `## <heading>`
-    val headingRegex = """^##\s+(.+)$""".toRegex()
-    // Match version from heading text: `3.0.0`, `3.0.0-dev`, `3.0.0-dev-262`, `3.0.0 - 2026-01-01`, etc.
-    val versionRegex = """^(\d+(?:\.\d+)+(?:-[A-Za-z0-9.-]+)?)(?:\s+-\s+.*)?$""".toRegex()
-
-    // Parse the changelog into heading-content sections
-    data class Section(val heading: String, val content: String)
-
-    val sections = mutableListOf<Section>()
-    var currentHeading = ""
-    var currentContent = StringBuilder()
-
-    for (line in fullChangelog.lines()) {
-        val match = headingRegex.matchEntire(line)
-        if (match != null) {
-            if (currentHeading.isNotEmpty()) {
-                sections.add(Section(currentHeading, currentContent.toString().trim()))
-            }
-            currentHeading = match.groupValues[1].trim()
-            currentContent = StringBuilder()
-        } else {
-            if (currentContent.isNotEmpty()) currentContent.appendLine()
-            currentContent.append(line)
-        }
-    }
-    if (currentHeading.isNotEmpty()) {
-        sections.add(Section(currentHeading, currentContent.toString().trim()))
-    }
-
-    // Find the matching section for the target version
-    var targetContent: String? = null
-
-    // 1. Try lenient version match against the heading text
-    val expectVersion = targetVersion.substringBefore('-')
-    for (section in sections) {
-        val vMatch = versionRegex.matchEntire(section.heading)
-        if (vMatch != null) {
-            val actualVersion = vMatch.groupValues[1].substringBefore('-')
-            if (expectVersion == actualVersion) {
-                targetContent = section.content
-                break
-            }
-        }
-    }
-
-    // 2. Fallback: use the "Unreleased" section if non-empty
-    if (targetContent == null) {
-        val unreleased = sections.find { it.heading == "Unreleased" }?.content
-        if (!unreleased.isNullOrBlank()) {
-            targetContent = unreleased
-        }
-    }
-
-    // 3. Last fallback: use the first version-matching section
-    if (targetContent == null) {
-        targetContent = sections.firstOrNull { versionRegex.matches(it.heading) }?.content ?: ""
-    }
-
-    return processChangelogSection(targetContent)
-}
-
-// Process changelog section content: filter out undone/hidden items, strip checkbox markers
-private fun processChangelogSection(content: String): String {
-    val lines = content.lines()
-    val processed = lines.mapNotNull { line ->
-        val line1 = line.trimStart().lowercase()
-        when {
-            line1.contains("HIDDEN") -> null // Exclude hidden items
-            line1.startsWith("- [ ] ") -> null // Exclude not-done items
-            line1.startsWith("- [x] ") -> line.replaceFirst("- [x] ", "- ") // Convert to normal list item
-            else -> line // Keep as-is
-        }
-    }
-    return processed.joinToString("\n").trim()
-}
-
-// endregion
 
 // region CWT Config Source Setup
 
