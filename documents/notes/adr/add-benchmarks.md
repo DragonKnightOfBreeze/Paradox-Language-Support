@@ -31,7 +31,7 @@
 
 ### 关于 `allopen` Gradle 插件
 
-基准测试的类（如 `AntMatcherBenchmarkTest`）和方法（如 `baseline`）必须是开放的（`open ...`），因此可以考虑搭配使用 `allopen` Gradle 插件。
+基准测试的类（如 `AntMatcherBenchmark`）和方法（如 `baseline`）必须是开放的（`open ...`），因此可以考虑搭配使用 `allopen` Gradle 插件。
 
 在 `build.gradle.kts` 中：
 
@@ -71,13 +71,13 @@ allOpen {
   - [x] 编写学习笔记 `documents/notes/adr/add-benchmarks.md`
   - [x] 新增 `benchmark` 任务与启动器
 - [ ] P4 完善已有的基准测试
-  - [ ] `icu.windea.pls.core.match.MatchersBenchmarkTest` -> `AntMatcherBenchmarkTest` + `AntFromRegexBenchmarkTest`
-  - [ ] `icu.windea.pls.core.match.similarity.SimilarityMatchServiceBenchmarkTest`
+  - [ ] `icu.windea.pls.core.match.MatchersBenchmark` -> `AntMatcherBenchmark` + `AntFromRegexBenchmark`
+  - [ ] `icu.windea.pls.core.match.similarity.SimilarityMatchServiceBenchmark`
 - [ ] P4 编写基准测试，以验证标有 `@Fast` 的扩展方法相比常规版本的性能表现，并输出报告文档
-  - [ ] `icu.windea.pls.core.StdlibFastExtensionsBenchmarkTest`
-  - [ ] `icu.windea.pls.core.StdlibFsstExtraExtensionsBenchmarkTest`
-  - [ ] `icu.windea.pls.core.collections.CollectionFastExtensionsBenchmarkTest`
-  - [ ] `icu.windea.pls.core.collections.CollectionFastExtraExtensionsBenchmarkTest`
+  - [ ] `icu.windea.pls.core.StdlibFastExtensionsBenchmark`
+  - [ ] `icu.windea.pls.core.StdlibFsstExtraExtensionsBenchmark`
+  - [ ] `icu.windea.pls.core.collections.CollectionFastExtensionsBenchmark`
+  - [ ] `icu.windea.pls.core.collections.CollectionFastExtraExtensionsBenchmark`
 - [ ] P4 编写基准测试，以验证查询/遍历时的性能表现，报告文档并输出
   - 目前包括：List/Stream/Sequence/Query/PushStream
   - 关于这里使用的 Query/PushStream：直接在测试代码中实现并使用

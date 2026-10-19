@@ -37,7 +37,7 @@ private const val OPERATIONS = 11 * 11
 @Fork(2)
 @Threads(1)
 @OperationsPerInvocation(OPERATIONS)
-open class AntFromRegexBenchmarkTest {
+open class AntFromRegexBenchmark {
     private val patterns = listOf(
         "foo/bar/baz",
         "foo/*/baz",

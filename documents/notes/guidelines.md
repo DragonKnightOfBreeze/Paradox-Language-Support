@@ -447,7 +447,7 @@ TODO：
 基准测试适用于一些性能敏感，并且需要考虑评估具体性能的代码（组件类、策略类、扩展方法等）。
 
 - 基准测试需要声明为受限测试（使用 `ChronicleAssume.includeBenchmark()`）。
-- 基准测试的测试类需要以 `BenchmarkTest` 结尾。
+- 基准测试的测试类需要以 `Benchmark` 结尾。
 - 出于准确性的考虑，需要使用 JMH（而非直接使用 `measureTimeMillis` 等来自标准库的方法）。
 
 ## UI

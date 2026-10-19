@@ -14,7 +14,7 @@ import kotlin.system.measureTimeMillis
  * @see SimilarityMatchService
  */
 @Suppress("unused")
-class SimilarityMatchServiceBenchmarkTest {
+class SimilarityMatchServiceBenchmark {
     @Before
     fun doSetUp() {
         // benchmark 默认忽略，需要显示包含
