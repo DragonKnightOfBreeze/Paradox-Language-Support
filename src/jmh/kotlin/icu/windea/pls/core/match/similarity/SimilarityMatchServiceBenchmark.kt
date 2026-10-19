@@ -23,7 +23,10 @@ private const val INPUT_COUNT = 100
 /**
  * [SimilarityMatchService] 的性能基准。
  *
- * 缓存命中/淘汰等行为断言位于 `SimilarityMatchServiceBenchmarkTest`。
+ * 备注：
+ * - 缓存命中/淘汰等行为断言位于 `SimilarityMatchServiceBenchmarkTest`。
+ *
+ * @see SimilarityMatchService
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)

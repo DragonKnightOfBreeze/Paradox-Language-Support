@@ -19,8 +19,9 @@ import java.util.concurrent.TimeUnit
 /**
  * [AntFromRegexMatcher] 的基准测试。
  *
- * 既包含固定的微基准，也包含更接近实际使用的成员路径、文件路径和模式集合场景。
- * 正则实现会缓存编译后的 [Regex]，JMH 预热迭代会填充缓存；唯一模式场景用于观察缓存成本。
+ * 备注：
+ * - 既包含固定的微基准，也包含更接近实际使用的成员路径、文件路径和模式集合场景。
+ * - 正则实现会缓存编译后的 [Regex]，JMH 预热迭代会填充缓存；唯一模式场景用于观察缓存成本。
  *
  * @see AntFromRegexMatcher
  */

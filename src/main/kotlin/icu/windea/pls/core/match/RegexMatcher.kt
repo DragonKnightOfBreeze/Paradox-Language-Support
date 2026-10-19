@@ -3,7 +3,7 @@ package icu.windea.pls.core.match
 import icu.windea.pls.core.cache.CacheBuilder
 
 /**
- * 基于正则的匹配器。
+ * 正则的匹配器。
  *
  * 对输入直接应用正则表达式（内部带简单缓存）。
  */
