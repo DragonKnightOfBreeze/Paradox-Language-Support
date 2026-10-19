@@ -8,7 +8,7 @@
 
 ## Overview
 
-This directory contains the source code for the public-facing reference documentation site of **Paradox Chronicle**, intended for mod developers and plugin users.
+This directory contains the source code of the public-facing reference documentation site for **Paradox Chronicle**, intended for mod developers and plugin users.
 
 The site is built with **VuePress 2** and automatically deployed to [GitHub Pages (https://windea.icu/Paradox-Language-Support)](https://windea.icu/Paradox-Language-Support).
 

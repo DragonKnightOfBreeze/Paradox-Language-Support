@@ -8,83 +8,94 @@
 
 ## Overview
 
-This directory stores public-facing maintainer documentation of **Paradox Chronicle** (public portion).
+This directory stores public maintainer-facing documentation for **Paradox Chronicle**.
 
-Unlike end-user documentation in `docs/` or the root `README.md`, documents here are intended for **project maintainers and AI coding agents**. They record in-depth architectural specifications, historical Architecture Decision Records (ADRs), diagnostic post-mortems, profiling benchmarks, and development roadmaps.
+Unlike the general documentation in the project root and the end-user-facing reference documentation site under `docs/`, the documents here are intended for **project maintainers and AI coding agents**.
+They record in-depth system design specifications, architecture decision records, troubleshooting logs, performance benchmark analyses, version roadmaps, etc.
 
 ### Language & Naming Policy
 
-- **Content Language**: Primarily written in **Simplified Chinese** to maximize cognitive precision, depth, and maintenance efficiency for the core maintainer. Non-Chinese readers are warmly encouraged to use modern AI assistants or translation engines. English contributions to maintainer notes are welcome.
-- **File System & Paths**: All file and directory names strictly adhere to **English kebab-case** (e.g., `snippet-match.md`, `roadmap.md`), completely avoiding URL-encoding glitches and anchor-breaking issues across GitHub, IDEs, and tools.
+- **Content Language**: Primarily written in **Chinese**. This is to ensure cognitive density and precision of expression during single-core-maintainer work and to eliminate native-language conversion friction.
+- **Internationalization & Translation**: Non-Chinese-native readers or developers who are interested in consulting this documentation library are recommended to use modern translation engines or AI assistants (e.g., DeepL, ChatGPT) to assist their reading. If external English contributors supplement maintainer notes in the future, direct submission of English versions is fully supported and welcome.
+- **File System & Paths**: All file and directory names strictly follow **lowercase kebab-case English naming** (e.g., `snippet-match.md`, `roadmap.md`). This completely solves cross-platform filesystem compatibility, Git reference, and URL-encoding anchor-loss issues on the GitHub Web side.
 
-## Directory Structure & Categorization
+## Directory Structure & Categorization Criteria
 
 ```text
 documents/
-├── design/                 # Living system design specifications (UI, syntax abstractions, subsystems)
-├── notes/                  # Core human-maintained knowledge (authoritative, actively maintained)
-│   ├── adr.md              # ADR index and category catalog
-│   ├── adr/                # Self-contained RFC-style Architecture Decision Records
-│   ├── issues.md           # Problem tracking backlog and P1~Pnn hard bug index
-│   ├── issues/             # P01~Pnn deep diagnostic post-mortems
-│   ├── solutions.md        # Troubleshooting guides and workaround index
-│   ├── solutions/          # Specific solution and pitfall guides
-│   ├── analysis.md         # Long-term performance and memory profiling index
-│   ├── analysis/           # Index latency and heap memory benchmark rounds
-│   ├── assets/             # Associated stack traces, thread dumps, and logs
-│   ├── roadmap.md          # Global roadmap and version-by-version dashboard
-│   ├── guidelines.md       # Architecture conventions, module dependencies, and code style
-│   ├── ideas.md            # Brainstorming backlog and long-term vision
-│   └── cheatsheet.md       # Live templates, regular expressions, and CLI shortcuts
-├── ai-notes/               # AI-assisted archive area (archived as-is, zero-maintenance)
-│   ├── analysis.md         # Diagnostic analysis and domain mechanism index
-│   ├── analysis/           # Snapshots of bug investigations and internal mechanics
-│   ├── solutions.md        # AI-assisted troubleshooting solutions index
-│   ├── solutions/          # Practical environment and build solution guides
+├── design/                 # System design specifications (UI/visual system, language abstraction models, core subsystem design, etc.; living specifications)
+├── notes/                  # Maintainer notes (in principle must be written by humans; authoritative, continuously maintained)
+│   ├── assets/             # Stack traces, thread dumps, and log attachments
+│   ├── adr.md              # Architecture Decision Record index
+│   ├── adr/                # Self-contained Architecture Decision Records (syntax parsing evolution, dependency framework replacement, rule extension, etc.)
+│   ├── issues.md           # Issue tracking and hard-problem analysis index
+│   ├── issues/             # Hard fault and anomaly diagnostic records (P1~Pnn, e.g., index conflicts, concurrency deadlocks, SOF, etc.)
+│   ├── solutions.md        # Solutions and pitfall-avoidance guide index
+│   ├── solutions/          # Specific environment configuration, dependency conflict, and implementation trap handling solutions
+│   ├── analysis.md         # Long-term performance and memory benchmark analysis index
+│   ├── analysis/           # Long-term test round records of indexing throughput time and heap memory usage
+│   ├── guidelines.md       # Code conventions, module dependency constraints, and development agreements
+│   ├── roadmap.md          # Version development roadmap and TODO board
+│   ├── ideas.md            # Idea records and long-term inspiration pool
+│   └── cheatsheet.md       # Practical tips, live templates, and common regular expression quick-reference manual
+├── ai-notes/               # AI collaboration notes archive (archived as-is, no continuous maintenance obligation)
+│   ├── adr.md              # Architecture Decision Record index
+│   ├── adr/                # Self-contained Architecture Decision Records (syntax parsing evolution, dependency framework replacement, rule extension, etc.)
+│   ├── solutions.md        # Environment configuration and build pitfall-avoidance manual index
+│   ├── solutions/          # Specific environment and build problem solutions
+│   ├── analysis.md         # Incident troubleshooting and mechanism analysis index
+│   ├── analysis/           # Troubleshooting snapshots and topic analyses of underlying domain mechanisms
 │   ├── reports.md          # Assessment and status report index
-│   ├── reports/            # Complexity evaluations, tech research, and potential alternative evaluations
-│   ├── study.md            # External third-party technology study notes index
-│   ├── study/              # Study notes on external SDKs (Gradle, MCP, LSP, Kotlin, etc.)
-│   └── adr.md              # Draft or alternate architectural proposals index
+│   ├── reports/            # Project complexity, code coverage, potential competitor mechanism comparison, and technology trend assessments
+│   ├── study.md            # Study notes index
+│   └── study/              # Study notes on related programming languages, frameworks, concepts, and technologies
 ├── changelogs/             # Archived historical release changelogs
-└── reports/                # Periodic automated code and config statistics snapshots
+└── reports/                # Code and configuration statistics reports periodically generated by automated tools
 ```
 
 ### 1. design/ (System Design Specifications)
 
-Living technical specifications for UI visual assets, syntax abstractions, and subsystem architectures. Co-authored by maintainers and AI assistants:
+Living design specifications for the plugin's top-level design, UI visual system, and core abstraction models.
+Following a human-AI co-construction principle: maintainers establish the principles, and AI assists in organizing and keeping them synchronized.
 
-- [Icon Design](design/icon-design.md) - File types, AST nodes, and config rule icon color mappings
-- [Color Scheme](design/color-scheme.md) - Lexical and semantic highlighting colors across all supported languages
+- [Icon Design](design/icon-design.md) - Icon definitions and color mappings for file types, AST syntax nodes, and rule elements
+- [Color Scheme](design/color-scheme.md) - Lexical and semantic highlighting color specifications for all supported languages
 - [Prompt Template Engine](design/prompt-template-engine.md) - Built-in AI prompt template syntax, directives, and lifecycle
 - [Mod Import/Export](design/mod-import-export.md) - Mod dependency import/export architecture and format adaptors
-- [Language Abstractions](design/language-abstractions.md) - Syntax and semantic model abstraction hierarchy
-- [Terminology](design/terminology.md) - Domain term English-Chinese mapping and standard naming
-- [Spellchecking](design/spellchecking.md) - Token splitting and grammar-level spellchecking strategy
-- [Script Injection](design/script-injection.md) - Cross-language injection and dynamic config context resolution
+- [Language Abstractions](design/language-abstractions.md) - Abstraction model mappings between the grammar layer and semantic layer
+- [Terminology](design/terminology.md) - Core term English-Chinese mapping and standard naming
+- [Spellchecking](design/spellchecking.md) - Token splitting and grammar-level spellchecking
+- [Script Injection](design/script-injection.md) - Cross-language injection and dynamic rule context construction
 - [Tool Integration: Tiger](design/tool-integration-tiger.md) - ck3-tiger validator integration architecture
 
 ### 2. notes/ (Maintainer Notes)
 
-Authoritative knowledge base maintained directly by the core maintainer. **In principle, documents here must be written by humans** to preserve genuine cognitive rigor. Architecture Decision Records (ADRs) adopt a self-contained RFC style that remains immutable once implemented.
+Knowledge base written, reviewed, and maintained by project maintainers.
+In principle and in most situations, documents here **must be written by humans** to ensure their authenticity, accuracy, and authority.
 
-Key entry points and sibling indexes:
-- [Guidelines](notes/guidelines.md) - Architectural layers, module dependency constraints, and coding conventions
-- [Roadmap](notes/roadmap.md) - Version-by-version development progress, refactoring plans, and completed tasks
-- [Ideas](notes/ideas.md) - Brainstorming pool and long-term backlog
-- [Cheatsheet](notes/cheatsheet.md) - Live templates, regular expressions, and CLI shortcuts
-- [Architecture Decision Records (ADR)](notes/adr.md) - Central catalog of self-contained architectural decision files
-- [Problem Tracking (Issues)](notes/issues.md) - Active debugging backlogs and deep analyses for P1~Pnn hard bugs
-- [Solutions](notes/solutions.md) - Environment configurations, proxy setup, and third-party library workarounds
-- [Profiling Analysis](notes/analysis.md) - Long-term indexing throughput and heap memory benchmark rounds
+The Architecture Decision Records (ADRs) here use a **self-contained RFC style** and may also include related content such as task lists, file and code locations, and reference links.
+
+Key dashboards and companion index entry points:
+- [Guidelines](notes/guidelines.md) - Code architecture conventions, module dependency constraints, and coding standards for the plugin
+- [Roadmap](notes/roadmap.md) - Version-by-version task plans, refactoring TODOs, and completed items
+- [Ideas](notes/ideas.md) - Inspiration pool and long-term TODO items recorded at any time
+- [Cheatsheet](notes/cheatsheet.md) - Live templates, common regular expressions, and script quick-reference manual
+- [Architecture Decision Records Index](notes/adr.md) - Categorized catalog and index of self-contained architectural decision records
+- [Issue Tracking Index](notes/issues.md) - Active debugging and GitHub TODO list, plus index of deep analyses for P1~Pnn hard problems
+- [Solutions Index](notes/solutions.md) - Daily development configuration, environment proxy, and third-party library pitfall-avoidance guide
+- [Profiling and Memory Analysis Index](notes/analysis.md) - Long-term benchmark rounds for game directory indexing time and heap memory
 
 ### 3. ai-notes/ (AI Collaboration Archive)
 
-A low-friction staging and archive area. Documents are **archived as-is** and **carry no continuous maintenance obligation** to stay synchronized with future code changes. Mature insights may be promoted to `design/` or `notes/adr/` as needed.
+Knowledge base written by AI agents.
+Generally, documents here are **archived as-is**, and the related project state may change later, for example, the code locations and implementation details involved.
+As a low-psychological-barrier knowledge deposition area and disclaimer staging area, it does not need to and should not bear maintenance responsibility for staying synchronized with subsequent code in real time.
 
-Sibling index entry points:
-- [Analysis Index](ai-notes/analysis.md) - Incident diagnostics and internal mechanism analyses
-- [Solutions Index](ai-notes/solutions.md) - Environment workarounds and build solutions
-- [Reports Index](ai-notes/reports.md) - Project assessments, potential alternative evaluations, and tech research
-- [Study Notes Index](ai-notes/study.md) - External third-party technology and platform SDK study notes
-- [Architecture Proposals Index](ai-notes/adr.md) - AI-assisted technical pre-research and architectural proposals
+The Architecture Decision Records (ADRs) here are relatively more oriented toward technical pre-research and architectural alternatives, and are often more detailed, containing more content to record and archive.
+
+Companion index entry points:
+- [Architecture Decision Records Index](ai-notes/adr.md) - Categorized catalog and index of self-contained architectural decision records
+- [Solutions and Pitfall-Avoidance Guide Index](ai-notes/solutions.md) - Environment configuration and build pitfall-avoidance manual
+- [Incident Diagnostics and Mechanism Analysis Index](ai-notes/analysis.md) - Incident troubleshooting and deep analyses of underlying mechanisms
+- [Assessment and Status Report Index](ai-notes/reports.md) - Self-evolution assessments, potential competitor mechanism comparisons, and technical research
+- [Technology and Concept Study Notes Index](ai-notes/study.md) - Study notes on related programming languages, frameworks, concepts, and technologies
