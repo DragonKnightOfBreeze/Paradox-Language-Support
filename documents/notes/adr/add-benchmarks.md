@@ -79,14 +79,18 @@ allOpen {
 
 ## 任务
 
-- [ ] P4 完善基准测试（准备阶段）
+- [x] P4 完善基准测试（准备阶段）
   - [x] 改为使用 `ChronicleAssume.includeBenchmark()` + JMH
-  - [ ] 新增 `benchmark` 任务，以执行基准测试
-  - [ ] 新增 `benchmarkReport` 任务，以输出带时间戳的测试报告到 `documents/reports/benchmarks/{timestamp}/`
-  - [ ] 新增 `icu.windea.pls.core.ChronicleBenchmarkLauncher`，作为基准测试的启动器类。
-- [ ] P4 完善已有的基准测试
-  - [ ] `icu.windea.pls.core.match.MatchersBenchmark` -> `AntMatcherBenchmark` + `AntFromRegexBenchmark`
-  - [ ] `icu.windea.pls.core.match.similarity.SimilarityMatchServiceBenchmark`
+  - [x] 新增 `benchmark` 任务，以执行基准测试
+  - [x] 新增 `benchmarkReport` 任务，以输出带时间戳的测试报告到 `documents/reports/benchmarks/{timestamp}/`
+  - [x] 新增 `icu.windea.pls.core.ChronicleBenchmarkLauncher`，作为基准测试的启动器类。
+- [x] P4 完善已有的基准测试
+  - [x] `icu.windea.pls.core.match.MatchersBenchmark` -> `AntMatcherBenchmark` + `AntFromRegexBenchmark`
+  - [x] `icu.windea.pls.core.match.similarity.SimilarityMatchServiceBenchmark`
+- [x] P4 编写基准测试，以验证通用基础设施中的部分匹配器组件的性能表现
+  - [x] `icu.windea.pls.core.match.GlobMatcherBenchmark`
+  - [x] `icu.windea.pls.core.match.PathMatcherBenchmark`
+  - [x] `icu.windea.pls.core.match.TextMatcherBenchmark`
 - [ ] P4 编写基准测试，以验证标有 `@Fast` 的扩展方法相比常规版本的性能表现
   - [ ] `icu.windea.pls.core.StdlibFastExtensionsBenchmark`
   - [ ] `icu.windea.pls.core.StdlibFsstExtraExtensionsBenchmark`

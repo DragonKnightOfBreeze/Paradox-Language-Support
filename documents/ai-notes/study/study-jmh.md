@@ -384,12 +384,18 @@ java -jar benchmarks.jar -f 1 -wi 5 -i 5 -w 1s -r 1s
 
 ### 目录与任务
 
-- 基于 JMH 的基准类放在 `src/jmh/kotlin`，由 JMH Gradle Plugin 编译和生成：
+- 基于 JMH 的基准类放在 `src/jmh/kotlin`，由 JMH Gradle Plugin 编译和生成。当前示例包括：
   - `AntMatcherBenchmark`
   - `AntFromRegexBenchmark`
+  - `GlobMatcherBenchmark`
+  - `PathMatcherBenchmark`
+  - `TextMatcherBenchmark`
   - `SimilarityMatchServiceBenchmark`
 - 用于验证基准相关行为的 JUnit 测试放在 `src/test/kotlin`，以 `BenchmarkTest` 结尾：
   - `SimilarityMatchServiceBenchmarkTest`
+- 后续新增的基准测试不要求同步更新本笔记；这里只保留有代表性的示例。
+- 本轮未单独基准化 `KeywordMatcher`、`RegexMatcher`、`MatchService`：前者主要委托 `GlobMatcher` / `String.equals`，后两者是缓存或分发层；等出现独立逻辑或性能疑点时再补。
+- `TextMatcher` 只基准化非平凡方法，省略 `isNumberUnaryChar` 等字符判断。
 - 通用启动器位于 `src/jmh/kotlin/icu/windea/pls/test/ChronicleBenchmarkLauncher.kt`。
 - 启动器会扫描 `chronicle.benchmark.classesDir` 下以 `Benchmark` 结尾、且包含 `@Benchmark` 方法的类；没有参数时运行全部。
 - 通过 `benchmark` Gradle 任务运行：
@@ -442,15 +448,18 @@ CreateProcess error=206, 文件名或扩展名太长。
 
 另外，IntelliJ Platform 在运行时提供 Guava 和 fastutil，但基准进程不包含平台 classpath，因此需要在 `jmh` 配置中显式声明这两个依赖。
 
-### 本次验证结果
+### 示例：匹配器基准快照
+
+> 以下结果仅用于演示如何组织基准、如何解读 JMH 输出，**不作为长期性能报告**。
+> 最新结果请以 `documents/reports/benchmarks/` 中的原始报告为准。
+> 后续新增或调整基准测试时，不再要求同步更新本笔记。
 
 环境：JDK `21.0.6`（JBR）、Windows、JMH `1.37`、`AverageTime`、`@Fork(2)`。
 
-AntMatcher / 正则实现（短路径基准为 5 次预热 + 5 次测量，其余为 3 次预热 + 3 次测量）：
+#### AntMatcher / 正则实现
 
 | 基准 | AntMatcher（ns/op） | AntFromRegex（ns/op） |
 |---|---:|---:|
-| `baseline` | 0.740 ±0.006 | 0.743 ±0.006 |
 | `matches` | 174.544 ±2.615 | 177.315 ±4.374 |
 | `matchesIgnoreCase` | 127.194 ±6.040 | 174.763 ±2.503 |
 | `matchesDeepMemberPath` | 348.307 ±11.917 | 543.083 ±13.953 |
@@ -459,20 +468,55 @@ AntMatcher / 正则实现（短路径基准为 5 次预热 + 5 次测量，其�
 | `matchesMiss` | 112.311 ±8.905 | 143.011 ±22.418 |
 | `matchesUniquePatterns` | 128.570 ±11.613 | 799.742 ±132.351 |
 
-Similarity（候选规模参数化，`us/op`）：
+#### GlobMatcher
+
+| 基准 | 分数（ns/op） |
+|---|---:|
+| `matches` | 11.267 ±2.805 |
+| `matchesIgnoreCase` | 17.858 ±4.104 |
+| `matchesLongInput` | 375.992 ±139.011 |
+| `matchesMiss` | 10.537 ±8.361 |
+
+#### PathMatcher
+
+| 基准 | 分数（ns/op） |
+|---|---:|
+| `matchesStringExact` | 1.213 ±0.058 |
+| `matchesStringPattern` | 8.876 ±0.575 |
+| `matchesStringAny` | 1.847 ±0.429 |
+| `matchesListExact` | 16.141 ±7.733 |
+| `matchesListPattern` | 67.367 ±30.513 |
+| `matchesListAny` | 18.857 ±8.862 |
+| `relative` | 8.545 ±0.270 |
+
+#### TextMatcher
+
+| 基准 | 分数（ns/op） |
+|---|---:|
+| `matchesInt` | 3.586 ±0.100 |
+| `matchesIntWithoutLeadingUnary` | 2.839 ±0.098 |
+| `matchesFloat` | 5.671 ±1.257 |
+| `matchesFloatStrictDot` | 5.557 ±0.932 |
+| `matchesIntPercentageField` | 3.491 ±0.074 |
+| `matchesFloatPercentageField` | 4.829 ±0.122 |
+| `matchesDateField` | 504.723 ±379.364 |
+
+#### SimilarityMatchService
 
 | 基准 | 2000 | 5000 | 10000 |
 |---|---:|---:|---:|
-| `findBestMatchesWarm` | 38.240 ±0.925 | 116.572 ±7.606 | 258.392 ±6.096 |
-| `findBestMatchesDirect` | 120.269 ±81.464 | 297.762 ±7.587 | 628.133 ±50.826 |
+| `findBestMatchesWarm`（us/op） | 38.240 ±0.925 | 116.572 ±7.606 | 258.392 ±6.096 |
+| `findBestMatchesDirect`（us/op） | 120.269 ±81.464 | 297.762 ±7.587 | 628.133 ±50.826 |
 
-结论：
+#### 从示例中可得到的启示
 
-- 短路径、缓存已热、单模式匹配时，`AntMatcher` 与正则实现基本持平（`174.5` vs `177.3 ns/op`）。
-- 深层成员路径、长文件路径、未命中、大量唯一模式等场景下，`AntMatcher` 通常更快；尤其是唯一模式场景（`128.6` vs `799.7 ns/op`），正则缓存成本明显。
-- 在“依次尝试多个简单模式并提前命中”的场景下，正则实现反而更快（`645.9` vs `1021.1 ns/op`），说明不能给出“纯 Kotlin 永远更快”的结论。
-- `SimilarityMatchService` 的 warm 路径约为 direct 路径的 30%~40%，缓存收益明显；候选规模增长时，两者都近似线性增长。`candidateSize=2000` 的 direct 结果方差较大，解读时应以 warm 路径和更大规模的结果为主。
-- `AntMatcher` 的价值不仅是性能，还包括纯 Kotlin、无正则依赖、语义清晰、行为可预测、调试简单以及不依赖静态正则缓存。
+- 匹配器本身的成本跨度可能很大：从 `PathMatcher` 的纳秒级快速路径，到 `TextMatcher.matchesDateField` 的数百纳秒。
+- `GlobMatcher` 的 `ignoreCase` 成本明显高于普通匹配；长输入下成本随时间线性增长。
+- `PathMatcher` 的字符串精确匹配/`any` 快速路径很便宜；一旦启用 `usePattern`，成本主要来自委托给 `GlobMatcher` 的模式匹配。
+- `TextMatcher` 的整数/浮点/百分比字段判断都在个位数纳秒级；`matchesDateField` 因使用 `DateTimeFormatter` 解析，成本高出约两个数量级，是后续优化或改用预检查的重点候选。
+- `AntMatcher` 与正则实现的比较必须分场景：短路径热缓存时接近，深层/长路径/唯一模式时纯 Kotlin 实现更有优势，但在“多个简单模式提前命中”时正则实现可能更快。纯 Kotlin 实现的价值还包括无正则依赖、语义清晰、行为可预测和不依赖静态缓存。
+- `SimilarityMatchService` 的 warm 路径明显快于 direct 路径，缓存收益随候选规模保持稳定。
+- 以上数字只适合同一环境、同一参数下的相对比较；不要跨机器或跨次运行直接比较绝对值。
 
 ---
 
