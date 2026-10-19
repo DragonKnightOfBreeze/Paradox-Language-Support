@@ -563,6 +563,8 @@
   - 统一提取 `computeTargets` `computeTooltip` `compute`，并仅在必要时使用 `lazy {...}`。
 - [ ] P4 完善基准测试：改为使用 JMH，完善已有的基准测试并补充更多基准测试，补充学习笔记和测试报告
   - 参见：[adr/add-benchmarks.md](adr/add-benchmarks.md)
+- [x] P4 重构：将基准测试、Markdown 与 CWT 配置的构建逻辑提取到 `buildSrc` 约定插件
+  - 参见：[adr/refactor-build-gradle-kts.md](../ai-notes/adr/refactor-build-gradle-kts.md)
 
 ## 按主题 {#by-topic}
 

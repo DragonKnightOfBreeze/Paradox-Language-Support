@@ -3,7 +3,7 @@
 > - 模块：构建 > Gradle 构建脚本
 > - 版本：v3.0.5
 > - 日期：2026-10-19
-> - 状态：WIP
+> - 状态：已完成
 
 ## 说明
 
@@ -47,7 +47,7 @@
 | Markdown | 15–20、218–227、445–538 行 | `buildscript` classpath、Markdown 转 HTML、CHANGELOG 解析 |
 | CWT Config | 540–603、621–647 行 | 仓库列表、下载/解压任务、Jar 内容与路径归一化 |
 
-预计提取后，根脚本可减少约 300–350 行，保留约 350–420 行。
+实际提取后，根脚本从约 735 行减少到约 310 行。
 
 ## 决策
 
@@ -187,16 +187,17 @@ cwtConfig {
 
 ## 任务
 
-- [ ] 新增 ADR 与索引
-- [ ] 建立 `buildSrc`，迁移 Markdown / CHANGELOG 工具
-- [ ] 迁移 CWT Config Source Setup
-- [ ] 迁移 Benchmark 任务与报告
-- [ ] 运行验证（编译、基准测试、报告生成、插件打包）
-- [ ] 更新 ADR 勾选、`roadmap.md` 与相关文档
+- [x] 新增 ADR 与索引
+- [x] 建立 `buildSrc`，迁移 Markdown / CHANGELOG 工具
+- [x] 迁移 CWT Config Source Setup
+- [x] 迁移 Benchmark 任务与报告
+- [x] 运行验证（编译、基准测试、报告生成、插件打包）
+- [x] 更新 ADR 勾选、`roadmap.md` 与相关文档
 
 ## 关键文件位置
 
 - 根构建脚本：`build.gradle.kts`
+- 插件版本：`settings.gradle.kts`
 - 构建逻辑：`buildSrc/build.gradle.kts`
 - 基准插件：`buildSrc/src/main/kotlin/icu/windea/pls/gradle/benchmark/`
 - Markdown 工具：`buildSrc/src/main/kotlin/icu/windea/pls/gradle/markdown/`
@@ -215,11 +216,30 @@ cwtConfig {
 
 ## 备选方案与延伸思考
 
+### 关于 `gradle/libs.versions.toml` 与声明式风格
+
+`gradle/libs.versions.toml` 是 Gradle 的版本目录（version catalog）机制：把依赖和插件的坐标、版本集中到一个 TOML 文件，并在构建脚本中通过类型安全访问器引用，例如 `libs.junit`、`libs.versions.kotlin`。
+
+优点：
+
+- 版本集中，减少散落的版本字符串和重复声明；
+- 类型安全访问器让依赖声明更接近“声明式”；
+- IDE 补全和可发现性更好；
+- 多模块项目共享依赖版本时更清晰。
+
+缺点：
+
+- 对当前单模块项目来说，额外引入了一层间接性；
+- `buildSrc` 与根构建的版本来源需要额外协调；
+- 版本目录更适合“依赖/版本很多、需要统一治理”的场景，而不是“版本少但构建逻辑复杂”的场景；
+- 与当前维护者的偏好不完全一致。
+
+因此本次不采用。当前仍以 `gradle.properties` 中的少量版本属性 + 构建脚本中的显式依赖声明为主；如果未来依赖规模或模块数量明显增长，再评估引入版本目录。
+
 ### 3 个可选的后续步骤（目前不采用）
 
 1. **引入 `gradle/libs.versions.toml`**
-   - 优点：集中管理依赖与插件版本，减少散落的版本字符串；配合类型安全访问器提升声明式风格。
-   - 暂不采用的原因：当前版本主要集中在 `gradle.properties`，依赖数量虽多但结构清晰；引入版本目录会增加 `buildSrc` 与根构建之间的版本来源协调成本，且与当前偏好不完全一致。后续如果依赖版本继续增多，再评估。
+   - 见上一节；本次不采用，后续如果依赖/模块规模明显增长再评估。
 
 2. **为构建逻辑增加单元测试 / TestKit 测试**
    - 优点：可以测试 `MarkdownSupport`、`ChangelogSupport`、报告渲染、CWT 路径归一化等纯逻辑；对 convention plugin 的行为也可以做 TestKit 验证。
@@ -234,6 +254,26 @@ cwtConfig {
 - **脚本插件拆分**：适合临时降复杂度，但无法提供类型安全的 task 类和工具对象，不作为最终方案。
 - **预编译脚本插件**：比 Kotlin plugin 更轻，但自定义 task 类和外部插件应用会更绕；本次选择 Kotlin plugin。
 - **把 `intellijPlatform` 配置也封装**：会让构建逻辑依赖 IntelliJ Platform Gradle Plugin 的内部类型，收益低、耦合高；本次保留在根脚本。
+
+## 实施记录
+
+- 根 `build.gradle.kts` 从约 735 行减少到约 310 行。
+- 新增 `buildSrc`，注册两个 Kotlin convention plugin：
+  - `chronicle.benchmark`：应用 JMH 插件，注册 `benchmark` / `benchmarkReport`，封装 classpath 与报告逻辑。
+  - `chronicle.cwt-config`：应用 download 插件，注册 CWT 下载/解压任务，并配置 `jar` / `instrumentedJar` 的配置内容。
+- Markdown / CHANGELOG 逻辑迁移为 `MarkdownSupport` / `ChangelogSupport` 工具对象。
+- JMH JSON 解析改用 `kotlinx.serialization` 的 `JsonElement` API，未启用序列化编译器插件。
+- 插件版本从根 `plugins` 块移到 `settings.gradle.kts` 的 `pluginManagement { plugins { ... } }`。
+  - 原因：移除根 `buildscript` 后，Kotlin DSL 对 `plugins` 块中 `providers.gradleProperty(...)` 的解析方式发生变化，导致 `providers` 无法解析；将插件版本集中到 settings 是更稳定的做法，也为后续版本治理留出入口。
+- 保持现有任务名、命令、报告路径和 CI 行为不变。
+- 已通过：
+  - `./gradlew help`
+  - `./gradlew jmhCompileGeneratedClasses`
+  - `./gradlew benchmark --benchmarks=AntMatcherBenchmark.matches`
+  - `./gradlew benchmarkReport -x benchmark`
+  - `./gradlew test --tests "icu.windea.pls.core.match.AntMatcherTest" --tests "icu.windea.pls.core.match.similarity.SimilarityMatchServiceBenchmarkTest"`
+  - `./gradlew buildPlugin`
+- 已确认 `jar` 中包含 `config/` 下的 CWT 配置内容。
 
 ## 备注
 
