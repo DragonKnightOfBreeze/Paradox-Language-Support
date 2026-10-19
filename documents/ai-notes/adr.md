@@ -6,4 +6,6 @@
 
 ## 目录索引
 
-> （目前暂无记录）
+### 构建与工程实践
+
+- [重构 `build.gradle.kts`：构建逻辑的封装与约定](adr/refactor-build-gradle-kts.md)
