@@ -20,7 +20,8 @@ private const val LIST_OPERATIONS = 11 * 11
 /**
  * [PathMatcher] 的基准测试。
  *
- * 覆盖字符串匹配、列表匹配和相对路径计算；结果仅作为示例，不作为长期性能报告。
+ * 覆盖字符串匹配、列表匹配和相对路径计算，并与直接实现对比。
+ * 结果用于回归观察和相对比较；绝对值受运行环境影响，不应跨环境直接比较。
  *
  * @see PathMatcher
  */
@@ -163,4 +164,99 @@ open class PathMatcherBenchmark {
             }
         }
     }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(STRING_OPERATIONS)
+    open fun matchesStringExactByDirect(blackhole: Blackhole) {
+        for (input in subPaths) {
+            for (other in subPaths) {
+                blackhole.consume(input.equals(other))
+            }
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(STRING_OPERATIONS)
+    open fun matchesStringPatternByDirect(blackhole: Blackhole) {
+        for (input in subPaths) {
+            for (pattern in subPatterns) {
+                blackhole.consume(GlobMatcher.matches(input, pattern))
+            }
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(11)
+    open fun matchesStringAnyByDirect(blackhole: Blackhole) {
+        for ((index, _) in subPaths.withIndex()) {
+            blackhole.consume(anyKeywords[index] == "any")
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(LIST_OPERATIONS)
+    open fun matchesListExactByDirect(blackhole: Blackhole) {
+        for (input in listInputs) {
+            for (other in listExactOthers) {
+                blackhole.consume(listMatchesExactDirect(input, other))
+            }
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(LIST_OPERATIONS)
+    open fun matchesListPatternByDirect(blackhole: Blackhole) {
+        for (input in listInputs) {
+            for (other in listPatternOthers) {
+                blackhole.consume(listMatchesPatternDirect(input, other))
+            }
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(LIST_OPERATIONS)
+    open fun relativeByDirect(blackhole: Blackhole) {
+        for (base in relativeBases) {
+            for (path in relativePaths) {
+                blackhole.consume(relativeDirect(base, path))
+            }
+        }
+    }
+}
+
+private fun listMatchesExactDirect(input: List<String>, other: List<String>): Boolean {
+    if (input.size != other.size) return false
+    for (index in input.indices) {
+        if (!input[index].equals(other[index])) return false
+    }
+    return true
+}
+
+private fun listMatchesPatternDirect(input: List<String>, other: List<String>): Boolean {
+    if (input.size != other.size) return false
+    for (index in input.indices) {
+        if (!GlobMatcher.matches(input[index], other[index])) return false
+    }
+    return true
+}
+
+private fun relativeDirect(input: List<String>, other: List<String>): String? {
+    if (input.size > other.size) return null
+    for (index in input.indices) {
+        if (!input[index].equals(other[index])) return null
+    }
+    if (input.size == other.size) return ""
+    return other[input.size]
 }

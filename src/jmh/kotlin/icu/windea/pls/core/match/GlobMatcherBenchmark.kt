@@ -23,7 +23,8 @@ private const val MISS_OPERATIONS = 11 * 5
 /**
  * [GlobMatcher] 的基准测试。
  *
- * 包含短字符串、长字符串和未命中场景；结果仅作为示例，不作为长期性能报告。
+ * 包含短字符串、长字符串和未命中场景，并与预编译正则参考实现对比。
+ * 结果用于回归观察和相对比较；绝对值受运行环境影响，不应跨环境直接比较。
  *
  * @see GlobMatcher
  */
@@ -87,6 +88,11 @@ open class GlobMatcherBenchmark {
         "*@*",
     )
 
+    // 参考实现：预编译的模式正则，用于对比热路径上的匹配开销
+    private val patternRegexes = patterns.associateWith { it.toGlobRegex(false) }
+    private val patternRegexesIgnoreCase = patterns.associateWith { it.toGlobRegex(true) }
+    private val longPatternRegexes = longPatterns.associateWith { it.toGlobRegex(false) }
+
     @Benchmark
     @OperationsPerInvocation(SHORT_OPERATIONS)
     open fun baseline(blackhole: Blackhole) {
@@ -140,4 +146,56 @@ open class GlobMatcherBenchmark {
             }
         }
     }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(SHORT_OPERATIONS)
+    open fun matchesByRegex(blackhole: Blackhole) {
+        for ((pattern, regex) in patternRegexes) {
+            for (input in inputs) {
+                blackhole.consume(regex.matches(input))
+            }
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(SHORT_OPERATIONS)
+    open fun matchesIgnoreCaseByRegex(blackhole: Blackhole) {
+        for ((pattern, regex) in patternRegexesIgnoreCase) {
+            for (input in inputs) {
+                blackhole.consume(regex.matches(input))
+            }
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(LONG_OPERATIONS)
+    open fun matchesLongInputByRegex(blackhole: Blackhole) {
+        for ((pattern, regex) in longPatternRegexes) {
+            for (input in longInputs) {
+                blackhole.consume(regex.matches(input))
+            }
+        }
+    }
+}
+
+private fun String.toGlobRegex(ignoreCase: Boolean): Regex {
+    val regex = buildString {
+        append('^')
+        for (c in this@toGlobRegex) {
+            when (c) {
+                '*' -> append(".*")
+                '?' -> append('.')
+                else -> append(Regex.escape(c.toString()))
+            }
+        }
+        append('$')
+    }
+    val options = if (ignoreCase) setOf(RegexOption.IGNORE_CASE) else emptySet()
+    return Regex(regex, options)
 }

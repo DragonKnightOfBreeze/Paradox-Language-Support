@@ -17,13 +17,15 @@ import java.util.concurrent.TimeUnit
 private const val INT_COUNT = 12
 private const val FLOAT_COUNT = 12
 private const val PERCENTAGE_COUNT = 9
-private const val DATE_COUNT = 7
+private const val VALID_DATE_COUNT = 4
+private const val INVALID_DATE_COUNT = 3
+private const val DATE_COUNT = VALID_DATE_COUNT + INVALID_DATE_COUNT
 
 /**
  * [TextMatcher] 中非平凡方法的基准测试。
  *
  * `isNumberUnaryChar` 等简单字符判断不纳入基准。
- * 结果仅作为示例，不作为长期性能报告。
+ * 包含与惯用形式、正则参考实现和日期预检查的对比；结果用于回归观察和相对比较。
  *
  * @see TextMatcher
  */
@@ -77,15 +79,25 @@ open class TextMatcherBenchmark {
         "",
     )
 
-    private val dateTexts = listOf(
+    private val validDateTexts = listOf(
         "2024.1.15",
         "1000.12.31",
         "1.1.1",
+        "-2200.1.1",
+    )
+
+    private val invalidDateTexts = listOf(
         "not.a.date",
         "2024-01-15",
-        "-2200.1.1",
         "",
     )
+
+    private val dateTexts = validDateTexts + invalidDateTexts
+
+    private val intRegex = Regex("^[+-]?\\d+$")
+    private val floatRegex = Regex("^[+-]?(\\d+(\\.\\d*)?|\\.\\d+)$")
+    private val floatStrictRegex = Regex("^[+-]?\\d+(\\.\\d+)?$")
+    private val datePrecheckRegex = Regex("^[+-]?\\d{1,4}\\.\\d{1,2}\\.\\d{1,2}$")
 
     @Benchmark
     @OperationsPerInvocation(INT_COUNT)
@@ -141,6 +153,109 @@ open class TextMatcherBenchmark {
     @OperationsPerInvocation(DATE_COUNT)
     open fun matchesDateField(blackhole: Blackhole) {
         for (text in dateTexts) {
+            blackhole.consume(TextMatcher.matchesDateField(text))
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(INT_COUNT)
+    open fun matchesIntByRegex(blackhole: Blackhole) {
+        for (text in intTexts) {
+            blackhole.consume(intRegex.matches(text))
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(INT_COUNT)
+    open fun matchesIntByIdiomatic(blackhole: Blackhole) {
+        // 注意：toIntOrNull 与 matchesInt 的溢出语义不完全一致，数据集中不包含溢出值
+        for (text in intTexts) {
+            blackhole.consume(text.toIntOrNull() != null)
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(FLOAT_COUNT)
+    open fun matchesFloatByRegex(blackhole: Blackhole) {
+        for (text in floatTexts) {
+            blackhole.consume(floatRegex.matches(text))
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(FLOAT_COUNT)
+    open fun matchesFloatByIdiomatic(blackhole: Blackhole) {
+        // 注意：toDoubleOrNull 接受指数、NaN、Infinity 等，数据集中不包含这些形式
+        for (text in floatTexts) {
+            blackhole.consume(text.toDoubleOrNull() != null)
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(FLOAT_COUNT)
+    open fun matchesFloatStrictDotByRegex(blackhole: Blackhole) {
+        for (text in floatTexts) {
+            blackhole.consume(floatStrictRegex.matches(text))
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(PERCENTAGE_COUNT)
+    open fun matchesIntPercentageFieldByIdiomatic(blackhole: Blackhole) {
+        for (text in percentageTexts) {
+            blackhole.consume(text.endsWith("%") && text.dropLast(1).toIntOrNull() != null)
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(PERCENTAGE_COUNT)
+    open fun matchesFloatPercentageFieldByIdiomatic(blackhole: Blackhole) {
+        for (text in percentageTexts) {
+            blackhole.consume(text.endsWith("%") && text.dropLast(1).toDoubleOrNull() != null)
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(DATE_COUNT)
+    open fun matchesDateFieldWithPrecheck(blackhole: Blackhole) {
+        for (text in dateTexts) {
+            val result = datePrecheckRegex.matches(text) && TextMatcher.matchesDateField(text)
+            blackhole.consume(result)
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(VALID_DATE_COUNT)
+    open fun matchesDateFieldValid(blackhole: Blackhole) {
+        for (text in validDateTexts) {
+            blackhole.consume(TextMatcher.matchesDateField(text))
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(INVALID_DATE_COUNT)
+    open fun matchesDateFieldInvalid(blackhole: Blackhole) {
+        for (text in invalidDateTexts) {
             blackhole.consume(TextMatcher.matchesDateField(text))
         }
     }

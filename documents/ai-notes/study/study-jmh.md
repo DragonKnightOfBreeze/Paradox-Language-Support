@@ -470,36 +470,38 @@ CreateProcess error=206, 文件名或扩展名太长。
 
 #### GlobMatcher
 
-| 基准 | 分数（ns/op） |
-|---|---:|
-| `matches` | 11.267 ±2.805 |
-| `matchesIgnoreCase` | 17.858 ±4.104 |
-| `matchesLongInput` | 375.992 ±139.011 |
-| `matchesMiss` | 10.537 ±8.361 |
+| 基准 | GlobMatcher（ns/op） | Regex 参考（ns/op） |
+|---|---:|---:|
+| `matches` | 8.509 ±0.094 | 48.235 ±4.747 |
+| `matchesIgnoreCase` | 13.547 ±0.272 | 46.635 ±2.003 |
+| `matchesLongInput` | 295.919 ±5.805 | 738.950 ±18.140 |
+| `matchesMiss` | 7.942 ±0.262 | — |
 
 #### PathMatcher
 
-| 基准 | 分数（ns/op） |
-|---|---:|
-| `matchesStringExact` | 1.213 ±0.058 |
-| `matchesStringPattern` | 8.876 ±0.575 |
-| `matchesStringAny` | 1.847 ±0.429 |
-| `matchesListExact` | 16.141 ±7.733 |
-| `matchesListPattern` | 67.367 ±30.513 |
-| `matchesListAny` | 18.857 ±8.862 |
-| `relative` | 8.545 ±0.270 |
+| 基准 | PathMatcher（ns/op） | 直接实现（ns/op） |
+|---|---:|---:|
+| `matchesStringExact` | 1.148 ±0.010 | 1.201 ±0.186 |
+| `matchesStringPattern` | 8.477 ±0.354 | 8.184 ±0.303 |
+| `matchesStringAny` | 1.507 ±0.092 | 0.990 ±0.050 |
+| `matchesListExact` | 12.465 ±0.551 | 8.614 ±2.126 |
+| `matchesListPattern` | 53.006 ±5.590 | 43.195 ±0.653 |
+| `matchesListAny` | 16.289 ±6.478 | — |
+| `relative` | 8.394 ±0.494 | 5.966 ±0.413 |
 
 #### TextMatcher
 
-| 基准 | 分数（ns/op） |
-|---|---:|
-| `matchesInt` | 3.586 ±0.100 |
-| `matchesIntWithoutLeadingUnary` | 2.839 ±0.098 |
-| `matchesFloat` | 5.671 ±1.257 |
-| `matchesFloatStrictDot` | 5.557 ±0.932 |
-| `matchesIntPercentageField` | 3.491 ±0.074 |
-| `matchesFloatPercentageField` | 4.829 ±0.122 |
-| `matchesDateField` | 504.723 ±379.364 |
+| 基准 | TextMatcher（ns/op） | 惯用/参考实现（ns/op） |
+|---|---:|---:|
+| `matchesInt` | 3.696 ±0.270 | `toIntOrNull`：5.095 ±0.208；正则：34.121 ±0.833 |
+| `matchesIntWithoutLeadingUnary` | 2.808 ±0.074 | — |
+| `matchesFloat` | 4.905 ±0.056 | `toDoubleOrNull`：12.449 ±0.470；正则：60.211 ±8.977 |
+| `matchesFloatStrictDot` | 4.918 ±0.248 | 正则：41.235 ±2.515 |
+| `matchesIntPercentageField` | 3.527 ±0.047 | `dropLast + toIntOrNull`：12.736 ±0.152 |
+| `matchesFloatPercentageField` | 4.399 ±0.748 | `dropLast + toDoubleOrNull`：21.730 ±0.338 |
+| `matchesDateField` | 413.670 ±24.310 | 预检查 + Formatter：190.016 ±15.574 |
+| `matchesDateFieldValid` | 154.561 ±34.427 | — |
+| `matchesDateFieldInvalid` | 697.247 ±87.980 | — |
 
 #### SimilarityMatchService
 
@@ -511,9 +513,11 @@ CreateProcess error=206, 文件名或扩展名太长。
 #### 从示例中可得到的启示
 
 - 匹配器本身的成本跨度可能很大：从 `PathMatcher` 的纳秒级快速路径，到 `TextMatcher.matchesDateField` 的数百纳秒。
-- `GlobMatcher` 的 `ignoreCase` 成本明显高于普通匹配；长输入下成本随时间线性增长。
-- `PathMatcher` 的字符串精确匹配/`any` 快速路径很便宜；一旦启用 `usePattern`，成本主要来自委托给 `GlobMatcher` 的模式匹配。
-- `TextMatcher` 的整数/浮点/百分比字段判断都在个位数纳秒级；`matchesDateField` 因使用 `DateTimeFormatter` 解析，成本高出约两个数量级，是后续优化或改用预检查的重点候选。
+- `GlobMatcher` 明显快于预编译正则参考（短路径约 5.7 倍，`ignoreCase` 约 3.4 倍，长输入约 2.5 倍）；`ignoreCase` 仍会带来额外开销。
+- `PathMatcher` 的字符串精确匹配和模式匹配与直接实现接近；`any`、列表匹配和 `relative` 的封装开销更明显（约 20%–50%），但绝对成本通常只有几纳秒。
+- `TextMatcher` 的自定义整数/浮点/百分比判断快于常见惯用形式（约 1.4–4.9 倍），也远快于正则参考（约 9–12 倍）。
+- `TextMatcher.matchesDateField` 是最明显的热点：混合输入约 `414 ns/op`，有效日期约 `155 ns/op`，无效日期约 `697 ns/op`；无效输入主要承担异常/解析失败成本。加入轻量格式预检查后，混合输入可降到约 `190 ns/op`。
+- 对比结果需要注意语义差异：`toIntOrNull` / `toDoubleOrNull` 的溢出、指数、`NaN`、`Infinity` 等行为与 `TextMatcher` 不完全一致；正则参考也只覆盖数据集中出现的输入。
 - `AntMatcher` 与正则实现的比较必须分场景：短路径热缓存时接近，深层/长路径/唯一模式时纯 Kotlin 实现更有优势，但在“多个简单模式提前命中”时正则实现可能更快。纯 Kotlin 实现的价值还包括无正则依赖、语义清晰、行为可预测和不依赖静态缓存。
 - `SimilarityMatchService` 的 warm 路径明显快于 direct 路径，缓存收益随候选规模保持稳定。
 - 以上数字只适合同一环境、同一参数下的相对比较；不要跨机器或跨次运行直接比较绝对值。
