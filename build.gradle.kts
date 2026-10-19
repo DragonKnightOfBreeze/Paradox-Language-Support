@@ -1,4 +1,3 @@
-import groovy.json.JsonSlurper
 import icu.windea.pls.gradle.markdown.ChangelogSupport
 import icu.windea.pls.gradle.markdown.MarkdownSupport
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
@@ -6,9 +5,6 @@ import org.jetbrains.intellij.platform.gradle.extensions.excludeCoroutines
 import org.jetbrains.intellij.platform.gradle.extensions.excludeKotlinStdlib
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 plugins {
     id("org.jetbrains.kotlin.jvm") // https://kotlinlang.org/docs/gradle.html
@@ -18,171 +14,11 @@ plugins {
     id("org.jetbrains.kotlinx.kover") // https://github.com/Kotlin/kotlinx-kover
     // id("org.jetbrains.changelog") // https://github.com/JetBrains/gradle-changelog-plugin
 
-    // Used to run benchmarks (JMH-based)
-    id("me.champeau.jmh") // https://github.com/melix/jmh-gradle-plugin
+    // Benchmark infrastructure (JMH-based)
+    id("chronicle.benchmark")
 
     // CWT config source setup (download/unzip and include in JAR)
     id("chronicle.cwt-config")
-}
-
-abstract class ChronicleBenchmarkTask : JavaExec() {
-    @get:Option(option = "benchmarks", description = "Benchmark filters, like --tests.")
-    @get:Input
-    abstract val benchmarks: ListProperty<String>
-}
-
-abstract class ChronicleBenchmarkReportTask : DefaultTask() {
-    @get:InputDirectory
-    abstract val inputDir: DirectoryProperty
-
-    @get:Internal
-    abstract val outputBaseDir: DirectoryProperty
-
-    @get:Input
-    abstract val jmhVersion: Property<String>
-
-    @get:Input
-    abstract val gradleVersion: Property<String>
-
-    @get:Input
-    abstract val command: Property<String>
-
-    @TaskAction
-    fun generateReport() {
-        val inputPath = inputDir.get().asFile.toPath()
-        val jsonFiles = inputPath.toFile().listFiles { file ->
-            file.isFile && file.extension == "json" && file.name != "run.json"
-        }?.sortedBy { it.name }.orEmpty()
-        if (jsonFiles.isEmpty()) {
-            throw GradleException("No benchmark JSON results found in $inputPath. Run `./gradlew benchmark` first.")
-        }
-
-        val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
-        val outputDir = outputBaseDir.get().dir(timestamp).asFile
-        outputDir.mkdirs()
-        jsonFiles.forEach { it.copyTo(File(outputDir, it.name), overwrite = true) }
-        val runMetadata = inputPath.resolve("run.json").toFile()
-        if (runMetadata.exists()) runMetadata.copyTo(File(outputDir, runMetadata.name), overwrite = true)
-
-        val rows = readRows(jsonFiles)
-        File(outputDir, "summary.md").writeText(buildSummary(rows, timestamp))
-        rows.groupBy { it.className }.forEach { (className, classRows) ->
-            File(outputDir, "${className.substringAfterLast('.')}.txt").writeText(buildClassReport(className, classRows))
-        }
-        File(outputDir, "metadata.md").writeText(buildMetadata(timestamp))
-        logger.lifecycle("Benchmark report: ${outputDir.absolutePath}")
-    }
-
-    private fun readRows(jsonFiles: List<File>): List<BenchmarkRow> {
-        val slurper = JsonSlurper()
-        val rows = mutableListOf<BenchmarkRow>()
-        for (file in jsonFiles) {
-            val entries = slurper.parse(file) as? List<*> ?: continue
-            for (entry in entries) {
-                val map = entry as? Map<*, *> ?: continue
-                val benchmark = map["benchmark"]?.toString() ?: continue
-                val primaryMetric = map["primaryMetric"] as? Map<*, *> ?: continue
-                val params = (map["params"] as? Map<*, *>)
-                    ?.entries
-                    ?.joinToString(", ") { (key, value) -> "$key=$value" }
-                    .orEmpty()
-                rows.add(
-                    BenchmarkRow(
-                        benchmark = benchmark,
-                        params = params,
-                        mode = map["mode"]?.toString().orEmpty(),
-                        score = (primaryMetric["score"] as? Number)?.toDouble() ?: Double.NaN,
-                        error = (primaryMetric["scoreError"] as? Number)?.toDouble() ?: Double.NaN,
-                        unit = primaryMetric["scoreUnit"]?.toString().orEmpty(),
-                        forks = (map["forks"] as? Number)?.toInt() ?: 0,
-                    )
-                )
-            }
-        }
-        return rows.sortedBy { it.benchmark }
-    }
-
-    private fun buildSummary(rows: List<BenchmarkRow>, timestamp: String): String = buildString {
-        appendLine("# Benchmark Report")
-        appendLine()
-        appendLine("- Timestamp: $timestamp")
-        appendLine("- JMH version: ${jmhVersion.get()}")
-        appendLine()
-        appendLine("| Benchmark | Params | Mode | Score | Error | Unit | Forks |")
-        appendLine("|---|---|---|---:|---:|---|---:|")
-        for (row in rows) appendRow(row)
-    }
-
-    private fun buildClassReport(className: String, rows: List<BenchmarkRow>): String = buildString {
-        appendLine("# $className")
-        appendLine()
-        appendLine("| Benchmark | Params | Mode | Score | Error | Unit | Forks |")
-        appendLine("|---|---|---|---:|---:|---|---:|")
-        for (row in rows) appendRow(row)
-    }
-
-    private fun StringBuilder.appendRow(row: BenchmarkRow) {
-        append("| ${row.benchmark.escapeTable()} | ${row.params.escapeTable()} | ${row.mode.escapeTable()} | ")
-        append("${formatNumber(row.score)} | ${formatNumber(row.error)} | ${row.unit.escapeTable()} | ${row.forks} |")
-        appendLine()
-    }
-
-    private fun buildMetadata(timestamp: String): String {
-        val runInfo = inputDir.get().file("run.json").asFile
-            .takeIf { it.exists() }
-            ?.let { JsonSlurper().parse(it) as? Map<*, *> }
-            .orEmpty()
-        fun info(key: String, fallback: String): String = runInfo[key]?.toString() ?: fallback
-        return buildString {
-            appendLine("# Benchmark Metadata")
-            appendLine()
-            appendLine("- Timestamp: $timestamp")
-            appendLine("- JMH version: ${info("jmhVersion", jmhVersion.get())}")
-            appendLine("- Gradle version: ${gradleVersion.get()}")
-            appendLine("- Java: ${info("javaVersion", System.getProperty("java.version"))} (${info("javaVendor", System.getProperty("java.vendor"))})")
-            appendLine(
-                "- OS: ${info("osName", System.getProperty("os.name"))} " +
-                    "${info("osVersion", System.getProperty("os.version"))} " +
-                    "(${info("osArch", System.getProperty("os.arch"))})",
-            )
-            appendLine("- Processors: ${info("processors", Runtime.getRuntime().availableProcessors().toString())}")
-            appendLine("- Git commit: ${exec("git", "rev-parse", "--short", "HEAD") ?: "unknown"}")
-            appendLine("- Git branch: ${exec("git", "rev-parse", "--abbrev-ref", "HEAD") ?: "unknown"}")
-            val dirty = exec("git", "status", "--porcelain")
-            appendLine("- Git dirty: ${if (dirty.isNullOrBlank()) "false" else "true"}")
-            appendLine("- Command: ${command.get()}")
-            val benchmarkNames = (runInfo["benchmarks"] as? List<*>)
-                ?.mapNotNull { (it as? Map<*, *>)?.get("className")?.toString() }
-                ?.joinToString(", ")
-                .orEmpty()
-            appendLine("- Benchmarks: $benchmarkNames")
-        }
-    }
-
-    private fun exec(vararg command: String): String? = runCatching {
-        val process = ProcessBuilder(*command).redirectErrorStream(true).start()
-        val output = process.inputStream.bufferedReader().readText().trim()
-        if (process.waitFor() == 0) output else null
-    }.getOrNull()
-
-    private fun formatNumber(value: Double): String {
-        if (value.isNaN()) return "NaN"
-        return String.format(Locale.ROOT, "%.3f", value)
-    }
-
-    private fun String.escapeTable(): String = replace("|", "\\|")
-
-    private data class BenchmarkRow(
-        val benchmark: String,
-        val params: String,
-        val mode: String,
-        val score: Double,
-        val error: Double,
-        val unit: String,
-        val forks: Int,
-    ) {
-        val className: String get() = benchmark.substringBeforeLast('.')
-    }
 }
 
 val liteVersion = providers.gradleProperty("chronicle.is.lite").getOrElse("false").toBoolean()
@@ -366,13 +202,6 @@ dependencies {
     }
 }
 
-// Configure JMH Gradle Plugin - read more: https://github.com/melix/jmh-gradle-plugin
-jmh {
-    jmhVersion = "1.37"
-    // Benchmark sources live in `src/jmh` and must not pull in the test source set
-    includeTests = false
-}
-
 // Configure Gradle Kover Plugin - read more: https://github.com/Kotlin/kotlinx-kover#configuration
 kover {
     reports {
@@ -471,53 +300,6 @@ tasks {
         System.getProperties().stringPropertyNames()
             .filter { it.startsWith("chronicle.test.") }
             .forEach { k -> systemProperty(k, System.getProperty(k)) }
-    }
-    register<ChronicleBenchmarkTask>("benchmark") {
-        group = "verification"
-        description = "Run JMH benchmarks. Use --benchmarks to filter benchmarks, like --tests."
-
-        dependsOn("jmhCompileGeneratedClasses")
-        mainClass.set("icu.windea.pls.test.ChronicleBenchmarkLauncher")
-        classpath = files(
-            project.sourceSets["main"].output,
-            project.sourceSets["jmh"].output,
-            project.layout.buildDirectory.dir("jmh-generated-classes"),
-            project.layout.buildDirectory.dir("jmh-generated-resources"),
-            project.sourceSets["jmh"].runtimeClasspath,
-        )
-
-        System.getProperties().stringPropertyNames()
-            .filter { it.startsWith("chronicle.") }
-            .forEach { k -> systemProperty(k, System.getProperty(k)) }
-        systemProperty(
-            "chronicle.benchmark.classesDir",
-            System.getProperty("chronicle.benchmark.classesDir")
-                ?: project.sourceSets["jmh"].output.classesDirs.asPath,
-        )
-        systemProperty(
-            "chronicle.benchmark.reportDir",
-            System.getProperty("chronicle.benchmark.reportDir")
-                ?: project.layout.buildDirectory.dir("reports/benchmarks").get().asFile.absolutePath,
-        )
-
-        argumentProviders.add(CommandLineArgumentProvider { benchmarks.getOrElse(emptyList()) })
-        outputs.upToDateWhen { false }
-    }
-    register<ChronicleBenchmarkReportTask>("benchmarkReport") {
-        group = "verification"
-        description = "Run benchmarks and generate timestamped JSON/TEXT reports."
-        dependsOn("benchmark")
-        val reportDirProperty = System.getProperty("chronicle.benchmark.reportDir")
-        if (reportDirProperty != null) {
-            inputDir.set(project.file(reportDirProperty))
-        } else {
-            inputDir.set(project.layout.buildDirectory.dir("reports/benchmarks"))
-        }
-        outputBaseDir.set(project.layout.projectDirectory.dir("documents/reports/benchmarks"))
-        jmhVersion.set("1.37")
-        gradleVersion.set(project.gradle.gradleVersion)
-        command.set(project.gradle.startParameter.taskRequests.joinToString(" ") { it.args.joinToString(" ") })
-        outputs.upToDateWhen { false }
     }
     withType<AbstractArchiveTask> {
         // Ensure the latest built-in config files are read
