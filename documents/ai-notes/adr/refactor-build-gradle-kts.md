@@ -263,8 +263,9 @@ cwtConfig {
   - `chronicle.cwt-config`：应用 download 插件，注册 CWT 下载/解压任务，并配置 `jar` / `instrumentedJar` 的配置内容。
 - Markdown / CHANGELOG 逻辑迁移为 `MarkdownSupport` / `ChangelogSupport` 工具对象。
 - JMH JSON 解析改用 `kotlinx.serialization` 的 `JsonElement` API，未启用序列化编译器插件。
-- 插件版本从根 `plugins` 块移到 `settings.gradle.kts` 的 `pluginManagement { plugins { ... } }`。
+- 根插件版本（Kotlin / IntelliJ Platform / Kover）从根 `plugins` 块移到 `settings.gradle.kts` 的 `pluginManagement { plugins { ... } }`。
   - 原因：移除根 `buildscript` 后，Kotlin DSL 对 `plugins` 块中 `providers.gradleProperty(...)` 的解析方式发生变化，导致 `providers` 无法解析；将插件版本集中到 settings 是更稳定的做法，也为后续版本治理留出入口。
+- JMH 与 download 插件由 convention plugin 应用，其版本由 `buildSrc/build.gradle.kts` 的依赖提供，不再出现在根 settings 的插件声明中。
 - 保持现有任务名、命令、报告路径和 CI 行为不变。
 - 已通过：
   - `./gradlew help`
