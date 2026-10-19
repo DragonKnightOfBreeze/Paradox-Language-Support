@@ -21,8 +21,8 @@ plugins {
     // Used to run benchmarks (JMH-based)
     id("me.champeau.jmh") // https://github.com/melix/jmh-gradle-plugin
 
-    // Used to download CWT config ZIPs (HTTPS) on demand when local repositories are missing, to support CI environments
-    id("de.undercouch.download") // https://github.com/michel-kraemer/gradle-download-task
+    // CWT config source setup (download/unzip and include in JAR)
+    id("chronicle.cwt-config")
 }
 
 abstract class ChronicleBenchmarkTask : JavaExec() {
@@ -427,71 +427,6 @@ kotlin {
     }
 }
 
-// region CWT Config Source Setup
-
-// Configurable parameters for download behavior (override via -P)
-val cwtDownloadIfMissing = providers.gradleProperty("chronicle.cwt.downloadIfMissing").orElse("true")
-val cwtAcceptAnyCertificate = providers.gradleProperty("chronicle.cwt.acceptAnyCertificate").orElse("false")
-
-data class CwtRepository(
-    val repoDir: String,
-    val gameTypeId: String,
-    val owner: String = "DragonKnightOfBreeze",
-    val branch: String = "master",
-    val downloadable: Boolean = true,
-) {
-    val zipUrl = "https://github.com/${owner}/${repoDir}/archive/refs/heads/${branch}.zip"
-}
-
-val cwtRepositories = listOf(
-    CwtRepository("core", "core", downloadable = false), // core is in this repository; no download needed
-    CwtRepository("cwtools-ck2-config", "ck2"),
-    CwtRepository("cwtools-ck3-config", "ck3"),
-    CwtRepository("cwtools-eu4-config", "eu4"),
-    CwtRepository("cwtools-eu5-config", "eu5"),
-    CwtRepository("cwtools-hoi4-config", "hoi4"),
-    CwtRepository("cwtools-ir-config", "ir"),
-    CwtRepository("cwtools-stellaris-config", "stellaris"),
-    CwtRepository("cwtools-vic2-config", "vic2"),
-    CwtRepository("cwtools-vic3-config", "vic3"),
-)
-
-// Generated output directory (stores unzipped configs); used as a fallback when local configs are missing
-val generatedCwtDir = layout.buildDirectory.dir("generated/cwt")
-// Preparation task: collects downstream download/unzip dependencies so the JAR task can depend on a single task
-val prepareCwtConfigs = tasks.register("prepareCwtConfigs") {
-    description = "Prepare CWT configs."
-}
-
-// Register download/unzip tasks for each downloadable repository (skip if a local copy exists)
-cwtRepositories.filter { it.downloadable }.forEach { r ->
-    val localDir = layout.projectDirectory.dir("cwt/${r.repoDir}")
-    val zipUrl = providers.provider { r.zipUrl }
-    val zipFile = layout.buildDirectory.file("tmp/cwt/${r.repoDir}.zip")
-    val unzipDir = generatedCwtDir.map { it.dir(r.repoDir) }
-
-    val download = tasks.register("downloadCwtConfig_${r.gameTypeId}", de.undercouch.gradle.tasks.download.Download::class) {
-        description = "Download CWT configs for game type id ${r.gameTypeId}."
-        // Only download when the local repository is missing to reduce unnecessary network traffic in CI and locally
-        src(zipUrl)
-        dest(zipFile)
-        overwrite(false)
-        if (cwtAcceptAnyCertificate.get().toBoolean()) acceptAnyCertificate(true) // If SSL handshake fails, temporarily bypass via -Ppls.cwt.acceptAnyCertificate=true
-        onlyIf { cwtDownloadIfMissing.get().toBoolean() && !localDir.asFile.exists() && !zipFile.get().asFile.exists() }
-    }
-    val unzip = tasks.register<Copy>("unzipCwtConfig_${r.gameTypeId}") {
-        description = "Unzip CWT configs for game type id ${r.gameTypeId}."
-        // Unzip the downloaded ZIP into the generated build directory as a fallback config source
-        dependsOn(download)
-        onlyIf { cwtDownloadIfMissing.get().toBoolean() && !localDir.asFile.exists() }
-        from({ zipTree(zipFile) })
-        into(unzipDir)
-    }
-    prepareCwtConfigs.configure { dependsOn(unzip) }
-}
-
-// endregion
-
 tasks {
     withType<Copy> {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -501,44 +436,12 @@ tasks {
         archiveBaseName = providers.gradleProperty("pluginPackageName")
     }
     jar {
-        // Depend on the config preparation task: ensure local checks and any required download/unzip complete before packaging
-        dependsOn(prepareCwtConfigs)
         // Include project docs and license
         from("README_zh.md", "README.md", "LICENSE")
         // Exclude specific files
         excludesInJar.forEach { exclude(it) }
-
-        // Include config files (prefer local; otherwise use the unzipped fallback source)
-        cwtRepositories.forEach { r ->
-            val gameTypeId = r.gameTypeId
-            into("config/$gameTypeId") {
-                // Choose an effective source based on whether the local directory exists, to avoid missing configs in CI
-                val effectiveSource = providers.provider {
-                    val local = file("cwt/${r.repoDir}")
-                    if (local.exists()) local else generatedCwtDir.get().dir(r.repoDir).asFile
-                }
-                from(effectiveSource) {
-                    includeEmptyDirs = false
-                    // Include only required files (exclude log files under the script-docs subdirectory)
-                    include("**/*.cwt", "**/LICENSE", "**/*.md")
-                    // Normalize paths:
-                    // - Flatten files under the {repoDir}-{branch} directory
-                    // - Flatten files under the `config` directory
-                    eachFile {
-                        path = path.replace("/$gameTypeId/${r.repoDir}-${r.branch}/", "/$gameTypeId/", ignoreCase = true)
-                        path = path.replace("/$gameTypeId/config/", "/$gameTypeId/", ignoreCase = true)
-                    }
-                }
-            }
-        }
-        // Include related docs and license
-        into("config") {
-            from("cwt/README_zh.md", "cwt/LICENSE")
-        }
     }
     instrumentedJar {
-        // Depend on the config preparation task to keep resources in sync with the regular JAR (covers run/debug scenarios)
-        dependsOn(prepareCwtConfigs)
         // Exclude specific files
         excludesInJar.forEach { exclude(it) }
     }
