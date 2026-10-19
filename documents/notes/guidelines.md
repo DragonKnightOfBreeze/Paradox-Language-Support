@@ -328,8 +328,6 @@ TODO：
 
 平台测试用于验证包括语法、语义、语言构造、语言功能在内的，依赖 IntelliJ Platform API 的方方面面的功能。
 
-说明：
-
 - 测试类通常继承自 `BasePlatformTestCase`。仅在少数情况下，继承自 `UsefulTestCase` 的其他子类。
 - 对于简单的场合，优先考虑使用 `myFixture.configureByText(fileName, text)`。这是更加清晰、更加直观的方式。
 - 对于复杂的场合，可以考虑使用 `myFixture.configureByFile(filePath)`。
@@ -407,7 +405,6 @@ TODO：
 
 有些平台测试需要验证测试数据文件是否具有正确高亮，这些测试被称为“高亮测试”。例如针对注解器（annotators）和代码检查（codeInspections）的测试。
 
-说明：
 - 对于简单的场合，优先考虑通过 `myFixture.configureByText(fileName, text)`，并在测试数据文本中结合使用需要的作用域方法，来编写测试用例。
 - 对于复杂的场合，可以考虑直接在对应的测试数据文本或测试数据文件中指定高亮信息（如 `<warning descr="...">target</warning>`），来编写测试用例。
 
@@ -446,9 +443,18 @@ TODO：
 
 基准测试适用于一些性能敏感，并且需要考虑评估具体性能的代码（组件类、策略类、扩展方法等）。
 
-- 基准测试需要声明为受限测试（使用 `ChronicleAssume.includeBenchmark()`）。
-- 基准测试的测试类需要以 `Benchmark` 结尾。
-- 出于准确性的考虑，需要使用 JMH（而非直接使用 `measureTimeMillis` 等来自标准库的方法）。
+- 基准测试的测试类需要以 `Benchmark` 结尾（而非以 `BenchmarkTest` 或 `Test` 结尾）。
+- 基准测试的测试类，以及其他相关代码，需要位于 `src/jmh/kotlin` 目录下（而非常规的 `src/test/kotlin`）。
+- 出于准确性等方面的考虑，基准测试需要基于 JMH（而非直接基于 `measureTimeMillis` 等来自标准库的方法）。
+
+执行方式：
+- 通过 `./gradlew benchmark` 执行（作为单独的 Gradle 任务）。
+- 可通过 `./gradlew benchmark --benchmarks=<fqName>` 按需指定要执行的具体的基准测试。
+- 参数 `--benchmark` 可以重复，其参数值中也可以使用通配符 `?` `*` `**`。
+
+报告输出：
+- 通过 `./gradlew benchmarkReport` 输出报告（包括原始报告文件，以及从中提取的总结、元数据新信息等）。
+- 输出到 `documents/reports/benchmarks/{timestamp}/` 目录下（暂不支持自定义）。
 
 ## UI
 
