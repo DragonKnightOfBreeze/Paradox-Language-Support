@@ -106,6 +106,10 @@ allOpen {
   - [ ] 更新 `documents/notes/guidelines.md`
   - [ ] 更新 `documents/notes/adr.md` + 补充 `documents/notes/adr/add-benchmarks.md`
 
+待评估：
+- [ ] P3 考虑优化 `icu.windea.pls.core.match.TextMatcher.matchesDateField` - 通过加入预检查来达成快速返回
+  - 由于参数 `pattern` 是允许自定义的，需要一些额外的处理。
+
 ## 参见
 
 关键代码位置：
