@@ -14,7 +14,5 @@ pluginManagement {
         id("org.jetbrains.intellij.platform") version intellijVersion
         id("org.jetbrains.intellij.platform.grammarkit") version intellijVersion
         id("org.jetbrains.kotlinx.kover") version koverVersion
-        id("me.champeau.jmh") version "0.7.3"
-        id("de.undercouch.download") version "5.7.0"
     }
 }
