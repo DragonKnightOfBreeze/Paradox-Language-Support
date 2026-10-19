@@ -21,6 +21,8 @@
 
 ### 概述
 
+> TODO 3.0.5
+
 执行机制：
 - 基准类放 `src/jmh/kotlin`，由 JMH Gradle Plugin 编译
 - 启动器放测试源集，调用 `ChronicleAssume.includeBenchmark()` （如 `icu.windea.pls.core.match.MatchersBenchmarkLauncher`）
@@ -28,6 +30,14 @@
 
 报告输出约定：
 - 当前先写入 `build/reports/benchmarks/<Class>.txt`，后续脚本再复制/汇总到 `documents/reports/benchmarks/{timestamp}/`，并附带 JDK、CPU、命令、JMH 参数等元数据。
+
+## 关于基准测试的启动器 `ChronicleBenchmarkLauncher`
+
+> TODO 3.0.5
+
+说明：
+- 位于以下目录中：`src/jmh/kotlin`
+- 完整的类路径：`icu.windea.pls.test.ChronicleBenchmarkLauncher`
 
 ### 关于 `allopen` Gradle 插件
 
@@ -84,5 +94,12 @@ allOpen {
 
 ## 参见
 
+相关笔记：
 - `documents/notes/adr/add-benchmarks.md`
-- 
+
+相关链接：
+- JMH 官方仓库：<https://github.com/openjdk/jmh>
+- JMH 项目主页：<https://openjdk.org/projects/code-tools/jmh/>
+- JMH Gradle Plugin：<https://github.com/melix/jmh-gradle-plugin>
+- kotlinx-benchmark：<https://github.com/Kotlin/kotlinx-benchmark>
+- JMH Visualizer：<https://jmh.morethan.io/>
