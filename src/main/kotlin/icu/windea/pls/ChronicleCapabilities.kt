@@ -49,7 +49,6 @@ object ChronicleCapabilities {
 
     object Test {
         var includeAll = getBooleanProperty("chronicle.test.include.all", false)
-        var includeBenchmark = getBooleanProperty("chronicle.test.include.benchmark", false)
         var includeAi = getBooleanProperty("chronicle.test.include.ai", false)
         var includeRemote = getBooleanProperty("chronicle.test.include.remote", false)
         var includeLocalEnv = getBooleanProperty("chronicle.test.include.local.env", false)

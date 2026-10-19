@@ -22,18 +22,19 @@
 
 ### 概述
 
-- 基准测试的测试类需要以 `Benchmark` 结尾（而非以 `BenchmarkTest` 或 `Test` 结尾）。
-- 基准测试的测试类，以及其他相关代码，需要位于 `src/jmh/kotlin` 目录下（而非常规的 `src/test/kotlin`）。
+- 基于 JMH 的基准测试类需要以 `Benchmark` 结尾，并位于 `src/jmh/kotlin` 目录下（而非常规的 `src/test/kotlin`）。
+- 用于验证基准测试相关行为（如缓存命中、淘汰、容量边界）的 JUnit 单元测试需要以 `BenchmarkTest` 结尾，并位于 `src/test/kotlin` 目录下。
 - 出于准确性等方面的考虑，基准测试需要基于 JMH（而非直接基于 `measureTimeMillis` 等来自标准库的方法）。
 
 执行方式：
 - 通过 `./gradlew benchmark` 执行（作为单独的 Gradle 任务）。
-- 可通过 `./gradlew benchmark --benchmarks=<fqName>` 按需指定要执行的具体的基准测试。
-- 参数 `--benchmark` 可以重复，其参数值中也可以使用通配符 `?` `*` `**`。
+- 可通过 `./gradlew benchmark --benchmarks=<pattern>` 按需指定要执行的基准测试；该参数可以重复，其参数值中也可以使用通配符 `?` `*`。
+- 无匹配项时任务会失败，并列出可用的基准测试。
+- 通过 `./gradlew benchmarkReport` 运行基准测试并输出带时间戳的报告；也可以先运行 `./gradlew benchmark`，再运行 `./gradlew benchmarkReport -x benchmark`。
 
 报告输出：
-- 通过 `./gradlew benchmarkReport` 输出报告（包括原始报告文件，以及从中提取的总结、元数据新信息等）。
-- 输出到 `documents/reports/benchmarks/{timestamp}/` 目录下（暂不支持自定义）。
+- 通过 `./gradlew benchmarkReport` 输出报告（包括原始报告文件，以及从中提取的总结、元数据信息等）。
+- 输出到 `documents/reports/benchmarks/{timestamp}/` 目录下。
 
 ## 关于基准测试的启动器 `ChronicleBenchmarkLauncher`
 
@@ -104,12 +105,14 @@ allOpen {
 ## 参见
 
 关键代码位置：
-- [ ] `icu.windea.pls.core.ChronicleBenchmarkLauncher`
+- [ ] `icu.windea.pls.core.ChronicleBenchmarkLauncher` - 位于 `src/jmh/kotlin` 目录下
 
 相关笔记：
-- [ ] `documents/notes/adr/add-benchmarks.md`
 - [ ] `documents/ai-notes/analysis/benchmarks-3.0.5.md`
 - [ ] `documents/ai-notes/study/study-jmh.md`
+- [ ] `documents/notes/adr/add-benchmarks.md`
+- [ ] `documents/notes/guidelines.md` - 其中的相关章节
+- [ ] `AGENTS.md` - 受限测试的相关章节 & 补充基准测试的相关章节
 
 相关链接：
 - JMH 官方仓库：<https://github.com/openjdk/jmh>

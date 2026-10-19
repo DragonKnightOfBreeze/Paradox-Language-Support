@@ -172,7 +172,6 @@ Some tests are intentionally **disabled by default** and only run when explicitl
 
 | `ChronicleAssume` method   | System property                           | Category                                                                          |
 |----------------------------|-------------------------------------------|-----------------------------------------------------------------------------------|
-| `includeBenchmark()`       | `chronicle.test.include.benchmark`        | Benchmarks                                                                        |
 | `includeAi()`              | `chronicle.test.include.ai`               | AI-backed tests                                                                   |
 | `includeRemote()`          | `chronicle.test.include.remote`           | Tests requiring access remote network (e.g., `SpecialUrlServiceTest`)                                    |
 | `includeLocalEnv()`        | `chronicle.test.include.local.env`        | Tests requiring a real local game/mod environment (e.g. `ParadoxModImporterTest`) |
