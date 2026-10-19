@@ -14,6 +14,7 @@
 - [学习笔记：GitHub Actions](study/study-github-actions.md)
 - [学习笔记：Gradle](study/study-gradle.md)
 - [学习笔记：IntelliJ Platform SDK](study/study-intellij-platform-sdk.md)
+- [学习笔记：JMH（Java 微基准测试）](study/study-jmh.md)
 - [学习笔记：Kotlin](study/study-kotlin.md)
 - [学习笔记：Ktor](study/study-ktor.md)
 - [学习笔记：Ktorm](study/study-ktorm.md)

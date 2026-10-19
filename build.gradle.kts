@@ -27,6 +27,9 @@ plugins {
     id("org.jetbrains.kotlinx.kover") version koverVersion // https://github.com/Kotlin/kotlinx-kover
     // id("org.jetbrains.changelog") version "2.5.0" // https://github.com/JetBrains/gradle-changelog-plugin
 
+    // Used to run benchmarks (JMH-based)
+    id("me.champeau.jmh") version "0.7.3" // https://github.com/melix/jmh-gradle-plugin
+
     // Used to download CWT config ZIPs (HTTPS) on demand when local repositories are missing, to support CI environments
     id("de.undercouch.download") version "5.7.0" // https://github.com/michel-kraemer/gradle-download-task
 }
@@ -139,6 +142,9 @@ dependencies {
     // opentest4j - https://github.com/ota4j-team/opentest4j
     testImplementation("org.opentest4j:opentest4j:1.3.0")
 
+    // JMH - https://github.com/openjdk/jmh (used by the benchmark launcher test)
+    testImplementation("org.openjdk.jmh:jmh-core:1.37")
+
     // Caffeine - https://github.com/ben-manes/caffeine
     implementation("com.github.ben-manes.caffeine:caffeine:3.3.0") {
         exclude(group = "com.google.errorprone", module = "error_prone_annotations")
@@ -208,6 +214,22 @@ dependencies {
     testImplementation("io.pebbletemplates:pebble:4.1.2") {
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
+}
+
+// Runtime classpath for the `benchmark` task. It deliberately avoids the IntelliJ Platform test
+// framework classpath, which is far too long for JMH's forked JVM command line on Windows.
+val benchmarkRuntimeClasspath = configurations.create("benchmarkRuntimeClasspath")
+benchmarkRuntimeClasspath.extendsFrom(configurations.getByName("runtimeClasspath"))
+dependencies {
+    add(benchmarkRuntimeClasspath.name, "junit:junit:4.13.2")
+    add(benchmarkRuntimeClasspath.name, "org.openjdk.jmh:jmh-core:1.37")
+}
+
+// Configure JMH Gradle Plugin - read more: https://github.com/melix/jmh-gradle-plugin
+jmh {
+    jmhVersion = "1.37"
+    // Benchmark sources live in `src/jmh` and must not pull in the test source set
+    includeTests = false
 }
 
 // Configure Gradle Kover Plugin - read more: https://github.com/Kotlin/kotlinx-kover#configuration
@@ -497,6 +519,26 @@ tasks {
         // systemProperty("idea.log.debug.categories", "icu.windea.pls")
 
         // Forward all command-line -D properties that start with "chronicle.test."
+        System.getProperties().stringPropertyNames()
+            .filter { it.startsWith("chronicle.test.") }
+            .forEach { k -> systemProperty(k, System.getProperty(k)) }
+    }
+    register<JavaExec>("benchmark") {
+        group = "verification"
+        description = "Run JMH benchmarks. Requires -Dchronicle.test.include.benchmark=true."
+
+        dependsOn("testClasses", "jmhCompileGeneratedClasses")
+        mainClass.set("icu.windea.pls.core.match.MatchersBenchmarkLauncher")
+        classpath = files(
+            project.sourceSets["main"].output,
+            project.sourceSets["test"].output,
+            project.sourceSets["jmh"].output,
+            project.layout.buildDirectory.dir("jmh-generated-classes"),
+            project.layout.buildDirectory.dir("jmh-generated-resources"),
+            benchmarkRuntimeClasspath,
+        )
+
+        // Forward the benchmark capability property checked by `ChronicleAssume.includeBenchmark()`.
         System.getProperties().stringPropertyNames()
             .filter { it.startsWith("chronicle.test.") }
             .forEach { k -> systemProperty(k, System.getProperty(k)) }
