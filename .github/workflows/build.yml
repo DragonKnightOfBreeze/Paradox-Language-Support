@@ -268,15 +268,17 @@ jobs:
       - name: Compile benchmarks
         run: ./gradlew jmhCompileGeneratedClasses --no-daemon --console=plain
 
-      # The following steps are opt-in via workflow_dispatch
+      # Run benchmarks (opt-in via workflow_dispatch)
       - name: Run benchmarks
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_benchmarks }}
         run: ./gradlew benchmark --no-daemon --console=plain
 
+      # Generate benchmark report after running (opt-in via workflow_dispatch)
       - name: Generate benchmark report
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_benchmarks }}
         run: ./gradlew benchmarkReport -x benchmark --no-daemon --console=plain
 
+      # Upload benchmark report generated previously (opt-in via workflow_dispatch)
       - name: Upload benchmark report
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_benchmarks }}
         uses: actions/upload-artifact@v7

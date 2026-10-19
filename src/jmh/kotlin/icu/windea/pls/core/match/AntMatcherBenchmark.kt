@@ -17,7 +17,8 @@ import java.util.concurrent.TimeUnit
 /**
  * [AntMatcher] 的基准测试。
  *
- * 既包含固定的微基准，也包含更接近实际使用的成员路径、文件路径和模式集合场景。
+ * 备注：
+ * - 既包含固定的微基准，也包含更接近实际使用的成员路径、文件路径和模式集合场景。
  *
  * @see AntMatcher
  */

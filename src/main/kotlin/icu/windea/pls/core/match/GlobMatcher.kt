@@ -1,7 +1,7 @@
 package icu.windea.pls.core.match
 
 /**
- * 基于 GLOB 模式的匹配器。
+ * GLOB 模式的匹配器。
  *
  * 说明：
  * - `?` 匹配单个字符。
