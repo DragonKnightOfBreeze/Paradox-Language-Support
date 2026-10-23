@@ -377,15 +377,16 @@ Do not read the entire `documents/` directory at once, instead, read specific do
 ### General operations
 
 - Prefer using built-in tools for common operations (e.g., read, write, edit, patch, grep search, glob search).
-- Prefer using built-in tools to execute commands for build tool operations (e.g., building, running tests), and operations that are more suitable to be done by commands.
-- Run Gradle tasks through the built-in shell with `--no-daemon --console=plain`; see [Gradle execution environment](#gradle-execution-environment).
-- Prefer using suitable mcp when structured search or semantic search is available.
-- Prefer running IDE inspections provided by intellij mcp or intellij-index mcp before compilation, building, or running tests, if necessary.
+- Prefer using built-in tools to execute commands for build tool operations (e.g., building, running tests).
+- Prefer using suitable mcp when structured search or semantic search is intended.
+- Prefer using available mcp (intellij mcp or intellij-index mcp) to navigate declarations, usages, implementations, usages, etc.
+- Prefer using available mcp (intellij mcp or intellij-index mcp) to run code inspections, before compilation, building, or running tests, if necessary.
+- Run Gradle tasks through the built-in shell with `--no-daemon --console=plain` (see [Gradle execution environment](#gradle-execution-environment)).
 
-### JetBrains MCP server
+### IntelliJ MCP server
 
-When you need to **drive IDE actions**, prefer the built-in JetBrains MCP server tools when available.
+When you need to **drive IDE actions**, prefer the built-in **intellij** MCP server tools when available.
 
 ### IDE Index MCP server
 
-When you need to **do code navigation, code refactoring, code inspections and so on**, prefer the IDE Index MCP server tools when available, instead of text-based grep.
+When you need to **do code navigation, code refactoring, code inspections and so on**, prefer the **intellij-index** MCP server tools when available.
