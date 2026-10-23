@@ -556,7 +556,6 @@
 
 - [x] P3 在快速文档中直接渲染片段的相关本地化 ([#432](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/432))
   - 因为片段对应的相关定义/相关本地化可以存在多个，目前仅考虑直接在快速文档中渲染相关本地化。
-  - 同本地化的快速文档一样，使用“文本”作为左侧的章节标题。
 - [x] P3 与装订线图标（lineMarkerProvider）相关的清理和重构
   - 点击装订线图标后，也在弹出提示的标题中显示目标数量。
   - 不再基于 `NavigationGutterIconBuilder` 构建 `RelatedItemLineMarkerInfo`。

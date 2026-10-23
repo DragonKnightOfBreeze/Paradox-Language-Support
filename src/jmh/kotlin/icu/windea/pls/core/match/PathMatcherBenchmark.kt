@@ -172,7 +172,7 @@ open class PathMatcherBenchmark {
     open fun matchesStringExactByDirect(blackhole: Blackhole) {
         for (input in subPaths) {
             for (other in subPaths) {
-                blackhole.consume(input.equals(other))
+                blackhole.consume(input == other)
             }
         }
     }
@@ -239,7 +239,7 @@ open class PathMatcherBenchmark {
 private fun listMatchesExactDirect(input: List<String>, other: List<String>): Boolean {
     if (input.size != other.size) return false
     for (index in input.indices) {
-        if (!input[index].equals(other[index])) return false
+        if (input[index] != other[index]) return false
     }
     return true
 }
@@ -255,7 +255,7 @@ private fun listMatchesPatternDirect(input: List<String>, other: List<String>): 
 private fun relativeDirect(input: List<String>, other: List<String>): String? {
     if (input.size > other.size) return null
     for (index in input.indices) {
-        if (!input[index].equals(other[index])) return null
+        if (input[index] != other[index]) return null
     }
     if (input.size == other.size) return ""
     return other[input.size]

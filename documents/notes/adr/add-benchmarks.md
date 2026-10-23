@@ -97,9 +97,10 @@ allOpen {
   - [x] `icu.windea.pls.core.match.TextMatcherBenchmark`
 - [ ] P4 编写基准测试，以验证标有 `@Fast` 的扩展方法相比常规版本的性能表现
   - [ ] `icu.windea.pls.core.StdlibFastExtensionsBenchmark`
-  - [ ] `icu.windea.pls.core.StdlibFsstExtraExtensionsBenchmark`
+  - [ ] `icu.windea.pls.core.StdlibFastExtraExtensionsBenchmark`
   - [ ] `icu.windea.pls.core.collections.CollectionFastExtensionsBenchmark`
   - [ ] `icu.windea.pls.core.collections.CollectionFastExtraExtensionsBenchmark`
+  - [ ] `icu.windea.pls.core.collections.CollectionFastBulderesBenchmark`
 - [ ] P4 编写基准测试，以验证查询/遍历时的性能表现
   - 目前包括：List/Stream/Sequence/Query/PushStream
   - 关于这里使用的 Query/PushStream：直接在测试代码中实现并使用

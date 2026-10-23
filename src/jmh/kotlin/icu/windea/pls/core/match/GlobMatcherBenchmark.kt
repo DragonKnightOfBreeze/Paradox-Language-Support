@@ -152,7 +152,7 @@ open class GlobMatcherBenchmark {
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(SHORT_OPERATIONS)
     open fun matchesByRegex(blackhole: Blackhole) {
-        for ((pattern, regex) in patternRegexes) {
+        for ((_, regex) in patternRegexes) {
             for (input in inputs) {
                 blackhole.consume(regex.matches(input))
             }
@@ -164,7 +164,7 @@ open class GlobMatcherBenchmark {
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(SHORT_OPERATIONS)
     open fun matchesIgnoreCaseByRegex(blackhole: Blackhole) {
-        for ((pattern, regex) in patternRegexesIgnoreCase) {
+        for ((_, regex) in patternRegexesIgnoreCase) {
             for (input in inputs) {
                 blackhole.consume(regex.matches(input))
             }
@@ -176,7 +176,7 @@ open class GlobMatcherBenchmark {
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(LONG_OPERATIONS)
     open fun matchesLongInputByRegex(blackhole: Blackhole) {
-        for ((pattern, regex) in longPatternRegexes) {
+        for ((_, regex) in longPatternRegexes) {
             for (input in longInputs) {
                 blackhole.consume(regex.matches(input))
             }

@@ -152,7 +152,7 @@ fun <T : Any> List<T?>.filterNotNullFast(): List<T> {
     return result ?: first?.let { ImmutableList.of(it) } ?: ImmutableList.of()
 }
 
-/** @see icu.windea.pls.core.sequences.filterIsInstance */
+/** @see icu.windea.pls.core.collections.filterIsInstance */
 @Fast
 inline fun <reified R : Any> List<*>.filterIsInstanceFast(predicate: (R) -> Boolean = { true }): List<R> {
     // note: assume input is `RandomAccess` and is not `CopyOnWriteArrayList`

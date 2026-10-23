@@ -102,6 +102,7 @@ fun String.splitFast(delimiter: Char = ',', ignoreCase: Boolean = false, limit: 
     return result
 }
 
+/** @see kotlin.collections.joinToString */
 @Fast
 fun <T> List<T>.joinToStringFast(separator: CharSequence = ", ", transform: ((T) -> CharSequence)? = null): String {
     val size = size
