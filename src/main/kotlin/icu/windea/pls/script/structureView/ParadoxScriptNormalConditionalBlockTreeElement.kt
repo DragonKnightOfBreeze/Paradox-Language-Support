@@ -1,14 +1,15 @@
 package icu.windea.pls.script.structureView
 
 import com.intellij.ide.structureView.StructureViewTreeElement
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 
 class ParadoxScriptNormalConditionalBlockTreeElement(
-    element: ParadoxScriptNormalConditionalBlock
+    element: ParadoxScriptNormalConditionalBlock,
 ) : ParadoxScriptTreeElement<ParadoxScriptNormalConditionalBlock>(element) {
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
         val element = element ?: return emptyList()
-        val children = element.children
+        val children = element.children.orNull() ?: return emptyList()
         return children.mapNotNull { it.toTreeElement() }
     }
 }

@@ -1,14 +1,15 @@
 package icu.windea.pls.csv.structureView
 
 import com.intellij.ide.structureView.StructureViewTreeElement
+import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 
 class ParadoxCsvFileTreeElement(
-    element: ParadoxCsvFile
+    element: ParadoxCsvFile,
 ) : ParadoxCsvTreeElement<ParadoxCsvFile>(element) {
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
         val element = element ?: return emptyList()
-        val children = element.children
+        val children = element.children.orNull() ?: return emptyList()
         return children.mapNotNull { it.toTreeElement() }
     }
 }
