@@ -98,14 +98,15 @@ allOpen {
   - `equalsFast` vs `equals`（非 ASCII） - 5.528 ns VS 3.367 ns - `@Fast` 反而慢约 64%
   - 标准库的 `String.equals` 很可能使用了高度优化的 intrinsic/向量化实现，而 `equalsFast` 的手写逐字符循环在短字符串上没有优势。
   - 不过本轮只测试了短字符串和非空值。`equalsFast` 仍可能在长 ASCII 字符串、大量 `ignoreCase` 比较或 null 较多的场景有不同表现，建议后续补充长字符串和 null 场景后再决定是否调整使用策略。
-- [ ] `buildImmutableSet` 根据当前的基准测试，相比标准的 `buildSet` 显著更慢
-  - 初步结论：1 元素月 0.43 倍，4 元素约 7 倍，64 元素约 8.7 倍
+- [ ] `buildImmutableSet` 根据当前的基准测试，相比标准的 `buildSet` 显著更慢（除元素数量为 0 或 1 时）
+  - 初步结论：1 元素时 0.43 倍，4 元素约 7 倍，64 元素约 8.7 倍
   - 这可能是结果不可变性带来的固定成本，或是 expectedSize/构建器策略不合适。
   - 考虑到其突出性，以及此方法目前并未在生产代码中使用，较好的处理方案可能是：将此方法标为 `@Deprecated`（级别：`ERROR` 或 `HIDDEN`）。
-- [ ] `List.forEachFast` 根据当前的基准测试，没有额外的性能优势（耗时 + 性能）
+- [x] `List.forEachFast` 根据当前的基准测试，没有额外的性能优势（耗时 + 性能）
   - 基于迭代器的标准 `Iterable.forEach` 在当前 JVM 环境下并不存在 24 B/op 的迭代器分配，这意味着迭代器很可能被 JIT 的逃逸分析/标量替换相处了。
   - 这意味着 `forEachFast` 的主要优势实际上主要来自索引访问（而这并不明显，并不是那么值得），而不是减少临时内存。
   - 这也适用于各种衍生方法，例如 `allFast` `anyFast` `noneFast`。
+  - 仅作记录，目前仍然保留，不作相关的代码更改。
 - [x] `List.removePrefixOrNull` / `List.removeSuffixOrNull`：将 `wildcard != null` 提取到循环外
 
 ## 任务

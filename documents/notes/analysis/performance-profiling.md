@@ -698,6 +698,14 @@ icu.windea.pls.lang.index.IndexInfoAwareFileBasedIndex.indexData(FileContent) - 
   - [x] `icu.windea.pls.lang.references`
   - [x] `icu.windea.pls.lang.util`
 
+### 修订
+
+> 日期：2026-10-23
+
+根据基准测试（`StdlibFastExtensionsBenchmark`），`String?.equalsFast` 相比惯用写法反而通常拥有更差的性能。需要进行回退。
+
+参见：[adr/add-benchmarks.md](../adr/add-benchmarks.md)
+
 ## A5 性能分析 构建索引时 Stellaris 游戏目录 {#a5}
 
 > - 版本：v3.0.1
