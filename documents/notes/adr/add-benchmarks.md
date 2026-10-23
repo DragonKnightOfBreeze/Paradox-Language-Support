@@ -139,8 +139,8 @@ allOpen {
   - [ ] 编写分析笔记 `documents/ai-notes/analysis/benchmarks-3.0.5.md`
 - [ ] P4 更新相关的文档和笔记
   - [x] 编写学习笔记 `documents/ai-notes/study/study-jmh.md`
-  - [ ] 更新 `documents/notes/guidelines.md`
-  - [ ] 更新 `documents/notes/adr.md` + 补充 `documents/notes/adr/add-benchmarks.md`
+  - [x] 更新 `documents/notes/guidelines.md`
+  - [x] 更新 `documents/notes/adr.md` + 补充 `documents/notes/adr/add-benchmarks.md`
 
 ### 重构 & 整理
 
