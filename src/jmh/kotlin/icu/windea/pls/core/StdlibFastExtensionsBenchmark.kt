@@ -79,6 +79,7 @@ open class StdlibFastExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(ASCII_PAIR_COUNT)
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     open fun equalsFastAscii(blackhole: Blackhole) {
         for ((a, b) in asciiPairs) {
             blackhole.consume(a.equalsFast(b))
@@ -95,6 +96,7 @@ open class StdlibFastExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(ASCII_PAIR_COUNT)
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     open fun equalsFastAsciiIgnoreCase(blackhole: Blackhole) {
         for ((a, b) in asciiPairs) {
             blackhole.consume(a.equalsFast(b, ignoreCase = true))
@@ -111,6 +113,7 @@ open class StdlibFastExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(NON_ASCII_PAIR_COUNT)
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     open fun equalsFastNonAscii(blackhole: Blackhole) {
         for ((a, b) in nonAsciiPairs) {
             blackhole.consume(a.equalsFast(b))

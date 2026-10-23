@@ -6,13 +6,26 @@ package icu.windea.pls.core
 import com.google.common.collect.ImmutableList
 import icu.windea.pls.core.annotations.Fast
 
-/** @see kotlin.text.equals */
+/**
+ * 对 [String.equals] 的 ASCII 比较版本（已弃用）。
+ *
+ * 性能笔记：
+ * - 短 ASCII 比较比标准 `String.equals` 慢约 75%，非 ASCII 比较慢约 64%；
+ * - `ignoreCase` 基本持平；
+ * - 长 ASCII 比较明显更慢，因为标准实现直接比较压缩字节数组；
+ * - 标准实现完整支持 Unicode，而此实现只对 ASCII 做快速路径。
+ *
+ * 新代码请使用 `==` 或 [String?.equals]。
+ *
+ * @see kotlin.text.equals
+ */
+@Deprecated(
+    message = "Use standard String.equals instead; the JDK implementation is faster and handles Unicode.",
+    replaceWith = ReplaceWith("this.equals(other, ignoreCase)"),
+    level = DeprecationLevel.ERROR,
+)
 @Fast
 fun String?.equalsFast(other: String?, ignoreCase: Boolean = false): Boolean {
-    // 专为纯 ASCII 字符串设计的高性能忽略大小写比较
-    // 零对象分配，无 Unicode 开销
-    // 感谢猫猫！
-
     if (this === null) return other === null
     @Suppress("StringReferentialEquality")
     if (this === other) return true
@@ -26,10 +39,8 @@ fun String?.equalsFast(other: String?, ignoreCase: Boolean = false): Boolean {
         val c2 = other[i]
         if (c1 == c2) continue
 
-        // 如果不是纯 ASCII，退化为标准库比较（作为安全兜底）
         if (c1.code > 127 || c2.code > 127) return equals(other, ignoreCase)
 
-        // ASCII 快速转小写比较 (大写字母 A-Z 的 ASCII 码加上 32 就是小写)
         val lc1 = if (ignoreCase && c1 in 'A'..'Z') c1.code + 32 else c1.code
         val lc2 = if (ignoreCase && c2 in 'A'..'Z') c2.code + 32 else c2.code
 
@@ -41,13 +52,13 @@ fun String?.equalsFast(other: String?, ignoreCase: Boolean = false): Boolean {
 /** @see kotlin.text.equals */
 @Fast
 fun String.equalsAnyFast(other: Array<String>, ignoreCase: Boolean = false): Boolean {
-    return other.any { equalsFast(it, ignoreCase) }
+    return other.any { it.equals(this, ignoreCase) }
 }
 
 /** @see kotlin.text.equals */
 @Fast
 fun Array<String>.equalsAnyFast(other: String, ignoreCase: Boolean = false): Boolean {
-    return any { it.equalsFast(other, ignoreCase) }
+    return any { it.equals(other, ignoreCase) }
 }
 
 /** @see kotlin.text.trim */

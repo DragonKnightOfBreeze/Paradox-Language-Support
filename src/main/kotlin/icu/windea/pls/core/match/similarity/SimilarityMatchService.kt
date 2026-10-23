@@ -21,7 +21,7 @@ object SimilarityMatchService {
      * - 至少要求首字母精确匹配（可忽略大小写）。
      *
      * 对于错字匹配：
-     * - 最多取 [SimilarityMatchOptions.typoTopN] 项
+     * - 最多取 [SimilarityMatchOptions.typoTopN] 项。
      * - 排除分数低于 [SimilarityMatchOptions.typoMinScore] 的项。
      *
      * @see SimilarityMatcher

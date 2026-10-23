@@ -53,6 +53,7 @@ open class CollectionFastBuildersBenchmark {
     }
 
     @Benchmark
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     open fun buildImmutableSet(blackhole: Blackhole) {
         blackhole.consume(buildImmutableSet<Any>(size) { it })
     }

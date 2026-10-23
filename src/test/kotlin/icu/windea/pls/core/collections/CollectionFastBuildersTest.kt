@@ -44,24 +44,28 @@ class CollectionFastBuildersTest {
     // region buildImmutableSet
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun buildImmutableSet_basic_test() {
         val result = buildImmutableSet(3) { it * 2 }
         assertEquals(setOf(0, 2, 4), result)
     }
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun buildImmutableSet_empty_test() {
         val result = buildImmutableSet(0) { throw IllegalStateException() }
         assertEquals(emptySet<Int>(), result)
     }
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun buildImmutableSet_single_test() {
         val result = buildImmutableSet(1) { 42 }
         assertEquals(setOf(42), result)
     }
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun buildImmutableSet_immutability_test() {
         val result = buildImmutableSet(3) { it }
         assertThrows(UnsupportedOperationException::class.java) {
@@ -70,6 +74,7 @@ class CollectionFastBuildersTest {
     }
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun buildImmutableSet_negative_size_test() {
         assertThrows(IllegalArgumentException::class.java) {
             buildImmutableSet(-1) { it }

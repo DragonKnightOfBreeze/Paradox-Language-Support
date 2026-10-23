@@ -11,7 +11,6 @@ import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Inferred
-import icu.windea.pls.core.equalsFast
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
@@ -77,7 +76,7 @@ data class ParadoxDefinitionInfo(
     ) {
         @Inferred
         fun isPrimaryKey(): Boolean {
-            return primary || key.equalsFast("icon", true)
+            return primary || key.equals("icon", true)
         }
     }
 
@@ -89,7 +88,7 @@ data class ParadoxDefinitionInfo(
     ) {
         @Inferred
         fun isPrimaryKey(): Boolean {
-            return primary || key.equalsFast("name", true) || key.equalsFast("title", true)
+            return primary || key.equals("name", true) || key.equals("title", true)
         }
     }
 

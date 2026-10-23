@@ -3,7 +3,6 @@
 package icu.windea.pls.model.expressions
 
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.equalsFast
 import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.match.TextMatcher
 import icu.windea.pls.core.quote
@@ -199,9 +198,9 @@ private sealed class ParadoxExpressionBase : ParadoxExpression {
     override fun matchesConstant(input: String): Boolean {
         // 3.0.1 radical optimization
         // 如果表达式未用引号括起，不能用来匹配布尔关键字
-        if (quoted && (ChronicleStrings.yesKeyword.equalsFast(input) || ChronicleStrings.noKeyword.equalsFast(input))) return false
+        if (quoted && (ChronicleStrings.yesKeyword.equals(input) || ChronicleStrings.noKeyword.equals(input))) return false
         // 忽略大小写
-        return value.equalsFast(input, true)
+        return value.equals(input, true)
     }
 
     override fun equals(other: Any?) = this === other || other is ParadoxExpression && text == other.text

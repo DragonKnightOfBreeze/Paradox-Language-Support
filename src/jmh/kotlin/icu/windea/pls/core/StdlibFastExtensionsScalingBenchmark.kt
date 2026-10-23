@@ -54,6 +54,7 @@ open class StdlibFastExtensionsScalingBenchmark {
     }
 
     @Benchmark
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     open fun equalsFastEqual(blackhole: Blackhole) {
         blackhole.consume(equalA.equalsFast(equalB))
     }
@@ -64,6 +65,7 @@ open class StdlibFastExtensionsScalingBenchmark {
     }
 
     @Benchmark
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     open fun equalsFastMismatchLast(blackhole: Blackhole) {
         blackhole.consume(mismatchLastA.equalsFast(mismatchLastB))
     }
@@ -74,6 +76,7 @@ open class StdlibFastExtensionsScalingBenchmark {
     }
 
     @Benchmark
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     open fun equalsFastIgnoreCaseMixed(blackhole: Blackhole) {
         blackhole.consume(ignoreCaseA.equalsFast(ignoreCaseB, ignoreCase = true))
     }

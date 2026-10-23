@@ -11,7 +11,6 @@ import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.mapNotNullFast
-import icu.windea.pls.core.equalsFast
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.processAsync
@@ -60,7 +59,7 @@ object ParadoxInlineScriptManager {
      */
     fun isMatched(expression: String): Boolean {
         // 这里需要忽略大小写
-        if (!expression.equalsFast(inlineScriptKey, true)) return false // 3.0.1 radical optimization
+        if (!expression.equals(inlineScriptKey, true)) return false // 3.0.1 radical optimization
         return true
     }
 
@@ -72,7 +71,7 @@ object ParadoxInlineScriptManager {
     fun isMatched(expression: String, context: Any?): Boolean {
         if (context == null) return false
         // 这里需要忽略大小写
-        if (!expression.equalsFast(inlineScriptKey, true)) return false // 3.0.1 radical optimization
+        if (!expression.equals(inlineScriptKey, true)) return false // 3.0.1 radical optimization
         return isSupported(context)
     }
 

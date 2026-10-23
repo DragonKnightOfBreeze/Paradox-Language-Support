@@ -195,6 +195,16 @@ class TextMatcherTest {
     }
 
     @Test
+    fun matchesDateField_knownPatternsWithPrecheck() {
+        Assert.assertTrue(TextMatcher.matchesDateField("2024.1.15"))
+        Assert.assertTrue(TextMatcher.matchesDateField("2024.1", "y.m"))
+        Assert.assertTrue(TextMatcher.matchesDateField("2024.1.", "y.m."))
+        Assert.assertTrue(TextMatcher.matchesDateField("2024.1.15.12", "y.m.d.h"))
+        Assert.assertTrue(TextMatcher.matchesDateField("2024.01.15", "yyyy.MM.dd"))
+        Assert.assertFalse(TextMatcher.matchesDateField("2024-1-15"))
+    }
+
+    @Test
     fun matchesDateField_customPatternInvalid() {
         Assert.assertFalse(TextMatcher.matchesDateField("2024.01.15", "yyyy-MM-dd"))
         Assert.assertFalse(TextMatcher.matchesDateField("abc", "yyyy"))

@@ -3,7 +3,6 @@ package icu.windea.pls.lang.scope
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.equalsFast
 import icu.windea.pls.model.scope.ParadoxScope
 import icu.windea.pls.model.scope.ParadoxScopeConstants
 import icu.windea.pls.model.scope.ParadoxScopeContext
@@ -38,11 +37,11 @@ object ParadoxScopeMergeService {
     fun mergeScopeId(scope: String?, scopeToMerge: String?, configGroup: CwtConfigGroup): String? {
         if (scope == null && scopeToMerge == null) return null
         if (scope == null || scopeToMerge == null) return scope ?: scopeToMerge
-        if (scope.equalsFast(scopeToMerge)) return scope
+        if (scope.equals(scopeToMerge)) return scope
         val anyScope = ParadoxScopeConstants.anyScope
-        if (scope.equalsFast(anyScope) || scopeToMerge.equalsFast(anyScope)) return anyScope
+        if (scope.equals(anyScope) || scopeToMerge.equals(anyScope)) return anyScope
         val unknownScope = ParadoxScopeConstants.unknownScope
-        if (scope.equalsFast(unknownScope) || scopeToMerge.equalsFast(unknownScope)) return unknownScope
+        if (scope.equals(unknownScope) || scopeToMerge.equals(unknownScope)) return unknownScope
         mergeScopeFromModel(ParadoxScope.resolve(scope), ParadoxScope.resolve(scopeToMerge), configGroup)?.let { return it.id }
         return null
     }
@@ -60,7 +59,7 @@ object ParadoxScopeMergeService {
         if (scope == null || scopeToMerge == null) return scope ?: scopeToMerge
         if (scope === ParadoxScope.Any || scopeToMerge === ParadoxScope.Any) return ParadoxScope.Any
         if (scope === ParadoxScope.Unknown || scopeToMerge === ParadoxScope.Unknown) return ParadoxScope.Unknown
-        if (scope.id.equalsFast(scopeToMerge.id)) return scope
+        if (scope.id.equals(scopeToMerge.id)) return scope
         mergeScopeFromModel(scope, scopeToMerge, configGroup)?.let { return it }
         return null
     }

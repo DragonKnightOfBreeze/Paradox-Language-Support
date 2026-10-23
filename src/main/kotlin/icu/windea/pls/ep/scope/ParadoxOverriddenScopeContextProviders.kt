@@ -13,7 +13,6 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.equalsAnyFast
-import icu.windea.pls.core.equalsFast
 import icu.windea.pls.core.select.one
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.stringValue
@@ -41,7 +40,7 @@ class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContex
         // 3.0.1 radical optimization
         val finalConfig = config.originalConfig ?: config
         if (finalConfig !is CwtPropertyConfig) return null
-        if (!Constants.caseKey.equalsFast(finalConfig.key) && !Constants.defaultKey.equalsFast(finalConfig.key)) return null
+        if (!Constants.caseKey.equals(finalConfig.key) && !Constants.defaultKey.equals(finalConfig.key)) return null
         val aliasConfig = finalConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return null
         if (!Constants.contextNames.equalsAnyFast(aliasConfig.subName)) return null
         val containerProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
@@ -78,7 +77,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         // 3.0.1 radical optimization
         val finalConfig = config.originalConfig ?: config
         if (finalConfig !is CwtPropertyConfig) return null
-        if (!Constants.triggerKey.equalsFast(finalConfig.key) && !Constants.parametersKey.equalsFast(finalConfig.key)) return null
+        if (!Constants.triggerKey.equals(finalConfig.key) && !Constants.parametersKey.equals(finalConfig.key)) return null
         val aliasConfig = finalConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return null
         if (!Constants.contextNames.equalsAnyFast(aliasConfig.subName)) return null
         val containerProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)

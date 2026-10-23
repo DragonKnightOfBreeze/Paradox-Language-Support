@@ -7,6 +7,7 @@ class StdlibFastExtensionsTest {
     // region equalsFast
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun equalsFast_identity_test() {
         // 完全相同引用时走快速路径
         val s = "abc"
@@ -15,6 +16,7 @@ class StdlibFastExtensionsTest {
     }
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun equalsFast_basic_test() {
         assertTrue(null.equalsFast(null))
         assertFalse(null.equalsFast(""))
@@ -37,6 +39,7 @@ class StdlibFastExtensionsTest {
     }
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun equalsFast_length_mismatch_test() {
         // 长度不同应快速返回 false
         assertFalse("abc".equalsFast("ab"))
@@ -45,6 +48,7 @@ class StdlibFastExtensionsTest {
     }
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun equalsFast_ignore_case_ascii_test() {
         assertTrue("abc".equalsFast("ABC", ignoreCase = true))
         assertTrue("AbC".equalsFast("aBc", ignoreCase = true))
@@ -56,6 +60,7 @@ class StdlibFastExtensionsTest {
     }
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun equalsFast_unicode_fallback_test() {
         // 非 ASCII 字符不同时退化为标准库比较
         assertTrue("你好".equalsFast("你好"))
@@ -68,6 +73,7 @@ class StdlibFastExtensionsTest {
     }
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun equalsFast_interface_consistency_test() {
         // 与标准库 String?.equals(other, ignoreCase) 在接口层面保持一致
         val strings = listOf(
