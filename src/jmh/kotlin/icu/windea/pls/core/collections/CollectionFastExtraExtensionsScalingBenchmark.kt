@@ -17,12 +17,10 @@ import org.openjdk.jmh.infra.Blackhole
 import java.util.concurrent.TimeUnit
 
 /**
- * [CollectionFastExtraExtensions] 在不同输入规模和相对切片规模下的基准测试。
+ * `CollectionFastExtraExtensions.kt` 中的方法在不同输入规模和相对切片规模下的基准测试。
  *
  * 使用 100、10000、1000000 三档输入规模，分别覆盖短前缀/后缀、
  * 半长前缀/后缀以及末位不匹配等场景。
- *
- * @see CollectionFastExtraExtensions
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)

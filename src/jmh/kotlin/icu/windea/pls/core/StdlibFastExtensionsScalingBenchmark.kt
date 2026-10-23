@@ -17,12 +17,10 @@ import org.openjdk.jmh.infra.Blackhole
 import java.util.concurrent.TimeUnit
 
 /**
- * [StdlibFastExtensions] 中字符串比较方法在高复杂度下的基准测试。
+ * `StdlibFastExtensions.kt` 中的字符串比较方法在高复杂度下的基准测试。
  *
  * 使用 100、10000、1000000 三档字符串长度，覆盖完全相等、末位不匹配
  * 和忽略大小写比较等场景。
- *
- * @see StdlibFastExtensions
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
@@ -61,7 +59,7 @@ open class StdlibFastExtensionsScalingBenchmark {
 
     @Benchmark
     open fun equalsEqual(blackhole: Blackhole) {
-        blackhole.consume(equalA.equals(equalB))
+        blackhole.consume(equalA == equalB)
     }
 
     @Benchmark
@@ -72,7 +70,7 @@ open class StdlibFastExtensionsScalingBenchmark {
 
     @Benchmark
     open fun equalsMismatchLast(blackhole: Blackhole) {
-        blackhole.consume(mismatchLastA.equals(mismatchLastB))
+        blackhole.consume(mismatchLastA == mismatchLastB)
     }
 
     @Benchmark

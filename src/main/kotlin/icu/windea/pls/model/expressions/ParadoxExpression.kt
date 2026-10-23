@@ -196,7 +196,6 @@ private sealed class ParadoxExpressionBase : ParadoxExpression {
     override fun matchesRegex(input: String): Boolean = regex.matches(input)
 
     override fun matchesConstant(input: String): Boolean {
-        // 3.0.1 radical optimization
         // 如果表达式未用引号括起，不能用来匹配布尔关键字
         if (quoted && (input == ChronicleStrings.yesKeyword || input == ChronicleStrings.noKeyword)) return false
         // 忽略大小写

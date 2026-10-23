@@ -11,7 +11,7 @@ import icu.windea.pls.core.annotations.Fast
  *
  * ## 实现笔记
  *
- * - 手写逐字符比较，并在遇到非 ASCII 差异时回退到标准 `String.equals`。
+ * - 手写逐字符比较，并在遇到非 ASCII 差异时回退到标准 `String?.equals`。
  * - 基准显示短 ASCII 和非 ASCII 比较通常慢于标准实现，`ignoreCase` 基本持平，长 ASCII 明显更慢。
  * - 标准实现直接比较压缩字节数组，并完整支持 Unicode，因此没有继续使用此实现的必要。
  *
@@ -22,7 +22,7 @@ import icu.windea.pls.core.annotations.Fast
  * @see kotlin.text.equals
  */
 @Deprecated(
-    message = "Use standard `String.equals` instead; the JDK implementation is faster and handles Unicode.",
+    message = "Use standard `String?.equals` instead; the JDK implementation is faster and handles Unicode.",
     replaceWith = ReplaceWith("this.equals(other, ignoreCase)"),
     level = DeprecationLevel.ERROR,
 )

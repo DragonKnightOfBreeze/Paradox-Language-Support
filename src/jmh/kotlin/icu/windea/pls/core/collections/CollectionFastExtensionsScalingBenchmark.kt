@@ -17,12 +17,10 @@ import org.openjdk.jmh.infra.Blackhole
 import java.util.concurrent.TimeUnit
 
 /**
- * [CollectionFastExtensions] 在不同输入规模和相对输出规模下的基准测试。
+ * `CollectionFastExtensions.kt` 中的方法在不同输入规模和相对输出规模下的基准测试。
  *
  * 使用 100、10000、1000000 三档输入规模，观察线性遍历、结果构建和
  * 过滤比例、丢弃比例对 `@Fast` 实现与标准库实现的影响。
- *
- * @see CollectionFastExtensions
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)

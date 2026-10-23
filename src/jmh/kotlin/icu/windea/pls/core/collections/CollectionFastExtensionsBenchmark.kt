@@ -16,11 +16,9 @@ import java.util.concurrent.TimeUnit
 private const val SIZE = 64
 
 /**
- * [CollectionFastExtensions] 的基准测试。
+ * `CollectionFastExtensions.kt` 中的方法的基准测试。
  *
  * 每个 `@Fast` 方法都与对应的标准库/惯用实现对比；结果用于回归观察和相对比较。
- *
- * @see CollectionFastExtensions
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)

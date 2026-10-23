@@ -21,11 +21,9 @@ private const val SPLIT_COUNT = 7
 private const val JOIN_LIST_COUNT = 4
 
 /**
- * [StdlibFastExtensions] 中字符串相关扩展方法的基准测试。
+ * `StdlibFastExtensions` 中的字符串相关扩展方法的基准测试。
  *
  * 每个 `@Fast` 方法都与对应的标准库/惯用实现对比；结果用于回归观察和相对比较。
- *
- * @see StdlibFastExtensions
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
@@ -71,7 +69,7 @@ open class StdlibFastExtensionsBenchmark {
     )
 
     private val joinLists = listOf(
-        emptyList<String>(),
+        emptyList(),
         listOf("a"),
         listOf("a", "b", "c", "d", "e", "f", "g", "h"),
         listOf("a", "b", "c"),
@@ -90,7 +88,7 @@ open class StdlibFastExtensionsBenchmark {
     @OperationsPerInvocation(ASCII_PAIR_COUNT)
     open fun equalsAscii(blackhole: Blackhole) {
         for ((a, b) in asciiPairs) {
-            blackhole.consume(a.equals(b))
+            blackhole.consume(a == b)
         }
     }
 
@@ -124,7 +122,7 @@ open class StdlibFastExtensionsBenchmark {
     @OperationsPerInvocation(NON_ASCII_PAIR_COUNT)
     open fun equalsNonAscii(blackhole: Blackhole) {
         for ((a, b) in nonAsciiPairs) {
-            blackhole.consume(a.equals(b))
+            blackhole.consume(a == b)
         }
     }
 

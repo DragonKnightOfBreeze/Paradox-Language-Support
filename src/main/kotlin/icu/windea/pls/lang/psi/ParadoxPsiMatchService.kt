@@ -139,7 +139,7 @@ object ParadoxPsiMatchService {
     }
 
     /**
-     * 是否是匹配语义的的封装变量。如果名字为空或无法获取，则认为不匹配。如果指定了 [type]，则也匹配类型。
+     * 是否是匹配语义的封装变量。如果名字为空或无法获取，则认为不匹配。如果指定了 [type]，则也匹配类型。
      */
     @OptIn(ExperimentalContracts::class)
     fun isScriptedVariable(element: PsiElement?, type: ParadoxScriptedVariableType? = null): Boolean {
@@ -192,7 +192,7 @@ object ParadoxPsiMatchService {
     }
 
     /**
-     * 是否是匹配语义的的本地化。如果名字为空或无法获取，则认为不匹配。如果指定了 [type]，则也匹配类型。
+     * 是否是匹配语义的本地化。如果名字为空或无法获取，则认为不匹配。如果指定了 [type]，则也匹配类型。
      */
     @OptIn(ExperimentalContracts::class)
     fun isLocalisation(element: PsiElement?, type: ParadoxLocalisationType? = null): Boolean {

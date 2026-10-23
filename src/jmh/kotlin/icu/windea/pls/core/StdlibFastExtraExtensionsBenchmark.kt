@@ -19,11 +19,9 @@ private const val DELIMITED_TEXT_COUNT = 8
 private const val DELIMITED_STRING_LIST_COUNT = 4
 
 /**
- * [StdlibFastExtraExtensions] 中字符串/路径相关扩展方法的基准测试。
+ * `StdlibFastExtraExtensions.kt` 中的字符串/路径相关扩展方法的基准测试。
  *
  * 每个 `@Fast` 方法都与对应的标准库/惯用实现对比；结果用于回归观察和相对比较。
- *
- * @see StdlibFastExtraExtensions
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
@@ -55,7 +53,7 @@ open class StdlibFastExtraExtensionsBenchmark {
     )
 
     private val delimitedStringLists = listOf(
-        emptyList<String>(),
+        emptyList(),
         listOf("a"),
         listOf("a", "b", "c", "d", "e", "f", "g", "h"),
         listOf("a", "b", "c"),

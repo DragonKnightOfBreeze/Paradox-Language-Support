@@ -17,11 +17,9 @@ import org.openjdk.jmh.infra.Blackhole
 import java.util.concurrent.TimeUnit
 
 /**
- * [CollectionFastBuilders] 的基准测试。
+ * `CollectionFastBuilders.kt` 中的方法的基准测试。
  *
  * 每个 `@Fast` 构建方法与对应的标准库/惯用实现对比；结果用于回归观察和相对比较。
- *
- * @see CollectionFastBuilders
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
@@ -39,7 +37,7 @@ open class CollectionFastBuildersBenchmark {
 
     @Setup(Level.Trial)
     open fun setup() {
-        elements = Array<Any?>(size) { it }
+        elements = Array(size) { it }
     }
 
     @Benchmark

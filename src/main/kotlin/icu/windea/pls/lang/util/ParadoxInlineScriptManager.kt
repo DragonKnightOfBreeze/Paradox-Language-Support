@@ -59,7 +59,7 @@ object ParadoxInlineScriptManager {
      */
     fun isMatched(expression: String): Boolean {
         // 这里需要忽略大小写
-        if (!expression.equals(inlineScriptKey, true)) return false // 3.0.1 radical optimization
+        if (!expression.equals(inlineScriptKey, true)) return false
         return true
     }
 
@@ -71,7 +71,7 @@ object ParadoxInlineScriptManager {
     fun isMatched(expression: String, context: Any?): Boolean {
         if (context == null) return false
         // 这里需要忽略大小写
-        if (!expression.equals(inlineScriptKey, true)) return false // 3.0.1 radical optimization
+        if (!expression.equals(inlineScriptKey, true)) return false
         return isSupported(context)
     }
 

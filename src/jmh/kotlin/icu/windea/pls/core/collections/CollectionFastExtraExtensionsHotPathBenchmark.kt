@@ -20,12 +20,10 @@ import java.util.concurrent.TimeUnit
 private const val HOT_PATH_SLICE_COUNT = 256
 
 /**
- * [CollectionFastExtraExtensions] 在“大量小规模切片操作”场景下的基准测试。
+ * `CollectionFastExtraExtensions.kt` 中的方法在“大量小规模切片操作”场景下的基准测试。
  *
  * 用于模拟索引构建、语义匹配流水线中对短成员路径的重复前缀/后缀处理。
  * 覆盖 0、1 元素等快速返回路径，并可通过 `gc` profiler 观察每次操作的临时分配。
- *
- * @see CollectionFastExtraExtensions
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)

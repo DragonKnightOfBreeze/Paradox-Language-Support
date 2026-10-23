@@ -20,13 +20,11 @@ import java.util.concurrent.TimeUnit
 private const val HOT_PATH_LIST_COUNT = 256
 
 /**
- * [CollectionFastExtensions] 在“大量小规模集合操作”场景下的基准测试。
+ * `CollectionFastExtensions.kt` 中的方法在“大量小规模集合操作”场景下的基准测试。
  *
  * 用于模拟索引构建、语义匹配等流水线中 `X * Y * Z` 形式的重复操作：
  * 每次基准方法调用会处理 [HOT_PATH_LIST_COUNT] 个小集合，再按操作数归一化。
  * 重点覆盖 0、1 元素等快速返回路径，并可通过 `gc` profiler 观察每次操作的临时分配。
- *
- * @see CollectionFastExtensions
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)

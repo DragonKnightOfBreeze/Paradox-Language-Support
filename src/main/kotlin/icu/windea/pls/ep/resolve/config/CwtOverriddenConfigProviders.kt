@@ -45,15 +45,12 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
     }
 
     override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
-        // 3.0.1 radical optimization
         if (config !is CwtPropertyConfig) return emptyList()
-        if (Constants.caseKey != config.key) return emptyList()
+        if (config.key != Constants.caseKey) return emptyList()
         val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return emptyList()
-        if (!Constants.contextNames.any { it.equals(aliasConfig.subName) }) return emptyList()
+        if (aliasConfig.subName !in Constants.contextNames) return emptyList()
         val triggerConfig = aliasConfig.config.configs
-            ?.findIsInstanceFast<CwtPropertyConfig> { property ->
-                Constants.triggerKeys.any { key -> key.equals(property.key) } && Constants.triggerValue == property.value
-            }
+            ?.findIsInstanceFast<CwtPropertyConfig> { p -> p.key in Constants.triggerKeys && p.value == Constants.triggerValue }
         if (triggerConfig == null) return emptyList()
 
         ProgressManager.checkCanceled()
@@ -89,14 +86,13 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
     }
 
     override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
-        // 3.0.1 radical optimization
         if (config !is CwtPropertyConfig) return emptyList()
-        if (Constants.parametersKey != config.key) return emptyList()
+        if (config.key != Constants.parametersKey) return emptyList()
         val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return emptyList()
-        if (!Constants.contextNames.any { it.equals(aliasConfig.subName) }) return emptyList()
+        if (aliasConfig.subName !in Constants.contextNames) return emptyList()
         val contextProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
-            .filter { property -> Constants.contextNames.any { name -> name.equals(property.name, ignoreCase = true) } }
-            .find { ParadoxConfigManager.getConfigs(it).anyFast { c -> c is CwtPropertyConfig && c.aliasConfig == aliasConfig } }
+            .filter { p -> Constants.contextNames.any { name -> name.equals(p.name, ignoreCase = true) } }
+            .find { p -> ParadoxConfigManager.getConfigs(p).anyFast { c -> c is CwtPropertyConfig && c.aliasConfig == aliasConfig } }
         if (contextProperty == null) return emptyList()
 
         ProgressManager.checkCanceled()
