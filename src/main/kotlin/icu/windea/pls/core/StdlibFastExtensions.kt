@@ -7,20 +7,22 @@ import com.google.common.collect.ImmutableList
 import icu.windea.pls.core.annotations.Fast
 
 /**
- * 对 [String.equals] 的 ASCII 比较版本（已弃用）。
+ * 对 [String.equals] 的 ASCII 比较版本。
  *
- * 性能笔记：
- * - 短 ASCII 比较比标准 `String.equals` 慢约 75%，非 ASCII 比较慢约 64%；
- * - `ignoreCase` 基本持平；
- * - 长 ASCII 比较明显更慢，因为标准实现直接比较压缩字节数组；
- * - 标准实现完整支持 Unicode，而此实现只对 ASCII 做快速路径。
+ * ## 实现笔记
  *
- * 新代码请使用 `==` 或 [String?.equals]。
+ * - 手写逐字符比较，并在遇到非 ASCII 差异时回退到标准 `String.equals`。
+ * - 基准显示短 ASCII 和非 ASCII 比较通常慢于标准实现，`ignoreCase` 基本持平，长 ASCII 明显更慢。
+ * - 标准实现直接比较压缩字节数组，并完整支持 Unicode，因此没有继续使用此实现的必要。
+ *
+ * ## 弃用声明
+ *
+ * 此方法已弃用。应改用标准的字符串比较，因为标准实现通常拥有更好的性能。
  *
  * @see kotlin.text.equals
  */
 @Deprecated(
-    message = "Use standard String.equals instead; the JDK implementation is faster and handles Unicode.",
+    message = "Use standard `String.equals` instead; the JDK implementation is faster and handles Unicode.",
     replaceWith = ReplaceWith("this.equals(other, ignoreCase)"),
     level = DeprecationLevel.ERROR,
 )
@@ -49,13 +51,39 @@ fun String?.equalsFast(other: String?, ignoreCase: Boolean = false): Boolean {
     return true
 }
 
-/** @see kotlin.text.equals */
+/**
+ * 检查当前字符串是否等于数组中的任意字符串。
+ *
+ * ## 弃用声明
+ *
+ * 此方法已弃用。应改用标准的字符串比较，因为标准实现通常拥有更好的性能。
+ *
+ * @see kotlin.text.equals
+ */
+@Deprecated(
+    message = "Use standard `any { it.equals(...) }` instead.",
+    replaceWith = ReplaceWith("other.any { it.equals(this, ignoreCase) }"),
+    level = DeprecationLevel.ERROR,
+)
 @Fast
 fun String.equalsAnyFast(other: Array<String>, ignoreCase: Boolean = false): Boolean {
     return other.any { it.equals(this, ignoreCase) }
 }
 
-/** @see kotlin.text.equals */
+/**
+ * 检查数组中是否存在字符串等于当前字符串。
+ *
+ * ## 弃用声明
+ *
+ * 此方法已弃用。应改用标准的字符串比较，因为标准实现通常拥有更好的性能。
+ *
+ * @see kotlin.text.equals
+ */
+@Deprecated(
+    message = "Use standard `any { it.equals(...) }` instead.",
+    replaceWith = ReplaceWith("any { it.equals(other, ignoreCase) }"),
+    level = DeprecationLevel.ERROR,
+)
 @Fast
 fun Array<String>.equalsAnyFast(other: String, ignoreCase: Boolean = false): Boolean {
     return any { it.equals(other, ignoreCase) }

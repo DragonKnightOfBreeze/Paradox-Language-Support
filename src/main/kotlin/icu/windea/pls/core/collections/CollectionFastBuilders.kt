@@ -11,8 +11,11 @@ import it.unimi.dsi.fastutil.objects.ObjectImmutableList
 /**
  * 创建一个期望大小为 [expectedSize] 的不可变列表，并通过 [init] 初始化。
  *
- * 性能笔记：0/1 元素走快速返回；64 元素时基准中约比 `List(size)` 快 20%～25%。
- * 注意参考实现返回可变列表，二者语义不完全等价。
+ * ## 实现笔记
+ *
+ * - 0/1 元素直接返回 `ImmutableList.of(...)`，避免创建中间数组。
+ * - 其余情况先分配定长数组，再通过 [asImmutableList] 零拷贝包装。
+ * - 基准中 64 元素约比 `List(size)` 快 20%～25%，但参考实现返回可变列表，二者语义不完全等价。
  */
 @Fast
 inline fun <T : Any> buildImmutableList(expectedSize: Int, init: (index: Int) -> T): List<T> {
@@ -27,17 +30,19 @@ inline fun <T : Any> buildImmutableList(expectedSize: Int, init: (index: Int) ->
 /**
  * 创建一个期望大小为 [expectedSize] 的不可变集，并通过 [init] 初始化。
  *
- * 性能笔记：
- * - 0/1 元素走快速返回，通常比 `buildSet` 更快；
- * - 4 元素以上使用 Guava builder，基准中约慢 7～8.7 倍；
- * - 该方法当前未在生产代码中使用，推荐改用标准 `buildSet`。
+ * ## 实现笔记
+ *
+ * - 0/1 元素直接返回 `ImmutableSet.of(...)`，通常比 `buildSet` 更快。
+ * - 4 元素以上使用 Guava builder，基准中约慢 7~8.7 倍。
+ * - 此方法当前未在生产代码中使用。
+ *
+ * ## 弃用声明
+ *
+ * 此方法已弃用。应改用标准的 `buildSet`，因为标准实现在这类构建场景中更轻量。
  */
 @Deprecated(
     message = "Use buildSet instead; this builder is slower for four or more elements.",
-    replaceWith = ReplaceWith(
-        "buildSet(expectedSize) { repeat(expectedSize) { index -> add(init(index)) } }",
-        "kotlin.collections.buildSet",
-    ),
+    replaceWith = ReplaceWith("buildSet(expectedSize) { repeat(expectedSize) { index -> add(init(index)) } }"),
     level = DeprecationLevel.ERROR,
 )
 @Fast
@@ -53,8 +58,11 @@ inline fun <T : Any> buildImmutableSet(expectedSize: Int, init: (index: Int) -> 
 /**
  * 将当前数组零拷贝包装为不可变列表。
  *
- * 性能笔记：非空时通常远快于 `toList()`；空数组时可能更慢。
- * 调用方不得在包装后继续修改原数组。
+ * ## 实现笔记
+ *
+ * - 使用 `ObjectImmutableList` 直接包装数组，不复制元素。
+ * - 非空时通常远快于 `toList()`，空数组时可能更慢。
+ * - 调用方不得在包装后继续修改原数组，否则会破坏不可变语义。
  */
 @Fast
 @Suppress("NOTHING_TO_INLINE")

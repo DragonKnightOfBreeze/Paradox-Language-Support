@@ -142,7 +142,7 @@ allOpen {
   - [ ] 更新 `documents/notes/guidelines.md`
   - [ ] 更新 `documents/notes/adr.md` + 补充 `documents/notes/adr/add-benchmarks.md`
 
-## 重构 & 整理
+### 重构 & 整理
 
 - [x] P4 根据基准测试结果和分析结论，重构和优化相关代码，以消除一些显著的性能热点/性能回归
   - [x] `TextMatcher.matchesDateField`
@@ -153,6 +153,16 @@ allOpen {
   - [ ] 应用 `region...endregion` 分组
 - [ ] P4 将 `ChronicleBenchmarkLauncher` 中引入的所有系统属性全部移到 `ChronicleCapabilities.Benchmark`，并补充文档注释
   - 包括 `ChronicleBenchmarkLauncher` 自身的文档注释，以及各个相关的能力项的文档注释。
+
+### 修订
+
+2026-10-24
+
+- [x] 需要修订 `buildImmutableList` `buildImmutableSet` `asImmutableList` `equalsFast` 等方法的文档注释（“实现笔记”章节+“弃用声明”章节）
+  - “性能笔记”有时并不是那么准确，因此使用更合适的“实现笔记”。
+  - 使用 `## 实现笔记` 和 `## 弃用声明`。
+- [x] `equalsAnyFast` 也要级联地标为弃用，同时进行相关的重构
+- [x] 出于对齐的考虑，也补充单元测试 `DateMatchersTest` `DateMatchServiceTest`，覆盖常见场景
 
 ## 参见
 

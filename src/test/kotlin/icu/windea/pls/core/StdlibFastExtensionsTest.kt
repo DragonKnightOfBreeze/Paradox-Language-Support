@@ -96,6 +96,7 @@ class StdlibFastExtensionsTest {
     // region equalsAnyFast
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun equalsAnyFast_basic_test() {
         val array = arrayOf("a", "bb", "ccc")
         assertTrue(array.equalsAnyFast("bb"))
@@ -106,11 +107,13 @@ class StdlibFastExtensionsTest {
     }
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun equalsAnyFast_empty_array_test() {
         assertFalse(emptyArray<String>().equalsAnyFast("a"))
     }
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun equalsAnyFast_interface_consistency_test() {
         // 与标准库 any { it.equals(other, ignoreCase) } 保持一致
         val arrays = listOf(

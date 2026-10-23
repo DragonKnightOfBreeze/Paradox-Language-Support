@@ -12,7 +12,6 @@ import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.equalsAnyFast
 import icu.windea.pls.core.select.one
 import icu.windea.pls.lang.psi.properties
 import icu.windea.pls.lang.psi.stringValue
@@ -42,9 +41,9 @@ class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContex
         if (finalConfig !is CwtPropertyConfig) return null
         if (Constants.caseKey != finalConfig.key && Constants.defaultKey != finalConfig.key) return null
         val aliasConfig = finalConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return null
-        if (!Constants.contextNames.equalsAnyFast(aliasConfig.subName)) return null
+        if (!Constants.contextNames.any { it.equals(aliasConfig.subName) }) return null
         val containerProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
-            .filter { Constants.contextNames.equalsAnyFast(it.name, ignoreCase = true) }
+            .filter { property -> Constants.contextNames.any { name -> name.equals(property.name, ignoreCase = true) } }
             .find { ParadoxConfigManager.getConfigs(it).any { c -> c is CwtPropertyConfig && c.aliasConfig == aliasConfig } }
         if (containerProperty == null) return null
 
@@ -79,9 +78,9 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         if (finalConfig !is CwtPropertyConfig) return null
         if (Constants.triggerKey != finalConfig.key && Constants.parametersKey != finalConfig.key) return null
         val aliasConfig = finalConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return null
-        if (!Constants.contextNames.equalsAnyFast(aliasConfig.subName)) return null
+        if (!Constants.contextNames.any { it.equals(aliasConfig.subName) }) return null
         val containerProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
-            .filter { Constants.contextNames.equalsAnyFast(it.name, ignoreCase = true) }
+            .filter { property -> Constants.contextNames.any { name -> name.equals(property.name, ignoreCase = true) } }
             .find { ParadoxConfigManager.getConfigs(it).any { c -> c is CwtPropertyConfig && c.aliasConfig == aliasConfig } }
         if (containerProperty == null) return null
 

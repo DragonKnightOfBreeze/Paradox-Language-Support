@@ -21,7 +21,6 @@ import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.findIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
-import icu.windea.pls.core.equalsAnyFast
 import icu.windea.pls.core.optimizedIfEmpty
 import icu.windea.pls.core.select.one
 import icu.windea.pls.lang.psi.properties
@@ -50,9 +49,11 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
         if (config !is CwtPropertyConfig) return emptyList()
         if (Constants.caseKey != config.key) return emptyList()
         val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return emptyList()
-        if (!Constants.contextNames.equalsAnyFast(aliasConfig.subName)) return emptyList()
+        if (!Constants.contextNames.any { it.equals(aliasConfig.subName) }) return emptyList()
         val triggerConfig = aliasConfig.config.configs
-            ?.findIsInstanceFast<CwtPropertyConfig> { Constants.triggerKeys.equalsAnyFast(it.key) && Constants.triggerValue == it.value }
+            ?.findIsInstanceFast<CwtPropertyConfig> { property ->
+                Constants.triggerKeys.any { key -> key.equals(property.key) } && Constants.triggerValue == property.value
+            }
         if (triggerConfig == null) return emptyList()
 
         ProgressManager.checkCanceled()
@@ -92,9 +93,9 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
         if (config !is CwtPropertyConfig) return emptyList()
         if (Constants.parametersKey != config.key) return emptyList()
         val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return emptyList()
-        if (!Constants.contextNames.equalsAnyFast(aliasConfig.subName)) return emptyList()
+        if (!Constants.contextNames.any { it.equals(aliasConfig.subName) }) return emptyList()
         val contextProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
-            .filter { Constants.contextNames.equalsAnyFast(it.name, ignoreCase = true) }
+            .filter { property -> Constants.contextNames.any { name -> name.equals(property.name, ignoreCase = true) } }
             .find { ParadoxConfigManager.getConfigs(it).anyFast { c -> c is CwtPropertyConfig && c.aliasConfig == aliasConfig } }
         if (contextProperty == null) return emptyList()
 

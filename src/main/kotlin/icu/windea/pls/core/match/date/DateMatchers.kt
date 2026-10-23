@@ -6,13 +6,12 @@ import java.time.format.DateTimeParseException
 /**
  * 带轻量预检查的默认日期匹配器。
  *
- * 性能笔记：
- * - 无效日期的主要成本来自 `DateTimeFormatter` 解析失败时的异常；
- * - 对当前 CWT 中常见的 pattern 使用形态预检查，可以在解析前拒绝明显无效的输入；
+ * 说明：
+ * - 无效日期的主要成本来自 `DateTimeFormatter` 解析失败时的异常。
+ * - 对当前 CWT 中常见的 pattern 使用形态预检查，可以在解析前拒绝明显无效的输入。
  * - 未知 pattern 不做预检查，直接回退到 `DateTimeFormatter`，以保持自定义 pattern 的语义。
- *
- * 预检查只负责数字和分隔符形态，不负责月份、日期范围等语义校验；
- * 因此形态有效但语义无效的日期仍会进入 `DateTimeFormatter` 并可能抛出解析异常。
+ * - 预检查只负责数字和分隔符形态，不负责月份、日期范围等语义校验。
+ * - 形态有效但语义无效的日期仍会进入 `DateTimeFormatter` 并可能抛出解析异常。
  */
 class DefaultDateMatcher(override val pattern: String) : DateMatcher {
     private val formatter = DateTimeFormatter.ofPattern(pattern)
