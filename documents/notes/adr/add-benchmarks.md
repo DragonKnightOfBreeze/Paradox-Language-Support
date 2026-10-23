@@ -83,6 +83,8 @@ allOpen {
 
 ## 任务
 
+### 主要
+
 - [x] P4 完善基准测试（准备阶段）
   - [x] 改为使用 `ChronicleAssume.includeBenchmark()` + JMH
   - [x] 新增 `benchmark` 任务，以执行基准测试
@@ -111,11 +113,25 @@ allOpen {
   - [ ] 更新 `documents/notes/guidelines.md`
   - [ ] 更新 `documents/notes/adr.md` + 补充 `documents/notes/adr/add-benchmarks.md`
 
-待评估：
-- [ ] P3 考虑优化 `icu.windea.pls.core.match.TextMatcher.matchesDateField` - 通过加入预检查来达成快速返回
-  - 由于参数 `pattern` 是允许自定义的，需要一些额外的处理。
-- [ ] P3 `SimilarityMatchServiceBenchmarkTest` 中的断言可能会在 CI 中失败（当前的全部4个单测方法）
+### 需要分析
+
+- [ ] `SimilarityMatchServiceBenchmarkTest` 中的断言可能会在 CI 中失败（当前的全部4个单测方法）
   - 参见：https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/actions/runs/39277543449/job/118149061308
+- [ ] 考虑优化 `icu.windea.pls.core.match.TextMatcher.matchesDateField` - 通过加入预检查来达成快速返回
+  - 混合输入约 **414 ns/op**；
+  - 有效日期约 **155 ns/op**，无效日期约 **697 ns/op**，无效路径的异常/解析失败成本显著；
+  - 加入轻量格式预检查后，混合输入降到约 **190 ns/op**，约提升 **2.2 倍**。
+  - 由于参数 `pattern` 是允许自定义的，需要一些额外的处理。
+- [ ] `String?.equalsFast` 根据当前的基准测试，相比惯用写法反而通常拥有更差的性能。需要进一步分析。
+  - `equalsFast` vs `equals`（ASCII） - 5.326 ns VS 3.048 ns - `@Fast` 反而慢约 75%
+  - `equalsFast` vs `equals`（ASCII，`ignoreCase`）-  5.615 ns VS 5.764 ns - 基本持平
+  - `equalsFast` vs `equals`（非 ASCII） - 5.528 ns VS 3.367 ns - `@Fast` 反而慢约 64%
+  - 标准库的 `String.equals` 很可能使用了高度优化的 intrinsic/向量化实现，而 `equalsFast` 的手写逐字符循环在短字符串上没有优势。
+  - 不过本轮只测试了短字符串和非空值。`equalsFast` 仍可能在长 ASCII 字符串、大量 `ignoreCase` 比较或 null 较多的场景有不同表现，建议后续补充长字符串和 null 场景后再决定是否调整使用策略。
+- [x] `String.matchesPath` 当前的惯用写法（`referenceMatchesPath`）并不是严格意义上的惯用写法
+  - 实际上，这里的代码逻辑有些复杂，因此不太能用当前的基准测试结果（约快 11%）来作为初步结论。
+  - `List.removePrefixOrNull` `List.removeSuffixOrNull` 也是类似的。
+  - 目前仅作记录。
 
 ## 参见
 
