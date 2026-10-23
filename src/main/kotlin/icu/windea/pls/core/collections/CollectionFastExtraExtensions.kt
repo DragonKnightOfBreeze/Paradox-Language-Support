@@ -19,9 +19,10 @@ fun <T : Any> List<T>.removePrefixOrNull(prefix: List<T>, wildcard: T? = null): 
     if (this === prefix) return ImmutableList.of() // optimize: fast return
     val resultSize = size - prefixSize
     if (resultSize < 0) return null
+    val hasWildcard = wildcard != null
     for (i in 0 until prefixSize) { // optimize: use index-based iteration
         val e = prefix[i]
-        if (wildcard != null && wildcard == e) continue
+        if (hasWildcard && wildcard == e) continue
         if (e != this[i]) return null
     }
 
@@ -47,9 +48,10 @@ fun <T : Any> List<T>.removeSuffixOrNull(suffix: List<T>, wildcard: T? = null): 
     if (this === suffix) return ImmutableList.of() // fast return
     val resultSize = size - suffixSize
     if (resultSize < 0) return null
+    val hasWildcard = wildcard != null
     for (i in 0 until suffixSize) { // optimize: use index-based iteration
         val e = suffix[i]
-        if (wildcard != null && wildcard == e) continue
+        if (hasWildcard && wildcard == e) continue
         if (e != this[size - suffixSize + i]) return null
     }
 

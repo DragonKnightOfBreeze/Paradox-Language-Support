@@ -106,7 +106,7 @@ allOpen {
   - 基于迭代器的标准 `Iterable.forEach` 在当前 JVM 环境下并不存在 24 B/op 的迭代器分配，这意味着迭代器很可能被 JIT 的逃逸分析/标量替换相处了。
   - 这意味着 `forEachFast` 的主要优势实际上主要来自索引访问（而这并不明显，并不是那么值得），而不是减少临时内存。
   - 这也适用于各种衍生方法，例如 `allFast` `anyFast` `noneFast`。
-- [ ] `List.removePrefixOrNull` / `List.removeSuffixOrNull`：将 `wildcard != null` 提取到循环外
+- [x] `List.removePrefixOrNull` / `List.removeSuffixOrNull`：将 `wildcard != null` 提取到循环外
 
 ## 任务
 
