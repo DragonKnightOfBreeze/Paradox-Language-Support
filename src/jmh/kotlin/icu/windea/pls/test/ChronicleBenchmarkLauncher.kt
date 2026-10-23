@@ -16,6 +16,8 @@ import java.util.regex.Pattern
 private const val JMH_VERSION = "1.37"
 private const val CLASSES_DIR_PROPERTY = "chronicle.benchmark.classesDir"
 private const val REPORT_DIR_PROPERTY = "chronicle.benchmark.reportDir"
+private const val PROFILERS_PROPERTY = "chronicle.benchmark.profilers"
+private const val PARAMS_PROPERTY = "chronicle.benchmark.params"
 private const val DEFAULT_REPORT_DIR = "build/reports/benchmarks"
 
 /**
@@ -24,6 +26,9 @@ private const val DEFAULT_REPORT_DIR = "build/reports/benchmarks"
  * 基准测试类位于 `src/jmh/kotlin`，通过 Gradle 的 `benchmark` 任务运行。
  * 如果未传入参数，则扫描 `chronicle.benchmark.classesDir`（或回退到 classpath）
  * 下所有以 `Benchmark` 结尾、且包含 `@Benchmark` 方法的类。
+ *
+ * 可通过系统属性 `chronicle.benchmark.profilers` 指定 JMH profiler（逗号分隔），
+ * 通过 `chronicle.benchmark.params` 指定参数过滤（如 `size=1000000`）。
  */
 object ChronicleBenchmarkLauncher {
     @JvmStatic
@@ -196,16 +201,36 @@ object ChronicleBenchmarkLauncher {
 
     private fun runBenchmark(benchmark: BenchmarkDescriptor, reportDir: Path) {
         val resultFile = reportDir.resolve("${benchmark.className}.json").toFile()
+        val profilers = readCsvProperty(PROFILERS_PROPERTY)
+        val params = readParams()
         val options = OptionsBuilder()
             .apply {
                 benchmark.methods.forEach { method ->
                     include("^${Pattern.quote(benchmark.className)}\\.${Pattern.quote(method)}$")
                 }
+                profilers.forEach { profiler -> addProfiler(profiler) }
+                params.forEach { (key, value) -> param(key, value) }
             }
             .result(resultFile.absolutePath)
             .resultFormat(ResultFormatType.JSON)
             .build()
         Runner(options).run()
+    }
+
+    private fun readCsvProperty(name: String): List<String> {
+        return System.getProperty(name)
+            .orEmpty()
+            .split(',')
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+    }
+
+    private fun readParams(): List<Pair<String, String>> {
+        return readCsvProperty(PARAMS_PROPERTY).mapNotNull { entry ->
+            val index = entry.indexOf('=')
+            if (index <= 0 || index == entry.lastIndex) return@mapNotNull null
+            entry.substring(0, index).trim() to entry.substring(index + 1).trim()
+        }
     }
 
     private data class BenchmarkDescriptor(
