@@ -86,9 +86,8 @@ The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`. 
 - Unit tests: for pure components/tools/extensions; usually no IntelliJ Platform API.
 - Integration tests: for PSI/index/query/semantic match and resolve/tool integrations; usually depend on the IntelliJ Platform API or another external integration.
 - Platform tests: aka integration tests depend on IntelliJ Platform API.
-- Prefer Kotlin for tests.
 - Tooling: JUnit4 + IntelliJ Platform test framework.
-- If a test class targets one or a few specific subjects (rather than a theme or a bag of extension methods), call it out in the class KDoc via `@see TestTarget`.
+- If a test class has one or a few specific targets (classes, methods, etc.), call it out in the class KDoc via `@see TestTarget`.
 - Group test cases with `// region ... // endregion` comments when a class has enough cases to split into modules.
 - Add short inline comments where useful to clarify edge cases, details, or expected results of a test case.
 - When a test is expected to pass, prefer running it at the default/warn log level (`--warn`) first; only drop to a more verbose log level if it actually fails.
@@ -178,6 +177,15 @@ Some tests are intentionally **disabled by default** and only run when explicitl
 | `includeConfigGenerator()` | `chronicle.test.include.config.generator` | Config generator tests                                                            |
 
 `chronicle.test.include.all` (checked via `includeAll()`) unconditionally enables every category above. Example: `./gradlew test -Dchronicle.test.include.local.env=true --no-daemon --console=plain`.
+
+### Benchmarks (JMH-based)
+
+Benchmarks are based on JMH and suitable for several performance-sensitive codes (and meanwhile, it is necessary to consider evaluating specific performance).
+
+- Benchmark codes are under `src/jmh/kotlin/`.
+- Benchmarks can be executed via `./gradlew benchmark` (as a distinct Gradle task).
+- Reports can be generated via `./gradlew benchmarkReport` (output directory: `documents/reports/benchmarks/{timestamp}/`).
+- See `icu.windea.pls.test.ChronicleBenchmarkLauncher` for more details (which is also under `src/jmh/kotlin/`).
 
 ## Code architecture
 
