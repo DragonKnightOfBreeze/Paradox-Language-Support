@@ -244,7 +244,7 @@ object CwtConfigManipulationService {
         // cannot merge block data expressions here (no further info)
         if (dataType == CwtDataTypes.Block || otherDataType == CwtDataTypes.Block) return null
         // check whether expression strings are same
-        if (expressionString.equals(otherExpressionString)) return expressionString
+        if (expressionString == otherExpressionString) return expressionString
         // check whether expression strings are same (ignore case) for constant data expressions
         if (dataType == CwtDataTypes.Constant && otherDataType == CwtDataTypes.Constant) {
             if (expressionString.equals(otherExpressionString, ignoreCase = true)) return expressionString.lowercase()
@@ -288,7 +288,7 @@ object CwtConfigManipulationService {
                     val colorType = dataExpression.metadata.value
                     val otherColorType = otherDataExpression.metadata.value
                     if (colorType == null && otherColorType == null) return expressionString
-                    if (colorType != null && colorType.equals(otherColorType)) return expressionString
+                    if (colorType != null && colorType == otherColorType) return expressionString
                 }
                 else -> return null // explicitly null
             }
@@ -299,7 +299,7 @@ object CwtConfigManipulationService {
                 in CwtDataTypeSets.DynamicValue -> {
                     val name = dataExpression.metadata.value
                     val otherName = otherDataExpression.metadata.value
-                    if (name != null && name.equals(otherName)) return "dynamic_value[$name]"
+                    if (name != null && name == otherName) return "dynamic_value[$name]"
                 }
                 in CwtDataTypeSets.ValueField -> {
                     val name = dataExpression.metadata.value

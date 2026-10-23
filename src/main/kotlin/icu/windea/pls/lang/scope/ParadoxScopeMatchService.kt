@@ -35,10 +35,10 @@ object ParadoxScopeMatchService {
     fun matchesScopeId(scope: String?, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {
         // 3.0.2 for any, all, union (e.g., carrier), and other normal scopes
         if (scope == null) return true
-        if (scopeToMatch.equals(ParadoxScopeConstants.anyScope)) return true
-        if (scope.equals(ParadoxScopeConstants.anyScope)) return true
-        if (scope.equals(ParadoxScopeConstants.unknownScope)) return true
-        if (scope.equals(scopeToMatch)) return true
+        if (scopeToMatch == ParadoxScopeConstants.anyScope) return true
+        if (scope == ParadoxScopeConstants.anyScope) return true
+        if (scope == ParadoxScopeConstants.unknownScope) return true
+        if (scope == scopeToMatch) return true
         if (matchesScopeFromModel(ParadoxScope.resolve(scope), scopeToMatch, configGroup)) return true
         return false
     }
@@ -57,10 +57,10 @@ object ParadoxScopeMatchService {
     fun matchesScope(scope: ParadoxScope?, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {
         // 3.0.2 for any, all, union (e.g., carrier), and other normal scopes
         if (scope == null) return true
-        if (scopeToMatch.equals(ParadoxScopeConstants.anyScope)) return true
+        if (scopeToMatch == ParadoxScopeConstants.anyScope) return true
         if (scope === ParadoxScope.Any) return true
         if (scope === ParadoxScope.Unknown) return true
-        if (scope.id.equals(scopeToMatch)) return true
+        if (scope.id == scopeToMatch) return true
         if (matchesScopeFromModel(scope, scopeToMatch, configGroup)) return true
         return false
     }
@@ -80,10 +80,10 @@ object ParadoxScopeMatchService {
     fun matchesScope(scopeContext: ParadoxScopeContext?, scopeToMatch: String, configGroup: CwtConfigGroup): Boolean {
         if (scopeContext == null) return true
         val scope = scopeContext.scope
-        if (scopeToMatch.equals(ParadoxScopeConstants.anyScope)) return true
+        if (scopeToMatch == ParadoxScopeConstants.anyScope) return true
         if (scope === ParadoxScope.Any) return true
         if (scope === ParadoxScope.Unknown) return true
-        if (scope.id.equals(scopeToMatch)) return true
+        if (scope.id == scopeToMatch) return true
         if (matchesScopeFromModel(scope, scopeToMatch, configGroup)) return true
         if (matchesScopeFromPromotions(scopeContext, scopeToMatch, configGroup)) return true
         return false
@@ -139,7 +139,7 @@ object ParadoxScopeMatchService {
         val promotions = scopeContext.promotions
         if (promotions.isEmpty()) return false
         for (promotion in promotions) {
-            if (promotion.equals(scopeToMatch)) return true
+            if (promotion == scopeToMatch) return true
             if (matchesScopeFromModel(ParadoxScope.resolve(promotion), scopeToMatch, configGroup)) return true
         }
         return false
@@ -150,7 +150,7 @@ object ParadoxScopeMatchService {
         if (promotions.isEmpty()) return false
         for (promotion in promotions) {
             for (scopeToMatch in scopesToMatch) {
-                if (promotion.equals(scopeToMatch)) return true
+                if (promotion == scopeToMatch) return true
                 if (matchesScopeFromModel(ParadoxScope.resolve(promotion), scopeToMatch, configGroup)) return true
             }
         }

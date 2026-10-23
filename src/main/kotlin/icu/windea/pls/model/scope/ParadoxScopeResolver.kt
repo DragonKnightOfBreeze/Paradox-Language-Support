@@ -23,7 +23,7 @@ object ParadoxScopeResolver {
     fun getScopeId(scope: String): String {
         val scopeId = scope.lowercase().replace(' ', '_')
         // "all" scope is always resolved as "any" scope
-        if (scopeId.equals(ParadoxScopeConstants.allScope)) return ParadoxScopeConstants.anyScope
+        if (scopeId == ParadoxScopeConstants.allScope) return ParadoxScopeConstants.anyScope
         // intern to optimize memory
         return interner.intern(scopeId)
     }
@@ -45,9 +45,9 @@ object ParadoxScopeResolver {
     }
 
     fun resolveScope(id: String): ParadoxScope {
-        if (id.equals(ParadoxScopeConstants.anyScope)) return ParadoxScope.Any
-        if (id.equals(ParadoxScopeConstants.allScope)) return ParadoxScope.Any
-        if (id.equals(ParadoxScopeConstants.unknownScope)) return ParadoxScope.Unknown
+        if (id == ParadoxScopeConstants.anyScope) return ParadoxScope.Any
+        if (id == ParadoxScopeConstants.allScope) return ParadoxScope.Any
+        if (id == ParadoxScopeConstants.unknownScope) return ParadoxScope.Unknown
         return cache.computeIfAbsent(id) {
             ParadoxScope.Default(id, indexCounter.getAndIncrement()).also {
                 synchronized(indexMap) { indexMap.put(it.index, it) }

@@ -87,18 +87,18 @@ allOpen {
 
 - [ ] `SimilarityMatchServiceBenchmarkTest` 中的断言可能会在 CI 中失败（当前的全部4个单测方法）
   - 参见：https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/actions/runs/39277543449/job/118149061308
-- [ ] 考虑优化 `icu.windea.pls.core.match.TextMatcher.matchesDateField` - 通过加入预检查来达成快速返回
+- [x] 考虑优化 `icu.windea.pls.core.match.TextMatcher.matchesDateField` - 通过加入预检查来达成快速返回
   - 混合输入约 **414 ns/op**。
   - 有效日期约 **155 ns/op**，无效日期约 **697 ns/op**，无效路径的异常/解析失败成本显著。
   - 加入轻量格式预检查后，混合输入降到约 **190 ns/op**，约提升 **2.2 倍**。
   - 由于参数 `pattern` 是允许自定义的，需要一些额外的处理。
-- [ ] `String?.equalsFast` 根据当前的基准测试，相比惯用写法反而通常拥有更差的性能。需要进一步分析。
+- [x] `String?.equalsFast` 根据当前的基准测试，相比惯用写法反而通常拥有更差的性能。需要进一步分析。
   - `equalsFast` vs `equals`（ASCII） - 5.326 ns VS 3.048 ns - `@Fast` 反而慢约 75%
   - `equalsFast` vs `equals`（ASCII，`ignoreCase`）-  5.615 ns VS 5.764 ns - 基本持平
   - `equalsFast` vs `equals`（非 ASCII） - 5.528 ns VS 3.367 ns - `@Fast` 反而慢约 64%
   - 标准库的 `String.equals` 很可能使用了高度优化的 intrinsic/向量化实现，而 `equalsFast` 的手写逐字符循环在短字符串上没有优势。
   - 不过本轮只测试了短字符串和非空值。`equalsFast` 仍可能在长 ASCII 字符串、大量 `ignoreCase` 比较或 null 较多的场景有不同表现，建议后续补充长字符串和 null 场景后再决定是否调整使用策略。
-- [ ] `buildImmutableSet` 根据当前的基准测试，相比标准的 `buildSet` 显著更慢（除元素数量为 0 或 1 时）
+- [x] `buildImmutableSet` 根据当前的基准测试，相比标准的 `buildSet` 显著更慢（除元素数量为 0 或 1 时）
   - 初步结论：1 元素时 0.43 倍，4 元素约 7 倍，64 元素约 8.7 倍
   - 这可能是结果不可变性带来的固定成本，或是 expectedSize/构建器策略不合适。
   - 考虑到其突出性，以及此方法目前并未在生产代码中使用，较好的处理方案可能是：将此方法标为 `@Deprecated`（级别：`ERROR` 或 `HIDDEN`）。
@@ -144,10 +144,10 @@ allOpen {
 
 ## 重构 & 整理
 
-- [ ] P4 根据基准测试结果和分析结论，重构和优化相关代码，以消除一些显著的性能热点/性能回归
-  - [ ] `TextMatcher.matchesDateField`
-  - [ ] `String?.equalsFast`
-  - [ ] `buildImmutableSet`
+- [x] P4 根据基准测试结果和分析结论，重构和优化相关代码，以消除一些显著的性能热点/性能回归
+  - [x] `TextMatcher.matchesDateField`
+  - [x] `String?.equalsFast`
+  - [x] `buildImmutableSet`
 - [ ] P4 整理和修订已编写的基准测试代码
   - [ ] 清理文档注释
   - [ ] 应用 `region...endregion` 分组

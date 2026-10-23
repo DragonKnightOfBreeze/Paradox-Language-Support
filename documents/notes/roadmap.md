@@ -551,6 +551,9 @@
   - 进行图片IO（渲染/转换/等等）时，也进行取消检查（抵达字节大小阈值时）。
 - [x] P1 修复插件在 IDEA 2026.3 EAP 中存在的兼容性问题
   - 参见：`com.intellij.util.OpenSourceUtil`
+- [ ] P1 修复 CWT 文件和脚本文件的结构视图无法正常显示的回归BUG（自插件版本 3.0.3）
+  - 参见：`icu.windea.pls.cwt.structureView.CwtFileTreeElement`
+  - 参见：`icu.windea.pls.script.structureView.ParadoxScriptFileTreeElement`
 
 #### 任务（次要）
 

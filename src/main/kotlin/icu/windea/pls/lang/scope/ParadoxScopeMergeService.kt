@@ -37,11 +37,11 @@ object ParadoxScopeMergeService {
     fun mergeScopeId(scope: String?, scopeToMerge: String?, configGroup: CwtConfigGroup): String? {
         if (scope == null && scopeToMerge == null) return null
         if (scope == null || scopeToMerge == null) return scope ?: scopeToMerge
-        if (scope.equals(scopeToMerge)) return scope
+        if (scope == scopeToMerge) return scope
         val anyScope = ParadoxScopeConstants.anyScope
-        if (scope.equals(anyScope) || scopeToMerge.equals(anyScope)) return anyScope
+        if (scope == anyScope || scopeToMerge == anyScope) return anyScope
         val unknownScope = ParadoxScopeConstants.unknownScope
-        if (scope.equals(unknownScope) || scopeToMerge.equals(unknownScope)) return unknownScope
+        if (scope == unknownScope || scopeToMerge == unknownScope) return unknownScope
         mergeScopeFromModel(ParadoxScope.resolve(scope), ParadoxScope.resolve(scopeToMerge), configGroup)?.let { return it.id }
         return null
     }
@@ -59,7 +59,7 @@ object ParadoxScopeMergeService {
         if (scope == null || scopeToMerge == null) return scope ?: scopeToMerge
         if (scope === ParadoxScope.Any || scopeToMerge === ParadoxScope.Any) return ParadoxScope.Any
         if (scope === ParadoxScope.Unknown || scopeToMerge === ParadoxScope.Unknown) return ParadoxScope.Unknown
-        if (scope.id.equals(scopeToMerge.id)) return scope
+        if (scope.id == scopeToMerge.id) return scope
         mergeScopeFromModel(scope, scopeToMerge, configGroup)?.let { return it }
         return null
     }

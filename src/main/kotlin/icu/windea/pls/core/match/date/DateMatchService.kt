@@ -10,9 +10,7 @@ import icu.windea.pls.core.cache.CacheBuilder
  * @see DateMatcher
  */
 object DateMatchService {
-    private val dateMatchersCache = CacheBuilder("maximumSize=100").build<String, DateMatcher> { pattern ->
-        DefaultDateMatcher(pattern)
-    }
+    private val dateMatchersCache = CacheBuilder("maximumSize=100").build<String, DateMatcher> { pattern -> DefaultDateMatcher(pattern) }
 
     /**
      * 检查 [input] 是否匹配指定 [pattern] 的日期字段。

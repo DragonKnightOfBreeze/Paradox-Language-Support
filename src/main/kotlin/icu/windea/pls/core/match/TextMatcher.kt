@@ -1,7 +1,9 @@
 package icu.windea.pls.core.match
 
 import icu.windea.pls.core.match.date.DateMatchService
+import icu.windea.pls.core.match.date.DateMatcher
 import icu.windea.pls.core.orNull
+import java.time.format.DateTimeFormatter
 
 object TextMatcher {
     fun isNumberUnaryChar(c: Char): Boolean {
@@ -84,8 +86,12 @@ object TextMatcher {
      * 检查 [text] 是否匹配指定的日期字段格式。
      *
      * 说明：
-     * - [pattern] 为 `DateTimeFormatter` 兼容的日期模式，默认为 `"y.M.d"`（年月日）。
-     * - 对常见 pattern 先做轻量形态预检查，再使用 `DateTimeFormatter` 解析匹配；解析成功即返回 `true`，异常时返回 `false`。
+     * - [pattern] 为 [DateTimeFormatter] 兼容的日期模式，默认为 `"y.M.d"`（年月日）。
+     * - 对常见 pattern 先做轻量形态预检查，再使用 [DateTimeFormatter] 解析匹配；解析成功即返回 `true`，异常时返回 `false`。
+     * - [leadingUnary] 为 `true` 时，允许首字符为一元运算符（`+` 或 `-`）。
+     *
+     * @see DateMatcher
+     * @see DateMatchService
      */
     fun matchesDateField(text: String, pattern: String? = null, leadingUnary: Boolean = true): Boolean {
         val pattern = pattern?.orNull() ?: "y.M.d"

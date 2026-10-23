@@ -198,9 +198,9 @@ private sealed class ParadoxExpressionBase : ParadoxExpression {
     override fun matchesConstant(input: String): Boolean {
         // 3.0.1 radical optimization
         // 如果表达式未用引号括起，不能用来匹配布尔关键字
-        if (quoted && (ChronicleStrings.yesKeyword.equals(input) || ChronicleStrings.noKeyword.equals(input))) return false
+        if (quoted && (input == ChronicleStrings.yesKeyword || input == ChronicleStrings.noKeyword)) return false
         // 忽略大小写
-        return value.equals(input, true)
+        return input.equals(value, true)
     }
 
     override fun equals(other: Any?) = this === other || other is ParadoxExpression && text == other.text

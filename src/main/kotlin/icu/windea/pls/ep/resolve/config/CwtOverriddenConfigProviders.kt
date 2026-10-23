@@ -48,11 +48,11 @@ class CwtSwitchOverriddenConfigProvider : CwtOverriddenConfigProvider {
     override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
         // 3.0.1 radical optimization
         if (config !is CwtPropertyConfig) return emptyList()
-        if (!Constants.caseKey.equals(config.key)) return emptyList()
+        if (Constants.caseKey != config.key) return emptyList()
         val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return emptyList()
         if (!Constants.contextNames.equalsAnyFast(aliasConfig.subName)) return emptyList()
         val triggerConfig = aliasConfig.config.configs
-            ?.findIsInstanceFast<CwtPropertyConfig> { Constants.triggerKeys.equalsAnyFast(it.key) && Constants.triggerValue.equals(it.value) }
+            ?.findIsInstanceFast<CwtPropertyConfig> { Constants.triggerKeys.equalsAnyFast(it.key) && Constants.triggerValue == it.value }
         if (triggerConfig == null) return emptyList()
 
         ProgressManager.checkCanceled()
@@ -90,7 +90,7 @@ class CwtTriggerWithParametersAwareOverriddenConfigProvider : CwtOverriddenConfi
     override fun <T : CwtMemberConfig<*>> getOverriddenConfigs(contextElement: PsiElement, config: T): List<T> {
         // 3.0.1 radical optimization
         if (config !is CwtPropertyConfig) return emptyList()
-        if (!Constants.parametersKey.equals(config.key)) return emptyList()
+        if (Constants.parametersKey != config.key) return emptyList()
         val aliasConfig = config.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return emptyList()
         if (!Constants.contextNames.equalsAnyFast(aliasConfig.subName)) return emptyList()
         val contextProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)

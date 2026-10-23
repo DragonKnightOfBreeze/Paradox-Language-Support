@@ -40,7 +40,7 @@ class ParadoxSwitchOverriddenScopeContextProvider : ParadoxOverriddenScopeContex
         // 3.0.1 radical optimization
         val finalConfig = config.originalConfig ?: config
         if (finalConfig !is CwtPropertyConfig) return null
-        if (!Constants.caseKey.equals(finalConfig.key) && !Constants.defaultKey.equals(finalConfig.key)) return null
+        if (Constants.caseKey != finalConfig.key && Constants.defaultKey != finalConfig.key) return null
         val aliasConfig = finalConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return null
         if (!Constants.contextNames.equalsAnyFast(aliasConfig.subName)) return null
         val containerProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
@@ -77,7 +77,7 @@ class ParadoxTriggerWithParametersAwareOverriddenScopeContextProvider : ParadoxO
         // 3.0.1 radical optimization
         val finalConfig = config.originalConfig ?: config
         if (finalConfig !is CwtPropertyConfig) return null
-        if (!Constants.triggerKey.equals(finalConfig.key) && !Constants.parametersKey.equals(finalConfig.key)) return null
+        if (Constants.triggerKey != finalConfig.key && Constants.parametersKey != finalConfig.key) return null
         val aliasConfig = finalConfig.parentConfig?.castOrNull<CwtPropertyConfig>()?.aliasConfig ?: return null
         if (!Constants.contextNames.equalsAnyFast(aliasConfig.subName)) return null
         val containerProperty = contextElement.parentsOfType<ParadoxScriptProperty>(false)
