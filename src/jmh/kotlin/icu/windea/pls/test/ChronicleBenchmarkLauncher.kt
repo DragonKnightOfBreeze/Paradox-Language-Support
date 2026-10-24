@@ -1,5 +1,6 @@
 package icu.windea.pls.test
 
+import icu.windea.pls.ChronicleCapabilities
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.results.format.ResultFormatType
 import org.openjdk.jmh.runner.Runner
@@ -14,35 +15,34 @@ import java.util.jar.JarFile
 import java.util.regex.Pattern
 
 private const val JMH_VERSION = "1.37"
-private const val CLASSES_DIR_PROPERTY = "chronicle.benchmark.classesDir"
-private const val REPORT_DIR_PROPERTY = "chronicle.benchmark.reportDir"
-private const val PROFILERS_PROPERTY = "chronicle.benchmark.profilers"
-private const val PARAMS_PROPERTY = "chronicle.benchmark.params"
 private const val DEFAULT_REPORT_DIR = "build/reports/benchmarks"
 
 /**
  * 用于运行 JMH 基准测试的通用启动器。
  *
  * 基准测试类位于 `src/jmh/kotlin`，通过 Gradle 的 `benchmark` 任务运行。
- * 如果未传入参数，则扫描 `chronicle.benchmark.classesDir`（或回退到 classpath）
+ * 如果未传入参数，则扫描 `ChronicleCapabilities.Benchmark.classesDir`（或回退到 classpath）
  * 下所有以 `Benchmark` 结尾、且包含 `@Benchmark` 方法的类。
  *
- * 可通过系统属性 `chronicle.benchmark.profilers` 指定 JMH profiler（逗号分隔），
- * 通过 `chronicle.benchmark.params` 指定参数过滤（如 `size=1000000`）。
+ * 相关能力项（[ChronicleCapabilities.Benchmark]）：
+ * - [ChronicleCapabilities.Benchmark.classesDir]：基准测试类目录，多个目录使用系统路径分隔符分隔。
+ * - [ChronicleCapabilities.Benchmark.reportDir]：报告输出目录。
+ * - [ChronicleCapabilities.Benchmark.profilers]：JMH profiler 列表，逗号分隔。
+ * - [ChronicleCapabilities.Benchmark.params]：JMH 参数过滤列表，逗号分隔的 `key=value` 形式。
  */
 object ChronicleBenchmarkLauncher {
     @JvmStatic
     fun main(args: Array<String>) {
-        val classDirs = System.getProperty(CLASSES_DIR_PROPERTY)
+        val classDirs = ChronicleCapabilities.Benchmark.classesDir
             ?.split(File.pathSeparator)
             ?.filter { it.isNotBlank() }
             ?.map { Paths.get(it) }
             ?: emptyList()
-        val reportDir = Paths.get(System.getProperty(REPORT_DIR_PROPERTY) ?: DEFAULT_REPORT_DIR)
+        val reportDir = Paths.get(ChronicleCapabilities.Benchmark.reportDir ?: DEFAULT_REPORT_DIR)
 
         val allBenchmarks = discoverBenchmarks(classDirs)
         if (allBenchmarks.isEmpty()) {
-            error("No benchmarks found. Run it via `./gradlew benchmark` or set -D$CLASSES_DIR_PROPERTY.")
+            error("No benchmarks found. Run it via `./gradlew benchmark` or set -Dchronicle.benchmark.classesDir.")
         }
 
         val selectedBenchmarks = selectBenchmarks(allBenchmarks, args.toList())
@@ -201,8 +201,8 @@ object ChronicleBenchmarkLauncher {
 
     private fun runBenchmark(benchmark: BenchmarkDescriptor, reportDir: Path) {
         val resultFile = reportDir.resolve("${benchmark.className}.json").toFile()
-        val profilers = readCsvProperty(PROFILERS_PROPERTY)
-        val params = readParams()
+        val profilers = ChronicleCapabilities.Benchmark.profilers
+        val params = ChronicleCapabilities.Benchmark.params
         val options = OptionsBuilder()
             .apply {
                 benchmark.methods.forEach { method ->
@@ -215,22 +215,6 @@ object ChronicleBenchmarkLauncher {
             .resultFormat(ResultFormatType.JSON)
             .build()
         Runner(options).run()
-    }
-
-    private fun readCsvProperty(name: String): List<String> {
-        return System.getProperty(name)
-            .orEmpty()
-            .split(',')
-            .map { it.trim() }
-            .filter { it.isNotEmpty() }
-    }
-
-    private fun readParams(): List<Pair<String, String>> {
-        return readCsvProperty(PARAMS_PROPERTY).mapNotNull { entry ->
-            val index = entry.indexOf('=')
-            if (index <= 0 || index == entry.lastIndex) return@mapNotNull null
-            entry.substring(0, index).trim() to entry.substring(index + 1).trim()
-        }
     }
 
     private data class BenchmarkDescriptor(

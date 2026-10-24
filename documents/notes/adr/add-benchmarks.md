@@ -125,9 +125,9 @@ allOpen {
   - [x] 清理文档注释
   - [x] 应用 `region...endregion` 分组
   - [x] 应用 `allopen` Gradle 插件
-- [ ] P4 将 `ChronicleBenchmarkLauncher` 中引入的所有系统属性全部移到 `ChronicleCapabilities.Benchmark`，并补充与完善文档注释
-  - [ ] `ChronicleBenchmarkLauncher` 自身的文档注释（以列表的形式简要说明相关的能力项）
-  - [ ] 各个相关的能力项的文档注释
+- [x] P4 将 `ChronicleBenchmarkLauncher` 中引入的所有系统属性全部移到 `ChronicleCapabilities.Benchmark`，并补充与完善文档注释
+  - [x] `ChronicleBenchmarkLauncher` 自身的文档注释（以列表的形式简要说明相关的能力项）
+  - [x] 各个相关的能力项的文档注释
 
 ### 分析
 

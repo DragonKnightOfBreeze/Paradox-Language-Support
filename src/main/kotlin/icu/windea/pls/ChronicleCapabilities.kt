@@ -55,6 +55,45 @@ object ChronicleCapabilities {
         var includeConfigGenerator = getBooleanProperty("chronicle.test.include.config.generator", false)
     }
 
+    /**
+     * 基准测试相关能力项。
+     *
+     * 这些能力项通常通过 `-D...` 系统属性调整，并由 `ChronicleBenchmarkLauncher` 在 JMH 启动阶段读取。
+     */
+    object Benchmark {
+        /**
+         * 基准测试类所在目录。多个目录使用系统路径分隔符分隔。
+         *
+         * 对应系统属性：`chronicle.benchmark.classesDir`。
+         * 未指定时，启动器会扫描 classpath。
+         */
+        var classesDir: String? = getStringProperty("chronicle.benchmark.classesDir")
+
+        /**
+         * 基准测试报告的输出目录。
+         *
+         * 对应系统属性：`chronicle.benchmark.reportDir`。
+         * 未指定时，启动器使用 `build/reports/benchmarks`。
+         */
+        var reportDir: String? = getStringProperty("chronicle.benchmark.reportDir")
+
+        /**
+         * 要启用的 JMH profiler 列表。
+         *
+         * 对应系统属性：`chronicle.benchmark.profilers`，使用逗号分隔，例如 `gc`。
+         * 未指定时不启用 profiler。
+         */
+        var profilers: List<String> = getCsvProperty("chronicle.benchmark.profilers")
+
+        /**
+         * 要应用的 JMH 参数过滤列表。
+         *
+         * 对应系统属性：`chronicle.benchmark.params`，使用逗号分隔的 `key=value` 形式，
+         * 例如 `size=1000000`。无效项会被忽略。
+         */
+        var params: List<Pair<String, String>> = getParamsProperty("chronicle.benchmark.params")
+    }
+
     // region Helpers
 
     private fun getBooleanProperty(key: String, defaultValue: Boolean): Boolean {
@@ -65,6 +104,26 @@ object ChronicleCapabilities {
     private fun getIntProperty(key: String, defaultValue: Int, range: ClosedRange<Int>? = null): Int {
         val value = System.getProperty(key)?.toIntOrNull() ?: defaultValue
         return if (range != null) value.coerceIn(range) else value
+    }
+
+    private fun getStringProperty(key: String): String? {
+        return System.getProperty(key)?.takeIf { it.isNotBlank() }
+    }
+
+    private fun getCsvProperty(key: String): List<String> {
+        return getStringProperty(key)
+            ?.split(',')
+            ?.map { it.trim() }
+            ?.filter { it.isNotEmpty() }
+            .orEmpty()
+    }
+
+    private fun getParamsProperty(key: String): List<Pair<String, String>> {
+        return getCsvProperty(key).mapNotNull { entry ->
+            val index = entry.indexOf('=')
+            if (index <= 0 || index == entry.lastIndex) return@mapNotNull null
+            entry.substring(0, index).trim() to entry.substring(index + 1).trim()
+        }
     }
 
     // endregion
