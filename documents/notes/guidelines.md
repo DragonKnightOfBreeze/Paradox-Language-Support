@@ -443,6 +443,7 @@ TODO：
 
 基准测试适用于一些性能敏感，并且需要考虑评估具体性能的代码（组件类、策略类、扩展方法等）。
 
+约定：
 - 基于 JMH 的基准测试类需要以 `Benchmark` 结尾，并位于 `src/jmh/kotlin` 目录下（而非常规的 `src/test/kotlin`）。
 - 用于验证基准测试相关行为（如缓存命中、淘汰、容量边界）的 JUnit 单元测试需要以 `BenchmarkTest` 结尾，并位于 `src/test/kotlin` 目录下。
 - 出于准确性等方面的考虑，基准测试需要基于 JMH（而非直接基于 `measureTimeMillis` 等来自标准库的方法）。
@@ -454,7 +455,7 @@ TODO：
 - 通过 `./gradlew benchmarkReport` 运行基准测试并输出带时间戳的报告；也可以先运行 `./gradlew benchmark`，再运行 `./gradlew benchmarkReport -x benchmark`。
 
 报告输出：
-- 通过 `./gradlew benchmarkReport` 输出报告（包括原始报告文件，以及从中提取的总结、元数据信息等）。
+- 包括原始的 JSON 报告文件，以及提取后 Markdown 报告文档（总结、元数据信息等）。
 - 输出到 `documents/reports/benchmarks/{timestamp}/` 目录下。
 
 参见：

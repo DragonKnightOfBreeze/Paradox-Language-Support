@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 /**
- * 从 JMH JSON 结果生成带时间戳的 Markdown/TEXT 报告。
+ * 从 JMH JSON 结果生成带时间戳的 Markdown 报告。
  */
 abstract class ChronicleBenchmarkReportTask : DefaultTask() {
     @get:InputDirectory
@@ -56,7 +56,7 @@ abstract class ChronicleBenchmarkReportTask : DefaultTask() {
             BenchmarkReport.renderSummary(rows, timestamp, jmhVersion.get())
         )
         rows.groupBy { it.className }.forEach { (className, classRows) ->
-            File(outputDir, "${className.substringAfterLast('.')}.txt").writeText(
+            File(outputDir, "${className}.md").writeText(
                 BenchmarkReport.renderClassReport(className, classRows)
             )
         }

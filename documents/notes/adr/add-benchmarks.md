@@ -27,6 +27,7 @@
 
 ### 概述
 
+约定：
 - 基于 JMH 的基准测试类需要以 `Benchmark` 结尾，并位于 `src/jmh/kotlin` 目录下（而非常规的 `src/test/kotlin`）。
 - 用于验证基准测试相关行为（如缓存命中、淘汰、容量边界）的 JUnit 单元测试需要以 `BenchmarkTest` 结尾，并位于 `src/test/kotlin` 目录下。
 - 出于准确性等方面的考虑，基准测试需要基于 JMH（而非直接基于 `measureTimeMillis` 等来自标准库的方法）。
@@ -38,7 +39,7 @@
 - 通过 `./gradlew benchmarkReport` 运行基准测试并输出带时间戳的报告；也可以先运行 `./gradlew benchmark`，再运行 `./gradlew benchmarkReport -x benchmark`。
 
 报告输出：
-- 通过 `./gradlew benchmarkReport` 输出报告（包括原始报告文件，以及从中提取的总结、元数据信息等）。
+- 包括原始的 JSON 报告文件，以及提取后 Markdown 报告文档（总结、元数据信息等）。
 - 输出到 `documents/reports/benchmarks/{timestamp}/` 目录下。
 
 ### 关于基准测试的启动器 `ChronicleBenchmarkLauncher`
@@ -180,6 +181,11 @@ allOpen {
   - 使用 `## 实现笔记` 和 `## 弃用声明`。
 - [x] `equalsAnyFast` 也要级联地标为弃用，同时进行相关的重构
 - [x] 出于对齐的考虑，也补充单元测试 `DateMatchersTest` `DateMatchServiceTest`，覆盖常见场景
+
+#### 2026-10-24
+
+- [ ] 修订 `ChronicleCapabilities.Benchmark` 相关代码：仅额外提供 `getStringProperty(key: String, defaultValue: String = ""): String`
+- [x] 更改输出的 `.txt` 文件的命名方式：使用 `{fqName}.md`
 
 ## 参见
 
