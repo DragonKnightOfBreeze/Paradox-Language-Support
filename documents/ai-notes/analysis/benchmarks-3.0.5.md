@@ -313,4 +313,4 @@
 - `summary.md`：所有结果的汇总表
 - `metadata.md`：环境、Git 与运行信息
 - `*.json`：JMH 原始结果
-- `*.txt`：按类拆分的 Markdown 表格
+- `*.md`：按类拆分的 Markdown 表格

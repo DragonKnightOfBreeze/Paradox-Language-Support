@@ -56,21 +56,22 @@ inline fun <T : Any> buildImmutableSet(expectedSize: Int, init: (index: Int) -> 
 }
 
 /**
- * 将当前数组零拷贝包装为不可变列表。
+ * 将当前数组零拷贝包装为不可变列表。如果当前数组为空，则直接返回空列表。
  *
  * ## 实现笔记
  *
- * - 使用 `ObjectImmutableList` 直接包装数组，不复制元素。
- * - 非空时通常远快于 `toList()`，空数组时可能更慢。
+ * - 0 元素直接返回 `emptyList()`，避免创建列表对象。
+ * - 其余情况使用 `ObjectImmutableList` 直接包装数组，不复制元素。
+ * - 非空时通常远快于 `toList()`。
  * - 调用方不得在包装后继续修改原数组，否则会破坏不可变语义。
  */
 @Fast
-@Suppress("NOTHING_TO_INLINE")
+@Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
 inline fun <T : Any> Array<Any?>.asImmutableList(): List<T> {
-    @Suppress("UNCHECKED_CAST")
+    if (isEmpty()) return emptyList()
     this as Array<out T>
-    // return result.asList() // memory usage: 24 + align8(16 + 4n)
-    // @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog") return java.util.List.of(*elements) // memory usage: 24 + align8(16 + 4n)
-    // return ImmutableList.copyOf(result) // memory usage: 16 + align8(16 + 4n) // note: this will copy the input array
+    // return (this as Array<out T>).asList() // memory usage: 24 + align8(16 + 4n)
+    // @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog") return java.util.List.of(*this) // memory usage: 24 + align8(16 + 4n)
+    // return ImmutableList.copyOf(this) // memory usage: 16 + align8(16 + 4n) // note: this will copy the input array
     return ObjectImmutableList(this) // memory usage: 16 + align8(16 + 4n)
 }
