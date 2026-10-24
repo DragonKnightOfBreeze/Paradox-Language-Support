@@ -43,7 +43,7 @@
         "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
       }
     },
-    "jetbrains": {
+    "intellij": {
       "type": "remote",
       "url": "http://localhost:64342/sse"
     },

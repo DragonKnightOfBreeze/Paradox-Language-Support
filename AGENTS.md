@@ -387,7 +387,7 @@ Do not read the entire `documents/` directory at once, instead, read specific do
 - Prefer using built-in tools for common operations (e.g., read, write, edit, patch, grep search, glob search).
 - Prefer using built-in tools to execute commands for build tool operations (e.g., building, running tests).
 - Prefer using suitable mcp when structured search or semantic search is intended.
-- Prefer using available mcp (intellij mcp or intellij-index mcp) to navigate declarations, usages, implementations, usages, etc.
+- Prefer using available mcp (intellij mcp or intellij-index mcp) to navigate to declarations, usages, implementations, library sources, etc.
 - Prefer using available mcp (intellij mcp or intellij-index mcp) to run code inspections, before compilation, building, or running tests, if necessary.
 - Run Gradle tasks through the built-in shell with `--no-daemon --console=plain` (see [Gradle execution environment](#gradle-execution-environment)).
 
