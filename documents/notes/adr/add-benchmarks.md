@@ -137,7 +137,7 @@ allOpen {
 
 - [x] `SimilarityMatchServiceBenchmarkTest` 中的断言可能会在 CI 中失败（当前的全部4个单测方法）
   - 参见：https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/actions/runs/39277543449/job/118149061308
-  - 解决方案：将 `SimilarityMatchService.bestMatchesCache` 的 `maximumSize` 回退为 5000。
+  - 原因：不能通过 `System.setProperty("chronicle.recordCacheStats", "true")` 稳定地调整能力项，应直接修改 `ChronicleCapabilities.General.recordCacheStats`
 - [x] 考虑优化 `icu.windea.pls.core.match.TextMatcher.matchesDateField` - 通过加入预检查来达成快速返回
   - 混合输入约 **414 ns/op**。
   - 有效日期约 **155 ns/op**，无效日期约 **697 ns/op**，无效路径的异常/解析失败成本显著。

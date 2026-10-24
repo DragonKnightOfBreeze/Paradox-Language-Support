@@ -3,6 +3,8 @@
 package icu.windea.pls.core.match.similarity
 
 import com.github.benmanes.caffeine.cache.Cache
+import icu.windea.pls.ChronicleCapabilities
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -17,12 +19,18 @@ import kotlin.random.Random
 class SimilarityMatchServiceBenchmarkTest {
     @Before
     fun doSetUp() {
-        // 确保启用 Caffeine 的 recordStats()，以便获取命中率等统计
-        if (!java.lang.Boolean.getBoolean("chronicle.recordCacheStats")) {
-            System.setProperty("chronicle.recordCacheStats", "true")
-        }
+        // 确保启用需要的能力项
+        System.setProperty("chronicle.recordCacheStat.marker", ChronicleCapabilities.General.recordCacheStats.toString())
+        ChronicleCapabilities.General.recordCacheStats = true
+
         // 尽量清理缓存，避免不同测试方法之间的相互影响（统计不会被重置，后续取增量）
         cache().invalidateAll()
+    }
+
+    @After
+    fun doTearDown() {
+        ChronicleCapabilities.General.recordCacheStats = System.getProperty("chronicle.recordCacheStat.marker").toBoolean()
+        System.clearProperty("chronicle.recordCacheStat.marker")
     }
 
     /**
