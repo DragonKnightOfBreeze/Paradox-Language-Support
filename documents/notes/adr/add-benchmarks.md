@@ -81,9 +81,54 @@ allOpen {
 - [Kotlin/kotlinx-benchmark: Kotlin multiplatform benchmarking toolkit](https://github.com/Kotlin/kotlinx-benchmark)
 - [Setting Up Kotlin/JVM and Java Projects for Benchmarking](https://github.com/Kotlin/kotlinx-benchmark/blob/master/docs/kotlin-jvm-project-setup.md)
 
-## 分析
+## 任务
 
 ### 主要
+
+- [x] P4 完善基准测试（准备阶段）
+  - [x] 改为使用 `ChronicleAssume.includeBenchmark()` + JMH
+  - [x] 新增 `benchmark` 任务，以执行基准测试
+  - [x] 新增 `benchmarkReport` 任务，以输出带时间戳的测试报告到 `documents/reports/benchmarks/{timestamp}/`
+  - [x] 新增 `icu.windea.pls.core.ChronicleBenchmarkLauncher`，作为基准测试的启动器类。
+- [x] P4 完善已有的基准测试
+  - [x] `icu.windea.pls.core.match.MatchersBenchmark` -> `AntMatcherBenchmark` + `AntFromRegexBenchmark`
+  - [x] `icu.windea.pls.core.match.similarity.SimilarityMatchServiceBenchmark`
+- [x] P4 编写基准测试，以验证通用基础设施中的部分匹配器组件的性能表现
+  - [x] `icu.windea.pls.core.match.GlobMatcherBenchmark`
+  - [x] `icu.windea.pls.core.match.PathMatcherBenchmark`
+  - [x] `icu.windea.pls.core.match.TextMatcherBenchmark`
+- [x] P4 编写基准测试，以验证标有 `@Fast` 的扩展方法相比常规版本的性能表现
+  - [x] `icu.windea.pls.core.StdlibFastExtensionsBenchmark` + 衍生项
+  - [x] `icu.windea.pls.core.StdlibFastExtraExtensionsBenchmark` + 衍生项
+  - [x] `icu.windea.pls.core.collections.CollectionFastExtensionsBenchmark` + 衍生项
+  - [x] `icu.windea.pls.core.collections.CollectionFastExtraExtensionsBenchmark` + 衍生项
+  - [x] `icu.windea.pls.core.collections.CollectionFastBulderesBenchmark` + 衍生项
+- [x] P4 ~~编写基准测试，以验证查询/遍历时的性能表现~~ - 搁置
+  - 目前包括：List/Stream/Sequence/Query/PushStream
+  - 关于这里使用的 Query/PushStream：直接在测试代码中实现并使用
+  - 搁置：涉及多种复杂场景，考虑根据日后的 profiling 来分析对比更真实的性能表现
+- [ ] P4 执行已有的所有基准测试，输出报告，并编写分析笔记
+  - [ ] 输出报告到 `documents/reports/benchmark/`，并且保留在仓库中，作为归档 
+  - [ ] 编写分析笔记 `documents/ai-notes/analysis/benchmarks-3.0.5.md`
+- [ ] P4 更新相关的文档和笔记
+  - [x] 编写学习笔记 `documents/ai-notes/study/study-jmh.md`
+  - [x] 更新 `documents/notes/guidelines.md`
+  - [x] 更新 `documents/notes/adr.md` + 补充 `documents/notes/adr/add-benchmarks.md`
+
+### 重构 & 整理
+
+- [x] P4 根据基准测试结果和分析结论，重构和优化相关代码，以消除一些显著的性能热点/性能回归
+  - [x] `TextMatcher.matchesDateField`
+  - [x] `String?.equalsFast`
+  - [x] `buildImmutableSet`
+- [ ] P4 整理和修订已编写的基准测试代码
+  - [x] 清理文档注释
+  - [ ] 应用 `region...endregion` 分组
+- [ ] P4 将 `ChronicleBenchmarkLauncher` 中引入的所有系统属性全部移到 `ChronicleCapabilities.Benchmark`，并补充与完善文档注释
+  - [ ] `ChronicleBenchmarkLauncher` 自身的文档注释（以列表的形式简要说明相关的能力项）
+  - [ ] 各个相关的能力项的文档注释
+
+### 分析
 
 - [ ] `SimilarityMatchServiceBenchmarkTest` 中的断言可能会在 CI 中失败（当前的全部4个单测方法）
   - 参见：https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/actions/runs/39277543449/job/118149061308
@@ -109,51 +154,6 @@ allOpen {
   - 仅作记录，目前仍然保留，不作相关的代码更改。
 - [x] `List.removePrefixOrNull` / `List.removeSuffixOrNull`：将 `wildcard != null` 提取到循环外
 
-## 任务
-
-### 主要
-
-- [x] P4 完善基准测试（准备阶段）
-  - [x] 改为使用 `ChronicleAssume.includeBenchmark()` + JMH
-  - [x] 新增 `benchmark` 任务，以执行基准测试
-  - [x] 新增 `benchmarkReport` 任务，以输出带时间戳的测试报告到 `documents/reports/benchmarks/{timestamp}/`
-  - [x] 新增 `icu.windea.pls.core.ChronicleBenchmarkLauncher`，作为基准测试的启动器类。
-- [x] P4 完善已有的基准测试
-  - [x] `icu.windea.pls.core.match.MatchersBenchmark` -> `AntMatcherBenchmark` + `AntFromRegexBenchmark`
-  - [x] `icu.windea.pls.core.match.similarity.SimilarityMatchServiceBenchmark`
-- [x] P4 编写基准测试，以验证通用基础设施中的部分匹配器组件的性能表现
-  - [x] `icu.windea.pls.core.match.GlobMatcherBenchmark`
-  - [x] `icu.windea.pls.core.match.PathMatcherBenchmark`
-  - [x] `icu.windea.pls.core.match.TextMatcherBenchmark`
-- [x] P4 编写基准测试，以验证标有 `@Fast` 的扩展方法相比常规版本的性能表现
-  - [x] `icu.windea.pls.core.StdlibFastExtensionsBenchmark` + 衍生项
-  - [x] `icu.windea.pls.core.StdlibFastExtraExtensionsBenchmark` + 衍生项
-  - [x] `icu.windea.pls.core.collections.CollectionFastExtensionsBenchmark` + 衍生项
-  - [x] `icu.windea.pls.core.collections.CollectionFastExtraExtensionsBenchmark` + 衍生项
-  - [x] `icu.windea.pls.core.collections.CollectionFastBulderesBenchmark` + 衍生项
-- [ ] P4 编写基准测试，以验证查询/遍历时的性能表现
-  - 目前包括：List/Stream/Sequence/Query/PushStream
-  - 关于这里使用的 Query/PushStream：直接在测试代码中实现并使用
-- [ ] P4 执行已有的所有基准测试，输出报告，并编写分析笔记
-  - [ ] 输出报告到 `documents/reports/benchmark/`，并且保留在仓库中，作为归档 
-  - [ ] 编写分析笔记 `documents/ai-notes/analysis/benchmarks-3.0.5.md`
-- [ ] P4 更新相关的文档和笔记
-  - [x] 编写学习笔记 `documents/ai-notes/study/study-jmh.md`
-  - [x] 更新 `documents/notes/guidelines.md`
-  - [x] 更新 `documents/notes/adr.md` + 补充 `documents/notes/adr/add-benchmarks.md`
-
-### 重构 & 整理
-
-- [x] P4 根据基准测试结果和分析结论，重构和优化相关代码，以消除一些显著的性能热点/性能回归
-  - [x] `TextMatcher.matchesDateField`
-  - [x] `String?.equalsFast`
-  - [x] `buildImmutableSet`
-- [ ] P4 整理和修订已编写的基准测试代码
-  - [ ] 清理文档注释
-  - [ ] 应用 `region...endregion` 分组
-- [ ] P4 将 `ChronicleBenchmarkLauncher` 中引入的所有系统属性全部移到 `ChronicleCapabilities.Benchmark`，并补充文档注释
-  - 包括 `ChronicleBenchmarkLauncher` 自身的文档注释，以及各个相关的能力项的文档注释。
-
 ### 修订
 
 2026-10-24
@@ -166,17 +166,20 @@ allOpen {
 
 ## 参见
 
-关键代码位置：
-- [ ] `icu.windea.pls.core.ChronicleBenchmarkLauncher` - 位于 `src/jmh/kotlin` 目录下
+### 关键代码位置
 
-相关笔记：
+- [x] `icu.windea.pls.core.ChronicleBenchmarkLauncher` - 位于 `src/jmh/kotlin` 目录下
+
+### 相关笔记
+
 - [ ] `documents/ai-notes/analysis/benchmarks-3.0.5.md`
-- [ ] `documents/ai-notes/study/study-jmh.md`
-- [ ] `documents/notes/adr/add-benchmarks.md`
-- [ ] `documents/notes/guidelines.md` - 其中的相关章节
-- [ ] `AGENTS.md` - 受限测试的相关章节 & 补充基准测试的相关章节
+- [x] `documents/ai-notes/study/study-jmh.md`
+- [x] `documents/notes/adr/add-benchmarks.md`
+- [x] `documents/notes/guidelines.md` - 其中的相关章节
+- [x] `AGENTS.md` - 受限测试的相关章节 & 补充基准测试的相关章节
 
-相关链接：
+### 相关链接
+
 - JMH 官方仓库：<https://github.com/openjdk/jmh>
 - JMH 项目主页：<https://openjdk.org/projects/code-tools/jmh/>
 - JMH Gradle Plugin：<https://github.com/melix/jmh-gradle-plugin>

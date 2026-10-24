@@ -16,6 +16,8 @@
 
 ### 后端（语法支持）
 
+#### 通用
+
 #### 脚本文件
 
 - [概述](adr/script-syntax-summary.md)
@@ -25,7 +27,7 @@
 - [高级插值](adr/script-syntax-advanced-interpolations.md)
 - [未整理](adr/script-syntax-misc.md)
 
-#### 完善本地化文件的语法支持
+#### 本地化文件
 
 - [概述](adr/localisation-syntax-summary.md)
 - [引号相关](adr/localisation-syntax-quotes.md)
@@ -33,16 +35,16 @@
 - [字符串变体、标签与上下文标签](adr/localisation-syntax-grammatical.md)
 - [高级富文本](adr/localisation-syntax-advanced-rich-text.md)
 
-#### 完善 CWT 文件的语法支持
-
-- [概述](adr/cwt-syntax-summary.md)
-- [引号相关](adr/cwt-syntax-quotes.md)
-- [字符边界相关](adr/cwt-syntax-character-edge-cases.md)
-
 #### CSV 文件
 
 - [概述](adr/csv-syntax-summary.md)
 - [引号相关](adr/csv-syntax-quotes.md)
+
+#### CWT 文件
+
+- [概述](adr/cwt-syntax-summary.md)
+- [引号相关](adr/cwt-syntax-quotes.md)
+- [字符边界相关](adr/cwt-syntax-character-edge-cases.md)
 
 ### 后端
 
@@ -57,7 +59,7 @@
 - [引号模式与引号处理](adr/quote-pattern.md)
 - [转义模式与转义处理](adr/escape-pattern.md)
 - [颜色处理](adr/color-pattern.md)
-- [区分“语法宏”与“语义宏”](adr/macro.md)
+- [提供 `PushStream`](adr/push-stream.md)
 
 #### 通用基础设施
 
@@ -71,6 +73,7 @@
 - [完善脚本文件的 lexer](adr/script-lexer-refactor.md)
 - [完善本地化文件的 lexer](adr/localisation-lexer-refactor.md)
 - [完善 lexer 的重置逻辑](adr/lexer-reset.md)
+- [区分“语法宏”与“语义宏”](adr/macro.md)
 
 #### 规则系统
 
@@ -84,13 +87,13 @@
 - [支持片段匹配](adr/snippet-match.md)
 - [支持匹配带前缀标签的脚本表达式](adr/prefix-tag-match.md)
 
-#### 分析层
-
-- [优化 rootInfo 和 rootMetadata 的解析逻辑](adr/root-info-and-metadata-resolution.md)
-
 #### 索引
 
 - [为合并索引引入线程本地的上下文](adr/merged-index-thread-context.md)
+
+#### 分析
+
+- [优化 rootInfo 和 rootMetadata 的解析逻辑](adr/root-info-and-metadata-resolution.md)
 
 #### 匹配与解析
 

@@ -664,7 +664,7 @@
   - 提供一组预定义的内联高阶方法，如 map/filter/any/all/none
   - 可以用来直接封装 processXxx 方法，也可以用来作为 searchXxx 方法的返回值
   - 有限迁移：目前仅有限应用于强调“读”（而非“遍历”）的一些API
-  - 例如：exapansion/relatedItems/presentableItems 的相关代码
+  - 例如：expansion/relatedItems/presentableItems 的相关代码
 - [ ] P3 3.0.5 考虑继续重构 relatedItem/presentableItem API
   - ~~考虑使用 processor-pattern 乃至进一步的 searcher-pattern~~
   - 改为直接返回 `PushStream`
@@ -685,8 +685,6 @@
   - 考虑默认委托给平台提供的 `ExecUtil` `GeneralCommandLine`。
   - 可以通过传入 `ProgressIndicator` 来进行取消检查
   - 可以指定执行超时。
-- [ ] P4 3.0.5 编写基准测试，以验证查询/遍历时的性能表现，报告文档并输出
-  - 目前包括：List/Stream/Sequence/Query/PushStream
 - [ ] P3 3.0.5+ 考虑将 scriptedVariable/localisation 的 type 属性改为 lang 模块下的扩展属性，因为它们实际上是语义层的。然而，由于 type 的 resolve 静态方法直接位于 model 模块下，需要可能需要进一步的决策和重构
 - [ ] P3 3.0.x 考虑提供一种纯文本形式的 hintTextRenderer
   - 可用于快照测试、上下文信息提取、RAG
@@ -714,18 +712,19 @@
 
 ## 2026-10-16
 
-- [ ] P4 完善基准测试
-  - [ ] 改为使用 `ChronicleAssume.includeBenchmark()` + JMH
-  - [ ] 输出带时间戳的测试报告到 `documents/reports/benchmarks/{timestamp}/`（并编写相关的 python 脚本）
-- [ ] P4 完善已有的基准测试
-  - [ ] `icu.windea.pls.core.match.MatchersBenchmark` -> `AntMatcherBenchmark` + `AntFromRegexBenchmark`
-  - [ ] `icu.windea.pls.core.match.similarity.SimilarityMatchServiceBenchmark`
-- [ ] P4 编写基准测试，以验证标有 `@Fast` 的扩展方法相比常规版本的性能表现，并输出报告文档
-  - [ ] `icu.windea.pls.core.StdlibFastExtensionsBenchmark`
-  - [ ] `icu.windea.pls.core.StdlibFsstExtraExtensionsBenchmark`
-  - [ ] `icu.windea.pls.core.collections.CollectionFastExtensionsBenchmark`
-  - [ ] `icu.windea.pls.core.collections.CollectionFastExtraExtensionsBenchmark`
-  - [ ] `icu.windea.pls.core.collections.CollectionFastBulderesBenchmark`
-- [ ] P4 编写基准测试，以验证查询/遍历时的性能表现，报告文档并输出
+- [x] P4 3.0.5 完善基准测试
+  - [x] 改为使用 `ChronicleAssume.includeBenchmark()` + JMH
+  - [x] 输出带时间戳的测试报告到 `documents/reports/benchmarks/{timestamp}/`（并编写相关的 python 脚本）
+- [x] P4 3.0.5 完善已有的基准测试
+  - [x] `icu.windea.pls.core.match.MatchersBenchmark` -> `AntMatcherBenchmark` + `AntFromRegexBenchmark`
+  - [x] `icu.windea.pls.core.match.similarity.SimilarityMatchServiceBenchmark`
+- [x] P4 3.0.5 编写基准测试，以验证标有 `@Fast` 的扩展方法相比常规版本的性能表现，并输出报告文档
+  - [x] `icu.windea.pls.core.StdlibFastExtensionsBenchmark`
+  - [x] `icu.windea.pls.core.StdlibFsstExtraExtensionsBenchmark`
+  - [x] `icu.windea.pls.core.collections.CollectionFastExtensionsBenchmark`
+  - [x] `icu.windea.pls.core.collections.CollectionFastExtraExtensionsBenchmark`
+  - [x] `icu.windea.pls.core.collections.CollectionFastBulderesBenchmark`
+- [x] P4 3.0.5 ~~编写基准测试，以验证查询/遍历时的性能表现~~ - 搁置
   - 目前包括：List/Stream/Sequence/Query/PushStream
   - 关于这里使用的 Query/PushStream：直接在测试代码中实现并使用
+  - 搁置：涉及多种复杂场景，考虑根据日后的 profiling 来分析对比更真实的性能表现
