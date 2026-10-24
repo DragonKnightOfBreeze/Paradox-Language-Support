@@ -21,7 +21,7 @@ private const val SPLIT_COUNT = 7
 private const val JOIN_LIST_COUNT = 4
 
 /**
- * `StdlibFastExtensions` 中的字符串相关扩展方法的基准测试。
+ * `StdlibFastExtensions.kt` 中的字符串相关扩展方法的基准测试。
  *
  * 每个 `@Fast` 方法都与对应的标准库/惯用实现对比；结果用于回归观察和相对比较。
  */

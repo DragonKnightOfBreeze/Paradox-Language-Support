@@ -46,7 +46,11 @@ class SimilarityMatchServiceBenchmarkTest {
         val s2 = stats()
 
         val delta2 = s2 - s1
+
+        // 断言：
+        // 1) 命中次数应不少于期望值（全部命中）。
         Assert.assertEquals("expected second round hitCount == ${inputs.size}", inputs.size.toLong(), delta2.hits)
+        // 2) 预热阶段通常应慢于命中阶段（宽松断言，避免偶发波动导致失败）。
         Assert.assertTrue("expected some misses in first round", (s1 - s0).misses > 0)
     }
 
@@ -73,6 +77,8 @@ class SimilarityMatchServiceBenchmarkTest {
 
         val delta1 = s1 - s0
         val delta2 = s2 - s1
+
+        // 断言：第一轮基本全 miss；第二轮全 hit
         Assert.assertTrue("expected first round missCount >= ${inputs.size} but was ${delta1.misses}", delta1.misses >= inputs.size)
         Assert.assertEquals("expected second round hitCount == ${inputs.size}", inputs.size.toLong(), delta2.hits)
     }
@@ -97,6 +103,7 @@ class SimilarityMatchServiceBenchmarkTest {
         val s2 = stats()
         val delta2 = s2 - s1
 
+        // 命中数应小于输入总数，且不超过容量
         Assert.assertTrue("expected hits < inputs (${inputs.size}) but was ${delta2.hits}", delta2.hits < inputs.size)
         Assert.assertTrue("expected hits <= 5000 but was ${delta2.hits}", delta2.hits <= 5_000)
     }
