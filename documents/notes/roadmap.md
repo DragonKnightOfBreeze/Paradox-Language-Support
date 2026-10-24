@@ -567,6 +567,7 @@
   - 参见：[adr/add-benchmarks.md](adr/add-benchmarks.md)
 - [x] P4 重构：将基准测试、Markdown 与 CWT 配置的构建逻辑提取到 `buildSrc` 约定插件
   - 参见：[adr/refactor-build-gradle-kts.md](../ai-notes/adr/refactor-build-gradle-kts.md)
+- [x] P4 重构 `AntMatcher.matches`：可以通过参数 `separator` 指定要使用的路径分隔符
 
 ## 按主题 {#by-topic}
 

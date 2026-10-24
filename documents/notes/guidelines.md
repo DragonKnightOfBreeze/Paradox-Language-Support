@@ -450,13 +450,13 @@ TODO：
 
 执行方式：
 - 通过 `./gradlew benchmark` 执行（作为单独的 Gradle 任务）。
-- 可通过 `./gradlew benchmark --benchmarks=<pattern>` 按需指定要执行的基准测试；该参数可以重复，其参数值中也可以使用通配符 `?` `*`。
-- 无匹配项时任务会失败，并列出可用的基准测试。
+- 可通过 `./gradlew benchmark --benchmarks=<pattern>` 按需指定要执行的基准测试
+  - 参数 `--benchmarks` 可以重复。
+  - 参数 `--benchmarks` 的值可以是类或方法的 fullQualifiedName/simpleName，其中也可以使用通配符 `?` `*` `**`。
+  - 无匹配项时任务会失败，并列出可用的基准测试。
 - 通过 `./gradlew benchmarkReport` 运行基准测试并输出带时间戳的报告；也可以先运行 `./gradlew benchmark`，再运行 `./gradlew benchmarkReport -x benchmark`。
-
-报告输出：
-- 包括原始的 JSON 报告文件，以及提取后 Markdown 报告文档（总结、元数据信息等）。
-- 输出到 `documents/reports/benchmarks/{timestamp}/` 目录下。
+  - 包括原始的 JSON 报告文件，以及提取后 Markdown 报告文档（总结、元数据信息等）。
+  - 输出到 `documents/reports/benchmarks/{timestamp}/` 目录下。
 
 参见：
 - `icu.windea.pls.test.ChronicleBenchmarkLauncher` - 位于 `src/jmh/kotlin` 目录下

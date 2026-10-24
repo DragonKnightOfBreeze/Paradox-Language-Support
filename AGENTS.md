@@ -183,7 +183,7 @@ Some tests are intentionally **disabled by default** and only run when explicitl
 Benchmarks are based on JMH and suitable for several performance-sensitive codes (and meanwhile, it is necessary to consider evaluating specific performance).
 
 - Benchmark codes are under `src/jmh/kotlin/`.
-- Benchmarks can be executed via `./gradlew benchmark` (as a distinct Gradle task).
+- Benchmarks can be executed via `./gradlew benchmark` (optional parameter: `--benchmarks=<pattern>`).
 - Reports can be generated via `./gradlew benchmarkReport` (output directory: `documents/reports/benchmarks/{timestamp}/`).
 - See `icu.windea.pls.test.ChronicleBenchmarkLauncher` for more details (which is also under `src/jmh/kotlin/`).
 

@@ -1,6 +1,9 @@
 package icu.windea.pls.test
 
 import icu.windea.pls.ChronicleCapabilities
+import icu.windea.pls.core.match.GlobMatcher
+import icu.windea.pls.core.toDelimitedList
+import icu.windea.pls.core.toPath
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.results.format.ResultFormatType
 import org.openjdk.jmh.runner.Runner
@@ -14,8 +17,41 @@ import java.time.Instant
 import java.util.jar.JarFile
 import java.util.regex.Pattern
 
-private const val JMH_VERSION = "1.37"
-private const val DEFAULT_REPORT_DIR = "build/reports/benchmarks"
+/**
+ * 用于运行 JMH 基准测试的上下文对象。
+ */
+class ChronicleBenchmarkContext {
+    val classDirs: List<Path> = computeClassDirs()
+    val reportDir: Path = computeReportDir()
+    val profiles: List<String> = computeProfiles()
+    val params: List<Pair<String, String>> = computeParams()
+
+    private fun computeReportDir(): Path {
+        return ChronicleCapabilities.Benchmark.reportDir
+            .toPath()
+    }
+
+    private fun computeClassDirs(): List<Path> {
+        return ChronicleCapabilities.Benchmark.classesDir
+            .toDelimitedList(File.pathSeparatorChar)
+            .map { it.toPath() }
+    }
+
+    private fun computeProfiles(): List<String> {
+        return ChronicleCapabilities.Benchmark.profilers
+            .toDelimitedList(',')
+    }
+
+    private fun computeParams(): List<Pair<String, String>> {
+        return ChronicleCapabilities.Benchmark.params
+            .toDelimitedList(',')
+            .mapNotNull { entry ->
+                val index = entry.indexOf('=')
+                if (index <= 0 || index == entry.lastIndex) return@mapNotNull null
+                entry.substring(0, index).trim() to entry.substring(index + 1).trim()
+            }
+    }
+}
 
 /**
  * 用于运行 JMH 基准测试的通用启动器。
@@ -24,23 +60,23 @@ private const val DEFAULT_REPORT_DIR = "build/reports/benchmarks"
  * 如果未传入参数，则扫描 `ChronicleCapabilities.Benchmark.classesDir`（或回退到 classpath）
  * 下所有以 `Benchmark` 结尾、且包含 `@Benchmark` 方法的类。
  *
- * 相关能力项（[ChronicleCapabilities.Benchmark]）：
- * - [ChronicleCapabilities.Benchmark.classesDir]：基准测试类目录，多个目录使用系统路径分隔符分隔。
- * - [ChronicleCapabilities.Benchmark.reportDir]：报告输出目录。
- * - [ChronicleCapabilities.Benchmark.profilers]：JMH profiler 列表，逗号分隔。
- * - [ChronicleCapabilities.Benchmark.params]：JMH 参数过滤列表，逗号分隔的 `key=value` 形式。
+ * 相关的能力项（[ChronicleCapabilities.Benchmark]）：
+ * - [classesDir][ChronicleCapabilities.Benchmark.classesDir]：基准测试类目录，多个目录使用系统路径分隔符分隔。
+ * - [reportDir][ChronicleCapabilities.Benchmark.reportDir]：报告输出目录。
+ * - [profilers][ChronicleCapabilities.Benchmark.profilers]：JMH profiler 列表，逗号分隔。
+ * - [params][ChronicleCapabilities.Benchmark.params]：JMH 参数过滤列表，逗号分隔的 `key=value` 形式。
+ *
+ * @see ChronicleBenchmarkContext
+ * @see ChronicleBenchmarkDescriptor
  */
 object ChronicleBenchmarkLauncher {
+    private const val JMH_VERSION = "1.37"
+
     @JvmStatic
     fun main(args: Array<String>) {
-        val classDirs = ChronicleCapabilities.Benchmark.classesDir
-            ?.split(File.pathSeparator)
-            ?.filter { it.isNotBlank() }
-            ?.map { Paths.get(it) }
-            ?: emptyList()
-        val reportDir = Paths.get(ChronicleCapabilities.Benchmark.reportDir ?: DEFAULT_REPORT_DIR)
+        val context = ChronicleBenchmarkContext()
 
-        val allBenchmarks = discoverBenchmarks(classDirs)
+        val allBenchmarks = discoverBenchmarks(context)
         if (allBenchmarks.isEmpty()) {
             error("No benchmarks found. Run it via `./gradlew benchmark` or set -Dchronicle.benchmark.classesDir.")
         }
@@ -51,16 +87,17 @@ object ChronicleBenchmarkLauncher {
             error("No benchmarks matched: ${args.joinToString()}. Available benchmarks: $available")
         }
 
-        prepareReportDir(reportDir)
-        writeRunMetadata(reportDir, selectedBenchmarks)
+        prepareReportDir(context)
+        writeRunMetadata(context, selectedBenchmarks)
 
         for (benchmark in selectedBenchmarks) {
             println("Benchmark: ${benchmark.className} [${benchmark.methods.joinToString()}]")
-            runBenchmark(benchmark, reportDir)
+            runBenchmark(context, benchmark)
         }
     }
 
-    private fun discoverBenchmarks(classDirs: List<Path>): List<BenchmarkDescriptor> {
+    private fun discoverBenchmarks(context: ChronicleBenchmarkContext): List<ChronicleBenchmarkDescriptor> {
+        val classDirs = context.classDirs
         val classNames = linkedSetOf<String>()
         if (classDirs.isNotEmpty()) {
             classDirs.forEach { scanDirectory(it, classNames) }
@@ -111,7 +148,7 @@ object ChronicleBenchmarkLauncher {
         }
     }
 
-    private fun toBenchmarkDescriptor(className: String): BenchmarkDescriptor? {
+    private fun toBenchmarkDescriptor(className: String): ChronicleBenchmarkDescriptor? {
         return runCatching {
             val classLoader = Thread.currentThread().contextClassLoader
                 ?: ChronicleBenchmarkLauncher::class.java.classLoader
@@ -130,17 +167,16 @@ object ChronicleBenchmarkLauncher {
                 current = current.superclass
             }
             if (methods.isEmpty()) return@runCatching null
-            BenchmarkDescriptor(className, methods.sorted())
+            ChronicleBenchmarkDescriptor(className, methods.sorted())
         }.getOrNull()
     }
 
     private fun selectBenchmarks(
-        allBenchmarks: List<BenchmarkDescriptor>,
+        allBenchmarks: List<ChronicleBenchmarkDescriptor>,
         patterns: List<String>,
-    ): List<BenchmarkDescriptor> {
+    ): List<ChronicleBenchmarkDescriptor> {
         if (patterns.isEmpty()) return allBenchmarks
 
-        val regexes = patterns.map { it.toGlobRegex() }
         return allBenchmarks.mapNotNull { benchmark ->
             val simpleName = benchmark.className.substringAfterLast('.')
             val selectedMethods = benchmark.methods.filter { method ->
@@ -150,7 +186,7 @@ object ChronicleBenchmarkLauncher {
                     "${benchmark.className}.$method",
                     "$simpleName.$method",
                 )
-                regexes.any { regex -> candidates.any { regex.matches(it) } }
+                patterns.any { pattern -> candidates.any { candidate -> GlobMatcher.matches(candidate, pattern) } }
             }
             if (selectedMethods.isEmpty()) null else benchmark.copy(methods = selectedMethods)
         }
@@ -173,7 +209,8 @@ object ChronicleBenchmarkLauncher {
         return Regex(regex)
     }
 
-    private fun prepareReportDir(reportDir: Path) {
+    private fun prepareReportDir(context: ChronicleBenchmarkContext) {
+        val reportDir = context.reportDir
         Files.createDirectories(reportDir)
         Files.list(reportDir).use { paths ->
             paths.filter { it.fileName.toString().endsWith(".json") }
@@ -181,7 +218,8 @@ object ChronicleBenchmarkLauncher {
         }
     }
 
-    private fun writeRunMetadata(reportDir: Path, benchmarks: List<BenchmarkDescriptor>) {
+    private fun writeRunMetadata(context: ChronicleBenchmarkContext, benchmarks: List<ChronicleBenchmarkDescriptor>) {
+        val reportDir = context.reportDir
         val entries = benchmarks.joinToString(",") { benchmark ->
             val methods = benchmark.methods.joinToString(",") { "\"$it\"" }
             """{"className":"${benchmark.className}","methods":[$methods]}"""
@@ -199,26 +237,18 @@ object ChronicleBenchmarkLauncher {
         Files.writeString(reportDir.resolve("run.json"), content)
     }
 
-    private fun runBenchmark(benchmark: BenchmarkDescriptor, reportDir: Path) {
+    private fun runBenchmark(context: ChronicleBenchmarkContext, benchmark: ChronicleBenchmarkDescriptor) {
+        val reportDir = context.reportDir
         val resultFile = reportDir.resolve("${benchmark.className}.json").toFile()
-        val profilers = ChronicleCapabilities.Benchmark.profilers
-        val params = ChronicleCapabilities.Benchmark.params
         val options = OptionsBuilder()
             .apply {
-                benchmark.methods.forEach { method ->
-                    include("^${Pattern.quote(benchmark.className)}\\.${Pattern.quote(method)}$")
-                }
-                profilers.forEach { profiler -> addProfiler(profiler) }
-                params.forEach { (key, value) -> param(key, value) }
+                benchmark.methods.forEach { method -> include("^${Pattern.quote(benchmark.className)}\\.${Pattern.quote(method)}$") }
+                context.profiles.forEach { profiler -> addProfiler(profiler) }
+                context.params.forEach { (k, v) -> param(k, v) }
             }
             .result(resultFile.absolutePath)
             .resultFormat(ResultFormatType.JSON)
             .build()
         Runner(options).run()
     }
-
-    private data class BenchmarkDescriptor(
-        val className: String,
-        val methods: List<String>,
-    )
 }

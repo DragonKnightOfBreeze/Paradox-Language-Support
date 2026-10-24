@@ -9,7 +9,6 @@ import icu.windea.pls.core.trimFast
  * 基于正则实现，已废弃，建议改为使用 [AntMatcher]。
  *
  * 说明：
- * - 使用 `/` 作为路径分隔符。
  * - `?` 匹配单个子路径中的单个字符。
  * - `*` 匹配单个子路径中的任意个字符。
  * - `**` 匹配任意个子路径。
@@ -17,7 +16,9 @@ import icu.windea.pls.core.trimFast
 @Deprecated("Use `AntMatcher` instead", ReplaceWith("AntMatcher", "icu.windea.pls.core.match.AntMatcher"))
 object AntFromRegexMatcher {
     /**
-     * 判断输入的字符串（[input]）是否匹配指定的 ANT 路径模式([pattern])。
+     * 判断输入的字符串（[input]）是否匹配指定的 ANT 路径模式（[pattern]）。
+     *
+     * 使用 `/` 作为路径分隔符。
      *
      * @param ignoreCase 是否忽略大小写。
      * @param trimSeparator 是否去除首尾的路径分隔符。

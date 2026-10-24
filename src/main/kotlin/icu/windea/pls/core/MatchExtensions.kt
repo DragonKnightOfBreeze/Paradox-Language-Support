@@ -16,13 +16,13 @@ inline fun String?.matchesPatterns(pattern: String, delimiter: Char = ';', ignor
 }
 
 /** @see MatchService.matchesAntPattern */
-inline fun String?.matchesAntPattern(pattern: String, ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
-    return MatchService.matchesAntPattern(this, pattern, ignoreCase, trimSeparator)
+inline fun String?.matchesAntPattern(pattern: String, separator: Char = '/', ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
+    return MatchService.matchesAntPattern(this, pattern, separator, ignoreCase, trimSeparator)
 }
 
 /** @see MatchService.matchesAntPatterns */
-inline fun String?.matchesAntPatterns(pattern: String, delimiter: Char = ';', ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
-    return MatchService.matchesAntPatterns(this, pattern, delimiter, ignoreCase, trimSeparator)
+inline fun String?.matchesAntPatterns(pattern: String, delimiter: Char = ';', separator: Char = '/',ignoreCase: Boolean = false, trimSeparator: Boolean = true): Boolean {
+    return MatchService.matchesAntPatterns(this, pattern, delimiter, separator, ignoreCase, trimSeparator)
 }
 
 /** @see MatchService.matchesRegex */
