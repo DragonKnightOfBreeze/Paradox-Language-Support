@@ -107,10 +107,10 @@ allOpen {
   - 目前包括：List/Stream/Sequence/Query/PushStream
   - 关于这里使用的 Query/PushStream：直接在测试代码中实现并使用
   - 搁置：涉及多种复杂场景，考虑根据日后的 profiling 来分析对比更真实的性能表现
-- [ ] P4 执行已有的所有基准测试，输出报告，并编写分析笔记
-  - [ ] 输出报告到 `documents/reports/benchmark/`，并且保留在仓库中，作为归档 
-  - [ ] 编写分析笔记 `documents/ai-notes/analysis/benchmarks-3.0.5.md`
-- [ ] P4 更新相关的文档和笔记
+- [x] P4 执行已有的所有基准测试，输出报告，并编写分析笔记
+  - [x] 输出报告到 `documents/reports/benchmarks/{timestamp}/`，并且保留在仓库中，作为归档
+  - [x] 编写分析笔记 `documents/ai-notes/analysis/benchmarks-3.0.5.md`
+- [x] P4 更新相关的文档和笔记
   - [x] 编写学习笔记 `documents/ai-notes/study/study-jmh.md`
   - [x] 更新 `documents/notes/guidelines.md`
   - [x] 更新 `documents/notes/adr.md` + 补充 `documents/notes/adr/add-benchmarks.md`
@@ -188,7 +188,7 @@ allOpen {
 
 ### 相关笔记
 
-- [ ] `documents/ai-notes/analysis/benchmarks-3.0.5.md` - 分析笔记
+- [x] `documents/ai-notes/analysis/benchmarks-3.0.5.md` - 分析笔记
 - [x] `documents/ai-notes/study/study-jmh.md` - 学习笔记
 - [x] `documents/notes/adr/add-benchmarks.md` - ADR
 - [x] `documents/notes/guidelines.md` - 其中的相关章节

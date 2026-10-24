@@ -1,0 +1,40 @@
+# icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark
+
+| Benchmark | Params | Mode | Score | Error | Unit | Forks |
+|---|---|---|---:|---:|---|---:|
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullHalf | size=100 | avgt | 149.400 | 44.915 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullHalf | size=10000 | avgt | 18215.992 | 6278.853 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullHalf | size=1000000 | avgt | 2072957.233 | 198182.131 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullHalfByReference | size=100 | avgt | 175.388 | 20.968 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullHalfByReference | size=10000 | avgt | 17599.648 | 2008.125 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullHalfByReference | size=1000000 | avgt | 2843111.051 | 130101.992 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullHalfMismatchLast | size=100 | avgt | 66.055 | 9.838 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullHalfMismatchLast | size=10000 | avgt | 6223.053 | 886.694 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullHalfMismatchLast | size=1000000 | avgt | 1199728.248 | 47836.403 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullHalfMismatchLastByReference | size=100 | avgt | 65.202 | 9.297 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullHalfMismatchLastByReference | size=10000 | avgt | 6608.067 | 835.001 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullHalfMismatchLastByReference | size=1000000 | avgt | 1253707.195 | 423383.454 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullOne | size=100 | avgt | 194.900 | 18.240 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullOne | size=10000 | avgt | 22544.539 | 6558.944 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullOne | size=1000000 | avgt | 4120524.185 | 158636.441 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullOneByReference | size=100 | avgt | 262.006 | 42.080 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullOneByReference | size=10000 | avgt | 31264.754 | 5708.358 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removePrefixOrNullOneByReference | size=1000000 | avgt | 5453146.928 | 1396060.476 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullHalf | size=100 | avgt | 149.153 | 16.344 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullHalf | size=10000 | avgt | 17662.909 | 7046.732 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullHalf | size=1000000 | avgt | 2091157.160 | 149756.276 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullHalfByReference | size=100 | avgt | 229.113 | 25.951 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullHalfByReference | size=10000 | avgt | 22397.174 | 1325.673 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullHalfByReference | size=1000000 | avgt | 2880332.930 | 273779.658 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullHalfMismatchLast | size=100 | avgt | 62.135 | 2.955 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullHalfMismatchLast | size=10000 | avgt | 5907.464 | 368.514 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullHalfMismatchLast | size=1000000 | avgt | 1204769.185 | 522675.688 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullHalfMismatchLastByReference | size=100 | avgt | 61.470 | 3.760 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullHalfMismatchLastByReference | size=10000 | avgt | 5682.315 | 359.970 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullHalfMismatchLastByReference | size=1000000 | avgt | 1225578.601 | 108103.394 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullOne | size=100 | avgt | 203.473 | 38.963 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullOne | size=10000 | avgt | 21020.203 | 2046.645 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullOne | size=1000000 | avgt | 4064948.071 | 592729.299 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullOneByReference | size=100 | avgt | 316.282 | 21.033 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullOneByReference | size=10000 | avgt | 33840.033 | 2076.916 | ns/op | 2 |
+| icu.windea.pls.core.collections.CollectionFastExtraExtensionsScalingBenchmark.removeSuffixOrNullOneByReference | size=1000000 | avgt | 6129306.606 | 3010248.465 | ns/op | 2 |

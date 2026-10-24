@@ -14,3 +14,4 @@
 - [代理内置 shell 执行 Gradle 命令的行为（Windows）](analysis/opencode-windows-gradle-timeout.md)
 - [与 `ParadoxLocalisationFindUsagesProvider` 有关的 SOF（P19）](analysis/p19-localisation-find-usages-sof.md)
 - [IDE 启动冻结（P18，线程转储 1871846717）](analysis/startup-freeze-thread-dump-1871846717.md)
+- [3.0.5 基准测试分析](analysis/benchmarks-3.0.5.md)

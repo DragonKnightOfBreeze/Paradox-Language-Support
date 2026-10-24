@@ -1,0 +1,364 @@
+[
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "icu.windea.pls.core.match.similarity.SimilarityMatchServiceBenchmark.findBestMatchesDirect",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "C:\\Users\\29442\\.jdks\\jbr-21.0.6\\bin\\java.exe",
+        "jvmArgs" : [
+            "-Dchronicle.benchmark.classesDir=D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\classes\\java\\jmh;D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\classes\\kotlin\\jmh",
+            "-Dchronicle.benchmark.reportDir=D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\reports\\benchmarks-remaining",
+            "-Dfile.encoding=UTF-8",
+            "-Duser.country=CN",
+            "-Duser.language=zh",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.6",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.6+9-b895.91",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "candidateSize" : "2000"
+        },
+        "primaryMetric" : {
+            "score" : 127.68176477592263,
+            "scoreError" : 7.369618658325714,
+            "scoreConfidence" : [
+                120.31214611759691,
+                135.05138343424835
+            ],
+            "scorePercentiles" : {
+                "0.0" : 125.39598765432099,
+                "50.0" : 127.54505,
+                "90.0" : 130.6775769230769,
+                "95.0" : 130.6775769230769,
+                "99.0" : 130.6775769230769,
+                "99.9" : 130.6775769230769,
+                "99.99" : 130.6775769230769,
+                "99.999" : 130.6775769230769,
+                "99.9999" : 130.6775769230769,
+                "100.0" : 130.6775769230769
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    125.39598765432099,
+                    127.54505,
+                    127.028475125,
+                    127.76173417721519,
+                    130.6775769230769
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "icu.windea.pls.core.match.similarity.SimilarityMatchServiceBenchmark.findBestMatchesDirect",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "C:\\Users\\29442\\.jdks\\jbr-21.0.6\\bin\\java.exe",
+        "jvmArgs" : [
+            "-Dchronicle.benchmark.classesDir=D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\classes\\java\\jmh;D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\classes\\kotlin\\jmh",
+            "-Dchronicle.benchmark.reportDir=D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\reports\\benchmarks-remaining",
+            "-Dfile.encoding=UTF-8",
+            "-Duser.country=CN",
+            "-Duser.language=zh",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.6",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.6+9-b895.91",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "candidateSize" : "5000"
+        },
+        "primaryMetric" : {
+            "score" : 342.09706873162446,
+            "scoreError" : 64.97789273079935,
+            "scoreConfidence" : [
+                277.1191760008251,
+                407.0749614624238
+            ],
+            "scorePercentiles" : {
+                "0.0" : 323.2364378125,
+                "50.0" : 334.107233,
+                "90.0" : 360.0867857142857,
+                "95.0" : 360.0867857142857,
+                "99.0" : 360.0867857142857,
+                "99.9" : 360.0867857142857,
+                "99.99" : 360.0867857142857,
+                "99.999" : 360.0867857142857,
+                "99.9999" : 360.0867857142857,
+                "100.0" : 360.0867857142857
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    359.87950035714283,
+                    360.0867857142857,
+                    333.17538677419356,
+                    323.2364378125,
+                    334.107233
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "icu.windea.pls.core.match.similarity.SimilarityMatchServiceBenchmark.findBestMatchesDirect",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "C:\\Users\\29442\\.jdks\\jbr-21.0.6\\bin\\java.exe",
+        "jvmArgs" : [
+            "-Dchronicle.benchmark.classesDir=D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\classes\\java\\jmh;D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\classes\\kotlin\\jmh",
+            "-Dchronicle.benchmark.reportDir=D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\reports\\benchmarks-remaining",
+            "-Dfile.encoding=UTF-8",
+            "-Duser.country=CN",
+            "-Duser.language=zh",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.6",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.6+9-b895.91",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "candidateSize" : "10000"
+        },
+        "primaryMetric" : {
+            "score" : 699.0353069333335,
+            "scoreError" : 47.078237733780476,
+            "scoreConfidence" : [
+                651.957069199553,
+                746.113544667114
+            ],
+            "scorePercentiles" : {
+                "0.0" : 679.5559333333333,
+                "50.0" : 699.138334,
+                "90.0" : 710.3020666666666,
+                "95.0" : 710.3020666666666,
+                "99.0" : 710.3020666666666,
+                "99.9" : 710.3020666666666,
+                "99.99" : 710.3020666666666,
+                "99.999" : 710.3020666666666,
+                "99.9999" : 710.3020666666666,
+                "100.0" : 710.3020666666666
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    710.3020666666666,
+                    708.504334,
+                    697.6758666666667,
+                    679.5559333333333,
+                    699.138334
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "icu.windea.pls.core.match.similarity.SimilarityMatchServiceBenchmark.findBestMatchesWarm",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "C:\\Users\\29442\\.jdks\\jbr-21.0.6\\bin\\java.exe",
+        "jvmArgs" : [
+            "-Dchronicle.benchmark.classesDir=D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\classes\\java\\jmh;D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\classes\\kotlin\\jmh",
+            "-Dchronicle.benchmark.reportDir=D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\reports\\benchmarks-remaining",
+            "-Dfile.encoding=UTF-8",
+            "-Duser.country=CN",
+            "-Duser.language=zh",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.6",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.6+9-b895.91",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "candidateSize" : "2000"
+        },
+        "primaryMetric" : {
+            "score" : 45.049922601994524,
+            "scoreError" : 2.96554681640205,
+            "scoreConfidence" : [
+                42.08437578559247,
+                48.01546941839658
+            ],
+            "scorePercentiles" : {
+                "0.0" : 43.99906956521739,
+                "50.0" : 45.43855605381166,
+                "90.0" : 45.67885135135135,
+                "95.0" : 45.67885135135135,
+                "99.0" : 45.67885135135135,
+                "99.9" : 45.67885135135135,
+                "99.99" : 45.67885135135135,
+                "99.999" : 45.67885135135135,
+                "99.9999" : 45.67885135135135,
+                "100.0" : 45.67885135135135
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    44.46613153508772,
+                    45.43855605381166,
+                    43.99906956521739,
+                    45.67885135135135,
+                    45.667004504504504
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "icu.windea.pls.core.match.similarity.SimilarityMatchServiceBenchmark.findBestMatchesWarm",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "C:\\Users\\29442\\.jdks\\jbr-21.0.6\\bin\\java.exe",
+        "jvmArgs" : [
+            "-Dchronicle.benchmark.classesDir=D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\classes\\java\\jmh;D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\classes\\kotlin\\jmh",
+            "-Dchronicle.benchmark.reportDir=D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\reports\\benchmarks-remaining",
+            "-Dfile.encoding=UTF-8",
+            "-Duser.country=CN",
+            "-Duser.language=zh",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.6",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.6+9-b895.91",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "candidateSize" : "5000"
+        },
+        "primaryMetric" : {
+            "score" : 131.87985796431317,
+            "scoreError" : 18.271417470722017,
+            "scoreConfidence" : [
+                113.60844049359116,
+                150.1512754350352
+            ],
+            "scorePercentiles" : {
+                "0.0" : 124.13141975308642,
+                "50.0" : 132.9574869736842,
+                "90.0" : 136.64637824324325,
+                "95.0" : 136.64637824324325,
+                "99.0" : 136.64637824324325,
+                "99.9" : 136.64637824324325,
+                "99.99" : 136.64637824324325,
+                "99.999" : 136.64637824324325,
+                "99.9999" : 136.64637824324325,
+                "100.0" : 136.64637824324325
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    132.9574869736842,
+                    124.13141975308642,
+                    136.64637824324325,
+                    131.36082064102564,
+                    134.30318421052633
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "icu.windea.pls.core.match.similarity.SimilarityMatchServiceBenchmark.findBestMatchesWarm",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "C:\\Users\\29442\\.jdks\\jbr-21.0.6\\bin\\java.exe",
+        "jvmArgs" : [
+            "-Dchronicle.benchmark.classesDir=D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\classes\\java\\jmh;D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\classes\\kotlin\\jmh",
+            "-Dchronicle.benchmark.reportDir=D:\\Documents\\Projects\\__Pinned\\Paradox-Chronicle\\build\\reports\\benchmarks-remaining",
+            "-Dfile.encoding=UTF-8",
+            "-Duser.country=CN",
+            "-Duser.language=zh",
+            "-Duser.variant"
+        ],
+        "jdkVersion" : "21.0.6",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.6+9-b895.91",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "candidateSize" : "10000"
+        },
+        "primaryMetric" : {
+            "score" : 263.0352061835171,
+            "scoreError" : 27.330199287708357,
+            "scoreConfidence" : [
+                235.70500689580876,
+                290.3654054712255
+            ],
+            "scorePercentiles" : {
+                "0.0" : 253.30473146341464,
+                "50.0" : 264.72015763157896,
+                "90.0" : 272.39927054054056,
+                "95.0" : 272.39927054054056,
+                "99.0" : 272.39927054054056,
+                "99.9" : 272.39927054054056,
+                "99.99" : 272.39927054054056,
+                "99.999" : 272.39927054054056,
+                "99.9999" : 272.39927054054056,
+                "100.0" : 272.39927054054056
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    272.39927054054056,
+                    253.30473146341464,
+                    264.72015763157896,
+                    259.59874333333335,
+                    265.15312794871795
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    }
+]
+
+
