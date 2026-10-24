@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.gradle.cwt
 
 import de.undercouch.gradle.tasks.download.Download

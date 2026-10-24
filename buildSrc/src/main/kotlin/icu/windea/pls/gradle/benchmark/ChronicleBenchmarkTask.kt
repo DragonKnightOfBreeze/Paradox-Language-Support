@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.gradle.benchmark
 
 import org.gradle.api.provider.ListProperty

@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.gradle.markdown
 
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
