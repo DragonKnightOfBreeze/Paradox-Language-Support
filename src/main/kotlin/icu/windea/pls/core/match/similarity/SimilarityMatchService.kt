@@ -25,6 +25,8 @@ object SimilarityMatchService {
      * - 排除分数低于 [SimilarityMatchOptions.typoMinScore] 的项。
      *
      * @see SimilarityMatcher
+     * @see SimilarityMatchOptions
+     * @see SimilarityMatchResult
      */
     fun findBestMatches(
         input: String,

@@ -1,12 +1,18 @@
 package icu.windea.pls.core.match
 
+import icu.windea.pls.core.annotations.Optimized
+
 /**
  * GLOB 模式的匹配器。
  *
  * 说明：
  * - `?` 匹配单个字符。
  * - `*` 匹配任意个字符。
+ *
+ * 备注：
+ * - 基于非正则算法实现，拥有更加清晰的实现代码，以及通常更好的性能。
  */
+@Optimized
 object GlobMatcher {
     /**
      * 判断输入的字符串（[input]）是否匹配指定的 GLOB 模式([pattern])。

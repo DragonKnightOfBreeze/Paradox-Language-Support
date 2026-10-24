@@ -1,8 +1,11 @@
 package icu.windea.pls.core.match
 
+import icu.windea.pls.core.annotations.Optimized
+
 /**
  * 关键字的匹配器。
  */
+@Optimized
 object KeywordMatcher {
     /**
      * 判断输入的字符串（[input]）是否匹配指定的关键字（[keyword]）。

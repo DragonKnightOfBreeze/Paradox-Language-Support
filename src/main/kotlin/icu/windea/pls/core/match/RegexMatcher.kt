@@ -1,5 +1,6 @@
 package icu.windea.pls.core.match
 
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
 
 /**
@@ -7,6 +8,7 @@ import icu.windea.pls.core.cache.CacheBuilder
  *
  * 对输入直接应用正则表达式（内部带简单缓存）。
  */
+@Optimized
 object RegexMatcher {
     /**
      * 判断输入的字符串（[input]）是否匹配指定的正则（[pattern]）。

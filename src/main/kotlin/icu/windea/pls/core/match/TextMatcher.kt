@@ -1,10 +1,12 @@
 package icu.windea.pls.core.match
 
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.match.date.DateMatchService
 import icu.windea.pls.core.match.date.DateMatcher
 import icu.windea.pls.core.orNull
 import java.time.format.DateTimeFormatter
 
+@Optimized
 object TextMatcher {
     fun isNumberUnaryChar(c: Char): Boolean {
         return c == '+' || c == '-'

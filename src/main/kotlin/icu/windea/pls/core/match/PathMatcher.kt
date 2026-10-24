@@ -1,8 +1,11 @@
 package icu.windea.pls.core.match
 
+import icu.windea.pls.core.annotations.Optimized
+
 /**
  * 子路径的匹配器。
  */
+@Optimized
 object PathMatcher {
     /**
      * 判断输入的子路径（[input]）是否匹配指定的子路径（[other]）。
