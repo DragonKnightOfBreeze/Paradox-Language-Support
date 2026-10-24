@@ -7,7 +7,6 @@ import com.intellij.psi.util.startOffset
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.collections.forEachReversedFast
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.unquote
@@ -84,7 +83,7 @@ object ParadoxParameterContextService {
             })
 
             var newText = element.text
-            replacements.forEachReversedFast { (range, v) ->
+            replacements.asReversed().forEachFast { (range, v) -> // reverse before iteration
                 newText = newText.replaceRange(range.startOffset, range.endOffset, v)
             }
             return newText

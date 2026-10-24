@@ -17,7 +17,7 @@ import icu.windea.pls.core.annotations.Fast
  *
  * ## 弃用声明
  *
- * 此方法已弃用。应改用标准的字符串比较，因为标准实现通常拥有更好的性能。
+ * 应改为使用标准的字符串比较，因为标准实现通常拥有更好的性能。
  *
  * @see kotlin.text.equals
  */
@@ -56,7 +56,7 @@ fun String?.equalsFast(other: String?, ignoreCase: Boolean = false): Boolean {
  *
  * ## 弃用声明
  *
- * 此方法已弃用。应改用标准的字符串比较，因为标准实现通常拥有更好的性能。
+ * 应改为使用标准的字符串比较，因为标准实现通常拥有更好的性能。
  *
  * @see kotlin.text.equals
  */
@@ -75,7 +75,7 @@ fun String.equalsAnyFast(other: Array<String>, ignoreCase: Boolean = false): Boo
  *
  * ## 弃用声明
  *
- * 此方法已弃用。应改用标准的字符串比较，因为标准实现通常拥有更好的性能。
+ * 应改为使用标准的字符串比较，因为标准实现通常拥有更好的性能。
  *
  * @see kotlin.text.equals
  */

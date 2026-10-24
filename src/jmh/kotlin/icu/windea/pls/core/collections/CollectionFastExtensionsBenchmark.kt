@@ -79,6 +79,7 @@ class CollectionFastExtensionsBenchmark {
     // region forEachReversedFast
 
     @Benchmark
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun forEachReversedFast(blackhole: Blackhole) {
         var sum = 0
         ints.forEachReversedFast { sum += it }

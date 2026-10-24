@@ -38,7 +38,7 @@ inline fun <T : Any> buildImmutableList(expectedSize: Int, init: (index: Int) ->
  *
  * ## 弃用声明
  *
- * 此方法已弃用。应改用标准的 `buildSet`，因为标准实现在这类构建场景中更轻量。
+ * 应改为使用标准的 `buildSet`，因为标准实现在这类构建场景中更轻量。
  */
 @Deprecated(
     message = "Use buildSet instead; this builder is slower for four or more elements.",

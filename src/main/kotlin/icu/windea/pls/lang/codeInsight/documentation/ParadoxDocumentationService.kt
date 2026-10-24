@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.collections.forEachReversedFast
 import icu.windea.pls.core.orNull
 import icu.windea.pls.ep.codeInsight.documentation.ParadoxLocalisationParameterQuickDocProvider
 import icu.windea.pls.ep.codeInsight.documentation.ParadoxModifierQuickDocProvider
@@ -26,7 +25,7 @@ object ParadoxDocumentationService {
     fun getQuickDocText(element: PsiElement): String? {
         val gameType = selectGameType(element)
         val eps = ParadoxQuickDocTextProvider.EP_NAME.extensionList
-        eps.forEachReversedFast f@{ ep ->
+        eps.asReversed().forEachFast f@{ ep -> // reverse before iteration
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             ep.getQuickDocText(element)?.orNull()?.let { return it }
         }

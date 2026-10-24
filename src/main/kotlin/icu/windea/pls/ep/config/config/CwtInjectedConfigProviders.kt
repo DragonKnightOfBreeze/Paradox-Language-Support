@@ -5,7 +5,7 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.collections.forEachReversedIndexedFast
+import icu.windea.pls.core.collections.forEachIndexedFast
 
 /**
  * 用于在规则表达式级别注入规则。
@@ -20,7 +20,7 @@ class CwtConfigExpressionBasedInjectedConfigProvider : CwtInjectedConfigProvider
         //  - 总之这里的类型检查不是非常明显的性能热点，时间复杂度仍然是无法避免的，让事情变得简单一点。
         var r = false
         val processors = CwtInjectedConfigProcessor.EP_NAME.extensionList
-        configs.forEachReversedIndexedFast f1@{ i, config ->
+        configs.asReversed().forEachIndexedFast f1@{ i, config -> // reverse before iteration
             when (config) {
                 is CwtPropertyConfig -> {
                     val keyExpression = config.keyExpression // 3.0.1 optimize: access expressionString only on demand

@@ -4,7 +4,7 @@ import com.intellij.codeInsight.hints.InlayHintsSink
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import com.intellij.testFramework.LightVirtualFile
-import icu.windea.pls.core.collections.forEachReversedFast
+import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.recursion.RecursionService
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
@@ -22,7 +22,7 @@ object ParadoxHintsService {
     fun getHintText(element: PsiElement): String? {
         val gameType = selectGameType(element)
         val eps = ParadoxHintTextProvider.EP_NAME.extensionList
-        eps.forEachReversedFast f@{ ep ->
+        eps.asReversed().forEachFast f@{ ep -> // reverse before iteration
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             ep.getHintText(element)?.orNull()?.let { return it }
         }
@@ -35,7 +35,7 @@ object ParadoxHintsService {
     fun getHintLocalisation(element: PsiElement): ParadoxLocalisationProperty? {
         val gameType = selectGameType(element)
         val eps = ParadoxHintTextProvider.EP_NAME.extensionList
-        eps.forEachReversedFast f@{ ep ->
+        eps.asReversed().forEachFast f@{ ep -> // reverse before iteration
             if (gameType.orSpecific() != null && !ep.supports(gameType)) return@f // check game type first
             ep.getHintLocalisation(element)?.let { return it }
         }

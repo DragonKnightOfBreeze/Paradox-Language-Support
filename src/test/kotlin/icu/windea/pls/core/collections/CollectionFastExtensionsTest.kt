@@ -78,6 +78,7 @@ class CollectionFastExtensionsTest {
     // region forEachReversedFast
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun forEachReversedFast_basic_test() {
         val list = listOf(1, 2, 3)
         val result = mutableListOf<Int>()
@@ -86,6 +87,7 @@ class CollectionFastExtensionsTest {
     }
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun forEachReversedFast_empty_test() {
         val result = mutableListOf<Int>()
         emptyList<Int>().forEachReversedFast { result.add(it) }
@@ -93,6 +95,7 @@ class CollectionFastExtensionsTest {
     }
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun forEachReversedFast_single_test() {
         val result = mutableListOf<Int>()
         listOf(42).forEachReversedFast { result.add(it) }
@@ -104,6 +107,7 @@ class CollectionFastExtensionsTest {
     // region forEachReversedIndexedFast
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun forEachReversedIndexedFast_basic_test() {
         val list = listOf("a", "b", "c")
         val indices = mutableListOf<Int>()
@@ -114,6 +118,7 @@ class CollectionFastExtensionsTest {
     }
 
     @Test
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     fun forEachReversedIndexedFast_empty_test() {
         val indices = mutableListOf<Int>()
         emptyList<String>().forEachReversedIndexedFast { i, _ -> indices.add(i) }

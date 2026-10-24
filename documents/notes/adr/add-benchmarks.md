@@ -131,6 +131,8 @@ allOpen {
 
 ### 分析
 
+#### 2026-10-23
+
 - [x] `SimilarityMatchServiceBenchmarkTest` 中的断言可能会在 CI 中失败（当前的全部4个单测方法）
   - 参见：https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/actions/runs/39277543449/job/118149061308
   - 解决方案：将 `SimilarityMatchService.bestMatchesCache` 的 `maximumSize` 回退为 5000。
@@ -148,17 +150,26 @@ allOpen {
 - [x] `buildImmutableSet` 根据当前的基准测试，相比标准的 `buildSet` 显著更慢（除元素数量为 0 或 1 时）
   - 初步结论：1 元素时 0.43 倍，4 元素约 7 倍，64 元素约 8.7 倍
   - 这可能是结果不可变性带来的固定成本，或是 expectedSize/构建器策略不合适。
-  - 考虑到其突出性，以及此方法目前并未在生产代码中使用，较好的处理方案可能是：将此方法标为 `@Deprecated`（级别：`ERROR` 或 `HIDDEN`）。
+  - 考虑到其突出性，以及此方法目前并未在生产代码中使用，较好的处理方案可能是：将此方法标为 `@Deprecated`（级别：`ERROR`）。
 - [x] `List.forEachFast` 根据当前的基准测试，没有额外的性能优势（耗时 + 性能）
-  - 基于迭代器的标准 `Iterable.forEach` 在当前 JVM 环境下并不存在 24 B/op 的迭代器分配，这意味着迭代器很可能被 JIT 的逃逸分析/标量替换相处了。
+  - 基于迭代器的标准 `Iterable.forEach` 在当前 JVM 环境下并不存在 24 B/op 的迭代器分配，这意味着迭代器很可能被 JIT 的逃逸分析/标量替换处理了。
   - 这意味着 `forEachFast` 的主要优势实际上主要来自索引访问（而这并不明显，并不是那么值得），而不是减少临时内存。
   - 这也适用于各种衍生方法，例如 `allFast` `anyFast` `noneFast`。
   - 仅作记录，目前仍然保留，不作相关的代码更改。
 - [x] `List.removePrefixOrNull` / `List.removeSuffixOrNull`：将 `wildcard != null` 提取到循环外
 
+#### 2026-10-24
+
+- [x] 关于 `List.forEachReversedFast` 和 `List.forEachReversedIndexedFast`：弃用
+  - 标准版本的 `List.asReversed` 和 `MutableList.asReversed` 会返回包装后的列表，而这带来的开销可以忽略不计。
+  - 内存开销大概率会被 JIT 的逃逸分析/标量替换处理掉。
+  - 综上所述，这两个扩展方法是不必要的，而 `List.forEachFast` 和 `List.forEachIndexedFast` 仍然可以保留。
+  - 处理方案：标为 `@Deprecated`（级别：`ERROR`）
+
+
 ### 修订
 
-2026-10-24
+#### 2026-10-23
 
 - [x] 需要修订 `buildImmutableList` `buildImmutableSet` `asImmutableList` `equalsFast` 等方法的文档注释（“实现笔记”章节+“弃用声明”章节）
   - “性能笔记”有时并不是那么准确，因此使用更合适的“实现笔记”。

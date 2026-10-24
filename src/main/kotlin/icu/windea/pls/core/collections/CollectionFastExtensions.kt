@@ -28,7 +28,19 @@ inline fun <T> List<T>.forEachIndexedFast(action: (Int, T) -> Unit) {
     }
 }
 
-/** @see kotlin.collections.forEach */
+/**
+ * ## 弃用声明
+ *
+ * 应改为使用 `asReversed().forEachFast {...}`。
+ * 这会首先返回包装后的列表，而这带来的开销可以忽略不计（内存开销大概率会被 JIT 消除）。
+ *
+ * @see kotlin.collections.forEach
+ */
+@Deprecated(
+    message = "Use `asReversed().forEachFast {...}` instead.",
+    replaceWith = ReplaceWith("asReversed().forEachFast(action)", "icu.windea.pls.core.collections.forEachFast"),
+    level = DeprecationLevel.ERROR,
+)
 @Fast
 inline fun <T> List<T>.forEachReversedFast(action: (T) -> Unit) {
     // note: assume input is `RandomAccess` and is not `CopyOnWriteArrayList`
@@ -38,7 +50,19 @@ inline fun <T> List<T>.forEachReversedFast(action: (T) -> Unit) {
     }
 }
 
-/** @see kotlin.collections.forEachIndexed */
+/**
+ * ## 弃用声明
+ *
+ * 应改为使用 `asReversed().forEachIndexedFast {...}`。
+ * 这会首先返回包装后的列表，而这带来的开销可以忽略不计（内存开销大概率会被 JIT 消除）。
+ *
+ * @see kotlin.collections.forEachIndexed
+ */
+@Deprecated(
+    message = "Use `asReversed().forEachIndexedFast {...}` instead.",
+    replaceWith = ReplaceWith("asReversed().forEachIndexedFast(action)", "icu.windea.pls.core.collections.forEachIndexedFast"),
+    level = DeprecationLevel.ERROR,
+)
 @Fast
 inline fun <T> List<T>.forEachReversedIndexedFast(action: (Int, T) -> Unit) {
     // note: assume input is `RandomAccess` and is not `CopyOnWriteArrayList`
