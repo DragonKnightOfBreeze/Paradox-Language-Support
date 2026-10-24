@@ -99,14 +99,15 @@ inline fun <T, R : Any> List<T>.mapNotNullFast(transform: (T) -> R?): List<R> {
     for (i in 0 until size) { // optimize: use index-based iteration
         val e = this[i]
         val r = transform(e) ?: continue
+        // 3.0.5 optimize: hot paths should be at the very front
         when {
+            result != null -> result.add(r)
             first == null -> first = r
-            result == null -> {
+            else -> {
                 result = ArrayList(size.coerceAtMost(10))
                 result.add(first)
                 result.add(r)
             }
-            else -> result.add(r)
         }
     }
     return result ?: first?.let { ImmutableList.of(it) } ?: ImmutableList.of()
@@ -140,14 +141,15 @@ inline fun <T : Any> List<T>.filterFast(predicate: (T) -> Boolean): List<T> {
     for (i in 0 until size) { // optimize: use index-based iteration
         val e = this[i]
         if (!predicate(e)) continue
+        // 3.0.5 optimize: hot paths should be at the very front
         when {
+            result != null -> result.add(e)
             first == null -> first = e
-            result == null -> {
+            else -> {
                 result = ArrayList(size.coerceAtMost(10))
                 result.add(first)
                 result.add(e)
             }
-            else -> result.add(e)
         }
     }
     return result ?: first?.let { ImmutableList.of(it) } ?: ImmutableList.of()
@@ -163,14 +165,15 @@ fun <T : Any> List<T?>.filterNotNullFast(): List<T> {
     var result: MutableList<T>? = null // optimize: delay list initialization
     for (i in 0 until size) { // optimize: use index-based iteration
         val e = this[i] ?: continue
+        // 3.0.5 optimize: hot paths should be at the very front
         when {
+            result != null -> result.add(e)
             first == null -> first = e
-            result == null -> {
+            else -> {
                 result = ArrayList(size.coerceAtMost(10))
                 result.add(first)
                 result.add(e)
             }
-            else -> result.add(e)
         }
     }
     return result ?: first?.let { ImmutableList.of(it) } ?: ImmutableList.of()
@@ -187,14 +190,15 @@ inline fun <reified R : Any> List<*>.filterIsInstanceFast(predicate: (R) -> Bool
     for (i in 0 until size) { // optimize: use index-based iteration
         val e = this[i]
         if (e !is R || !predicate(e)) continue
+        // 3.0.5 optimize: hot paths should be at the very front
         when {
+            result != null -> result.add(e)
             first == null -> first = e
-            result == null -> {
+            else -> {
                 result = ArrayList(size.coerceAtMost(10))
                 result.add(first)
                 result.add(e)
             }
-            else -> result.add(e)
         }
     }
     return result ?: first?.let { ImmutableList.of(it) } ?: ImmutableList.of()

@@ -165,7 +165,10 @@ allOpen {
   - 内存开销大概率会被 JIT 的逃逸分析/标量替换处理掉。
   - 综上所述，这两个扩展方法是不必要的，而 `List.forEachFast` 和 `List.forEachIndexedFast` 仍然可以保留。
   - 处理方案：标为 `@Deprecated`（级别：`ERROR`）
-
+- [x] 关于 `List.mapNotNullFast` `List.filterFast` `List.filterNotNullFast` `List.filterIsInstanceFast`：需要优化
+  - 对于这些方法实现中的 when 表达式，在超高频执行、紧凑循环（Tight Loop）或大数据量迭代下，改变测试项的顺序会对性能产生客观且可测量的影响。
+  - 应将 *最常命中（热路径）* 的条件置于最顶层，如此一来，当收集到的结果元素数量大于1时，每次迭代仅需 1 次判断。
+  - 这也适用于代码中其他位置的 *if...else if...else* 控制流，或者复杂的 *when* 语句，但是目前暂不详细检查。
 
 ### 修订
 
