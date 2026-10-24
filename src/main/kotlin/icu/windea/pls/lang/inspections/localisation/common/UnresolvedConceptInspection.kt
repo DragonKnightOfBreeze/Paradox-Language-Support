@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.matchesPatterns
+import icu.windea.pls.core.match.MatchService
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.inspections.forPatterns
@@ -75,7 +75,7 @@ class UnresolvedConceptInspection : LocalInspectionTool() {
     }
 
     private fun skip(name: String, element: ParadoxLocalisationConceptCommand, configGroup: CwtConfigGroup): Boolean {
-        if (ignoredNames.isNotEmpty() && name.matchesPatterns(ignoredNames, ignoreCase = true)) return true
+        if (ignoredNames.isNotEmpty() && MatchService.matchesPatterns(name, ignoredNames, ignoreCase = true)) return true
         if (ignoreByConfigs && ParadoxExtendedConfigManager.checkExtendedConfig(name, Constants.definitionType, element, configGroup)) return true
         return false
     }

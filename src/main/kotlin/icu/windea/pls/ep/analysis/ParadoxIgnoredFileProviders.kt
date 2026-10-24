@@ -1,7 +1,7 @@
 package icu.windea.pls.ep.analysis
 
 import icu.windea.pls.base.settings.ChronicleSettings
-import icu.windea.pls.core.matchesRegex
+import icu.windea.pls.core.match.MatchService
 import icu.windea.pls.model.paths.ParadoxPath
 
 class ParadoxSettingsBasedIgnoredFileProvider : ParadoxIgnoredFileProvider {
@@ -36,7 +36,7 @@ class ParadoxForcedIgnoredFileProvider : ParadoxIgnoredFileProvider {
             fileName == "changelog.txt" -> true
             fileName == "license.txt" -> true
             fileName == "credits.txt" -> true
-            fileName.matchesRegex("""(?:\d+_)?readme(?:_\w+)?.txt""") -> true
+            MatchService.matchesRegex(fileName, """(?:\d+_)?readme(?:_\w+)?.txt""") -> true
             else -> false
         }
     }

@@ -2,9 +2,7 @@ package icu.windea.pls.ep.match
 
 import icu.windea.pls.config.CwtDataTypeSets
 import icu.windea.pls.config.CwtDataTypes
-import icu.windea.pls.core.matchesAntPattern
-import icu.windea.pls.core.matchesPattern
-import icu.windea.pls.core.matchesRegex
+import icu.windea.pls.core.match.MatchService
 import icu.windea.pls.lang.match.ParadoxPatternMatchContext
 
 class ParadoxDefaultPatternMatcher : ParadoxPatternMatcher {
@@ -14,9 +12,9 @@ class ParadoxDefaultPatternMatcher : ParadoxPatternMatcher {
         val pattern = context.configExpression.metadata.value ?: return false
         val ignoreCase = ignoreCase || context.configExpression.metadata.ignoreCase
         val r = when (dataType) {
-            CwtDataTypes.Glob -> text.matchesPattern(pattern, ignoreCase)
-            CwtDataTypes.Ant -> text.matchesAntPattern(pattern, ignoreCase)
-            CwtDataTypes.Regex -> text.matchesRegex(pattern, ignoreCase)
+            CwtDataTypes.Glob -> MatchService.matchesPattern(text, pattern, ignoreCase = ignoreCase)
+            CwtDataTypes.Ant -> MatchService.matchesAntPattern(text, pattern, ignoreCase = ignoreCase)
+            CwtDataTypes.Regex -> MatchService.matchesRegex(text, pattern, ignoreCase = ignoreCase)
             else -> false
         }
         return r

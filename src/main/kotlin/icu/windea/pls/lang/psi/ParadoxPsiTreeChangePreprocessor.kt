@@ -6,7 +6,7 @@ import com.intellij.psi.impl.PsiTreeChangeEventImpl
 import com.intellij.psi.impl.PsiTreeChangePreprocessor
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.analysis.ChronicleAnalysisManager
-import icu.windea.pls.core.matchesAntPattern
+import icu.windea.pls.core.match.MatchService
 import icu.windea.pls.csv.psi.ParadoxCsvFile
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
@@ -40,7 +40,7 @@ class ParadoxPsiTreeChangePreprocessor : PsiTreeChangePreprocessor {
                 for (tracker in trackers) {
                     val patterns = tracker.patterns
                     for (pattern in patterns) {
-                        if (fileInfo.path.path.matchesAntPattern(pattern)) {
+                        if (MatchService.matchesAntPattern(fileInfo.path.path, pattern)) {
                             tracker.incModificationCount()
                             break
                         }

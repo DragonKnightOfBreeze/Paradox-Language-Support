@@ -20,7 +20,7 @@ import icu.windea.pls.core.collections.forEachIndexedFast
 import icu.windea.pls.core.collections.mapFast
 import icu.windea.pls.core.inspections.InspectionService
 import icu.windea.pls.core.joinToStringFast
-import icu.windea.pls.core.matchesPatterns
+import icu.windea.pls.core.match.MatchService
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.psi.PsiBoundElement
 import icu.windea.pls.core.toVirtualFile
@@ -464,7 +464,7 @@ object ParadoxExpressionInspectionService {
             run {
                 val fileNames = pathReferenceExpressionSupport.resolveFileName(configExpression, pathReference)
                 if (fileNames.isNullOrEmpty()) return@run
-                if (fileNames.any { fileName -> fileName.matchesPatterns(context.ignoredFileNames, ignoreCase = true) }) return // 忽略
+                if (fileNames.any { fileName -> MatchService.matchesPatterns(fileName, context.ignoredFileNames, ignoreCase = true) }) return // 忽略
             }
             val selector = ParadoxFilePathSearch.selector(context.holder.project, context.holder.file) // use file as context
             if (ParadoxFilePathSearch.search(pathReference, configExpression, selector).findFirst() != null) return

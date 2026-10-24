@@ -43,7 +43,7 @@ import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.collections.processValue
 import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.isNotNullOrEmpty
-import icu.windea.pls.core.matchesAntPattern
+import icu.windea.pls.core.match.MatchService
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -261,7 +261,7 @@ object CwtConfigMatchService {
         if (filePath == null) return true
         val pathPatterns = config.pathPatterns
         if (pathPatterns.isNotEmpty()) {
-            if (pathPatterns.any { filePath.path.matchesAntPattern(it) }) return true
+            if (pathPatterns.any { MatchService.matchesAntPattern(filePath.path, it) }) return true
         }
         val pathFile = config.pathFile
         if (pathFile.isNotNullOrEmpty()) {

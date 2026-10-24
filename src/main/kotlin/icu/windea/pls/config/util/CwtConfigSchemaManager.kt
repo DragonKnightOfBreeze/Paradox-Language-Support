@@ -13,7 +13,7 @@ import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.flatMapFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.forEachIndexedFast
-import icu.windea.pls.core.matchesPattern
+import icu.windea.pls.core.match.MatchService
 import icu.windea.pls.cwt.psi.CwtString
 import icu.windea.pls.cwt.psi.isPropertyValue
 
@@ -57,7 +57,7 @@ object CwtConfigSchemaManager {
                 schema.enums[schemaExpression.name]?.values?.anyFast { it.stringValue == value } ?: false
             }
             is CwtSchemaExpression.Template -> {
-                value.matchesPattern(schemaExpression.pattern)
+                MatchService.matchesPattern(value, schemaExpression.pattern)
             }
             else -> true // fast check
         }

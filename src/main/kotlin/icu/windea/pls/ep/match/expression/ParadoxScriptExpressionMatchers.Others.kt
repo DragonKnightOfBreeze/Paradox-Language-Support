@@ -6,9 +6,7 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.core.matchesAntPattern
-import icu.windea.pls.core.matchesPattern
-import icu.windea.pls.core.matchesRegex
+import icu.windea.pls.core.match.MatchService
 import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchResult
 import icu.windea.pls.lang.match.util.ParadoxMatchFactory
@@ -40,9 +38,9 @@ class ParadoxPatternScriptExpressionMatcher : ParadoxScriptExpressionMatcher {
         val ignoreCase = configExpression.metadata.ignoreCase
         val text = context.expression.value
         val r = when (configExpression.type) {
-            CwtDataTypes.Glob -> text.matchesPattern(pattern, ignoreCase)
-            CwtDataTypes.Ant -> text.matchesAntPattern(pattern, ignoreCase)
-            CwtDataTypes.Regex -> text.matchesRegex(pattern, ignoreCase)
+            CwtDataTypes.Glob -> MatchService.matchesPattern(text, pattern, ignoreCase = ignoreCase)
+            CwtDataTypes.Ant -> MatchService.matchesAntPattern(text, pattern, ignoreCase = ignoreCase)
+            CwtDataTypes.Regex -> MatchService.matchesRegex(text, pattern, ignoreCase = ignoreCase)
             else -> return null
         }
         return ParadoxMatchResult.exactOrNot(r)

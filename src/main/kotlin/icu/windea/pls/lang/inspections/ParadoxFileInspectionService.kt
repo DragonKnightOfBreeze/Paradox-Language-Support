@@ -16,7 +16,7 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.fixes.BrowseUrlFix
-import icu.windea.pls.core.matchesAntPatterns
+import icu.windea.pls.core.match.MatchService
 import icu.windea.pls.core.vfs.VirtualFileBomService
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvFile
@@ -51,7 +51,7 @@ object ParadoxFileInspectionService {
         val fileInfo = virtualFile.fileInfo ?: return // 无法获取文件信息时跳过检查
 
         // 排除忽略的文件
-        if (fileInfo.path.path.matchesAntPatterns(context.ignoredFilePaths, ignoreCase = true)) return // 忽略
+        if (MatchService.matchesAntPatterns(fileInfo.path.path, context.ignoredFilePaths, ignoreCase = true)) return // 忽略
 
         val expectedCharset = ParadoxFileEncodingService.useCharset()
         val charset = virtualFile.charset
@@ -84,7 +84,7 @@ object ParadoxFileInspectionService {
         val fileInfo = virtualFile.fileInfo ?: return // 无法获取文件信息时跳过检查
 
         // 排除忽略的文件
-        if (fileInfo.path.path.matchesAntPatterns(context.ignoredFilePaths, ignoreCase = true)) return // 忽略
+        if (MatchService.matchesAntPatterns(fileInfo.path.path, context.ignoredFilePaths, ignoreCase = true)) return // 忽略
 
         // 仅对于存在且仅存在一个locale的本地化文件
         val singlePropertyList = file.children().filterIsInstance<ParadoxLocalisationPropertyList>().singleOrNull() ?: return
@@ -164,7 +164,7 @@ object ParadoxFileInspectionService {
         if (file is ParadoxScriptFile && fileInfo.path matchesBy ParadoxPathConstraint.SpecialScriptFile) return
 
         // 排除忽略的文件
-        if (fileInfo.path.path.matchesAntPatterns(context.ignoredFilePaths, ignoreCase = true)) return // 忽略
+        if (MatchService.matchesAntPatterns(fileInfo.path.path, context.ignoredFilePaths, ignoreCase = true)) return // 忽略
 
         val gameType = fileInfo.gameType
         val configGroup = ChronicleFacade.getConfigGroup(file.project, gameType)

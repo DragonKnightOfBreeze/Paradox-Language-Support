@@ -7,7 +7,7 @@ import com.intellij.codeInspection.options.OptPane
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.core.matchesPatterns
+import icu.windea.pls.core.match.MatchService
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import icu.windea.pls.lang.inspections.forPatterns
@@ -62,7 +62,7 @@ class UnresolvedIconInspection : LocalInspectionTool() {
     }
 
     private fun skip(name: String): Boolean {
-        if (ignoredNames.isNotEmpty() && name.matchesPatterns(ignoredNames, ignoreCase = true)) return true
+        if (ignoredNames.isNotEmpty() && MatchService.matchesPatterns(name, ignoredNames, ignoreCase = true)) return true
         return false
     }
 }

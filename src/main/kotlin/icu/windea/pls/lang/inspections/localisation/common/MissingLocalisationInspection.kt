@@ -13,7 +13,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.matchesPatterns
+import icu.windea.pls.core.match.MatchService
 import icu.windea.pls.core.toDelimitedMutableList
 import icu.windea.pls.core.toDelimitedString
 import icu.windea.pls.core.ui.toAtomicProperty
@@ -91,7 +91,7 @@ class MissingLocalisationInspection : LocalInspectionTool() {
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过需要忽略的文件
-        if (file.name.matchesPatterns(ignoredFileNames, ignoreCase = true)) return false
+        if (MatchService.matchesPatterns(file.name, ignoredFileNames, ignoreCase = true)) return false
         // 要求规则分组数据已加载完毕
         if (!ParadoxPsiFileMatchService.checkConfigGroupInitialized(file)) return false
         // 要求是语义上有效的本地化文件

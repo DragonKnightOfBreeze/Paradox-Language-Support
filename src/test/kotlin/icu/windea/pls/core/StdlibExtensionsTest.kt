@@ -223,13 +223,6 @@ class StdlibExtensionsTest {
         Assert.assertEquals("bar.after", "bar".convertPath(greedyExtension = true) { b, e -> "$b.after$e" })
     }
 
-    @Test
-    fun regex_and_ant_wrappers_test() {
-        Assert.assertTrue("foo/bar".matchesAntPattern("foo/**"))
-        Assert.assertTrue("abc".matchesRegex("[a-z]+"))
-        Assert.assertFalse("abc".matchesRegex("[0-9]+"))
-    }
-
     // region letIf / letUnless / alsoIf / alsoUnless
 
     @Test

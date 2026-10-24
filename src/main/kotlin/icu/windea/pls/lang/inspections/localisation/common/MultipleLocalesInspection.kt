@@ -8,7 +8,7 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
-import icu.windea.pls.core.matchesPatterns
+import icu.windea.pls.core.match.MatchService
 import icu.windea.pls.core.psi.PsiFileOnlyVisitor
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
@@ -32,7 +32,7 @@ class MultipleLocalesInspection : LocalInspectionTool(), DumbAware {
 
     override fun isAvailableForFile(file: PsiFile): Boolean {
         // 跳过需要忽略的文件
-        if (file.name.matchesPatterns(ignoredFileNames, ignoreCase = true)) return false
+        if (MatchService.matchesPatterns(file.name, ignoredFileNames, ignoreCase = true)) return false
         // 跳过内存文件和注入的文件
         val vFile = file.virtualFile
         if (VirtualFileService.isLightFile(vFile)) return false

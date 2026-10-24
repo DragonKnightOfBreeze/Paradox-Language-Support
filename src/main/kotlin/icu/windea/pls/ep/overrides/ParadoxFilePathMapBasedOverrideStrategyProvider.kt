@@ -3,7 +3,7 @@ package icu.windea.pls.ep.overrides
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.detached.CwtOverrideConfig
 import icu.windea.pls.config.filePathPatternsForOverride
-import icu.windea.pls.core.matchesAntPattern
+import icu.windea.pls.core.match.MatchService
 import icu.windea.pls.core.matchesPath
 import icu.windea.pls.lang.defineVariableInfo
 import icu.windea.pls.lang.definitionInfo
@@ -119,7 +119,7 @@ abstract class ParadoxFilePathMapBasedOverrideStrategyProvider : ParadoxOverride
         val result = filePathPatterns.firstNotNullOfOrNull { p ->
             if (p.none { c -> c == '*' || c == '?' }) null
             else filePathMap.firstNotNullOfOrNull { (k, v) ->
-                if (k.matchesAntPattern(p)) v.strategy else null
+                if (MatchService.matchesAntPattern(k, p)) v.strategy else null
             }
         }
         if (result == null) return ParadoxOverrideStrategy.LIOS // 如果适用覆盖策略，默认使用 `LIOS`
