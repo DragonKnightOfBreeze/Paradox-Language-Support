@@ -15,7 +15,7 @@ import icu.windea.pls.core.trimFast
  * - 基于正则实现，已废弃，建议改为使用 [AntMatcher]。
  */
 @Deprecated("Use `AntMatcher` instead", ReplaceWith("AntMatcher", "icu.windea.pls.core.match.AntMatcher"))
-object AntFromRegexMatcher {
+object RegexBasedAntMatcher {
     /**
      * 判断输入的字符串（[input]）是否匹配指定的 ANT 路径模式（[pattern]）。
      *
@@ -44,11 +44,11 @@ object AntFromRegexMatcher {
         if (input.isEmpty() && (pattern == "**" || pattern.all { it == '*' })) return true
         if (pattern == "**") return true
         val cache = if (ignoreCase) regexCache2 else regexCache1
-        val regex0 = pattern.antPatternToRegexString()
-        return cache.get(regex0).matches(input)
+        val regexString = pattern.toRegexString()
+        return cache.get(regexString).matches(input)
     }
 
-    private fun String.antPatternToRegexString(): String {
+    private fun String.toRegexString(): String {
         val s = this
         var r = buildString {
             append("\\Q")

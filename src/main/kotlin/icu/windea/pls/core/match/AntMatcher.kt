@@ -30,7 +30,7 @@ object AntMatcher {
         return fullMatch(input, pattern, separator, ignoreCase)
     }
 
-    // 与基于正则的实现 `AntFromRegexMatcher` 相比，本实现并非在所有场景下都更快。
+    // 与基于正则的实现 `RegexBasedAntMatcher` 相比，本实现并非在所有场景下都更快。
     // - 在短路径、缓存已热且只做单模式匹配时，两者接近。
     // - 在深层成员路径、长文件路径、大量唯一模式等场景下通常更快。
     // - 在“依次尝试多个简单模式并提前命中”的场景下，正则实现可能更快。

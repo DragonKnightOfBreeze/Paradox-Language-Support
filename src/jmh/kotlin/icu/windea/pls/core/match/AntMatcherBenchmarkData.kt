@@ -1,7 +1,7 @@
 package icu.windea.pls.core.match
 
 /**
- * [AntMatcherBenchmark] 与 [AntFromRegexBenchmark] 共用的输入数据。
+ * [AntMatcherBenchmark] 与 [RegexBasedAntMatcherBenchmark] 共用的输入数据。
  *
  * 数据在类初始化时生成，不参与被测方法的耗时。
  */

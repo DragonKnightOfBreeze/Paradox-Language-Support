@@ -24,6 +24,12 @@ class GlobMatcherTest {
     }
 
     @Test
+    fun matches_ignoreCase() {
+        Assert.assertTrue(GlobMatcher.matches("FOO_BAR", "foo_*", ignoreCase = true))
+        Assert.assertFalse(GlobMatcher.matches("FOO_BAR", "foo_*", ignoreCase = false))
+    }
+
+    @Test
     fun matches() {
         Assert.assertTrue(GlobMatcher.matches("", "", ignoreCase = false))
 
@@ -39,7 +45,6 @@ class GlobMatcherTest {
         Assert.assertTrue(GlobMatcher.matches("foo_bar", "*_bar", ignoreCase = false))
         Assert.assertTrue(GlobMatcher.matches("foo_bar", "foo*bar", ignoreCase = false))
         Assert.assertTrue(GlobMatcher.matches("foo_bar", "foo?bar", ignoreCase = false))
-
 
         Assert.assertFalse(GlobMatcher.matches("prefix_foo_bar", "foo_*", ignoreCase = false))
         Assert.assertTrue(GlobMatcher.matches("prefix_foo_bar", "*_bar", ignoreCase = false))

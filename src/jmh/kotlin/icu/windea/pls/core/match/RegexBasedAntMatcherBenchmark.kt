@@ -17,13 +17,13 @@ import org.openjdk.jmh.infra.Blackhole
 import java.util.concurrent.TimeUnit
 
 /**
- * [AntFromRegexMatcher] 的基准测试。
+ * [RegexBasedAntMatcher] 的基准测试。
  *
  * 备注：
  * - 既包含固定的微基准，也包含更接近实际使用的成员路径、文件路径和模式集合场景。
  * - 正则实现会缓存编译后的 [Regex]，JMH 预热迭代会填充缓存；唯一模式场景用于观察缓存成本。
  *
- * @see AntFromRegexMatcher
+ * @see RegexBasedAntMatcher
  */
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(2)
 @Threads(1)
-class AntFromRegexBenchmark {
+class RegexBasedAntMatcherBenchmark {
     @Benchmark
     @OperationsPerInvocation(AntMatcherBenchmarkData.BASE_OPERATIONS)
     fun baseline(blackhole: Blackhole) {
@@ -48,7 +48,7 @@ class AntFromRegexBenchmark {
     fun matches(blackhole: Blackhole) {
         for (pattern in AntMatcherBenchmarkData.patterns) {
             for (path in AntMatcherBenchmarkData.paths) {
-                blackhole.consume(AntFromRegexMatcher.matches(path, pattern))
+                blackhole.consume(RegexBasedAntMatcher.matches(path, pattern))
             }
         }
     }
@@ -58,7 +58,7 @@ class AntFromRegexBenchmark {
     fun matchesIgnoreCase(blackhole: Blackhole) {
         for (pattern in AntMatcherBenchmarkData.patterns) {
             for (path in AntMatcherBenchmarkData.paths) {
-                blackhole.consume(AntFromRegexMatcher.matches(path, pattern, ignoreCase = true))
+                blackhole.consume(RegexBasedAntMatcher.matches(path, pattern, ignoreCase = true))
             }
         }
     }
@@ -70,7 +70,7 @@ class AntFromRegexBenchmark {
     fun matchesDeepMemberPath(blackhole: Blackhole) {
         for (pattern in AntMatcherBenchmarkData.deepPatterns) {
             for (path in AntMatcherBenchmarkData.deepPaths) {
-                blackhole.consume(AntFromRegexMatcher.matches(path, pattern))
+                blackhole.consume(RegexBasedAntMatcher.matches(path, pattern))
             }
         }
     }
@@ -82,7 +82,7 @@ class AntFromRegexBenchmark {
     fun matchesLongFilePath(blackhole: Blackhole) {
         for (pattern in AntMatcherBenchmarkData.longPatterns) {
             for (path in AntMatcherBenchmarkData.longPaths) {
-                blackhole.consume(AntFromRegexMatcher.matches(path, pattern))
+                blackhole.consume(RegexBasedAntMatcher.matches(path, pattern))
             }
         }
     }
@@ -95,7 +95,7 @@ class AntFromRegexBenchmark {
         var matched = false
         for (path in AntMatcherBenchmarkData.patternSetPaths) {
             for (pattern in AntMatcherBenchmarkData.patternSet) {
-                if (AntFromRegexMatcher.matches(path, pattern)) {
+                if (RegexBasedAntMatcher.matches(path, pattern)) {
                     matched = true
                     break
                 }
@@ -110,7 +110,7 @@ class AntFromRegexBenchmark {
     @OperationsPerInvocation(AntMatcherBenchmarkData.UNIQUE_PATTERN_COUNT)
     fun matchesUniquePatterns(blackhole: Blackhole) {
         for (pattern in AntMatcherBenchmarkData.uniquePatterns) {
-            blackhole.consume(AntFromRegexMatcher.matches(AntMatcherBenchmarkData.UNIQUE_PATH, pattern))
+            blackhole.consume(RegexBasedAntMatcher.matches(AntMatcherBenchmarkData.UNIQUE_PATH, pattern))
         }
     }
 
@@ -121,7 +121,7 @@ class AntFromRegexBenchmark {
     fun matchesMiss(blackhole: Blackhole) {
         for (pattern in AntMatcherBenchmarkData.missPatterns) {
             for (path in AntMatcherBenchmarkData.paths) {
-                blackhole.consume(AntFromRegexMatcher.matches(path, pattern))
+                blackhole.consume(RegexBasedAntMatcher.matches(path, pattern))
             }
         }
     }
