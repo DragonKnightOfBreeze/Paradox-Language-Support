@@ -29,8 +29,7 @@ import java.util.concurrent.TimeUnit
 @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(2)
 @Threads(1)
-open class CollectionFastExtraExtensionsScalingBenchmark {
-    @JvmField
+class CollectionFastExtraExtensionsScalingBenchmark {
     @Param("100", "10000", "1000000")
     var size: Int = 0
 
@@ -43,7 +42,7 @@ open class CollectionFastExtraExtensionsScalingBenchmark {
     private lateinit var suffixHalfMismatchLast: List<String>
 
     @Setup(Level.Trial)
-    open fun setup() {
+    fun setup() {
         list = List(size) { "k$it" }
         val half = size / 2
         prefixOne = list.subList(0, 1)
@@ -58,68 +57,76 @@ open class CollectionFastExtraExtensionsScalingBenchmark {
         }
     }
 
+    // region removePrefixOrNull
+
     @Benchmark
-    open fun removePrefixOrNullOne(blackhole: Blackhole) {
+    fun removePrefixOrNullOne(blackhole: Blackhole) {
         blackhole.consume(list.removePrefixOrNull(prefixOne))
     }
 
     @Benchmark
-    open fun removePrefixOrNullOneByReference(blackhole: Blackhole) {
-        blackhole.consume(referenceRemovePrefix(list, prefixOne))
+    fun removePrefixOrNullOneByReference(blackhole: Blackhole) {
+        blackhole.consume(referenceRemovePrefixOrNull(list, prefixOne))
     }
 
     @Benchmark
-    open fun removePrefixOrNullHalf(blackhole: Blackhole) {
+    fun removePrefixOrNullHalf(blackhole: Blackhole) {
         blackhole.consume(list.removePrefixOrNull(prefixHalf))
     }
 
     @Benchmark
-    open fun removePrefixOrNullHalfByReference(blackhole: Blackhole) {
-        blackhole.consume(referenceRemovePrefix(list, prefixHalf))
+    fun removePrefixOrNullHalfByReference(blackhole: Blackhole) {
+        blackhole.consume(referenceRemovePrefixOrNull(list, prefixHalf))
     }
 
     @Benchmark
-    open fun removePrefixOrNullHalfMismatchLast(blackhole: Blackhole) {
+    fun removePrefixOrNullHalfMismatchLast(blackhole: Blackhole) {
         blackhole.consume(list.removePrefixOrNull(prefixHalfMismatchLast))
     }
 
     @Benchmark
-    open fun removePrefixOrNullHalfMismatchLastByReference(blackhole: Blackhole) {
-        blackhole.consume(referenceRemovePrefix(list, prefixHalfMismatchLast))
+    fun removePrefixOrNullHalfMismatchLastByReference(blackhole: Blackhole) {
+        blackhole.consume(referenceRemovePrefixOrNull(list, prefixHalfMismatchLast))
     }
 
+    // endregion
+
+    // region removeSuffixOrNull
+
     @Benchmark
-    open fun removeSuffixOrNullOne(blackhole: Blackhole) {
+    fun removeSuffixOrNullOne(blackhole: Blackhole) {
         blackhole.consume(list.removeSuffixOrNull(suffixOne))
     }
 
     @Benchmark
-    open fun removeSuffixOrNullOneByReference(blackhole: Blackhole) {
-        blackhole.consume(referenceRemoveSuffix(list, suffixOne))
+    fun removeSuffixOrNullOneByReference(blackhole: Blackhole) {
+        blackhole.consume(referenceRemoveSuffixOrNull(list, suffixOne))
     }
 
     @Benchmark
-    open fun removeSuffixOrNullHalf(blackhole: Blackhole) {
+    fun removeSuffixOrNullHalf(blackhole: Blackhole) {
         blackhole.consume(list.removeSuffixOrNull(suffixHalf))
     }
 
     @Benchmark
-    open fun removeSuffixOrNullHalfByReference(blackhole: Blackhole) {
-        blackhole.consume(referenceRemoveSuffix(list, suffixHalf))
+    fun removeSuffixOrNullHalfByReference(blackhole: Blackhole) {
+        blackhole.consume(referenceRemoveSuffixOrNull(list, suffixHalf))
     }
 
     @Benchmark
-    open fun removeSuffixOrNullHalfMismatchLast(blackhole: Blackhole) {
+    fun removeSuffixOrNullHalfMismatchLast(blackhole: Blackhole) {
         blackhole.consume(list.removeSuffixOrNull(suffixHalfMismatchLast))
     }
 
     @Benchmark
-    open fun removeSuffixOrNullHalfMismatchLastByReference(blackhole: Blackhole) {
-        blackhole.consume(referenceRemoveSuffix(list, suffixHalfMismatchLast))
+    fun removeSuffixOrNullHalfMismatchLastByReference(blackhole: Blackhole) {
+        blackhole.consume(referenceRemoveSuffixOrNull(list, suffixHalfMismatchLast))
     }
+
+    // endregion
 }
 
-private fun referenceRemovePrefix(list: List<String>, prefix: List<String>): List<String>? {
+private fun referenceRemovePrefixOrNull(list: List<String>, prefix: List<String>): List<String>? {
     if (prefix.isEmpty()) return list
     if (list.size < prefix.size) return null
     for (index in prefix.indices) {
@@ -128,7 +135,7 @@ private fun referenceRemovePrefix(list: List<String>, prefix: List<String>): Lis
     return list.drop(prefix.size)
 }
 
-private fun referenceRemoveSuffix(list: List<String>, suffix: List<String>): List<String>? {
+private fun referenceRemoveSuffixOrNull(list: List<String>, suffix: List<String>): List<String>? {
     if (suffix.isEmpty()) return list
     if (list.size < suffix.size) return null
     for (index in suffix.indices) {

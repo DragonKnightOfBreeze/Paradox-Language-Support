@@ -121,9 +121,10 @@ allOpen {
   - [x] `TextMatcher.matchesDateField`
   - [x] `String?.equalsFast`
   - [x] `buildImmutableSet`
-- [ ] P4 整理和修订已编写的基准测试代码
+- [x] P4 整理和修订已编写的基准测试代码
   - [x] 清理文档注释
-  - [ ] 应用 `region...endregion` 分组
+  - [x] 应用 `region...endregion` 分组
+  - [x] 应用 `allopen` Gradle 插件
 - [ ] P4 将 `ChronicleBenchmarkLauncher` 中引入的所有系统属性全部移到 `ChronicleCapabilities.Benchmark`，并补充与完善文档注释
   - [ ] `ChronicleBenchmarkLauncher` 自身的文档注释（以列表的形式简要说明相关的能力项）
   - [ ] 各个相关的能力项的文档注释
@@ -173,9 +174,9 @@ allOpen {
 
 ### 相关笔记
 
-- [ ] `documents/ai-notes/analysis/benchmarks-3.0.5.md`
-- [x] `documents/ai-notes/study/study-jmh.md`
-- [x] `documents/notes/adr/add-benchmarks.md`
+- [ ] `documents/ai-notes/analysis/benchmarks-3.0.5.md` - 分析笔记
+- [x] `documents/ai-notes/study/study-jmh.md` - 学习笔记
+- [x] `documents/notes/adr/add-benchmarks.md` - ADR
 - [x] `documents/notes/guidelines.md` - 其中的相关章节
 - [x] `AGENTS.md` - 受限测试的相关章节 & 补充基准测试的相关章节
 

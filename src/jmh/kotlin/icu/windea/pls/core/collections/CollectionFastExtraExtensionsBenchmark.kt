@@ -29,7 +29,7 @@ private const val SUFFIX_CASE_COUNT = 6
 @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(2)
 @Threads(1)
-open class CollectionFastExtraExtensionsBenchmark {
+class CollectionFastExtraExtensionsBenchmark {
     private val prefixCases = listOf(
         SliceCase(listOf("a", "b", "c", "d"), emptyList()),
         SliceCase(listOf("a", "b", "c", "d"), listOf("a", "b")),
@@ -48,9 +48,11 @@ open class CollectionFastExtraExtensionsBenchmark {
         SliceCase(listOf("c", "d"), listOf("a", "b", "c", "d")),
     )
 
+    // region removePrefixOrNull
+
     @Benchmark
     @OperationsPerInvocation(PREFIX_CASE_COUNT)
-    open fun removePrefixOrNull(blackhole: Blackhole) {
+    fun removePrefixOrNull(blackhole: Blackhole) {
         for (case in prefixCases) {
             blackhole.consume(case.list.removePrefixOrNull(case.slice, case.wildcard))
         }
@@ -58,15 +60,19 @@ open class CollectionFastExtraExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(PREFIX_CASE_COUNT)
-    open fun removePrefixOrNullByReference(blackhole: Blackhole) {
+    fun removePrefixOrNullByReference(blackhole: Blackhole) {
         for (case in prefixCases) {
-            blackhole.consume(referenceRemovePrefix(case.list, case.slice, case.wildcard))
+            blackhole.consume(referenceRemovePrefixOrNull(case.list, case.slice, case.wildcard))
         }
     }
 
+    // endregion
+
+    // region removeSuffixOrNull
+
     @Benchmark
     @OperationsPerInvocation(SUFFIX_CASE_COUNT)
-    open fun removeSuffixOrNull(blackhole: Blackhole) {
+    fun removeSuffixOrNull(blackhole: Blackhole) {
         for (case in suffixCases) {
             blackhole.consume(case.list.removeSuffixOrNull(case.slice, case.wildcard))
         }
@@ -74,11 +80,13 @@ open class CollectionFastExtraExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(SUFFIX_CASE_COUNT)
-    open fun removeSuffixOrNullByReference(blackhole: Blackhole) {
+    fun removeSuffixOrNullByReference(blackhole: Blackhole) {
         for (case in suffixCases) {
-            blackhole.consume(referenceRemoveSuffix(case.list, case.slice, case.wildcard))
+            blackhole.consume(referenceRemoveSuffixOrNull(case.list, case.slice, case.wildcard))
         }
     }
+
+    // endregion
 }
 
 private data class SliceCase(
@@ -87,7 +95,7 @@ private data class SliceCase(
     val wildcard: String? = null,
 )
 
-private fun referenceRemovePrefix(list: List<String>, prefix: List<String>, wildcard: String?): List<String>? {
+private fun referenceRemovePrefixOrNull(list: List<String>, prefix: List<String>, wildcard: String?): List<String>? {
     if (prefix.isEmpty()) return list
     if (list.size < prefix.size) return null
     for (index in prefix.indices) {
@@ -98,7 +106,7 @@ private fun referenceRemovePrefix(list: List<String>, prefix: List<String>, wild
     return list.drop(prefix.size)
 }
 
-private fun referenceRemoveSuffix(list: List<String>, suffix: List<String>, wildcard: String?): List<String>? {
+private fun referenceRemoveSuffixOrNull(list: List<String>, suffix: List<String>, wildcard: String?): List<String>? {
     if (suffix.isEmpty()) return list
     if (list.size < suffix.size) return null
     for (index in suffix.indices) {

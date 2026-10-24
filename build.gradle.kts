@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("org.jetbrains.kotlin.jvm") // https://kotlinlang.org/docs/gradle.html
+    id("org.jetbrains.kotlin.plugin.allopen")
     id("org.jetbrains.kotlin.plugin.serialization") // https://kotlinlang.org/docs/serialization.html
     id("org.jetbrains.intellij.platform") // https://github.com/JetBrains/intellij-platform-gradle-plugin
     id("org.jetbrains.intellij.platform.grammarkit") // https://github.com/JetBrains/intellij-platform-gradle-plugin
@@ -254,6 +255,10 @@ kotlin {
             // "-Xcollection-literals", // https://kotlinlang.org/docs/whatsnew24.html#support-for-collection-literals
         )
     }
+}
+
+allOpen {
+    annotation("org.openjdk.jmh.annotations.State")
 }
 
 tasks {

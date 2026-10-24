@@ -10,6 +10,7 @@ pluginManagement {
 
     plugins {
         id("org.jetbrains.kotlin.jvm") version kotlinVersion
+        id("org.jetbrains.kotlin.plugin.allopen") version kotlinVersion
         id("org.jetbrains.kotlin.plugin.serialization") version kotlinVersion
         id("org.jetbrains.intellij.platform") version intellijVersion
         id("org.jetbrains.intellij.platform.grammarkit") version intellijVersion

@@ -29,10 +29,10 @@ import java.util.concurrent.TimeUnit
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(2)
 @Threads(1)
-open class AntMatcherBenchmark {
+class AntMatcherBenchmark {
     @Benchmark
     @OperationsPerInvocation(AntMatcherBenchmarkData.BASE_OPERATIONS)
-    open fun baseline(blackhole: Blackhole) {
+    fun baseline(blackhole: Blackhole) {
         for (pattern in AntMatcherBenchmarkData.patterns) {
             for (path in AntMatcherBenchmarkData.paths) {
                 blackhole.consume(pattern.isNotEmpty() && path.isNotEmpty())
@@ -42,7 +42,7 @@ open class AntMatcherBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(AntMatcherBenchmarkData.BASE_OPERATIONS)
-    open fun matches(blackhole: Blackhole) {
+    fun matches(blackhole: Blackhole) {
         for (pattern in AntMatcherBenchmarkData.patterns) {
             for (path in AntMatcherBenchmarkData.paths) {
                 blackhole.consume(AntMatcher.matches(path, pattern))
@@ -52,7 +52,7 @@ open class AntMatcherBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(AntMatcherBenchmarkData.BASE_OPERATIONS)
-    open fun matchesIgnoreCase(blackhole: Blackhole) {
+    fun matchesIgnoreCase(blackhole: Blackhole) {
         for (pattern in AntMatcherBenchmarkData.patterns) {
             for (path in AntMatcherBenchmarkData.paths) {
                 blackhole.consume(AntMatcher.matches(path, pattern, ignoreCase = true))
@@ -64,7 +64,7 @@ open class AntMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(AntMatcherBenchmarkData.DEEP_OPERATIONS)
-    open fun matchesDeepMemberPath(blackhole: Blackhole) {
+    fun matchesDeepMemberPath(blackhole: Blackhole) {
         for (pattern in AntMatcherBenchmarkData.deepPatterns) {
             for (path in AntMatcherBenchmarkData.deepPaths) {
                 blackhole.consume(AntMatcher.matches(path, pattern))
@@ -76,7 +76,7 @@ open class AntMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(AntMatcherBenchmarkData.LONG_OPERATIONS)
-    open fun matchesLongFilePath(blackhole: Blackhole) {
+    fun matchesLongFilePath(blackhole: Blackhole) {
         for (pattern in AntMatcherBenchmarkData.longPatterns) {
             for (path in AntMatcherBenchmarkData.longPaths) {
                 blackhole.consume(AntMatcher.matches(path, pattern))
@@ -88,7 +88,7 @@ open class AntMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(AntMatcherBenchmarkData.PATTERN_SET_PATH_COUNT)
-    open fun matchesFirstInPatternSet(blackhole: Blackhole) {
+    fun matchesFirstInPatternSet(blackhole: Blackhole) {
         var matched = false
         for (path in AntMatcherBenchmarkData.patternSetPaths) {
             for (pattern in AntMatcherBenchmarkData.patternSet) {
@@ -105,7 +105,7 @@ open class AntMatcherBenchmark {
     @Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(AntMatcherBenchmarkData.UNIQUE_PATTERN_COUNT)
-    open fun matchesUniquePatterns(blackhole: Blackhole) {
+    fun matchesUniquePatterns(blackhole: Blackhole) {
         for (pattern in AntMatcherBenchmarkData.uniquePatterns) {
             blackhole.consume(AntMatcher.matches(AntMatcherBenchmarkData.UNIQUE_PATH, pattern))
         }
@@ -115,7 +115,7 @@ open class AntMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(AntMatcherBenchmarkData.MISS_OPERATIONS)
-    open fun matchesMiss(blackhole: Blackhole) {
+    fun matchesMiss(blackhole: Blackhole) {
         for (pattern in AntMatcherBenchmarkData.missPatterns) {
             for (path in AntMatcherBenchmarkData.paths) {
                 blackhole.consume(AntMatcher.matches(path, pattern))

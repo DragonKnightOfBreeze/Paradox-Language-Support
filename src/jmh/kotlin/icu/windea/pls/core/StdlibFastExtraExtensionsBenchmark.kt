@@ -30,7 +30,7 @@ private const val DELIMITED_STRING_LIST_COUNT = 4
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(2)
 @Threads(1)
-open class StdlibFastExtraExtensionsBenchmark {
+class StdlibFastExtraExtensionsBenchmark {
     private val pathCases = listOf(
         PathCase("a/b/c", "a/b/c"),
         PathCase("a/b", "a/b/c"),
@@ -59,9 +59,11 @@ open class StdlibFastExtraExtensionsBenchmark {
         listOf("a", "b", "c"),
     )
 
+    // region matchesPath
+
     @Benchmark
     @OperationsPerInvocation(PATH_CASE_COUNT)
-    open fun matchesPath(blackhole: Blackhole) {
+    fun matchesPath(blackhole: Blackhole) {
         for (case in pathCases) {
             blackhole.consume(
                 case.path.matchesPath(
@@ -69,29 +71,34 @@ open class StdlibFastExtraExtensionsBenchmark {
                     acceptSelf = case.acceptSelf,
                     strict = case.strict,
                     trim = case.trim,
-                )
+                ),
             )
         }
     }
 
     @Benchmark
     @OperationsPerInvocation(PATH_CASE_COUNT)
-    open fun matchesPathByReference(blackhole: Blackhole) {
+    fun matchesPathByReference(blackhole: Blackhole) {
         for (case in pathCases) {
             blackhole.consume(
-                referenceMatchesPath(case.path,
+                referenceMatchesPath(
+                    case.path,
                     case.other,
                     acceptSelf = case.acceptSelf,
                     strict = case.strict,
                     trim = case.trim,
-                )
+                ),
             )
         }
     }
 
+    // endregion
+
+    // region toDelimitedList
+
     @Benchmark
     @OperationsPerInvocation(DELIMITED_TEXT_COUNT)
-    open fun toDelimitedList(blackhole: Blackhole) {
+    fun toDelimitedList(blackhole: Blackhole) {
         for (text in delimitedTexts) {
             blackhole.consume(text.toDelimitedList())
         }
@@ -99,15 +106,19 @@ open class StdlibFastExtraExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(DELIMITED_TEXT_COUNT)
-    open fun toDelimitedListByReference(blackhole: Blackhole) {
+    fun toDelimitedListByReference(blackhole: Blackhole) {
         for (text in delimitedTexts) {
             blackhole.consume(referenceToDelimitedList(text))
         }
     }
 
+    // endregion
+
+    // region toDelimitedSet
+
     @Benchmark
     @OperationsPerInvocation(DELIMITED_TEXT_COUNT)
-    open fun toDelimitedSet(blackhole: Blackhole) {
+    fun toDelimitedSet(blackhole: Blackhole) {
         for (text in delimitedTexts) {
             blackhole.consume(text.toDelimitedSet())
         }
@@ -115,15 +126,19 @@ open class StdlibFastExtraExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(DELIMITED_TEXT_COUNT)
-    open fun toDelimitedSetByReference(blackhole: Blackhole) {
+    fun toDelimitedSetByReference(blackhole: Blackhole) {
         for (text in delimitedTexts) {
             blackhole.consume(referenceToDelimitedSet(text))
         }
     }
 
+    // endregion
+
+    // region toDelimitedMutableList
+
     @Benchmark
     @OperationsPerInvocation(DELIMITED_TEXT_COUNT)
-    open fun toDelimitedMutableList(blackhole: Blackhole) {
+    fun toDelimitedMutableList(blackhole: Blackhole) {
         for (text in delimitedTexts) {
             blackhole.consume(text.toDelimitedMutableList())
         }
@@ -131,15 +146,19 @@ open class StdlibFastExtraExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(DELIMITED_TEXT_COUNT)
-    open fun toDelimitedMutableListByReference(blackhole: Blackhole) {
+    fun toDelimitedMutableListByReference(blackhole: Blackhole) {
         for (text in delimitedTexts) {
             blackhole.consume(referenceToDelimitedMutableList(text))
         }
     }
 
+    // endregion
+
+    // region toDelimitedMutableSet
+
     @Benchmark
     @OperationsPerInvocation(DELIMITED_TEXT_COUNT)
-    open fun toDelimitedMutableSet(blackhole: Blackhole) {
+    fun toDelimitedMutableSet(blackhole: Blackhole) {
         for (text in delimitedTexts) {
             blackhole.consume(text.toDelimitedMutableSet())
         }
@@ -147,15 +166,19 @@ open class StdlibFastExtraExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(DELIMITED_TEXT_COUNT)
-    open fun toDelimitedMutableSetByReference(blackhole: Blackhole) {
+    fun toDelimitedMutableSetByReference(blackhole: Blackhole) {
         for (text in delimitedTexts) {
             blackhole.consume(referenceToDelimitedMutableSet(text))
         }
     }
 
+    // endregion
+
+    // region toDelimitedString
+
     @Benchmark
     @OperationsPerInvocation(DELIMITED_STRING_LIST_COUNT)
-    open fun toDelimitedString(blackhole: Blackhole) {
+    fun toDelimitedString(blackhole: Blackhole) {
         for (list in delimitedStringLists) {
             blackhole.consume(list.toDelimitedString())
         }
@@ -163,11 +186,13 @@ open class StdlibFastExtraExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(DELIMITED_STRING_LIST_COUNT)
-    open fun toDelimitedStringByReference(blackhole: Blackhole) {
+    fun toDelimitedStringByReference(blackhole: Blackhole) {
         for (list in delimitedStringLists) {
             blackhole.consume(list.joinToString(","))
         }
     }
+
+    // endregion
 }
 
 private data class PathCase(

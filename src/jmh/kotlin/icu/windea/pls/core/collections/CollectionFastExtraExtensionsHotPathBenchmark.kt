@@ -32,15 +32,14 @@ private const val HOT_PATH_SLICE_COUNT = 256
 @Measurement(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(2)
 @Threads(1)
-open class CollectionFastExtraExtensionsHotPathBenchmark {
-    @JvmField
+class CollectionFastExtraExtensionsHotPathBenchmark {
     @Param("0", "1", "4", "64")
     var size: Int = 0
 
     private lateinit var cases: List<HotPathSliceCase>
 
     @Setup(Level.Trial)
-    open fun setup() {
+    fun setup() {
         cases = List(HOT_PATH_SLICE_COUNT) { caseIndex ->
             val list = List(size) { elementIndex -> "k${caseIndex}_$elementIndex" }
             val half = size / 2
@@ -54,9 +53,11 @@ open class CollectionFastExtraExtensionsHotPathBenchmark {
         }
     }
 
+    // region removePrefixOrNull
+
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_SLICE_COUNT)
-    open fun removePrefixOrNullOne(blackhole: Blackhole) {
+    fun removePrefixOrNullOne(blackhole: Blackhole) {
         for (case in cases) {
             blackhole.consume(case.list.removePrefixOrNull(case.prefixOne))
         }
@@ -64,15 +65,15 @@ open class CollectionFastExtraExtensionsHotPathBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_SLICE_COUNT)
-    open fun removePrefixOrNullOneByReference(blackhole: Blackhole) {
+    fun removePrefixOrNullOneByReference(blackhole: Blackhole) {
         for (case in cases) {
-            blackhole.consume(referenceRemovePrefix(case.list, case.prefixOne))
+            blackhole.consume(referenceRemovePrefixOrNull(case.list, case.prefixOne))
         }
     }
 
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_SLICE_COUNT)
-    open fun removePrefixOrNullHalf(blackhole: Blackhole) {
+    fun removePrefixOrNullHalf(blackhole: Blackhole) {
         for (case in cases) {
             blackhole.consume(case.list.removePrefixOrNull(case.prefixHalf))
         }
@@ -80,15 +81,19 @@ open class CollectionFastExtraExtensionsHotPathBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_SLICE_COUNT)
-    open fun removePrefixOrNullHalfByReference(blackhole: Blackhole) {
+    fun removePrefixOrNullHalfByReference(blackhole: Blackhole) {
         for (case in cases) {
-            blackhole.consume(referenceRemovePrefix(case.list, case.prefixHalf))
+            blackhole.consume(referenceRemovePrefixOrNull(case.list, case.prefixHalf))
         }
     }
 
+    // endregion
+
+    // region removeSuffixOrNull
+
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_SLICE_COUNT)
-    open fun removeSuffixOrNullOne(blackhole: Blackhole) {
+    fun removeSuffixOrNullOne(blackhole: Blackhole) {
         for (case in cases) {
             blackhole.consume(case.list.removeSuffixOrNull(case.suffixOne))
         }
@@ -96,15 +101,15 @@ open class CollectionFastExtraExtensionsHotPathBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_SLICE_COUNT)
-    open fun removeSuffixOrNullOneByReference(blackhole: Blackhole) {
+    fun removeSuffixOrNullOneByReference(blackhole: Blackhole) {
         for (case in cases) {
-            blackhole.consume(referenceRemoveSuffix(case.list, case.suffixOne))
+            blackhole.consume(referenceRemoveSuffixOrNull(case.list, case.suffixOne))
         }
     }
 
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_SLICE_COUNT)
-    open fun removeSuffixOrNullHalf(blackhole: Blackhole) {
+    fun removeSuffixOrNullHalf(blackhole: Blackhole) {
         for (case in cases) {
             blackhole.consume(case.list.removeSuffixOrNull(case.suffixHalf))
         }
@@ -112,11 +117,13 @@ open class CollectionFastExtraExtensionsHotPathBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_SLICE_COUNT)
-    open fun removeSuffixOrNullHalfByReference(blackhole: Blackhole) {
+    fun removeSuffixOrNullHalfByReference(blackhole: Blackhole) {
         for (case in cases) {
-            blackhole.consume(referenceRemoveSuffix(case.list, case.suffixHalf))
+            blackhole.consume(referenceRemoveSuffixOrNull(case.list, case.suffixHalf))
         }
     }
+
+    // endregion
 }
 
 private data class HotPathSliceCase(
@@ -127,7 +134,7 @@ private data class HotPathSliceCase(
     val suffixHalf: List<String>,
 )
 
-private fun referenceRemovePrefix(list: List<String>, prefix: List<String>): List<String>? {
+private fun referenceRemovePrefixOrNull(list: List<String>, prefix: List<String>): List<String>? {
     if (prefix.isEmpty()) return list
     if (list.size < prefix.size) return null
     for (index in prefix.indices) {
@@ -136,7 +143,7 @@ private fun referenceRemovePrefix(list: List<String>, prefix: List<String>): Lis
     return list.drop(prefix.size)
 }
 
-private fun referenceRemoveSuffix(list: List<String>, suffix: List<String>): List<String>? {
+private fun referenceRemoveSuffixOrNull(list: List<String>, suffix: List<String>): List<String>? {
     if (suffix.isEmpty()) return list
     if (list.size < suffix.size) return null
     for (index in suffix.indices) {

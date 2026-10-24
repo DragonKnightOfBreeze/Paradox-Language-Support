@@ -27,7 +27,7 @@ private const val SIZE = 64
 @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(2)
 @Threads(1)
-open class CollectionFastExtensionsBenchmark {
+class CollectionFastExtensionsBenchmark {
     private val ints = List(SIZE) { it }
     private val single = listOf(1)
     private val nullableInts = List(SIZE) { if (it % 4 == 0) null else it }
@@ -40,205 +40,270 @@ open class CollectionFastExtensionsBenchmark {
         }
     }
 
+    // region forEachFast
+
     @Benchmark
-    open fun forEachFast(blackhole: Blackhole) {
+    fun forEachFast(blackhole: Blackhole) {
         var sum = 0
         ints.forEachFast { sum += it }
         blackhole.consume(sum)
     }
 
     @Benchmark
-    open fun forEach(blackhole: Blackhole) {
+    fun forEach(blackhole: Blackhole) {
         var sum = 0
         ints.forEach { sum += it }
         blackhole.consume(sum)
     }
 
+    // endregion
+
+    // region forEachIndexedFast
+
     @Benchmark
-    open fun forEachIndexedFast(blackhole: Blackhole) {
+    fun forEachIndexedFast(blackhole: Blackhole) {
         var sum = 0
         ints.forEachIndexedFast { index, e -> sum += index + e }
         blackhole.consume(sum)
     }
 
     @Benchmark
-    open fun forEachIndexed(blackhole: Blackhole) {
+    fun forEachIndexed(blackhole: Blackhole) {
         var sum = 0
         ints.forEachIndexed { index, e -> sum += index + e }
         blackhole.consume(sum)
     }
 
+    // endregion
+
+    // region forEachReversedFast
+
     @Benchmark
-    open fun forEachReversedFast(blackhole: Blackhole) {
+    fun forEachReversedFast(blackhole: Blackhole) {
         var sum = 0
         ints.forEachReversedFast { sum += it }
         blackhole.consume(sum)
     }
 
     @Benchmark
-    open fun forEachReversed(blackhole: Blackhole) {
+    fun forEachReversed(blackhole: Blackhole) {
         var sum = 0
         ints.asReversed().forEach { sum += it }
         blackhole.consume(sum)
     }
 
+    // endregion
+
+    // region mapFast
+
     @Benchmark
-    open fun mapFast(blackhole: Blackhole) {
+    fun mapFast(blackhole: Blackhole) {
         blackhole.consume(ints.mapFast { it + 1 })
     }
 
     @Benchmark
-    open fun map(blackhole: Blackhole) {
+    fun map(blackhole: Blackhole) {
         blackhole.consume(ints.map { it + 1 })
     }
 
     @Benchmark
-    open fun mapFastSingle(blackhole: Blackhole) {
+    fun mapFastSingle(blackhole: Blackhole) {
         blackhole.consume(single.mapFast { it + 1 })
     }
 
     @Benchmark
-    open fun mapSingle(blackhole: Blackhole) {
+    fun mapSingle(blackhole: Blackhole) {
         blackhole.consume(single.map { it + 1 })
     }
 
+    // endregion
+
+    // region mapNotNullFast
+
     @Benchmark
-    open fun mapNotNullFast(blackhole: Blackhole) {
+    fun mapNotNullFast(blackhole: Blackhole) {
         blackhole.consume(nullableInts.mapNotNullFast { it })
     }
 
     @Benchmark
-    open fun mapNotNull(blackhole: Blackhole) {
+    fun mapNotNull(blackhole: Blackhole) {
         blackhole.consume(nullableInts.mapNotNull { it })
     }
 
+    // endregion
+
+    // region flatMapFast
+
     @Benchmark
-    open fun flatMapFast(blackhole: Blackhole) {
+    fun flatMapFast(blackhole: Blackhole) {
         blackhole.consume(nested.flatMapFast { it })
     }
 
     @Benchmark
-    open fun flatMap(blackhole: Blackhole) {
+    fun flatMap(blackhole: Blackhole) {
+        @Suppress("SimplifiableCall")
         blackhole.consume(nested.flatMap { it })
     }
 
+    // endregion
+
+    // region filterFast
+
     @Benchmark
-    open fun filterFast(blackhole: Blackhole) {
+    fun filterFast(blackhole: Blackhole) {
         blackhole.consume(ints.filterFast { it % 2 == 0 })
     }
 
     @Benchmark
-    open fun filter(blackhole: Blackhole) {
+    fun filter(blackhole: Blackhole) {
         blackhole.consume(ints.filter { it % 2 == 0 })
     }
 
+    // endregion
+
+    // region filterNotNullFast
+
     @Benchmark
-    open fun filterNotNullFast(blackhole: Blackhole) {
+    fun filterNotNullFast(blackhole: Blackhole) {
         blackhole.consume(nullableInts.filterNotNullFast())
     }
 
     @Benchmark
-    open fun filterNotNull(blackhole: Blackhole) {
+    fun filterNotNull(blackhole: Blackhole) {
         blackhole.consume(nullableInts.filterNotNull())
     }
 
+    // endregion
+
+    // region filterIsInstanceFast
+
     @Benchmark
-    open fun filterIsInstanceFast(blackhole: Blackhole) {
+    fun filterIsInstanceFast(blackhole: Blackhole) {
         blackhole.consume(mixed.filterIsInstanceFast<String> { it.startsWith("s") })
     }
 
     @Benchmark
-    open fun filterIsInstance(blackhole: Blackhole) {
+    fun filterIsInstance(blackhole: Blackhole) {
         blackhole.consume(mixed.filterIsInstance<String> { it.startsWith("s") })
     }
 
+    // endregion
+
+    // region findFast
+
     @Benchmark
-    open fun findFast(blackhole: Blackhole) {
+    fun findFast(blackhole: Blackhole) {
         blackhole.consume(ints.findFast { it >= 32 })
     }
 
     @Benchmark
-    open fun find(blackhole: Blackhole) {
+    fun find(blackhole: Blackhole) {
         blackhole.consume(ints.find { it >= 32 })
     }
 
+    // endregion
+
+    // region findLastFast
+
     @Benchmark
-    open fun findLastFast(blackhole: Blackhole) {
+    fun findLastFast(blackhole: Blackhole) {
         blackhole.consume(ints.findLastFast { it < 32 })
     }
 
     @Benchmark
-    open fun findLast(blackhole: Blackhole) {
+    fun findLast(blackhole: Blackhole) {
         blackhole.consume(ints.findLast { it < 32 })
     }
 
+    // endregion
+
+    // region allFast
+
     @Benchmark
-    open fun allFast(blackhole: Blackhole) {
+    fun allFast(blackhole: Blackhole) {
         blackhole.consume(ints.allFast { it < SIZE })
     }
 
     @Benchmark
-    open fun all(blackhole: Blackhole) {
+    fun all(blackhole: Blackhole) {
         blackhole.consume(ints.all { it < SIZE })
     }
 
+    // endregion
+
+    // region anyFast
+
     @Benchmark
-    open fun anyFast(blackhole: Blackhole) {
+    fun anyFast(blackhole: Blackhole) {
         blackhole.consume(ints.anyFast { it == 0 })
     }
 
     @Benchmark
-    open fun any(blackhole: Blackhole) {
+    fun any(blackhole: Blackhole) {
         blackhole.consume(ints.any { it == 0 })
     }
 
+    // endregion
+
+    // region noneFast
+
     @Benchmark
-    open fun noneFast(blackhole: Blackhole) {
+    fun noneFast(blackhole: Blackhole) {
         blackhole.consume(ints.noneFast { it < 0 })
     }
 
     @Benchmark
-    open fun none(blackhole: Blackhole) {
+    fun none(blackhole: Blackhole) {
         blackhole.consume(ints.none { it < 0 })
     }
 
+    // endregion
+
+    // region processFast
+
     @Benchmark
-    open fun processFast(blackhole: Blackhole) {
+    fun processFast(blackhole: Blackhole) {
         blackhole.consume(ints.processFast { it < SIZE })
     }
 
     @Benchmark
-    open fun process(blackhole: Blackhole) {
+    fun process(blackhole: Blackhole) {
         blackhole.consume(ints.process { it < SIZE })
     }
 
+    // endregion
+
+    // region dropFast
+
     @Benchmark
-    open fun dropFastZero(blackhole: Blackhole) {
+    fun dropFastZero(blackhole: Blackhole) {
         blackhole.consume(ints.dropFast(0))
     }
 
     @Benchmark
-    open fun dropZero(blackhole: Blackhole) {
+    fun dropZero(blackhole: Blackhole) {
         blackhole.consume(ints.drop(0))
     }
 
     @Benchmark
-    open fun dropFastOne(blackhole: Blackhole) {
+    fun dropFastOne(blackhole: Blackhole) {
         blackhole.consume(ints.dropFast(1))
     }
 
     @Benchmark
-    open fun dropOne(blackhole: Blackhole) {
+    fun dropOne(blackhole: Blackhole) {
         blackhole.consume(ints.drop(1))
     }
 
     @Benchmark
-    open fun dropFastNearEnd(blackhole: Blackhole) {
+    fun dropFastNearEnd(blackhole: Blackhole) {
         blackhole.consume(ints.dropFast(SIZE - 1))
     }
 
     @Benchmark
-    open fun dropNearEnd(blackhole: Blackhole) {
+    fun dropNearEnd(blackhole: Blackhole) {
         blackhole.consume(ints.drop(SIZE - 1))
     }
+
+    // endregion
 }

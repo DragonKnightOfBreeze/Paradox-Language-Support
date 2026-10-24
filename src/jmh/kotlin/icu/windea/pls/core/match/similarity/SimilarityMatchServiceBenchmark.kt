@@ -35,8 +35,7 @@ private const val INPUT_COUNT = 100
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(1)
 @Threads(1)
-open class SimilarityMatchServiceBenchmark {
-    @JvmField
+class SimilarityMatchServiceBenchmark {
     @Param("2000", "5000", "10000")
     var candidateSize: Int = 0
 
@@ -46,7 +45,7 @@ open class SimilarityMatchServiceBenchmark {
     private lateinit var directOptions: SimilarityMatchOptions
 
     @Setup(Level.Trial)
-    open fun setup() {
+    fun setup() {
         candidates = buildCandidates(seed = 13 + candidateSize, size = candidateSize)
         inputs = buildInputs(seed = 7, size = INPUT_COUNT)
         options = SimilarityMatchOptions.DEFAULT
@@ -60,7 +59,7 @@ open class SimilarityMatchServiceBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(INPUT_COUNT)
-    open fun findBestMatchesWarm(blackhole: Blackhole) {
+    fun findBestMatchesWarm(blackhole: Blackhole) {
         for (input in inputs) {
             blackhole.consume(SimilarityMatchService.findBestMatches(input, candidates, options))
         }
@@ -68,7 +67,7 @@ open class SimilarityMatchServiceBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(INPUT_COUNT)
-    open fun findBestMatchesDirect(blackhole: Blackhole) {
+    fun findBestMatchesDirect(blackhole: Blackhole) {
         for (input in inputs) {
             blackhole.consume(SimilarityMatchService.findBestMatches(input, candidates, directOptions))
         }
@@ -85,6 +84,7 @@ open class SimilarityMatchServiceBenchmark {
         }
     }
 
+    @Suppress("SameParameterValue")
     private fun buildInputs(seed: Int, size: Int): List<String> {
         val rnd = Random(seed)
         val letters = ('a'..'z').toList()

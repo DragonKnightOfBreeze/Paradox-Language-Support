@@ -32,7 +32,7 @@ private const val JOIN_LIST_COUNT = 4
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(2)
 @Threads(1)
-open class StdlibFastExtensionsBenchmark {
+class StdlibFastExtensionsBenchmark {
     private val asciiPairs = listOf(
         "foo_bar_baz" to "foo_bar_baz",
         "foo_bar_baz" to "foo_bar_baZ",
@@ -75,10 +75,12 @@ open class StdlibFastExtensionsBenchmark {
         listOf("a", "b", "c"),
     )
 
+    // region equalsFast
+
     @Benchmark
     @OperationsPerInvocation(ASCII_PAIR_COUNT)
     @Suppress("DEPRECATION", "DEPRECATION_ERROR")
-    open fun equalsFastAscii(blackhole: Blackhole) {
+    fun equalsFastAscii(blackhole: Blackhole) {
         for ((a, b) in asciiPairs) {
             blackhole.consume(a.equalsFast(b))
         }
@@ -86,7 +88,7 @@ open class StdlibFastExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(ASCII_PAIR_COUNT)
-    open fun equalsAscii(blackhole: Blackhole) {
+    fun equalsAscii(blackhole: Blackhole) {
         for ((a, b) in asciiPairs) {
             blackhole.consume(a == b)
         }
@@ -95,7 +97,7 @@ open class StdlibFastExtensionsBenchmark {
     @Benchmark
     @OperationsPerInvocation(ASCII_PAIR_COUNT)
     @Suppress("DEPRECATION", "DEPRECATION_ERROR")
-    open fun equalsFastAsciiIgnoreCase(blackhole: Blackhole) {
+    fun equalsFastAsciiIgnoreCase(blackhole: Blackhole) {
         for ((a, b) in asciiPairs) {
             blackhole.consume(a.equalsFast(b, ignoreCase = true))
         }
@@ -103,7 +105,7 @@ open class StdlibFastExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(ASCII_PAIR_COUNT)
-    open fun equalsAsciiIgnoreCase(blackhole: Blackhole) {
+    fun equalsAsciiIgnoreCase(blackhole: Blackhole) {
         for ((a, b) in asciiPairs) {
             blackhole.consume(a.equals(b, ignoreCase = true))
         }
@@ -112,7 +114,7 @@ open class StdlibFastExtensionsBenchmark {
     @Benchmark
     @OperationsPerInvocation(NON_ASCII_PAIR_COUNT)
     @Suppress("DEPRECATION", "DEPRECATION_ERROR")
-    open fun equalsFastNonAscii(blackhole: Blackhole) {
+    fun equalsFastNonAscii(blackhole: Blackhole) {
         for ((a, b) in nonAsciiPairs) {
             blackhole.consume(a.equalsFast(b))
         }
@@ -120,15 +122,19 @@ open class StdlibFastExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(NON_ASCII_PAIR_COUNT)
-    open fun equalsNonAscii(blackhole: Blackhole) {
+    fun equalsNonAscii(blackhole: Blackhole) {
         for ((a, b) in nonAsciiPairs) {
             blackhole.consume(a == b)
         }
     }
 
+    // endregion
+
+    // region trimFast
+
     @Benchmark
     @OperationsPerInvocation(TRIM_COUNT)
-    open fun trimFast(blackhole: Blackhole) {
+    fun trimFast(blackhole: Blackhole) {
         for (text in trimTexts) {
             blackhole.consume(text.trimFast('/'))
         }
@@ -136,15 +142,19 @@ open class StdlibFastExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(TRIM_COUNT)
-    open fun trim(blackhole: Blackhole) {
+    fun trim(blackhole: Blackhole) {
         for (text in trimTexts) {
             blackhole.consume(text.trim('/'))
         }
     }
 
+    // endregion
+
+    // region splitFast
+
     @Benchmark
     @OperationsPerInvocation(SPLIT_COUNT)
-    open fun splitFast(blackhole: Blackhole) {
+    fun splitFast(blackhole: Blackhole) {
         for (text in splitTexts) {
             blackhole.consume(text.splitFast('/'))
         }
@@ -152,7 +162,7 @@ open class StdlibFastExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(SPLIT_COUNT)
-    open fun split(blackhole: Blackhole) {
+    fun split(blackhole: Blackhole) {
         for (text in splitTexts) {
             blackhole.consume(text.split('/'))
         }
@@ -160,7 +170,7 @@ open class StdlibFastExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(SPLIT_COUNT)
-    open fun splitFastWithLimit(blackhole: Blackhole) {
+    fun splitFastWithLimit(blackhole: Blackhole) {
         for (text in splitTexts) {
             blackhole.consume(text.splitFast('/', limit = 2))
         }
@@ -168,15 +178,19 @@ open class StdlibFastExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(SPLIT_COUNT)
-    open fun splitWithLimit(blackhole: Blackhole) {
+    fun splitWithLimit(blackhole: Blackhole) {
         for (text in splitTexts) {
             blackhole.consume(text.split('/', limit = 2))
         }
     }
 
+    // endregion
+
+    // region joinToStringFast
+
     @Benchmark
     @OperationsPerInvocation(JOIN_LIST_COUNT)
-    open fun joinToStringFast(blackhole: Blackhole) {
+    fun joinToStringFast(blackhole: Blackhole) {
         for (list in joinLists) {
             blackhole.consume(list.joinToStringFast())
         }
@@ -184,7 +198,7 @@ open class StdlibFastExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(JOIN_LIST_COUNT)
-    open fun joinToString(blackhole: Blackhole) {
+    fun joinToString(blackhole: Blackhole) {
         for (list in joinLists) {
             blackhole.consume(list.joinToString())
         }
@@ -192,7 +206,7 @@ open class StdlibFastExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(JOIN_LIST_COUNT)
-    open fun joinToStringFastWithTransform(blackhole: Blackhole) {
+    fun joinToStringFastWithTransform(blackhole: Blackhole) {
         for (list in joinLists) {
             blackhole.consume(list.joinToStringFast { it.uppercase() })
         }
@@ -200,9 +214,11 @@ open class StdlibFastExtensionsBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(JOIN_LIST_COUNT)
-    open fun joinToStringWithTransform(blackhole: Blackhole) {
+    fun joinToStringWithTransform(blackhole: Blackhole) {
         for (list in joinLists) {
             blackhole.consume(list.joinToString { it.uppercase() })
         }
     }
+
+    // endregion
 }

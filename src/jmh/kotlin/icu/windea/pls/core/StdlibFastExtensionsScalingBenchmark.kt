@@ -29,8 +29,7 @@ import java.util.concurrent.TimeUnit
 @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(2)
 @Threads(1)
-open class StdlibFastExtensionsScalingBenchmark {
-    @JvmField
+class StdlibFastExtensionsScalingBenchmark {
     @Param("100", "10000", "1000000")
     var length: Int = 0
 
@@ -42,7 +41,7 @@ open class StdlibFastExtensionsScalingBenchmark {
     private lateinit var ignoreCaseB: String
 
     @Setup(Level.Trial)
-    open fun setup() {
+    fun setup() {
         equalA = String(CharArray(length) { 'a' })
         equalB = String(CharArray(length) { 'a' })
         mismatchLastA = equalA
@@ -51,36 +50,40 @@ open class StdlibFastExtensionsScalingBenchmark {
         ignoreCaseB = String(CharArray(length) { if (it % 2 == 0) 'A' else 'a' })
     }
 
+    // region equalsFast
+
     @Benchmark
     @Suppress("DEPRECATION", "DEPRECATION_ERROR")
-    open fun equalsFastEqual(blackhole: Blackhole) {
+    fun equalsFastEqual(blackhole: Blackhole) {
         blackhole.consume(equalA.equalsFast(equalB))
     }
 
     @Benchmark
-    open fun equalsEqual(blackhole: Blackhole) {
+    fun equalsEqual(blackhole: Blackhole) {
         blackhole.consume(equalA == equalB)
     }
 
     @Benchmark
     @Suppress("DEPRECATION", "DEPRECATION_ERROR")
-    open fun equalsFastMismatchLast(blackhole: Blackhole) {
+    fun equalsFastMismatchLast(blackhole: Blackhole) {
         blackhole.consume(mismatchLastA.equalsFast(mismatchLastB))
     }
 
     @Benchmark
-    open fun equalsMismatchLast(blackhole: Blackhole) {
+    fun equalsMismatchLast(blackhole: Blackhole) {
         blackhole.consume(mismatchLastA == mismatchLastB)
     }
 
     @Benchmark
     @Suppress("DEPRECATION", "DEPRECATION_ERROR")
-    open fun equalsFastIgnoreCaseMixed(blackhole: Blackhole) {
+    fun equalsFastIgnoreCaseMixed(blackhole: Blackhole) {
         blackhole.consume(ignoreCaseA.equalsFast(ignoreCaseB, ignoreCase = true))
     }
 
     @Benchmark
-    open fun equalsIgnoreCaseMixed(blackhole: Blackhole) {
+    fun equalsIgnoreCaseMixed(blackhole: Blackhole) {
         blackhole.consume(ignoreCaseA.equals(ignoreCaseB, ignoreCase = true))
     }
+
+    // endregion
 }

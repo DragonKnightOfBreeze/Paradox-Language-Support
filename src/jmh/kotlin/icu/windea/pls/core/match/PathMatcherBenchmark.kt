@@ -32,7 +32,7 @@ private const val LIST_OPERATIONS = 11 * 11
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(2)
 @Threads(1)
-open class PathMatcherBenchmark {
+class PathMatcherBenchmark {
     private val subPaths = listOf(
         "foo",
         "bar",
@@ -91,7 +91,7 @@ open class PathMatcherBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(STRING_OPERATIONS)
-    open fun matchesStringExact(blackhole: Blackhole) {
+    fun matchesStringExact(blackhole: Blackhole) {
         for (input in subPaths) {
             for (other in subPaths) {
                 blackhole.consume(PathMatcher.matches(input, other))
@@ -101,7 +101,7 @@ open class PathMatcherBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(STRING_OPERATIONS)
-    open fun matchesStringPattern(blackhole: Blackhole) {
+    fun matchesStringPattern(blackhole: Blackhole) {
         for (input in subPaths) {
             for (pattern in subPatterns) {
                 blackhole.consume(PathMatcher.matches(input, pattern, usePattern = true))
@@ -111,7 +111,7 @@ open class PathMatcherBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(11)
-    open fun matchesStringAny(blackhole: Blackhole) {
+    fun matchesStringAny(blackhole: Blackhole) {
         for ((index, input) in subPaths.withIndex()) {
             blackhole.consume(PathMatcher.matches(input, anyKeywords[index], useAny = true))
         }
@@ -121,7 +121,7 @@ open class PathMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(LIST_OPERATIONS)
-    open fun matchesListExact(blackhole: Blackhole) {
+    fun matchesListExact(blackhole: Blackhole) {
         for (input in listInputs) {
             for (other in listExactOthers) {
                 blackhole.consume(PathMatcher.matches(input, other))
@@ -133,7 +133,7 @@ open class PathMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(LIST_OPERATIONS)
-    open fun matchesListPattern(blackhole: Blackhole) {
+    fun matchesListPattern(blackhole: Blackhole) {
         for (input in listInputs) {
             for (other in listPatternOthers) {
                 blackhole.consume(PathMatcher.matches(input, other, usePattern = true))
@@ -145,7 +145,7 @@ open class PathMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(LIST_OPERATIONS)
-    open fun matchesListAny(blackhole: Blackhole) {
+    fun matchesListAny(blackhole: Blackhole) {
         for (input in listInputs) {
             for (other in listAnyOthers) {
                 blackhole.consume(PathMatcher.matches(input, other, useAny = true))
@@ -157,7 +157,7 @@ open class PathMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(LIST_OPERATIONS)
-    open fun relative(blackhole: Blackhole) {
+    fun relative(blackhole: Blackhole) {
         for (base in relativeBases) {
             for (path in relativePaths) {
                 blackhole.consume(PathMatcher.relative(base, path))
@@ -169,7 +169,7 @@ open class PathMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(STRING_OPERATIONS)
-    open fun matchesStringExactByDirect(blackhole: Blackhole) {
+    fun matchesStringExactByDirect(blackhole: Blackhole) {
         for (input in subPaths) {
             for (other in subPaths) {
                 blackhole.consume(input == other)
@@ -181,7 +181,7 @@ open class PathMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(STRING_OPERATIONS)
-    open fun matchesStringPatternByDirect(blackhole: Blackhole) {
+    fun matchesStringPatternByDirect(blackhole: Blackhole) {
         for (input in subPaths) {
             for (pattern in subPatterns) {
                 blackhole.consume(GlobMatcher.matches(input, pattern))
@@ -193,7 +193,7 @@ open class PathMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(11)
-    open fun matchesStringAnyByDirect(blackhole: Blackhole) {
+    fun matchesStringAnyByDirect(blackhole: Blackhole) {
         for ((index, _) in subPaths.withIndex()) {
             blackhole.consume(anyKeywords[index] == "any")
         }
@@ -203,7 +203,7 @@ open class PathMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(LIST_OPERATIONS)
-    open fun matchesListExactByDirect(blackhole: Blackhole) {
+    fun matchesListExactByDirect(blackhole: Blackhole) {
         for (input in listInputs) {
             for (other in listExactOthers) {
                 blackhole.consume(listMatchesExactDirect(input, other))
@@ -215,7 +215,7 @@ open class PathMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(LIST_OPERATIONS)
-    open fun matchesListPatternByDirect(blackhole: Blackhole) {
+    fun matchesListPatternByDirect(blackhole: Blackhole) {
         for (input in listInputs) {
             for (other in listPatternOthers) {
                 blackhole.consume(listMatchesPatternDirect(input, other))
@@ -227,7 +227,7 @@ open class PathMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(LIST_OPERATIONS)
-    open fun relativeByDirect(blackhole: Blackhole) {
+    fun relativeByDirect(blackhole: Blackhole) {
         for (base in relativeBases) {
             for (path in relativePaths) {
                 blackhole.consume(relativeDirect(base, path))

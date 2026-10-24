@@ -36,7 +36,7 @@ private const val DATE_COUNT = VALID_DATE_COUNT + INVALID_DATE_COUNT
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(2)
 @Threads(1)
-open class TextMatcherBenchmark {
+class TextMatcherBenchmark {
     private val intTexts = listOf(
         "12345",
         "0",
@@ -99,9 +99,11 @@ open class TextMatcherBenchmark {
     private val floatStrictRegex = Regex("^[+-]?\\d+(\\.\\d+)?$")
     private val datePrecheckRegex = Regex("^[+-]?\\d{1,4}\\.\\d{1,2}\\.\\d{1,2}$")
 
+    // region matchesInt
+
     @Benchmark
     @OperationsPerInvocation(INT_COUNT)
-    open fun matchesInt(blackhole: Blackhole) {
+    fun matchesInt(blackhole: Blackhole) {
         for (text in intTexts) {
             blackhole.consume(TextMatcher.matchesInt(text))
         }
@@ -109,51 +111,9 @@ open class TextMatcherBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(INT_COUNT)
-    open fun matchesIntWithoutLeadingUnary(blackhole: Blackhole) {
+    fun matchesIntWithoutLeadingUnary(blackhole: Blackhole) {
         for (text in intTexts) {
             blackhole.consume(TextMatcher.matchesInt(text, leadingUnary = false))
-        }
-    }
-
-    @Benchmark
-    @OperationsPerInvocation(FLOAT_COUNT)
-    open fun matchesFloat(blackhole: Blackhole) {
-        for (text in floatTexts) {
-            blackhole.consume(TextMatcher.matchesFloat(text))
-        }
-    }
-
-    @Benchmark
-    @OperationsPerInvocation(FLOAT_COUNT)
-    open fun matchesFloatStrictDot(blackhole: Blackhole) {
-        for (text in floatTexts) {
-            blackhole.consume(TextMatcher.matchesFloat(text, lenientDot = false))
-        }
-    }
-
-    @Benchmark
-    @OperationsPerInvocation(PERCENTAGE_COUNT)
-    open fun matchesIntPercentageField(blackhole: Blackhole) {
-        for (text in percentageTexts) {
-            blackhole.consume(TextMatcher.matchesIntPercentageField(text))
-        }
-    }
-
-    @Benchmark
-    @OperationsPerInvocation(PERCENTAGE_COUNT)
-    open fun matchesFloatPercentageField(blackhole: Blackhole) {
-        for (text in percentageTexts) {
-            blackhole.consume(TextMatcher.matchesFloatPercentageField(text))
-        }
-    }
-
-    @Benchmark
-    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
-    @OperationsPerInvocation(DATE_COUNT)
-    open fun matchesDateField(blackhole: Blackhole) {
-        for (text in dateTexts) {
-            blackhole.consume(TextMatcher.matchesDateField(text))
         }
     }
 
@@ -161,7 +121,7 @@ open class TextMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(INT_COUNT)
-    open fun matchesIntByRegex(blackhole: Blackhole) {
+    fun matchesIntByRegex(blackhole: Blackhole) {
         for (text in intTexts) {
             blackhole.consume(intRegex.matches(text))
         }
@@ -171,10 +131,30 @@ open class TextMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(INT_COUNT)
-    open fun matchesIntByIdiomatic(blackhole: Blackhole) {
+    fun matchesIntByIdiomatic(blackhole: Blackhole) {
         // 注意：toIntOrNull 与 matchesInt 的溢出语义不完全一致，数据集中不包含溢出值
         for (text in intTexts) {
             blackhole.consume(text.toIntOrNull() != null)
+        }
+    }
+
+    // endregion
+
+    // region matchesFloat
+
+    @Benchmark
+    @OperationsPerInvocation(FLOAT_COUNT)
+    fun matchesFloat(blackhole: Blackhole) {
+        for (text in floatTexts) {
+            blackhole.consume(TextMatcher.matchesFloat(text))
+        }
+    }
+
+    @Benchmark
+    @OperationsPerInvocation(FLOAT_COUNT)
+    fun matchesFloatStrictDot(blackhole: Blackhole) {
+        for (text in floatTexts) {
+            blackhole.consume(TextMatcher.matchesFloat(text, lenientDot = false))
         }
     }
 
@@ -182,7 +162,7 @@ open class TextMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(FLOAT_COUNT)
-    open fun matchesFloatByRegex(blackhole: Blackhole) {
+    fun matchesFloatByRegex(blackhole: Blackhole) {
         for (text in floatTexts) {
             blackhole.consume(floatRegex.matches(text))
         }
@@ -192,7 +172,7 @@ open class TextMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(FLOAT_COUNT)
-    open fun matchesFloatByIdiomatic(blackhole: Blackhole) {
+    fun matchesFloatByIdiomatic(blackhole: Blackhole) {
         // 注意：toDoubleOrNull 接受指数、NaN、Infinity 等，数据集中不包含这些形式
         for (text in floatTexts) {
             blackhole.consume(text.toDoubleOrNull() != null)
@@ -203,19 +183,21 @@ open class TextMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(FLOAT_COUNT)
-    open fun matchesFloatStrictDotByRegex(blackhole: Blackhole) {
+    fun matchesFloatStrictDotByRegex(blackhole: Blackhole) {
         for (text in floatTexts) {
             blackhole.consume(floatStrictRegex.matches(text))
         }
     }
 
+    // endregion
+
+    // region matchesIntPercentageField
+
     @Benchmark
-    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(PERCENTAGE_COUNT)
-    open fun matchesIntPercentageFieldByIdiomatic(blackhole: Blackhole) {
+    fun matchesIntPercentageField(blackhole: Blackhole) {
         for (text in percentageTexts) {
-            blackhole.consume(text.endsWith("%") && text.dropLast(1).toIntOrNull() != null)
+            blackhole.consume(TextMatcher.matchesIntPercentageField(text))
         }
     }
 
@@ -223,9 +205,45 @@ open class TextMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(PERCENTAGE_COUNT)
-    open fun matchesFloatPercentageFieldByIdiomatic(blackhole: Blackhole) {
+    fun matchesIntPercentageFieldByIdiomatic(blackhole: Blackhole) {
+        for (text in percentageTexts) {
+            blackhole.consume(text.endsWith("%") && text.dropLast(1).toIntOrNull() != null)
+        }
+    }
+
+    // endregion
+
+    // region matchesFloatPercentageField
+
+    @Benchmark
+    @OperationsPerInvocation(PERCENTAGE_COUNT)
+    fun matchesFloatPercentageField(blackhole: Blackhole) {
+        for (text in percentageTexts) {
+            blackhole.consume(TextMatcher.matchesFloatPercentageField(text))
+        }
+    }
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(PERCENTAGE_COUNT)
+    fun matchesFloatPercentageFieldByIdiomatic(blackhole: Blackhole) {
         for (text in percentageTexts) {
             blackhole.consume(text.endsWith("%") && text.dropLast(1).toDoubleOrNull() != null)
+        }
+    }
+
+    // endregion
+
+    // region matchesDateField
+
+    @Benchmark
+    @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
+    @OperationsPerInvocation(DATE_COUNT)
+    fun matchesDateField(blackhole: Blackhole) {
+        for (text in dateTexts) {
+            blackhole.consume(TextMatcher.matchesDateField(text))
         }
     }
 
@@ -233,7 +251,7 @@ open class TextMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(DATE_COUNT)
-    open fun matchesDateFieldWithPrecheck(blackhole: Blackhole) {
+    fun matchesDateFieldWithPrecheck(blackhole: Blackhole) {
         for (text in dateTexts) {
             val result = datePrecheckRegex.matches(text) && TextMatcher.matchesDateField(text)
             blackhole.consume(result)
@@ -244,7 +262,7 @@ open class TextMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(VALID_DATE_COUNT)
-    open fun matchesDateFieldValid(blackhole: Blackhole) {
+    fun matchesDateFieldValid(blackhole: Blackhole) {
         for (text in validDateTexts) {
             blackhole.consume(TextMatcher.matchesDateField(text))
         }
@@ -254,9 +272,11 @@ open class TextMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(INVALID_DATE_COUNT)
-    open fun matchesDateFieldInvalid(blackhole: Blackhole) {
+    fun matchesDateFieldInvalid(blackhole: Blackhole) {
         for (text in invalidDateTexts) {
             blackhole.consume(TextMatcher.matchesDateField(text))
         }
     }
+
+    // endregion
 }

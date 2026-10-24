@@ -28,46 +28,57 @@ import java.util.concurrent.TimeUnit
 @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(2)
 @Threads(1)
-open class CollectionFastBuildersBenchmark {
-    @JvmField
+class CollectionFastBuildersBenchmark {
     @Param("0", "1", "4", "64")
     var size: Int = 0
 
     private lateinit var elements: Array<Any?>
 
     @Setup(Level.Trial)
-    open fun setup() {
+    fun setup() {
         elements = Array(size) { it }
     }
 
+    // region buildImmutableList
+
     @Benchmark
-    open fun buildImmutableList(blackhole: Blackhole) {
+    fun buildImmutableList(blackhole: Blackhole) {
         blackhole.consume(buildImmutableList<Any>(size) { it })
     }
 
     @Benchmark
-    open fun buildImmutableListByReference(blackhole: Blackhole) {
+    fun buildImmutableListByReference(blackhole: Blackhole) {
         blackhole.consume(List<Any>(size) { it })
     }
 
+    // endregion
+
+    // region buildImmutableSet
+
     @Benchmark
     @Suppress("DEPRECATION", "DEPRECATION_ERROR")
-    open fun buildImmutableSet(blackhole: Blackhole) {
+    fun buildImmutableSet(blackhole: Blackhole) {
         blackhole.consume(buildImmutableSet<Any>(size) { it })
     }
 
     @Benchmark
-    open fun buildImmutableSetByReference(blackhole: Blackhole) {
+    fun buildImmutableSetByReference(blackhole: Blackhole) {
         blackhole.consume(buildSet<Any>(size) { for (index in 0 until size) add(index) })
     }
 
+    // endregion
+
+    // region asImmutableList
+
     @Benchmark
-    open fun asImmutableList(blackhole: Blackhole) {
+    fun asImmutableList(blackhole: Blackhole) {
         blackhole.consume(elements.asImmutableList<Any>())
     }
 
     @Benchmark
-    open fun asImmutableListByReference(blackhole: Blackhole) {
+    fun asImmutableListByReference(blackhole: Blackhole) {
         blackhole.consume(elements.toList())
     }
+
+    // endregion
 }

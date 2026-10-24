@@ -35,7 +35,7 @@ private const val MISS_OPERATIONS = 11 * 5
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(2)
 @Threads(1)
-open class GlobMatcherBenchmark {
+class GlobMatcherBenchmark {
     private val patterns = listOf(
         "*",
         "foo*",
@@ -95,7 +95,7 @@ open class GlobMatcherBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(SHORT_OPERATIONS)
-    open fun baseline(blackhole: Blackhole) {
+    fun baseline(blackhole: Blackhole) {
         for (pattern in patterns) {
             for (input in inputs) {
                 blackhole.consume(pattern.isNotEmpty() && input.isNotEmpty())
@@ -105,7 +105,7 @@ open class GlobMatcherBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(SHORT_OPERATIONS)
-    open fun matches(blackhole: Blackhole) {
+    fun matches(blackhole: Blackhole) {
         for (pattern in patterns) {
             for (input in inputs) {
                 blackhole.consume(GlobMatcher.matches(input, pattern))
@@ -115,7 +115,7 @@ open class GlobMatcherBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(SHORT_OPERATIONS)
-    open fun matchesIgnoreCase(blackhole: Blackhole) {
+    fun matchesIgnoreCase(blackhole: Blackhole) {
         for (pattern in patterns) {
             for (input in inputs) {
                 blackhole.consume(GlobMatcher.matches(input, pattern, ignoreCase = true))
@@ -127,7 +127,7 @@ open class GlobMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(LONG_OPERATIONS)
-    open fun matchesLongInput(blackhole: Blackhole) {
+    fun matchesLongInput(blackhole: Blackhole) {
         for (pattern in longPatterns) {
             for (input in longInputs) {
                 blackhole.consume(GlobMatcher.matches(input, pattern))
@@ -139,7 +139,7 @@ open class GlobMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(MISS_OPERATIONS)
-    open fun matchesMiss(blackhole: Blackhole) {
+    fun matchesMiss(blackhole: Blackhole) {
         for (pattern in missPatterns) {
             for (input in inputs) {
                 blackhole.consume(GlobMatcher.matches(input, pattern))
@@ -151,7 +151,7 @@ open class GlobMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(SHORT_OPERATIONS)
-    open fun matchesByRegex(blackhole: Blackhole) {
+    fun matchesByRegex(blackhole: Blackhole) {
         for ((_, regex) in patternRegexes) {
             for (input in inputs) {
                 blackhole.consume(regex.matches(input))
@@ -163,7 +163,7 @@ open class GlobMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(SHORT_OPERATIONS)
-    open fun matchesIgnoreCaseByRegex(blackhole: Blackhole) {
+    fun matchesIgnoreCaseByRegex(blackhole: Blackhole) {
         for ((_, regex) in patternRegexesIgnoreCase) {
             for (input in inputs) {
                 blackhole.consume(regex.matches(input))
@@ -175,7 +175,7 @@ open class GlobMatcherBenchmark {
     @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)
     @OperationsPerInvocation(LONG_OPERATIONS)
-    open fun matchesLongInputByRegex(blackhole: Blackhole) {
+    fun matchesLongInputByRegex(blackhole: Blackhole) {
         for ((_, regex) in longPatternRegexes) {
             for (input in longInputs) {
                 blackhole.consume(regex.matches(input))

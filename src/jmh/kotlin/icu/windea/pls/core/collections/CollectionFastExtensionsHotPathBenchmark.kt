@@ -33,23 +33,24 @@ private const val HOT_PATH_LIST_COUNT = 256
 @Measurement(iterations = 2, time = 1, timeUnit = TimeUnit.SECONDS)
 @Fork(2)
 @Threads(1)
-open class CollectionFastExtensionsHotPathBenchmark {
-    @JvmField
+class CollectionFastExtensionsHotPathBenchmark {
     @Param("0", "1", "4", "64")
     var size: Int = 0
 
     private lateinit var lists: List<List<Int>>
 
     @Setup(Level.Trial)
-    open fun setup() {
+    fun setup() {
         lists = List(HOT_PATH_LIST_COUNT) { listIndex ->
             List(size) { elementIndex -> listIndex * 31 + elementIndex }
         }
     }
 
+    // region forEachFast
+
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_LIST_COUNT)
-    open fun forEachFast(blackhole: Blackhole) {
+    fun forEachFast(blackhole: Blackhole) {
         var sum = 0L
         for (list in lists) {
             list.forEachFast { sum += it }
@@ -59,7 +60,7 @@ open class CollectionFastExtensionsHotPathBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_LIST_COUNT)
-    open fun forEach(blackhole: Blackhole) {
+    fun forEach(blackhole: Blackhole) {
         var sum = 0L
         for (list in lists) {
             list.forEach { sum += it }
@@ -67,9 +68,13 @@ open class CollectionFastExtensionsHotPathBenchmark {
         blackhole.consume(sum)
     }
 
+    // endregion
+
+    // region mapFast
+
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_LIST_COUNT)
-    open fun mapFast(blackhole: Blackhole) {
+    fun mapFast(blackhole: Blackhole) {
         for (list in lists) {
             blackhole.consume(list.mapFast { it + 1 })
         }
@@ -77,15 +82,19 @@ open class CollectionFastExtensionsHotPathBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_LIST_COUNT)
-    open fun map(blackhole: Blackhole) {
+    fun map(blackhole: Blackhole) {
         for (list in lists) {
             blackhole.consume(list.map { it + 1 })
         }
     }
 
+    // endregion
+
+    // region filterFast
+
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_LIST_COUNT)
-    open fun filterFastNone(blackhole: Blackhole) {
+    fun filterFastNone(blackhole: Blackhole) {
         for (list in lists) {
             blackhole.consume(list.filterFast { it < 0 })
         }
@@ -93,7 +102,7 @@ open class CollectionFastExtensionsHotPathBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_LIST_COUNT)
-    open fun filterNone(blackhole: Blackhole) {
+    fun filterNone(blackhole: Blackhole) {
         for (list in lists) {
             blackhole.consume(list.filter { it < 0 })
         }
@@ -101,7 +110,7 @@ open class CollectionFastExtensionsHotPathBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_LIST_COUNT)
-    open fun filterFastHalf(blackhole: Blackhole) {
+    fun filterFastHalf(blackhole: Blackhole) {
         for (list in lists) {
             blackhole.consume(list.filterFast { it % 2 == 0 })
         }
@@ -109,15 +118,19 @@ open class CollectionFastExtensionsHotPathBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_LIST_COUNT)
-    open fun filterHalf(blackhole: Blackhole) {
+    fun filterHalf(blackhole: Blackhole) {
         for (list in lists) {
             blackhole.consume(list.filter { it % 2 == 0 })
         }
     }
 
+    // endregion
+
+    // region dropFast
+
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_LIST_COUNT)
-    open fun dropFastZero(blackhole: Blackhole) {
+    fun dropFastZero(blackhole: Blackhole) {
         for (list in lists) {
             blackhole.consume(list.dropFast(0))
         }
@@ -125,7 +138,7 @@ open class CollectionFastExtensionsHotPathBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_LIST_COUNT)
-    open fun dropZero(blackhole: Blackhole) {
+    fun dropZero(blackhole: Blackhole) {
         for (list in lists) {
             blackhole.consume(list.drop(0))
         }
@@ -133,7 +146,7 @@ open class CollectionFastExtensionsHotPathBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_LIST_COUNT)
-    open fun dropFastOne(blackhole: Blackhole) {
+    fun dropFastOne(blackhole: Blackhole) {
         for (list in lists) {
             blackhole.consume(list.dropFast(1))
         }
@@ -141,7 +154,7 @@ open class CollectionFastExtensionsHotPathBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_LIST_COUNT)
-    open fun dropOne(blackhole: Blackhole) {
+    fun dropOne(blackhole: Blackhole) {
         for (list in lists) {
             blackhole.consume(list.drop(1))
         }
@@ -149,7 +162,7 @@ open class CollectionFastExtensionsHotPathBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_LIST_COUNT)
-    open fun dropFastHalf(blackhole: Blackhole) {
+    fun dropFastHalf(blackhole: Blackhole) {
         for (list in lists) {
             blackhole.consume(list.dropFast(list.size / 2))
         }
@@ -157,9 +170,11 @@ open class CollectionFastExtensionsHotPathBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(HOT_PATH_LIST_COUNT)
-    open fun dropHalf(blackhole: Blackhole) {
+    fun dropHalf(blackhole: Blackhole) {
         for (list in lists) {
             blackhole.consume(list.drop(list.size / 2))
         }
     }
+
+    // endregion
 }
