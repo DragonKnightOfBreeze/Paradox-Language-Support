@@ -154,25 +154,5 @@ object ChronicleCapabilities {
         return value
     }
 
-    private fun getStringProperty(key: String): String? {
-        return System.getProperty(key)?.takeIf { it.isNotBlank() }
-    }
-
-    private fun getCsvProperty(key: String): List<String> {
-        return getStringProperty(key)
-            ?.split(',')
-            ?.map { it.trim() }
-            ?.filter { it.isNotEmpty() }
-            .orEmpty()
-    }
-
-    private fun getParamsProperty(key: String): List<Pair<String, String>> {
-        return getCsvProperty(key).mapNotNull { entry ->
-            val index = entry.indexOf('=')
-            if (index <= 0 || index == entry.lastIndex) return@mapNotNull null
-            entry.substring(0, index).trim() to entry.substring(index + 1).trim()
-        }
-    }
-
     // endregion
 }

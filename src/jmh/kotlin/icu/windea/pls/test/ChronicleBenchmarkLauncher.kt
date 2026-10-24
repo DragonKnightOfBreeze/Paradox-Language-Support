@@ -1,9 +1,7 @@
 package icu.windea.pls.test
 
 import icu.windea.pls.ChronicleCapabilities
-import icu.windea.pls.core.match.GlobMatcher
-import icu.windea.pls.core.toDelimitedList
-import icu.windea.pls.core.toPath
+import icu.windea.pls.core.match.AntMatcher
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.results.format.ResultFormatType
 import org.openjdk.jmh.runner.Runner
@@ -16,42 +14,6 @@ import java.nio.file.Paths
 import java.time.Instant
 import java.util.jar.JarFile
 import java.util.regex.Pattern
-
-/**
- * 用于运行 JMH 基准测试的上下文对象。
- */
-class ChronicleBenchmarkContext {
-    val classDirs: List<Path> = computeClassDirs()
-    val reportDir: Path = computeReportDir()
-    val profiles: List<String> = computeProfiles()
-    val params: List<Pair<String, String>> = computeParams()
-
-    private fun computeReportDir(): Path {
-        return ChronicleCapabilities.Benchmark.reportDir
-            .toPath()
-    }
-
-    private fun computeClassDirs(): List<Path> {
-        return ChronicleCapabilities.Benchmark.classesDir
-            .toDelimitedList(File.pathSeparatorChar)
-            .map { it.toPath() }
-    }
-
-    private fun computeProfiles(): List<String> {
-        return ChronicleCapabilities.Benchmark.profilers
-            .toDelimitedList(',')
-    }
-
-    private fun computeParams(): List<Pair<String, String>> {
-        return ChronicleCapabilities.Benchmark.params
-            .toDelimitedList(',')
-            .mapNotNull { entry ->
-                val index = entry.indexOf('=')
-                if (index <= 0 || index == entry.lastIndex) return@mapNotNull null
-                entry.substring(0, index).trim() to entry.substring(index + 1).trim()
-            }
-    }
-}
 
 /**
  * 用于运行 JMH 基准测试的通用启动器。
@@ -186,27 +148,14 @@ object ChronicleBenchmarkLauncher {
                     "${benchmark.className}.$method",
                     "$simpleName.$method",
                 )
-                patterns.any { pattern -> candidates.any { candidate -> GlobMatcher.matches(candidate, pattern) } }
-            }
-            if (selectedMethods.isEmpty()) null else benchmark.copy(methods = selectedMethods)
-        }
-    }
-
-    private fun String.toGlobRegex(): Regex {
-        val regex = buildString {
-            append('^')
-            for (c in this@toGlobRegex) {
-                when (c) {
-                    '*' -> append(".*")
-                    '?' -> append('.')
-                    else -> {
-                        if (c.isLetterOrDigit() || c == '_') append(c) else append('\\').append(c)
+                patterns.any { pattern ->
+                    candidates.any { candidate ->
+                        AntMatcher.matches(candidate, pattern, separator = '.')
                     }
                 }
             }
-            append('$')
+            if (selectedMethods.isEmpty()) null else benchmark.copy(methods = selectedMethods)
         }
-        return Regex(regex)
     }
 
     private fun prepareReportDir(context: ChronicleBenchmarkContext) {
