@@ -531,7 +531,7 @@
   - 分别位于 `docs/` 和 `documents/`。
   - 通过置顶的链接导航栏提供语言切换。
   - 同步更新 `AGENTS.md` 和 `CONTRIBUTING.md`。
-- [ ] P1 提供 `PushStream`
+- [ ] P3 提供 `PushStream`
   - 提供简洁、灵活且更加符合直觉的 API 调用方式，同时保持性能
   - 零开销的推模式流（区别于 Iterator/Stream/Sequence 等拉模式流）
   - 拥有更高性能的同时，也能保持可读性

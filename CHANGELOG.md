@@ -13,8 +13,8 @@
 - [ ] 优化命令行执行逻辑和图片处理逻辑，适用取消检查和超时限制，以避免可能的 IDE 冻结 / Optimize the command-line execution logic and image processing logic, and apply cancellation checks and timeout limits, to avoid possible IDE freezes([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
 - [x] 修复插件在 IDEA 2026.3 EAP 中存在的兼容性问题 / Fix the compatibility issues of the plugin in IDEA 2026.3 EAP
 - [x] 修复 CWT 文件和脚本文件的结构视图无法正常显示的回归BUG（自插件版本 3.0.3） / Fix the regression bug where the structural view of CWT files and script files cannot display correctly (since plugin version 3.0.3)
-- [ ] 完善基准测试 / Improve more benchmarks
-- [ ] 其他优化与BUG修复 / Other optimizations and bug fixes
+- [x] 完善基准测试 / Improve more benchmarks
+- [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
 ## 3.0.4
 
