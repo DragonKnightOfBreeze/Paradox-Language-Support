@@ -87,7 +87,7 @@ The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`. 
 - Integration tests: for PSI/index/query/semantic match and resolve/tool integrations; usually depend on the IntelliJ Platform API or another external integration.
 - Platform tests: aka integration tests depend on IntelliJ Platform API.
 - Tooling: JUnit4 + IntelliJ Platform test framework.
-- If a test class has one or a few specific targets (classes, methods, etc.), call it out in the class KDoc via `@see TestTarget`.
+- If a test class has one or a few specific targets (classes, methods, etc.), call it out in the class KDoc via `@see <target>`.
 - Group test cases with `// region ... // endregion` comments when a class has enough cases to split into modules.
 - Add short inline comments where useful to clarify edge cases, details, or expected results of a test case.
 - When a test is expected to pass, prefer running it at the default/warn log level (`--warn`) first; only drop to a more verbose log level if it actually fails.
@@ -289,8 +289,7 @@ Here are some common code patterns:
 - How to search definitions (e.g., an event with specific event id): Use `ParadoxDefinitionSearch` (so do other `Paradox...Search`s).
 - How to check out domain or topic specific codes (e.g., definition, scope, recursion): Search declarations of`...Data`,  `...Info`, `...Util`, `...Service`, `...Manager` and so on.
 - How to check out provided features and domain entries: View relevant docs, check `plugin.xml` (and the including XML configuration files), or search relevant keywords.
-- Assume and search existing extensions, components, utils, services, managers, EPs, etc., **before** reinventing the wheel.
-- Follow the best practice for Kotlin programming and IntelliJ platform development, more importantly, the **conceptual consistency**.
+- Assume and search existing extensions, components, utils, services, managers, EPs, etc., before reinventing the wheel.
 
 ## Domain terminology and guidance
 
@@ -372,13 +371,14 @@ Do not read the entire `documents/` directory at once, instead, read specific do
 - Optional dependencies (enabled only when present): Markdown, Diagrams (Ultimate), Translation plugin.
 - There is an internal code injection subsystem, avoid changing it casually unless you understand the impact.
 
-### Making changes safely
+### Be smartly and lovely
 
+- Keep **conceptual consistency** during editing code, comments or documents, and even during thinking and discussing.
+- Follow the best practice for Kotlin programming and IntelliJ platform development.
+- Use available MCP server tools flexibly.
 - Keep changes minimal and localized.
-- Prefer extending via existing EPs and config-driven mechanisms instead of hard-coding game-specific behavior.
-- If adding new EP implementations, follow the naming conventions above.
-- Add/update tests when feasible; distinguish unit vs integration tests.
-- Run `./gradlew test --no-daemon --console=plain` (or a targeted test task) before finishing.
+- Add and/or update tests when feasible.
+- Run inspections and/or tests before finishing.
 
 ## Tooling preferences
 
@@ -386,9 +386,9 @@ Do not read the entire `documents/` directory at once, instead, read specific do
 
 - Prefer using built-in tools for common operations (e.g., read, write, edit, patch, grep search, glob search).
 - Prefer using built-in tools to execute commands for build tool operations (e.g., building, running tests).
-- Prefer using suitable mcp when structured search or semantic search is intended.
-- Prefer using available mcp (intellij mcp or intellij-index mcp) to navigate to declarations, usages, implementations, library sources, etc.
-- Prefer using available mcp (intellij mcp or intellij-index mcp) to run code inspections, before compilation, building, or running tests, if necessary.
+- Use available mcp when structured search or semantic search is intended.
+- Use available mcp (intellij mcp or intellij-index mcp) to navigate to declarations, usages, implementations, library sources, etc.
+- Use available mcp (intellij mcp or intellij-index mcp) to run code inspections, before compilation, building, or running tests, if necessary.
 - Run Gradle tasks through the built-in shell with `--no-daemon --console=plain` (see [Gradle execution environment](#gradle-execution-environment)).
 
 ### IntelliJ MCP server
