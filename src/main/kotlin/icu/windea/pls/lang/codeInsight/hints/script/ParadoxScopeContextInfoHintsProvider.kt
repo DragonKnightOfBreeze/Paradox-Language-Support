@@ -13,7 +13,7 @@ import icu.windea.pls.core.children
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.psi.PsiService
 import icu.windea.pls.core.select.oneBy
-import icu.windea.pls.core.util.OnceMarker
+import icu.windea.pls.core.util.markers.OnceMarker
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsService

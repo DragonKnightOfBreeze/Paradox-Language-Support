@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.startOffset
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.util.DefaultStrings
-import icu.windea.pls.core.util.OnceMarker
+import icu.windea.pls.core.util.markers.OnceMarker
 import icu.windea.pls.lang.util.ParadoxParameterManager
 import icu.windea.pls.model.ParadoxParameterContextInfo
 import icu.windea.pls.model.ParadoxParameterContextReferenceInfo

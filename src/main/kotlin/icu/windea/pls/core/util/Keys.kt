@@ -64,7 +64,7 @@ sealed class KeyProvider<T>(val registry: KeyRegistry) {
 
     @Suppress("UNCHECKED_CAST")
     protected fun <K : Key<T>> register(name: String, block: () -> K): K {
-        // 3.0.1 optimize: make if mutable with sync only if it's necessary to create and register
+        // 3.0.1 optimize: make it mutable with sync only if it's necessary to create and register
         return synchronized(registry) {
             val key = block()
             registry.keys.asMutable().add(key)

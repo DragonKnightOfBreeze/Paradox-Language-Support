@@ -569,6 +569,8 @@
   - 参见：[adr/refactor-build-gradle-kts.md](../ai-notes/adr/refactor-build-gradle-kts.md)
 - [x] P4 重构 `AntMatcher.matches`：可以通过参数 `separator` 指定要使用的路径分隔符
 - [x] P4 移除 `src/main/kotlin/icu/windea/pls/core/MatchExtensions.kt`
+- [x] P4 将 `src/main/kotlin/icu/windea/pls/core/util/Markers.kt` 中的代码切分并移动到 `icu.windea.pls.core.util.markers` 中
+- [x] P4 重构 `icu.windea.pls.core.util.metadata` 中的代码：提取 `MutableMetadataMap` 和 `MetadataMapOnKeyFMap`
 
 ## 按主题 {#by-topic}
 

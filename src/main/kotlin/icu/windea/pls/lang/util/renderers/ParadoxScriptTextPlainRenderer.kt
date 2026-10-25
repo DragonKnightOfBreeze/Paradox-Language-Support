@@ -4,7 +4,7 @@ import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.core.children
 import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.util.DefaultStrings
-import icu.windea.pls.core.util.OnceMarker
+import icu.windea.pls.core.util.markers.OnceMarker
 import icu.windea.pls.lang.psi.formattedValue
 import icu.windea.pls.lang.psi.members
 import icu.windea.pls.script.psi.ParadoxScriptBlock

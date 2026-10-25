@@ -1,7 +1,7 @@
 package icu.windea.pls.core.math
 
 import icu.windea.pls.core.isExactDigit
-import icu.windea.pls.core.util.ToggleMarker
+import icu.windea.pls.core.util.markers.ToggleMarker
 
 /**
  * 使用文本作为输入的数学表达式的扫描器。

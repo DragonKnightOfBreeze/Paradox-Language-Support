@@ -3,7 +3,7 @@ package icu.windea.pls.lang.analysis
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import icu.windea.pls.core.util.OnceMarker
+import icu.windea.pls.core.util.markers.OnceMarker
 
 @Service
 class ParadoxAnalysisLifecycleService : Disposable {

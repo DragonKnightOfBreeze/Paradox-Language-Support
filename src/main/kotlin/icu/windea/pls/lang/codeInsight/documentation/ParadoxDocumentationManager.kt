@@ -13,7 +13,7 @@ import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orAnonymous
-import icu.windea.pls.core.util.OnceMarker
+import icu.windea.pls.core.util.markers.OnceMarker
 import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo

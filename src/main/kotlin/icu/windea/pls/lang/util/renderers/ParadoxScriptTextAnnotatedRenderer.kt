@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.util.renderers
 
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.util.OnceMarker
+import icu.windea.pls.core.util.markers.OnceMarker
 import icu.windea.pls.lang.data.annotated.ParadoxAnnotatedDataFactory
 import icu.windea.pls.model.data.annotated.ParadoxAnnotatedData
 import icu.windea.pls.model.data.annotated.ParadoxAnnotatedLevel

@@ -6,8 +6,8 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.removePrefixOrNull
-import icu.windea.pls.core.util.OnceMarker
 import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.util.markers.OnceMarker
 import icu.windea.pls.core.vfs.VirtualFileBomService
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch

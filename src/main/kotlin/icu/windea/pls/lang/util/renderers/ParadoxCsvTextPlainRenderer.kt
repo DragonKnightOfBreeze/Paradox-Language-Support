@@ -2,7 +2,7 @@ package icu.windea.pls.lang.util.renderers
 
 import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.util.OnceMarker
+import icu.windea.pls.core.util.markers.OnceMarker
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.csv.psi.ParadoxCsvFile
