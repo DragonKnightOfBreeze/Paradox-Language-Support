@@ -1,6 +1,6 @@
 package icu.windea.pls.core.util.metadata
 
-class EldenRingMetadata : MetadataMapBase() {
+internal class EldenRingMetadata : MetadataMapBase() {
     // region Boss 属性
     var bossName: String // KeyWithProducer → non-null
         get() = this[EldenRingKeys.bossName]

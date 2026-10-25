@@ -168,7 +168,7 @@ value class PushStream<out T>(val dispatch: ((T, U) -> Boolean) -> Unit)
 
 - [x] 提供 `PushStream` 和 `BiPushStream`
 - [x] 重构 `CwtConfigExpansionService`：从 processor 模式改为返回 pushStream
-- [ ] 补充相关的单元测试
+- [x] 补充相关的单元测试
 
 ## 参见
 

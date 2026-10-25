@@ -30,7 +30,7 @@ class MetadataMapTest {
     @Test
     fun testIsEmpty_afterSet() {
         val metadata = EldenRingMetadata()
-        metadata.bossName = "女武神玛莲妮亚"
+        metadata.bossName = "Malenia, Blade of Miquella" // 女武神玛莲妮亚
         assertFalse(metadata.isEmpty())
     }
 
@@ -50,20 +50,20 @@ class MetadataMapTest {
     @Test
     fun testKeyNormal_setAndGet() {
         val metadata = EldenRingMetadata()
-        metadata.damageType = "物理"
-        metadata.weakness = "出血"
-        metadata.location = "米凯拉的圣树"
+        metadata.damageType = "Physical" // 物理
+        metadata.weakness = "Bleed" // 出血
+        metadata.location = "Miquella's Haligtree" // 米凯拉的圣树
 
-        assertEquals("物理", metadata.damageType)
-        assertEquals("出血", metadata.weakness)
-        assertEquals("米凯拉的圣树", metadata.location)
+        assertEquals("Physical", metadata.damageType) // 物理
+        assertEquals("Bleed", metadata.weakness) // 出血
+        assertEquals("Miquella's Haligtree", metadata.location) // 米凯拉的圣树
     }
 
     @Test
     fun testKeyNormal_setToNullClears() {
         val metadata = EldenRingMetadata()
-        metadata.damageType = "魔法"
-        assertEquals("魔法", metadata.damageType)
+        metadata.damageType = "Magic" // 魔法
+        assertEquals("Magic", metadata.damageType) // 魔法
 
         metadata.damageType = null
         assertNull(metadata.damageType)
@@ -172,13 +172,13 @@ class MetadataMapTest {
     @Test
     fun testKeyTypeResolution_keyNormalReturnsNullable() {
         val metadata = EldenRingMetadata()
-        metadata.damageType = "圣"
+        metadata.damageType = "Holy" // 圣
 
         // 通过 Key<*> 读取（返回 T?）
         val viaKey: Key<*> = EldenRingKeys.damageType
         @Suppress("UNCHECKED_CAST")
         val value = (viaKey as Key<String?>).let { metadata[it] }
-        assertEquals("圣", value)
+        assertEquals("Holy", value) // 圣
     }
 
     @Test
@@ -196,17 +196,17 @@ class MetadataMapTest {
     @Test
     fun testSet_usingOperatorDirectly() {
         val metadata = MetadataMapBase()
-        metadata[EldenRingKeys.bossName] = "拉塔恩"
+        metadata[EldenRingKeys.bossName] = "Starscourge Radahn" // 拉塔恩
         metadata[EldenRingKeys.bossLevel] = 180
 
-        assertEquals("拉塔恩", metadata[EldenRingKeys.bossName])
+        assertEquals("Starscourge Radahn", metadata[EldenRingKeys.bossName]) // 拉塔恩
         assertEquals(180, metadata[EldenRingKeys.bossLevel])
     }
 
     @Test
     fun testSet_nullRemovesKey() {
         val metadata = EldenRingMetadata()
-        metadata.bossName = "蒙格"
+        metadata.bossName = "Mohg, Lord of Blood" // 蒙格
         assertFalse(metadata.isEmpty())
 
         metadata[EldenRingKeys.bossName] = null
@@ -222,10 +222,10 @@ class MetadataMapTest {
     @Test
     fun testClearMetadata_emptiesAll() {
         val metadata = EldenRingMetadata()
-        metadata.bossName = "葛孚雷"
+        metadata.bossName = "Godfrey, First Elden Lord" // 葛孚雷
         metadata.bossLevel = 120
-        metadata.damageType = "物理"
-        metadata.weaponName = "名刀月隐"
+        metadata.damageType = "Physical" // 物理
+        metadata.weaponName = "Moonveil" // 名刀月隐
         metadata.attackPower = 178
 
         assertFalse(metadata.isEmpty())
@@ -240,7 +240,7 @@ class MetadataMapTest {
     @Test
     fun testClearMetadata_keyNormalBecomesNull() {
         val metadata = EldenRingMetadata()
-        metadata.damageType = "火焰"
+        metadata.damageType = "Fire" // 火焰
         metadata.clearMetadata()
         assertNull(metadata.damageType)
     }
@@ -252,15 +252,15 @@ class MetadataMapTest {
     @Test
     fun testCopyMetadataTo_replacesAllTargetEntries() {
         val source = EldenRingMetadata().apply {
-            bossName = "火焰巨人"
+            bossName = "Fire Giant" // 火焰巨人
             bossLevel = 100
             health = 43263
-            damageType = "火焰"
-            weakness = "出血"
-            location = "巨人山顶"
+            damageType = "Fire" // 火焰
+            weakness = "Bleed" // 出血
+            location = "Mountaintops of the Giants" // 巨人山顶
         }
         val target = EldenRingMetadata().apply {
-            weaponName = "猎犬长牙"
+            weaponName = "Bloodhound's Fang" // 猎犬长牙
             attackPower = 256
             weight = 11.5
         }
@@ -271,18 +271,18 @@ class MetadataMapTest {
         assertEquals("", target.weaponName) // bossName 的 producer 默认值被应用...
         // 实际上 copy 是整个 map 的赋值，target 的整个 map 被 source 的 map 覆盖
         // 所以 target 现在拥有和 source 完全一致的元数据
-        assertEquals("火焰巨人", target.bossName)
+        assertEquals("Fire Giant", target.bossName) // 火焰巨人
         assertEquals(100, target.bossLevel)
         assertEquals(43263, target.health)
-        assertEquals("火焰", target.damageType)
-        assertEquals("出血", target.weakness)
-        assertEquals("巨人山顶", target.location)
+        assertEquals("Fire", target.damageType) // 火焰
+        assertEquals("Bleed", target.weakness) // 出血
+        assertEquals("Mountaintops of the Giants", target.location) // 巨人山顶
     }
 
     @Test
     fun testCopyMetadataTo_emptySourceClearsTarget() {
         val target = EldenRingMetadata().apply {
-            bossName = "死龙弗尔桑克斯"
+            bossName = "Lichdragon Fortissax" // 死龙弗尔桑克斯
             bossLevel = 110
         }
         val source = EldenRingMetadata() // 空的
@@ -294,7 +294,7 @@ class MetadataMapTest {
     @Test
     fun testCopyMetadataTo_emptyTargetReceivesData() {
         val source = EldenRingMetadata().apply {
-            spellName = "彗星亚兹勒"
+            spellName = "Comet Azur" // 彗星亚兹勒
             fpCost = 40
             slots = 3
             intelligence = 60
@@ -302,7 +302,7 @@ class MetadataMapTest {
         val target = EldenRingMetadata()
 
         source.copyMetadataTo(target)
-        assertEquals("彗星亚兹勒", target.spellName)
+        assertEquals("Comet Azur", target.spellName) // 彗星亚兹勒
         assertEquals(40, target.fpCost)
         assertEquals(3, target.slots)
         assertEquals(60, target.intelligence)
@@ -313,15 +313,15 @@ class MetadataMapTest {
         val source = MetadataMapBase()
         val target = MetadataMapBase()
 
-        source[EldenRingKeys.bossName] = "龙王普拉顿桑克斯"
+        source[EldenRingKeys.bossName] = "Dragonlord Placidusax" // 龙王普拉顿桑克斯
         source[EldenRingKeys.bossLevel] = 130
-        source[EldenRingKeys.damageType] = "雷电"
+        source[EldenRingKeys.damageType] = "Lightning" // 雷电
 
         source.copyMetadataTo(target)
 
-        assertEquals("龙王普拉顿桑克斯", target[EldenRingKeys.bossName])
+        assertEquals("Dragonlord Placidusax", target[EldenRingKeys.bossName]) // 龙王普拉顿桑克斯
         assertEquals(130, target[EldenRingKeys.bossLevel])
-        assertEquals("雷电", target[EldenRingKeys.damageType])
+        assertEquals("Lightning", target[EldenRingKeys.damageType]) // 雷电
     }
 
     // endregion
@@ -331,13 +331,13 @@ class MetadataMapTest {
     @Test
     fun testMergeMetadataTo_addsNewKeysToTarget() {
         val source = EldenRingMetadata().apply {
-            spellName = "黄金树立誓"
+            spellName = "Golden Vow" // 黄金树立誓
             fpCost = 47
             slots = 1
             faith = 25
         }
         val target = EldenRingMetadata().apply {
-            weaponName = "暗月大剑"
+            weaponName = "Dark Moon Greatsword" // 暗月大剑
             attackPower = 198
             weight = 10.0
             isSomber = true
@@ -346,13 +346,13 @@ class MetadataMapTest {
         source.mergeMetadataTo(target)
 
         // 原先在 target 上的键仍然保留
-        assertEquals("暗月大剑", target.weaponName)
+        assertEquals("Dark Moon Greatsword", target.weaponName) // 暗月大剑
         assertEquals(198, target.attackPower)
         assertEquals(10.0, target.weight, 0.0)
         assertTrue(target.isSomber)
 
         // source 中的键被合并到 target
-        assertEquals("黄金树立誓", target.spellName)
+        assertEquals("Golden Vow", target.spellName) // 黄金树立誓
         assertEquals(47, target.fpCost)
         assertEquals(1, target.slots)
         assertEquals(25, target.faith)
@@ -366,34 +366,34 @@ class MetadataMapTest {
         // 合并到武器视图时，bossName 以武器视图为准（target 的原有值优先）
 
         val bossMetadata = EldenRingMetadata().apply {
-            bossName = "熔炉骑士"
+            bossName = "Crucible Knight" // 熔炉骑士
             bossLevel = 80
-            location = "深根底层"
+            location = "Deeproot Depths" // 深根底层
         }
         val weaponMetadata = EldenRingMetadata().apply {
-            bossName = "熔炉骑士"
-            weaponName = "奥陶琵斯大剑"
+            bossName = "Crucible Knight" // 熔炉骑士
+            weaponName = "Ordovis's Greatsword" // 奥陶琵斯大剑
             attackPower = 245
             weight = 15.5
         }
 
         bossMetadata.mergeMetadataTo(weaponMetadata)
 
-        // target 中已存在的键不变（target wins）
-        assertEquals("熔炉骑士", weaponMetadata.bossName)
-        assertEquals("奥陶琵斯大剑", weaponMetadata.weaponName)
+        // target 中已存在的键不变（目标优先）
+        assertEquals("Crucible Knight", weaponMetadata.bossName) // 熔炉骑士
+        assertEquals("Ordovis's Greatsword", weaponMetadata.weaponName) // 奥陶琵斯大剑
         assertEquals(245, weaponMetadata.attackPower)
         assertEquals(15.5, weaponMetadata.weight, 0.0)
 
         // source 中有而 target 中没有的键被添加
         assertEquals(80, weaponMetadata.bossLevel)
-        assertEquals("深根底层", weaponMetadata.location)
+        assertEquals("Deeproot Depths", weaponMetadata.location) // 深根底层
     }
 
     @Test
     fun testMergeMetadataTo_emptySourceNoChange() {
         val target = EldenRingMetadata().apply {
-            weaponName = "尸山血海"
+            weaponName = "Rivers of Blood" // 尸山血海
             attackPower = 186
             weight = 6.5
         }
@@ -402,7 +402,7 @@ class MetadataMapTest {
         source.mergeMetadataTo(target)
 
         // 没有任何变化
-        assertEquals("尸山血海", target.weaponName)
+        assertEquals("Rivers of Blood", target.weaponName) // 尸山血海
         assertEquals(186, target.attackPower)
         assertEquals(6.5, target.weight, 0.0)
     }
@@ -410,7 +410,7 @@ class MetadataMapTest {
     @Test
     fun testMergeMetadataTo_emptyTargetReceivesData() {
         val source = EldenRingMetadata().apply {
-            bossName = "黑剑玛利喀斯"
+            bossName = "Maliketh, the Black Blade" // 黑剑玛利喀斯
             bossLevel = 130
             health = 23102
             isRemembrance = true
@@ -419,7 +419,7 @@ class MetadataMapTest {
 
         source.mergeMetadataTo(target)
 
-        assertEquals("黑剑玛利喀斯", target.bossName)
+        assertEquals("Maliketh, the Black Blade", target.bossName) // 黑剑玛利喀斯
         assertEquals(130, target.bossLevel)
         assertEquals(23102, target.health)
         assertTrue(target.isRemembrance)
@@ -430,18 +430,18 @@ class MetadataMapTest {
         val source = MetadataMapBase()
         val target = MetadataMapBase()
 
-        target[EldenRingKeys.weaponName] = "神躯化剑"
+        target[EldenRingKeys.weaponName] = "Sacred Relic Sword" // 神躯化剑
         target[EldenRingKeys.attackPower] = 264
 
-        source[EldenRingKeys.bossName] = "艾尔登之兽"
+        source[EldenRingKeys.bossName] = "Elden Beast" // 艾尔登之兽
         source[EldenRingKeys.bossLevel] = 140
         // 注意：source 中设置 bossName 会覆盖 target 中已有的武器信息吗？不会，因为 key 不同
 
         source.mergeMetadataTo(target)
 
-        assertEquals("神躯化剑", target[EldenRingKeys.weaponName])
+        assertEquals("Sacred Relic Sword", target[EldenRingKeys.weaponName]) // 神躯化剑
         assertEquals(264, target[EldenRingKeys.attackPower])
-        assertEquals("艾尔登之兽", target[EldenRingKeys.bossName])
+        assertEquals("Elden Beast", target[EldenRingKeys.bossName]) // 艾尔登之兽
         assertEquals(140, target[EldenRingKeys.bossLevel])
     }
 
@@ -453,29 +453,29 @@ class MetadataMapTest {
     fun testFullBossMetadataLifecycle() {
         // 创建一个 Boss 元数据：女武神玛莲妮亚
         val malenia = EldenRingMetadata().apply {
-            bossName = "女武神玛莲妮亚"
+            bossName = "Malenia, Blade of Miquella" // 女武神玛莲妮亚
             bossLevel = 180
             health = 18448
-            damageType = "物理"
-            weakness = "出血"
+            damageType = "Physical" // 物理
+            weakness = "Bleed" // 出血
             isRemembrance = true
-            location = "米凯拉的圣树"
+            location = "Miquella's Haligtree" // 米凯拉的圣树
         }
 
         // 验证
-        assertEquals("女武神玛莲妮亚", malenia.bossName)
+        assertEquals("Malenia, Blade of Miquella", malenia.bossName) // 女武神玛莲妮亚
         assertEquals(180, malenia.bossLevel)
         assertEquals(18448, malenia.health)
-        assertEquals("物理", malenia.damageType)
-        assertEquals("出血", malenia.weakness)
+        assertEquals("Physical", malenia.damageType) // 物理
+        assertEquals("Bleed", malenia.weakness) // 出血
         assertTrue(malenia.isRemembrance)
-        assertEquals("米凯拉的圣树", malenia.location)
+        assertEquals("Miquella's Haligtree", malenia.location) // 米凯拉的圣树
         assertFalse(malenia.isEmpty())
 
         // 创建武器元数据
         val weapon = EldenRingMetadata().apply {
-            weaponName = "玛莲妮亚的义手刀"
-            weaponType = "刀"
+            weaponName = "Hand of Malenia" // 玛莲妮亚的义手刀
+            weaponType = "Katana" // 刀
             attackPower = 247
             weight = 5.5
             isSomber = true
@@ -485,12 +485,12 @@ class MetadataMapTest {
         weapon.mergeMetadataTo(malenia)
 
         // Boss 原有属性不变
-        assertEquals("女武神玛莲妮亚", malenia.bossName)
+        assertEquals("Malenia, Blade of Miquella", malenia.bossName) // 女武神玛莲妮亚
         assertEquals(180, malenia.bossLevel)
 
         // 武器属性也被合并进去
-        assertEquals("玛莲妮亚的义手刀", malenia.weaponName)
-        assertEquals("刀", malenia.weaponType)
+        assertEquals("Hand of Malenia", malenia.weaponName) // 玛莲妮亚的义手刀
+        assertEquals("Katana", malenia.weaponType) // 刀
         assertEquals(247, malenia.attackPower)
         assertEquals(5.5, malenia.weight, 0.0)
         assertTrue(malenia.isSomber)
@@ -499,17 +499,17 @@ class MetadataMapTest {
     @Test
     fun testCopyAndClearSequence() {
         val godrick = EldenRingMetadata().apply {
-            bossName = "接肢葛瑞克"
+            bossName = "Godrick the Grafted" // 接肢葛瑞克
             bossLevel = 30
             health = 6080
             isRemembrance = true
-            location = "史东薇尔城"
+            location = "Stormveil Castle" // 史东薇尔城
         }
 
         // 复制
         val copy = EldenRingMetadata()
         godrick.copyMetadataTo(copy)
-        assertEquals("接肢葛瑞克", copy.bossName)
+        assertEquals("Godrick the Grafted", copy.bossName) // 接肢葛瑞克
         assertEquals(30, copy.bossLevel)
         assertEquals(6080, copy.health)
         assertTrue(copy.isRemembrance)
@@ -517,18 +517,18 @@ class MetadataMapTest {
         // 清除原对象不影响副本
         godrick.clearMetadata()
         assertTrue(godrick.isEmpty())
-        assertEquals("接肢葛瑞克", copy.bossName)
+        assertEquals("Godrick the Grafted", copy.bossName) // 接肢葛瑞克
     }
 
     @Test
     fun testMergeDoesNotOverrideTargetDefaults() {
         val source = EldenRingMetadata().apply {
             // slots 未显式设置，默认 1；fpCost 未设置，默认 0
-            spellName = "黑夜彗星"
+            spellName = "Night Comet" // 黑夜彗星
             fpCost = 24
         }
         val target = EldenRingMetadata().apply {
-            spellName = "帚星"
+            spellName = "Comet" // 帚星
             fpCost = 32
             intelligence = 43
         }
@@ -536,8 +536,8 @@ class MetadataMapTest {
         // merge：source 中在 target 已存在的键也会被覆盖
         source.mergeMetadataTo(target)
 
-        assertEquals("黑夜彗星", target.spellName) // target wins
-        assertEquals(24, target.fpCost) // target wins
+        assertEquals("Night Comet", target.spellName) // 黑夜彗星（目标优先）
+        assertEquals(24, target.fpCost) // 目标优先
         assertEquals(43, target.intelligence) // source 添加（target 中没有，且未设置所以默认 0 但没在 map 中）
         assertEquals(1, target.slots) // target 的默认值，未被 source 修改
     }
@@ -593,14 +593,14 @@ class MetadataMapTest {
     @Test
     fun testMergeMetadataTo_selfMergeIsNoOp() {
         val metadata = EldenRingMetadata().apply {
-            bossName = "恶兆妖鬼玛尔基特"
+            bossName = "Margit, the Fell Omen" // 恶兆妖鬼玛尔基特
             bossLevel = 40
             health = 6888
         }
 
         metadata.mergeMetadataTo(metadata)
 
-        assertEquals("恶兆妖鬼玛尔基特", metadata.bossName)
+        assertEquals("Margit, the Fell Omen", metadata.bossName) // 恶兆妖鬼玛尔基特
         assertEquals(40, metadata.bossLevel)
         assertEquals(6888, metadata.health)
         assertFalse(metadata.isEmpty())
@@ -641,26 +641,26 @@ class MetadataMapTest {
     @Test
     fun testMultipleInstances_doNotInterfere() {
         val m1 = EldenRingMetadata().apply {
-            bossName = "黄金律法拉达冈"
+            bossName = "Radagon of the Golden Order" // 黄金律法拉达冈
             bossLevel = 140
         }
         val m2 = EldenRingMetadata().apply {
-            bossName = "艾尔登之兽"
+            bossName = "Elden Beast" // 艾尔登之兽
             bossLevel = 150
         }
 
         // m1 和 m2 拥有各自独立的元数据
-        assertEquals("黄金律法拉达冈", m1.bossName)
+        assertEquals("Radagon of the Golden Order", m1.bossName) // 黄金律法拉达冈
         assertEquals(140, m1.bossLevel)
-        assertEquals("艾尔登之兽", m2.bossName)
+        assertEquals("Elden Beast", m2.bossName) // 艾尔登之兽
         assertEquals(150, m2.bossLevel)
 
         // 修改 m1 不影响 m2
-        m1.bossName = "拉达冈的红狼"
+        m1.bossName = "Red Wolf of Radagon" // 拉达冈的红狼
         m1.bossLevel = 50
-        assertEquals("拉达冈的红狼", m1.bossName)
+        assertEquals("Red Wolf of Radagon", m1.bossName) // 拉达冈的红狼
         assertEquals(50, m1.bossLevel)
-        assertEquals("艾尔登之兽", m2.bossName)
+        assertEquals("Elden Beast", m2.bossName) // 艾尔登之兽
         assertEquals(150, m2.bossLevel)
     }
 
@@ -672,18 +672,18 @@ class MetadataMapTest {
     fun testSetMultipleTimes_lastValueWins() {
         val metadata = EldenRingMetadata()
 
-        metadata.weaponName = "古兰桑克斯的雷电"
-        metadata.weaponName = "日蚀钩剑"
-        metadata.weaponName = "玛雷家行刑剑"
-        assertEquals("玛雷家行刑剑", metadata.weaponName)
+        metadata.weaponName = "Bolt of Gransax" // 古兰桑克斯的雷电
+        metadata.weaponName = "Eclipse Shotel" // 日蚀钩剑
+        metadata.weaponName = "Marais Executioner's Sword" // 玛雷家行刑剑
+        assertEquals("Marais Executioner's Sword", metadata.weaponName) // 玛雷家行刑剑
 
         metadata.bossLevel = 10
         metadata.bossLevel = 60
         metadata.bossLevel = 120
         assertEquals(120, metadata.bossLevel)
 
-        metadata.damageType = "物理"
-        metadata.damageType = "火焰"
+        metadata.damageType = "Physical" // 物理
+        metadata.damageType = "Fire" // 火焰
         metadata.damageType = null
         assertNull(metadata.damageType)
     }
@@ -695,19 +695,19 @@ class MetadataMapTest {
     @Test
     fun testCopyMetadataTo_sourceModificationDoesNotAffectTarget() {
         val source = EldenRingMetadata().apply {
-            bossName = "亵渎君王拉卡德"
+            bossName = "Rykard, Lord of Blasphemy" // 亵渎君王拉卡德
             bossLevel = 100
         }
         val target = EldenRingMetadata()
         source.copyMetadataTo(target)
 
         // copy 完成后修改 source
-        source.bossName = "被修改"
+        source.bossName = "Modified" // 被修改
         source.bossLevel = 999
         source.health = 99999
 
         // target 保持不变
-        assertEquals("亵渎君王拉卡德", target.bossName)
+        assertEquals("Rykard, Lord of Blasphemy", target.bossName) // 亵渎君王拉卡德
         assertEquals(100, target.bossLevel)
         assertEquals(0, target.health) // 从未设置过，使用默认
     }
@@ -719,12 +719,12 @@ class MetadataMapTest {
     @Test
     fun testMergeMetadataTo_threeWayMerge() {
         val boss = EldenRingMetadata().apply {
-            bossName = "黑暗弃子艾丝缇"
+            bossName = "Astel, Naturalborn of the Void" // 黑暗弃子艾丝缇
             bossLevel = 120
-            location = "腐败湖"
+            location = "Lake of Rot" // 腐败湖
         }
         val weapon = EldenRingMetadata().apply {
-            weaponName = "艾丝缇薄翼"
+            weaponName = "Bastard's Stars" // 艾丝缇薄翼
             attackPower = 200
             weight = 2.5
         }
@@ -734,10 +734,10 @@ class MetadataMapTest {
         weapon.mergeMetadataTo(combined)
 
         // combined 应同时包含 boss 和 weapon 的数据
-        assertEquals("黑暗弃子艾丝缇", combined.bossName)
+        assertEquals("Astel, Naturalborn of the Void", combined.bossName) // 黑暗弃子艾丝缇
         assertEquals(120, combined.bossLevel)
-        assertEquals("腐败湖", combined.location)
-        assertEquals("艾丝缇薄翼", combined.weaponName)
+        assertEquals("Lake of Rot", combined.location) // 腐败湖
+        assertEquals("Bastard's Stars", combined.weaponName) // 艾丝缇薄翼
         assertEquals(200, combined.attackPower)
         assertEquals(2.5, combined.weight, 0.0)
     }

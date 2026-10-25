@@ -18,7 +18,7 @@ class ObservableTest {
     }
 
     @Test
-    fun test() {
+    fun smokeTest() {
         val obj = Role("Neuro", "Sama", "")
         val arg = "ai vtuber"
         val args = arrayOf("ai", "vtuber", "lovely", "cute")

@@ -25,7 +25,7 @@ import icu.windea.pls.core.util.registerKey
  * @property faith 信仰需求（含 Default，默认 `0`）
  * @property runeMultiplier 卢恩倍率（含 Producer，默认 `{ 1 }`，用于测试延迟计算）
  */
-object EldenRingKeys : KeyRegistry() {
+internal object EldenRingKeys : KeyRegistry() {
     // Boss keys
     val bossName by registerKey(this) { "" }
     val bossLevel by registerKey(this, 0)
