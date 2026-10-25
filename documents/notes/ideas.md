@@ -665,13 +665,14 @@
   - 可以用来直接封装 processXxx 方法，也可以用来作为 searchXxx 方法的返回值
   - 有限迁移：目前仅有限应用于强调“读”（而非“遍历”）的一些API
   - 例如：expansion/relatedItems/presentableItems 的相关代码
-- [ ] P3 3.0.5 考虑继续重构 relatedItem/presentableItem API
-  - ~~考虑使用 processor-pattern 乃至进一步的 searcher-pattern~~
-  - 改为直接返回 `PushStream`
-  - 更加简洁，更加灵活，同时保持性能
+- [ ] P3 3.0.x 考虑继续重构 relatedItem/presentableItem API
+  - 目标：更加简洁，更加灵活，同时保持性能
+  - 考虑返回 `Query`（类似常规的查询，如 `ParadoxDefinitionSearch`）
+  - 考虑改为直接返回 `PushStream`
+  - 考虑一定程度上缓存结果（这会直接缓存 PSI，需要慎重考虑缓存失效策略）
+  - 如果改为直接返回 `PushStream`（或者其他使用懒加载策略的返回结果），缓存结果会变得不合适，以后需要通过 profiling 验证性能表现
 - [ ] P4 3.0.x 考虑继续重构 search API
-  - 使之更加简洁、更加灵活
-  - 更加简洁，更加灵活
+  - 目标：更加简洁、更加灵活
 - [ ] P4/QoL 考虑提供与Steam模组上传相关的实用功能
   - 以侧边栏或对话框的形式。
   - 考虑通过工具动作提供入口。

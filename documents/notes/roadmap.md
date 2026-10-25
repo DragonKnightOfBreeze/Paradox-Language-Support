@@ -422,7 +422,7 @@
   - 参见：[adr/too-many-expression-inspection-fix.md](adr/too-many-expression-inspection-fix.md)
 - [x] P3 从脚本成员评估作用域上下文时，跳过表达式（通常是属性键）带参数的情况
 - [x] P1 优化表达式带参数时，并集规则（unionConfig）和别名规则（aliasConfig）的匹配与展开的逻辑，从而避免意外的 OOM ([P21](issues/p21-inline-script-inspections-oom.md))
-  - [x] 在 `ParadoxConfigExpansionService` 中，新增 `expandAndMatchUnion` `expandMatchedUnion` `expandAndMatchAliasKeys` `expandMatchedAliasKeys` 并应用，移除旧的相关方法
+  - [x] 在 `ParadoxConfigExpansionService` 中，新增 `expandAndMatchUnion` `expandMatchedUnion` `expandAndMatchAliasKeys1` `expandMatchedAliasKeys` 并应用，移除旧的相关方法
   - [x] 在 `ParadoxConfigExpansionService.expandAndMatchAliasKeys` 中，如果表达式带参数，预先通过正则匹配来过滤 aliasKey（通过遍历 `configGroup.aliasModel.name2ConstKeys[aliasName]`），以降低时间复杂度
 - [x] P3 匹配数据类型 `Parameter`（`$parameter`）时，要求必须形如标识符，并且不允许带参数
 - [x] P3 重命名 `ParadoxScriptNumberExpressionElement` 为 `ParadoxScriptNumber`，重命名 `CwtNumberExpressionElement` 为 `CwtNumber`
@@ -533,9 +533,6 @@
   - 同步更新 `AGENTS.md` 和 `CONTRIBUTING.md`。
 - [ ] P3 提供轻量化的推流（push stream）
   - 参见：[adr/push-stream.md](adr/push-stream.md)
-- [ ] P3 继续重构 relatedItem/presentableItem API 
-  - 改为直接返回 `PushStream`，不选择直接返回 List/Sequence/Query
-  - 更加简洁，更加灵活，同时保持性能
 - [ ] P2 优化插件自身提供的 `CommandLineExecutor` API ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
   - 考虑默认委托给平台提供的 `ExecUtil` `GeneralCommandLine`。
   - 可以通过传入 `ProgressIndicator` 来进行取消检查（抵达时间间隔阈值时）。
@@ -564,6 +561,10 @@
 - [x] P4 移除 `src/main/kotlin/icu/windea/pls/core/MatchExtensions.kt`
 - [x] P4 将 `src/main/kotlin/icu/windea/pls/core/util/Markers.kt` 中的代码切分并移动到 `icu.windea.pls.core.util.markers` 中
 - [x] P4 重构 `icu.windea.pls.core.util.metadata` 中的代码：提取 `MutableMetadataMap` 和 `MetadataMapOnKeyFMap`
+- [x] P3 重构 `CwtConfigExpansionService` 和 `ParadoxConfigExpansionService`：从 processor 模式改为返回 pushStream
+  - 参见：[adr/push-stream.md](adr/push-stream.md)
+- [x] P3 重构 `CwtConfigExpansionService` 和 `ParadoxConfigExpansionService`：创建并应用 `CwtExpandedConfig`
+  - 参见：[adr/push-stream.md](adr/push-stream.md)
 
 ## 按主题 {#by-topic}
 

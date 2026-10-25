@@ -159,7 +159,7 @@ value class PushStream<out T>(val dispatch: ((T) -> Boolean) -> Unit)
 
 ```kotlin
 @JvmInline
-value class PushStream<out T>(val dispatch: ((T, U) -> Boolean) -> Unit)
+value class BiPushStream<out T1, out T2>(val dispatch: ((T1, T2) -> Boolean) -> Unit)
 ```
 
 ## 任务
@@ -167,9 +167,10 @@ value class PushStream<out T>(val dispatch: ((T, U) -> Boolean) -> Unit)
 ### 主要
 
 - [x] 提供 `PushStream` 和 `BiPushStream`
-- [x] 重构 `CwtConfigExpansionService`：从 processor 模式改为返回 pushStream
-- [x] 重构 `ParadoxConfigExpansionService`：从 processor 模式改为返回 pushStream
-- [x] 补充相关的单元测试
+- [ ] 重构 `CwtConfigExpansionService` 和 `ParadoxConfigExpansionService`：从 processor 模式改为返回 pushStream
+- [ ] 重构 `CwtConfigExpansionService` 和 `ParadoxConfigExpansionService`：创建并应用 `CwtExpandedConfig`
+- [x] 补充相关的单元测试，以验证 pushStream 实现的正确性
+- [ ] 补充相关的集成测试，以验证规则展开行为的正确性
 
 ## 参见
 
