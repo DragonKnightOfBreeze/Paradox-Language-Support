@@ -13,8 +13,6 @@ import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.inspections.InspectionService
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.util.FindProcessor
-import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.codeInsight.ParadoxLocalisationCodeInsightContext.*
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
@@ -85,25 +83,29 @@ object ParadoxLocalisationCodeInsightContextFactory {
         val children = mutableListOf<ParadoxLocalisationCodeInsightContext>()
         when (file) {
             is ParadoxScriptFile -> {
-                file.accept(object : PsiRecursiveElementWalkingVisitor() {
-                    override fun visitElement(element: PsiElement) {
-                        when (element) {
-                            is ParadoxDefinitionElement -> fromDefinition(element, locales = locales, fromInspection = fromInspection)?.let { children.add(it) }
-                            is ParadoxScriptStringExpressionElement -> fromExpression(element, locales = locales, fromInspection = fromInspection)?.let { children.add(it) }
+                file.accept(
+                    object : PsiRecursiveElementWalkingVisitor() {
+                        override fun visitElement(element: PsiElement) {
+                            when (element) {
+                                is ParadoxDefinitionElement -> fromDefinition(element, locales = locales, fromInspection = fromInspection)?.let { children.add(it) }
+                                is ParadoxScriptStringExpressionElement -> fromExpression(element, locales = locales, fromInspection = fromInspection)?.let { children.add(it) }
+                            }
+                            if (!ParadoxScriptPsiService.isStrictMemberContext(element)) return // optimize
+                            super.visitElement(element)
                         }
-                        if (!ParadoxScriptPsiService.isStrictMemberContext(element)) return // optimize
-                        super.visitElement(element)
-                    }
-                })
+                    },
+                )
             }
             is ParadoxLocalisationFile -> {
-                file.accept(object : PsiRecursiveElementWalkingVisitor() {
-                    override fun visitElement(element: PsiElement) {
-                        if (element is ParadoxLocalisationProperty) fromLocalisation(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
-                        if (!ParadoxLocalisationPsiService.isStrictPropertyContext(element)) return // optimize
-                        super.visitElement(element)
-                    }
-                })
+                file.accept(
+                    object : PsiRecursiveElementWalkingVisitor() {
+                        override fun visitElement(element: PsiElement) {
+                            if (element is ParadoxLocalisationProperty) fromLocalisation(element, locales, fromInspection = fromInspection)?.let { children.add(it) }
+                            if (!ParadoxLocalisationPsiService.isStrictPropertyContext(element)) return // optimize
+                            super.visitElement(element)
+                        }
+                    },
+                )
             }
         }
         if (children.isEmpty()) return null
@@ -246,7 +248,7 @@ object ParadoxLocalisationCodeInsightContextFactory {
         val inspection = if (fromInspection) getMissingLocalisationInspection(project, element) else null
         if (!(inspection == null || inspection.checkForModifiers)) return null
 
-        if (ProcessorScope.noneFrom({ config.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.Modifier }) return null
+        if (config.expandConfigExpression().any { it.type == CwtDataTypes.Modifier }) return null
         val modifierName = element.value
         val localisationType = ParadoxLocalisationType.Normal
         val codeInsightInfos = mutableListOf<ParadoxLocalisationCodeInsightInfo>()
@@ -310,17 +312,14 @@ object ParadoxLocalisationCodeInsightContextFactory {
     }
 
     private fun getContextType(config: CwtMemberConfig<*>): Type? {
-        val processor = FindProcessor<Type>()
-        config.expandConfigExpression { configExpression ->
-            val r = when (configExpression.type) {
+        return config.expandConfigExpression().firstNotNullOrOrNull { configExpression ->
+            when (configExpression.type) {
                 CwtDataTypes.Localisation -> Type.LocalisationReference
                 CwtDataTypes.SyncedLocalisation -> Type.SyncedLocalisationReference
                 CwtDataTypes.InlineLocalisation -> Type.LocalisationReference // even is not quoted
                 else -> null
             }
-            if (r != null) processor.process(r) else true
         }
-        return processor.result
     }
 
     private fun getLocalisationType(contextType: Any): ParadoxLocalisationType {

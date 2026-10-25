@@ -19,7 +19,6 @@ import icu.windea.pls.core.isLeftQuoted
 import icu.windea.pls.core.isRightQuoted
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.unquote
-import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.psi.ParadoxLanguageInjectionHost
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.resolve.ParadoxParameterService
@@ -162,7 +161,7 @@ object ParadoxLanguageInjectionService {
 
     private fun acceptLocalisationTextInjection(config: CwtMemberConfig<*>): Boolean {
         if (config !is CwtValueConfig) return false
-        return ProcessorScope.anyFrom({ config.expandConfigExpression { process(it) } }) { acceptLocalisationTextInjection(it) }
+        return config.expandConfigExpression().any { acceptLocalisationTextInjection(it) }
     }
 
     private fun acceptLocalisationTextInjection(expression: CwtDataExpression): Boolean {

@@ -8,6 +8,8 @@ import icu.windea.pls.config.manipulation.CwtConfigExpansionService
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.emptyPointer
+import icu.windea.pls.core.util.stream.BiPushStream
+import icu.windea.pls.core.util.stream.PushStream
 
 // region Config Resolve Extensions
 
@@ -56,18 +58,18 @@ infix fun CwtConfig<*>?.isSamePointer(other: CwtConfig<*>?): Boolean {
 // region Process Extensions
 
 /** @see CwtConfigExpansionService.expandBySubtypeExpression */
-fun CwtMemberConfig<*>?.expandBySubtypeExpression(processor: (r: CwtMemberConfig<*>, e: String) -> Boolean): Boolean {
-    return CwtConfigExpansionService.expandBySubtypeExpression(this, processor)
+fun CwtMemberConfig<*>?.expandBySubtypeExpression(): BiPushStream<CwtMemberConfig<*>, String> {
+    return CwtConfigExpansionService.expandBySubtypeExpression(this)
 }
 
 /** @see CwtConfigExpansionService.expandConfigExpression */
-fun CwtConfig<*>?.expandConfigExpression(forValue: Boolean = false, processor: (e: CwtDataExpression) -> Boolean): Boolean {
-    return CwtConfigExpansionService.expandConfigExpression(this, forValue, processor)
+fun CwtConfig<*>?.expandConfigExpression(forValue: Boolean = false): PushStream<CwtDataExpression> {
+    return CwtConfigExpansionService.expandConfigExpression(this, forValue)
 }
 
 /** @see CwtConfigExpansionService.expandConfigExpression */
-fun Collection<CwtConfig<*>>?.expandConfigExpression(forValue: Boolean = false, processor: (e: CwtDataExpression) -> Boolean): Boolean {
-    return CwtConfigExpansionService.expandConfigExpression(this, forValue, processor)
+fun Collection<CwtConfig<*>>?.expandConfigExpression(forValue: Boolean = false): PushStream<CwtDataExpression> {
+    return CwtConfigExpansionService.expandConfigExpression(this, forValue)
 }
 
 // endregion

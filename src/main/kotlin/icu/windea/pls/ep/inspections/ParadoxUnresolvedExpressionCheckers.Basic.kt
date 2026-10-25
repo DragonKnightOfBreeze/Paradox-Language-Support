@@ -18,7 +18,6 @@ import icu.windea.pls.core.joinToStringFast
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.text.TextService
 import icu.windea.pls.core.truncate
-import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.definitionInfo
@@ -62,7 +61,7 @@ class ParadoxDefaultUnresolvedExpressionChecker : ParadoxUnresolvedExpressionChe
         // - localisation reference -> expression can be a string literal instead -> use weaker highlight type
 
         var result = ProblemHighlightType.GENERIC_ERROR_OR_WARNING
-        expectedConfigs.expandConfigExpression p@{ configExpression ->
+        expectedConfigs.expandConfigExpression().process p@{ configExpression ->
             when (configExpression.type) {
                 in CwtDataTypeSets.IntField -> {
                     if (element is ParadoxScriptFloat || element.castOrNull<ParadoxScriptedVariableReference>()?.resolved() is ParadoxScriptFloat) {
@@ -111,7 +110,7 @@ class ParadoxWrongBooleanUnresolvedExpressionChecker : ParadoxUnresolvedExpressi
         if (element !is ParadoxScriptString && element !is ParadoxCsvColumn) return true
 
         // for `CwtDataTypes.Bool` only (after expansion)
-        val configExpression = ProcessorScope.findFrom({ expectedConfigs.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.Bool }
+        val configExpression = expectedConfigs.expandConfigExpression().find { it.type == CwtDataTypes.Bool }
         if (configExpression == null) return true
 
         // val text = element.text
@@ -143,7 +142,7 @@ class ParadoxSubtypesMismatchedDefinitionUnresolvedExpressionChecker : ParadoxUn
         if (element is ParadoxScriptExpressionElement && !element.isResolvableLiteralExpression()) return true
 
         // for `CwtDataTypes.Definition` only (after expansion)
-        val configExpressions = ProcessorScope.collectFrom({ expectedConfigs.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.Definition }
+        val configExpressions = expectedConfigs.expandConfigExpression().filter { it.type == CwtDataTypes.Definition }.toList()
         if (configExpressions.isEmpty()) return true
 
         val value = element.value

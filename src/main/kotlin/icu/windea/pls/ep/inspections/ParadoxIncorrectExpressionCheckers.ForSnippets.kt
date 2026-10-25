@@ -7,7 +7,6 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.joinToStringFast
-import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.ep.ChronicleEpBundle
 import icu.windea.pls.lang.inspections.ParadoxExpressionInspectionContext
 import icu.windea.pls.lang.match.util.ParadoxMatchFactory
@@ -26,7 +25,7 @@ import icu.windea.pls.lang.psi.ParadoxExpressionElement
 @Optimized
 class ParadoxDefinitionSnippetChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext): Boolean {
-        val configExpression = ProcessorScope.findFrom({ config.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.DefinitionSnippet }
+        val configExpression = config.expandConfigExpression().find { it.type == CwtDataTypes.DefinitionSnippet }
         if (configExpression == null) return true
 
         val typeExpression = configExpression.metadata.value
@@ -61,7 +60,7 @@ class ParadoxDefinitionSnippetChecker : ParadoxIncorrectExpressionChecker {
 @Optimized
 class ParadoxLocalisationSnippetChecker : ParadoxIncorrectExpressionChecker {
     override fun check(element: ParadoxExpressionElement, config: CwtMemberConfig<*>, context: ParadoxExpressionInspectionContext): Boolean {
-        val configExpression = ProcessorScope.findFrom({ config.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.LocalisationSnippet }
+        val configExpression = config.expandConfigExpression().find { it.type == CwtDataTypes.LocalisationSnippet }
         if (configExpression == null) return true
 
         val templates = configExpression.metadata.snippetTemplates

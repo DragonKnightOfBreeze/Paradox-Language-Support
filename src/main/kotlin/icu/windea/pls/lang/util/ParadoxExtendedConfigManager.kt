@@ -7,7 +7,6 @@ import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.collections.findFast
-import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.match.findByPattern
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
@@ -16,14 +15,14 @@ import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression
 object ParadoxExtendedConfigManager {
     fun checkExtendedConfig(key: String, element: PsiElement, expectedConfig: CwtMemberConfig<*>): Boolean {
         val configGroup = expectedConfig.configGroup
-        return ProcessorScope.anyFrom({ expectedConfig.expandConfigExpression { process(it) } }) { checkExtendedConfig(key, it, element, configGroup) }
+        return expectedConfig.expandConfigExpression().any { checkExtendedConfig(key, it, element, configGroup) }
     }
 
     fun checkExtendedConfig(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>): Boolean {
         if (expectedConfigs.isEmpty()) return false
         val value = element.value
         val configGroup = expectedConfigs.first().configGroup
-        return ProcessorScope.anyFrom({ expectedConfigs.expandConfigExpression { process(it) } }) { checkExtendedConfig(value, it, element, configGroup) }
+        return expectedConfigs.expandConfigExpression().any { checkExtendedConfig(value, it, element, configGroup) }
     }
 
     fun checkExtendedConfig(key: String, configExpression: CwtDataExpression, element: PsiElement, configGroup: CwtConfigGroup): Boolean {

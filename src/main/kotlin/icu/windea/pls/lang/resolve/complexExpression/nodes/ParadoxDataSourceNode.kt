@@ -16,7 +16,6 @@ import icu.windea.pls.core.collections.findFast
 import icu.windea.pls.core.collections.flatMapFast
 import icu.windea.pls.core.collections.mapNotNullFast
 import icu.windea.pls.core.createResults
-import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxExpressionElement
 import icu.windea.pls.lang.psi.ParadoxPsiService
@@ -86,7 +85,7 @@ class ParadoxDataSourceNode(
     class Reference(
         element: ParadoxExpressionElement,
         rangeInElement: TextRange,
-        private val node: ParadoxDataSourceNode
+        private val node: ParadoxDataSourceNode,
     ) : PsiPolyVariantReferenceBase<ParadoxExpressionElement>(element, rangeInElement), ParadoxIdentifierNode.Reference {
         private val name get() = node.text
         private val project get() = node.configGroup.project
@@ -159,7 +158,7 @@ class ParadoxDataSourceNode(
             // test data type
             // NOTE 3.0.1 expand config expression first since it's necessary for unions and aliases
             val configs = node.linkConfigs
-            return ProcessorScope.anyFrom({ configs.expandConfigExpression { process(it) } }) { constraint.test(it.type) }
+            return configs.expandConfigExpression().any { constraint.test(it.type) }
         }
 
         private fun isAcceptableConstraint(constraint: ParadoxReferenceConstraint): Boolean {

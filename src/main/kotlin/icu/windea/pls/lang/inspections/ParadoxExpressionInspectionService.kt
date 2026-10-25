@@ -25,7 +25,6 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.psi.PsiBoundElement
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.truncate
-import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
@@ -157,7 +156,7 @@ object ParadoxExpressionInspectionService {
 
     private fun skipForUnresolvedExpression(element: ParadoxExpressionElement, expectedConfigs: List<CwtMemberConfig<*>>, context: ParadoxExpressionInspectionContext): Boolean {
         if (expectedConfigs.isEmpty()) return false
-        val isPathReference = ProcessorScope.allFrom({ expectedConfigs.expandConfigExpression { process(it) } }) { it.type in CwtDataTypeSets.PathReference }
+        val isPathReference = expectedConfigs.expandConfigExpression().all { it.type in CwtDataTypeSets.PathReference }
         if (isPathReference) return true // will be checked by `UnresolvedPathReferenceInspection` instead
         if (context.ignoreByConfigs && ParadoxExtendedConfigManager.checkExtendedConfig(element, expectedConfigs)) return true
         return false

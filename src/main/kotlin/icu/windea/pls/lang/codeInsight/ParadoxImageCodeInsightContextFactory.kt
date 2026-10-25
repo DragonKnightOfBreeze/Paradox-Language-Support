@@ -11,7 +11,6 @@ import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.config.util.CwtConfigExpressionManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.inspections.InspectionService
-import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.codeInsight.ParadoxImageCodeInsightContext.*
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.inspections.ChronicleInspections
@@ -32,16 +31,18 @@ object ParadoxImageCodeInsightContextFactory {
     fun fromFile(file: PsiFile, fromInspection: Boolean = false): ParadoxImageCodeInsightContext? {
         if (file !is ParadoxScriptFile) return null
         val children = mutableListOf<ParadoxImageCodeInsightContext>()
-        file.accept(object : PsiRecursiveElementWalkingVisitor() {
-            override fun visitElement(element: PsiElement) {
-                when (element) {
-                    is ParadoxDefinitionElement -> fromDefinition(element, fromInspection = fromInspection)?.let { children.add(it) }
-                    is ParadoxScriptStringExpressionElement -> fromExpression(element, fromInspection = fromInspection)?.let { children.add(it) }
+        file.accept(
+            object : PsiRecursiveElementWalkingVisitor() {
+                override fun visitElement(element: PsiElement) {
+                    when (element) {
+                        is ParadoxDefinitionElement -> fromDefinition(element, fromInspection = fromInspection)?.let { children.add(it) }
+                        is ParadoxScriptStringExpressionElement -> fromExpression(element, fromInspection = fromInspection)?.let { children.add(it) }
+                    }
+                    if (!ParadoxScriptPsiService.isStrictMemberContext(element)) return // optimize
+                    super.visitElement(element)
                 }
-                if (!ParadoxScriptPsiService.isStrictMemberContext(element)) return // optimize
-                super.visitElement(element)
-            }
-        })
+            },
+        )
         if (children.isEmpty()) return null
         val finalChildren = getFinalChildren(children)
         return ParadoxImageCodeInsightContext(Type.File, file.name, emptyList(), finalChildren, fromInspection)
@@ -123,7 +124,7 @@ object ParadoxImageCodeInsightContextFactory {
         val inspection = if (fromInspection) getMissingImageInspection(project, element) else null
 
         if (!(inspection == null || inspection.checkForModifiers)) return null
-        if (ProcessorScope.noneFrom({ config.expandConfigExpression { process(it) } }) { it.type == CwtDataTypes.Modifier }) return null
+        if (config.expandConfigExpression().none { it.type == CwtDataTypes.Modifier }) return null
         val modifierName = element.value
         val codeInsightInfos = mutableListOf<ParadoxImageCodeInsightInfo>()
 

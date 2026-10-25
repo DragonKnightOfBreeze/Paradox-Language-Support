@@ -532,14 +532,7 @@
   - 通过置顶的链接导航栏提供语言切换。
   - 同步更新 `AGENTS.md` 和 `CONTRIBUTING.md`。
 - [ ] P3 提供轻量化的推流（push stream）
-  - 提供简洁、灵活且更加符合直觉的 API 调用方式，同时保持性能
-  - 零开销的推模式流（区别于 Iterator/Stream/Sequence 等拉模式流）
-  - 拥有更高性能的同时，也能保持可读性
-  - 声明为内联类，接收 `dispatch: Processor<in T>.() -> Boolean`
-  - 提供一组预定义的内联高阶方法，如 map/filter/any/all/none
-  - 可以用来直接封装 processXxx 方法，也可以用来作为 searchXxx 方法的返回值
-  - 有限迁移：目前仅有限应用于强调“读”（而非“遍历”）的一些API
-  - 例如：expansion/relatedItems/presentableItems 的相关代码
+  - 参见：[adr/push-stream.md](adr/push-stream.md)
 - [ ] P3 继续重构 relatedItem/presentableItem API 
   - 改为直接返回 `PushStream`，不选择直接返回 List/Sequence/Query
   - 更加简洁，更加灵活，同时保持性能

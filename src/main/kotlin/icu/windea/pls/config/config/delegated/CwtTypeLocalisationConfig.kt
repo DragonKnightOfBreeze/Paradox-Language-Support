@@ -66,9 +66,9 @@ private object CwtTypeLocalisationConfigResolver : CwtConfigResolutionScope {
         val locationConfigGroup = mutableMapOf<String, MutableList<CwtLocationConfig>>()
 
         // #324
-        config.expandBySubtypeExpression p@{ c, e ->
-            if (c !is CwtPropertyConfig) return@p true
-            val locationConfig = CwtLocationConfig.resolve(c) ?: return@p true
+        config.expandBySubtypeExpression().forEach f@{ c, e ->
+            if (c !is CwtPropertyConfig) return@f
+            val locationConfig = CwtLocationConfig.resolve(c) ?: return@f
             val key = e.optimized()
             locationConfigGroup.getOrPut(key) { mutableListOf() }.add(locationConfig)
         }

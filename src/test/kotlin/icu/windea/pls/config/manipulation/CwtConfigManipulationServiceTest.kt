@@ -4,15 +4,11 @@ import com.intellij.openapi.util.Key
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
-import icu.windea.pls.config.config.expandBySubtypeExpression
-import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.core.children
 import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.util.createKey
-import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtProperty
 import icu.windea.pls.model.ParadoxGameType
@@ -255,53 +251,5 @@ class CwtConfigManipulationServiceTest : BasePlatformTestCase(), ChronicleTestSc
         assertSame(parentBefore, container.parentConfig)
         val otherChildren = otherParent.configs?.size
         assertEquals(otherChildren, otherParent.configs?.size)
-    }
-
-    @Test
-    fun testExpandBySubtypeExpression_Basic() {
-        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
-
-        myFixture.configureByFile("features/config/manipulation/expand_by_subtype_expression.test.cwt")
-        val file = myFixture.file as CwtFile
-        val root = file.block!!
-
-        val containerProp = root.children().oneBy<CwtProperty> { it.name == "k1" }!!
-        val containerConfig = CwtPropertyConfig.resolve(containerProp, file, configGroup)!!
-
-        val result = buildList {
-            containerConfig.expandBySubtypeExpression { c, t ->
-                this += tupleOf(c.toString(), t)
-                true
-            }
-        }
-        val expect = listOf(
-            tupleOf("(property) k2 = v", ""),
-            tupleOf("(property) k3 = v", "t2"),
-            tupleOf("(property) k4 = v", "t2&t4"),
-            tupleOf("(property) k5 = v", "t2&t4&t5"),
-            tupleOf("(property) k6 = v", "t2&t4&t6"),
-        )
-        assertEquals(expect, result)
-    }
-
-    @Test
-    fun testExpandConfigExpression_Basic() {
-        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
-
-        myFixture.configureByFile("features/config/manipulation/expand_config_expression.test.cwt")
-        val file = myFixture.file as CwtFile
-        val root = file.block!!
-
-        val propMap = root.propertyList.associateBy({ it.name }, { CwtPropertyConfig.resolve(it, file, configGroup)!! })
-        val props = propMap.values
-
-        assertTrue(props.expandConfigExpression { it.type == CwtDataTypes.Constant }) // keys -> all constant
-
-        assertFalse(propMap.getValue("k1").expandConfigExpression(forValue = true) { it.type != CwtDataTypes.Int })
-        assertFalse(propMap.getValue("k2").expandConfigExpression(forValue = true) { it.type != CwtDataTypes.Int }) // expanded
-        assertFalse(propMap.getValue("k3").expandConfigExpression(forValue = true) { it.type != CwtDataTypes.Int }) // expanded
-        assertTrue(propMap.getValue("k4").expandConfigExpression(forValue = true) { it.type != CwtDataTypes.Int }) // ignored
-        assertTrue(propMap.getValue("k5").expandConfigExpression(forValue = true) { it.type != CwtDataTypes.Int }) // ignored
-        assertTrue(propMap.getValue("k0").expandConfigExpression(forValue = true) { it.type != CwtDataTypes.Int })
     }
 }

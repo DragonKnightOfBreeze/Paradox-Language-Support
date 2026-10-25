@@ -12,7 +12,6 @@ import icu.windea.pls.config.config.expandConfigExpression
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.createResults
 import icu.windea.pls.core.psi.PsiCompositeReference
-import icu.windea.pls.core.util.ProcessorScope
 import icu.windea.pls.lang.codeInsight.completion.script.ParadoxScriptExpressionCompletionProvider
 import icu.windea.pls.lang.psi.ParadoxPsiService
 import icu.windea.pls.lang.references.ParadoxConstrainedPsiReference
@@ -91,6 +90,6 @@ class ParadoxScriptExpressionPsiReference(
 
     override fun canResolveFor(constraint: ParadoxReferenceConstraint): Boolean {
         // NOTE 3.0.1 expand config expression first since it's necessary for unions and aliases
-        return ProcessorScope.anyFrom({ config.expandConfigExpression { process(it) } }) { constraint.test(it.type) }
+        return config.expandConfigExpression().any { constraint.test(it.type) }
     }
 }

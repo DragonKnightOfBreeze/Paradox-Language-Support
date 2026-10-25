@@ -17,29 +17,32 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.collections.processFast
 import icu.windea.pls.core.runWithRecursionGuard
+import icu.windea.pls.core.util.stream.BiPushStream
+import icu.windea.pls.core.util.stream.PushStream
 import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
 
 object CwtConfigExpansionService {
     /**
      * 递归展开 [config] 的子规则中的所有形如 `subtype[{subtypeExpression}] = {...}` 的属性规则中的子规则，保留其他形式的子规则。
      *
-     * 结果序列中的元组的第一个元素是展开后的子规则，第二个元素是合并后的当前子类型表达式。
+     * 返回的 [BiPushStream] 中的第一个元素是展开后的子规则，第二个元素是合并后的当前子类型表达式。
      *
      * @see ParadoxDefinitionSubtypeExpression
      */
-    fun expandBySubtypeExpression(config: CwtMemberConfig<*>?, processor: (r: CwtMemberConfig<*>, e: String) -> Boolean): Boolean {
-        if (config == null) return true
-        return doExpandBySubtypeExpression(config, "", processor)
+    fun expandBySubtypeExpression(config: CwtMemberConfig<*>?): BiPushStream<CwtMemberConfig<*>, String> {
+        if (config == null) return BiPushStream.of()
+        return BiPushStream.from { expandBySubtypeExpressionWith(config, "") }
     }
 
-    private fun doExpandBySubtypeExpression(config: CwtMemberConfig<*>, currentExpression: String, processor: (r: CwtMemberConfig<*>, e: String) -> Boolean): Boolean {
+    context(processor: (r: CwtMemberConfig<*>, e: String) -> Boolean)
+    private fun expandBySubtypeExpressionWith(config: CwtMemberConfig<*>, currentExpression: String): Boolean {
         // NOTE 3.0.1 use processor pattern (instead of direct sequence builder) to optimize performance
         config.configs?.orNull()?.forEachFast { childConfig ->
             val nextExpression = CwtConfigManipulationService.extractSubtypeExpression(childConfig)
             if (nextExpression != null) {
                 if (childConfig.configs?.orNull() != null) {
                     val mergedExpression = CwtConfigManipulationService.mergeSubtypeExpression(currentExpression, nextExpression)
-                    doExpandBySubtypeExpression(childConfig, mergedExpression, processor).let { if (!it) return false }
+                    expandBySubtypeExpressionWith(childConfig, mergedExpression).let { if (!it) return false }
                 }
             } else {
                 processor(childConfig, currentExpression).let { if (!it) return false }
@@ -48,23 +51,34 @@ object CwtConfigExpansionService {
         return true
     }
 
-    fun expandConfigExpression(config: CwtConfig<*>?, forValue: Boolean = false, processor: (e: CwtDataExpression) -> Boolean): Boolean {
-        if (config == null) return true
-        val configExpression = if (forValue && config is CwtMemberConfig) config.valueExpression else config.configExpression
-        val configGroup = config.configGroup
-        return doExpandConfigExpression(configExpression, configGroup, processor)
+    fun expandConfigExpression(config: CwtConfig<*>?, forValue: Boolean = false): PushStream<CwtDataExpression> {
+        if (config == null) return PushStream.of()
+        return PushStream.from { expandConfigExpressionWith(forValue, config) }
     }
 
-    fun expandConfigExpression(configs: Collection<CwtConfig<*>>?, forValue: Boolean = false, processor: (e: CwtDataExpression) -> Boolean): Boolean {
-        if (configs.isNullOrEmpty()) return true
+    fun expandConfigExpression(configs: Collection<CwtConfig<*>>?, forValue: Boolean = false): PushStream<CwtDataExpression> {
+        if (configs.isNullOrEmpty()) return PushStream.of()
+        return PushStream.from { expandConfigExpressionWith(configs, forValue) }
+    }
+
+    context(processor: (CwtDataExpression) -> Boolean)
+    private fun expandConfigExpressionWith(forValue: Boolean, config: CwtConfig<*>): Boolean {
+        val configExpression = if (forValue && config is CwtMemberConfig) config.valueExpression else config.configExpression
+        val configGroup = config.configGroup
+        return expandConfigExpressionWith(configExpression, configGroup)
+    }
+
+    context(processor: (CwtDataExpression) -> Boolean)
+    private fun expandConfigExpressionWith(configs: Collection<CwtConfig<*>>, forValue: Boolean): Boolean {
         return configs.process { config ->
             val configExpression = if (forValue && config is CwtMemberConfig) config.valueExpression else config.configExpression
             val configGroup = config.configGroup
-            doExpandConfigExpression(configExpression, configGroup, processor)
+            expandConfigExpressionWith(configExpression, configGroup)
         }
     }
 
-    private fun doExpandConfigExpression(configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, processor: (e: CwtDataExpression) -> Boolean): Boolean {
+    context(processor: (e: CwtDataExpression) -> Boolean)
+    private fun expandConfigExpressionWith(configExpression: CwtDataExpression?, configGroup: CwtConfigGroup): Boolean {
         // NOTE 3.0.1 use processor pattern (instead of direct sequence builder) to optimize performance
         if (configExpression == null) return true
         return when (configExpression.type) {
