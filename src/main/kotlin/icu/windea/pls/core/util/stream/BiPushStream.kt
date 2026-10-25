@@ -10,24 +10,25 @@ import java.util.stream.Stream
  *
  * ## API 笔记
  *
- * 此类推流（push stream）是一种基于 Push 模型的零成本抽象（zero-cost abstraction）。
+ * 此类推流（push stream）是一种基于 Push 模型的（近似的）零成本抽象（zero-cost abstraction）。
  * 它们不需要额外的中间操作，也不会引入状态机与堆内存分配，因此不存在额外的性能开销。
  *
- * 相比常见的拉流（pull stream），例如 [Stream] 和 [Sequence]，
- * 由于可以直接依赖原生调用栈，而不存在状态持久化的核心开销，
+ * 相比常见的拉流（pull stream），例如 [Iterator] 和 [Sequence]，
+ * 由于可以直接依赖原生调用栈，且不存在状态持久化的核心开销，
  * 在有着极高的时间复杂度或者极高的元素数量的场景下，它们通常能取得更好的性能表现。
  *
  * 相比平台代码中常见的处理器模式（processor pattern），即使用 [Processor] 作为参数以进行可中断迭代的方式，
- * 由于可以直接进行链式调用，而不需要编写违反直觉且不够直观的回调代码，
+ * 由于可以直接进行链式调用，且不需要编写违反直觉且不够直观的回调代码，
  * 在能够保持性能的同时，它们也能取得更好的可读性。
  *
  * ## 实现笔记
  *
  * 使用内联类（inline class）实现，从而避免额外的包装对象开销，同时也避免引入过多的扩展函数。
+ * 尽管仍然存在闭包对象创建和虚函数调用带来的开销，在大多数情况下，预期可以在运行时被 JIT 优化。
  *
+ * @see Stream
  * @see Iterable
  * @see Iterator
- * @see Stream
  * @see Sequence
  * @see Processor
  */

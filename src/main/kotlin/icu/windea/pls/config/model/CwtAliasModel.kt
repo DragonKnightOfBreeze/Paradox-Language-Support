@@ -1,9 +1,11 @@
 package icu.windea.pls.config.model
 
+import icu.windea.pls.config.config.detached.CwtExpandedAliasConfig
 import icu.windea.pls.core.annotations.CaseInsensitive
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenCustomHashMap
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap
+import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
 
 /**
@@ -12,14 +14,14 @@ import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
  * 用于保存和获取符合特定条件的别名规则的名字和键。
  */
 interface CwtAliasModel {
-    /** 名字到作为常量的键的映射。 */
-    val forConst: Map<String, Map<@CaseInsensitive String, String>>
-    /** 名字到作为常量以外的一组键的映射。 */
-    val forNonConstSorted: Map<String, Set<String>>
+    /** 名字到展开后的一组常量型的别名规则的映射。 */
+    val expandedForConst: Map<String, Map<@CaseInsensitive String, CwtExpandedAliasConfig>>
+    /** 名字到展开后的一组常量型以外的别名规则的映射。按数据类型的优先级排序。 */
+    val expandedForNonConst: Map<String, List<CwtExpandedAliasConfig>>
     /** 名字到作为常量的规则的数量的映射。 */
-    val configCountForConst: Map<String, Int>
+    val countForConst: Map<String, Int>
     /** 名字到作为常量以外的规则的数量的映射。 */
-    val configCountForNonConst: Map<String, Int>
+    val countForNonConst: Map<String, Int>
     /** （必定）支持作用域的别名规则的名字。 */
     val supportScope: Set<String>
 
@@ -35,26 +37,26 @@ interface CwtAliasModel {
 // region Implementations
 
 class CwtAliasModelBase : CwtAliasModel {
-    override val forConst = Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, String>>()
-    override val forNonConstSorted = Object2ObjectLinkedOpenHashMap<String, ObjectLinkedOpenHashSet<String>>()
-    override val configCountForConst = Object2IntOpenHashMap<String>()
-    override val configCountForNonConst = Object2IntOpenHashMap<String>()
+    override val expandedForConst = Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtExpandedAliasConfig>>()
+    override val expandedForNonConst = Object2ObjectLinkedOpenHashMap<String, ObjectArrayList<CwtExpandedAliasConfig>>()
+    override val countForConst = Object2IntOpenHashMap<String>()
+    override val countForNonConst = Object2IntOpenHashMap<String>()
     override val supportScope = ObjectLinkedOpenHashSet<String>()
 
     fun trim() {
-        forConst.trim()
-        forConst.values.forEach { it.trim() }
-        forNonConstSorted.trim()
-        forNonConstSorted.values.forEach { it.trim() }
+        expandedForConst.trim()
+        expandedForConst.values.forEach { it.trim() }
+        expandedForNonConst.trim()
+        expandedForNonConst.values.forEach { it.trim() }
         supportScope.trim()
     }
 }
 
 private object EmptyCwtAliasModel : CwtAliasModel {
-    override val forConst: Map<String, Map<@CaseInsensitive String, String>> get() = emptyMap()
-    override val forNonConstSorted: Map<String, Set<String>> get() = emptyMap()
-    override val configCountForConst: Map<String, Int> get() = emptyMap()
-    override val configCountForNonConst: Map<String, Int> get() = emptyMap()
+    override val expandedForConst: Map<String, Map<@CaseInsensitive String, CwtExpandedAliasConfig>> get() = emptyMap()
+    override val expandedForNonConst: Map<String, List<CwtExpandedAliasConfig>> get() = emptyMap()
+    override val countForConst: Map<String, Int> get() = emptyMap()
+    override val countForNonConst: Map<String, Int> get() = emptyMap()
     override val supportScope: Set<String> get() = emptySet()
 }
 

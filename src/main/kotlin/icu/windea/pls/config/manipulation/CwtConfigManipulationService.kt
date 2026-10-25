@@ -327,8 +327,9 @@ object CwtConfigManipulationService {
             }
             in CwtDataTypeSets.Expandable -> {
                 // NOTE 3.0.3 recursion guard is required here
-                val expanded = CwtConfigExpansionService.expandExpandable(dataExpression, configGroup, "configExpression.mergeDataExpression")
-                return expanded.firstNotNullOrOrNull { e -> mergeDataExpressionDirectional(e, otherDataExpression, configGroup) }
+                val guardName = "configExpression.mergeDataExpression"
+                val expanded = CwtConfigExpansionService.expandExpandable(dataExpression, configGroup, guardName = guardName)
+                return expanded.firstNotNullOrOrNull { e -> mergeDataExpressionDirectional(e.configExpression, otherDataExpression, configGroup) }
             }
         }
         return null

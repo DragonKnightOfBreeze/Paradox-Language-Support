@@ -1,10 +1,14 @@
 package icu.windea.pls.config.config
 
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.cwt.psi.CwtMember
+import icu.windea.pls.test.ChronicleTestScope
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -14,7 +18,16 @@ import java.util.concurrent.atomic.AtomicInteger
  * @see CwtConfigService
  */
 @RunWith(JUnit4::class)
-class CwtConfigServiceTest : BasePlatformTestCase() {
+@TestDataPath("\$CONTENT_ROOT/testData")
+class CwtConfigServiceTest : BasePlatformTestCase(), ChronicleTestScope {
+    override fun getTestDataPath() = "src/test/testData"
+
+    @Before
+    fun doSetUp() = markIntegrationTest()
+
+    @After
+    fun doTearDown() = clearIntegrationTest()
+
     private val counter = AtomicInteger()
 
     private fun assertResolveConfigType(text: String, expected: CwtConfigType?) {

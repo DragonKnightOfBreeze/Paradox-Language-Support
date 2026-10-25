@@ -10,6 +10,7 @@ import icu.windea.pls.config.config.CwtExpandableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
+import icu.windea.pls.config.config.detached.CwtExpandedUnionConfig
 import icu.windea.pls.config.manipulation.CwtConfigExpansionService
 import icu.windea.pls.config.scopes.CwtConfigResolutionScope
 import icu.windea.pls.core.optimized
@@ -22,6 +23,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * 用于提供一组数据表达式的候选项，以进行并集匹配，匹配时会递归展开并依次尝试其中的候选项。
  * 不同于枚举规则，这里的可选项可以是各种数据类型的数据表达式。
+ *
+ * 并集规则可以被展开，每个名字可拥有多个作为候选项的规则。
  *
  * 路径定位：
  * - `unions/union[{name}]`。其中 `{name}` 匹配规则名称。
@@ -42,6 +45,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * @property name 规则名称。
  * @property valueConfigs 对应的值规则的列表。
  *
+ * @see CwtExpandedUnionConfig
  * @see CwtConfigExpansionService.expandUnion
  */
 interface CwtUnionConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, CwtIdMatchableConfig<CwtProperty>, CwtExpandableConfig<CwtProperty> {

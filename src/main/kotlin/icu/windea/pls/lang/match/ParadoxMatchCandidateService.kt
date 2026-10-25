@@ -13,7 +13,6 @@ import icu.windea.pls.config.match.CwtConfigMatchService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.processFast
-import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService
 
 @Optimized
@@ -44,27 +43,18 @@ object ParadoxMatchCandidateService {
         if (config !is CwtPropertyConfig) return true
         val configGroup = context.configGroup
         val aliasName = config.configExpression.metadata.value ?: return true
-        val aliasGroup = configGroup.aliasGroups[aliasName] ?: return true
         // NOTE 3.0.3 recursion guard is required here
-        val map = mutableMapOf<String, ParadoxMatchResult>()
-        runWithRecursionGuard("matchCandidate.collectFromAliasEntry", aliasName) {
-            ParadoxConfigExpansionService.expandAndMatchAliasKeys(context.element, context.expression, aliasName, configGroup, context.options) p@{ key, matchResult ->
-                map.put(key, matchResult)
-                true
-            }
-        }
-        if (map.isEmpty()) return true
-        ProgressManager.checkCanceled()
-        map.forEach f1@{ (key, matchResult) ->
-            val aliasConfigs = aliasGroup[key]
-            aliasConfigs?.forEachFast f2@{ aliasConfig ->
-                val inlined = CwtConfigInlineService.inlineAlias(config, aliasConfig) ?: return@f2
-                val inlinedCandidate = ParadoxMatchCandidate(inlined, matchResult)
-                collectCandidate(inlinedCandidate, result).let { if (!it) return false }
+        val guardName = "matchCandidate.collectFromAliasEntry"
+        val expanded = ParadoxConfigExpansionService.expandAndMatchAlias(context.element, context.expression, aliasName, configGroup, context.options, guardName = guardName)
+        return expanded.process { r, mr ->
+            ProgressManager.checkCanceled()
+            r.configs.processFast f@{ aliasConfig ->
+                val inlined = CwtConfigInlineService.inlineAlias(config, aliasConfig) ?: return@f true
+                val inlinedCandidate = ParadoxMatchCandidate(inlined, mr)
+                collectCandidate(inlinedCandidate, result)
             }
         }
         // NOTE 3.0.3 cannot apply injection for alias keys (e.g. `y` in `alias[x:y]`) - unsupported from now on
-        return true
     }
 
     private fun collectFromNormalEntry(config: CwtMemberConfig<*>, context: ParadoxExpressionMatchContext, forValue: Boolean, result: MutableList<ParadoxMatchCandidate>): Boolean {

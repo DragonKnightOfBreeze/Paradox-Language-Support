@@ -167,8 +167,8 @@ value class BiPushStream<out T1, out T2>(val dispatch: ((T1, T2) -> Boolean) -> 
 ### 主要
 
 - [x] 提供 `PushStream` 和 `BiPushStream`
-- [ ] 重构 `CwtConfigExpansionService` 和 `ParadoxConfigExpansionService`：从 processor 模式改为返回 pushStream
-- [ ] 重构 `CwtConfigExpansionService` 和 `ParadoxConfigExpansionService`：创建并应用 `CwtExpandedConfig`
+- [x] 重构 `CwtConfigExpansionService` 和 `ParadoxConfigExpansionService`：从 processor 模式改为返回 pushStream
+- [x] 重构 `CwtConfigExpansionService` 和 `ParadoxConfigExpansionService`：创建并应用 `CwtExpandedConfig`
 - [x] 补充相关的单元测试，以验证 pushStream 实现的正确性
 - [ ] 补充相关的集成测试，以验证规则展开行为的正确性
 
@@ -176,7 +176,14 @@ value class BiPushStream<out T1, out T2>(val dispatch: ((T1, T2) -> Boolean) -> 
 
 ### 相关代码位置
 
-- `icu.windea.pls.core.util.stream.PushStream`
-- `icu.windea.pls.core.util.stream.BiPushStream`
-- `icu.windea.pls.config.manipulation.CwtConfigExpansionService` - 需要迁移
-- `icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService` - 需要迁移
+- API
+  - `icu.windea.pls.core.util.stream.PushStream`
+  - `icu.windea.pls.core.util.stream.BiPushStream`
+- 需要秦迁移
+  - `icu.windea.pls.config.manipulation.CwtConfigExpansionService`
+  - `icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService`
+- 其他
+  - `icu.windea.pls.config.config.CwtExpandedConfig`
+  - `icu.windea.pls.config.config.detached.CwtExpandedAliasConfig`
+  - `icu.windea.pls.config.config.detached.CwtExpandedSingleAliasConfig`
+  - `icu.windea.pls.config.config.detached.CwtExpandedUnionConfig`

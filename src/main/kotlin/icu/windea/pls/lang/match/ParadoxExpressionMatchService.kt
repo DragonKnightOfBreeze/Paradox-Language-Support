@@ -89,8 +89,9 @@ object ParadoxExpressionMatchService {
             // NOTE 3.0.3 for expandable data types, only include union values here
             CwtDataTypes.UnionValue -> {
                 // NOTE 3.0.3 recursion guard is required here
-                val expanded = CwtConfigExpansionService.expandUnion(configExpression, configGroup, "exprssion.matchesConstant")
-                expanded.any { e, _ -> matchesConstant(expression, e, configGroup) }
+                val guardName = "exprssion.matchesConstant"
+                val expanded = CwtConfigExpansionService.expandUnion(configExpression, configGroup, guardName = guardName)
+                expanded.any { e -> matchesConstant(expression, e.configExpression, configGroup) }
             }
             else -> false
         }

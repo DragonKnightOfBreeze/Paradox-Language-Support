@@ -9,6 +9,7 @@ import icu.windea.pls.config.config.CwtDelegatedConfig
 import icu.windea.pls.config.config.CwtExpandableConfig
 import icu.windea.pls.config.config.CwtIdMatchableConfig
 import icu.windea.pls.config.config.CwtPropertyConfig
+import icu.windea.pls.config.config.detached.CwtExpandedSingleAliasConfig
 import icu.windea.pls.config.manipulation.CwtConfigExpansionService
 import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.config.scopes.CwtConfigResolutionScope
@@ -23,6 +24,8 @@ import icu.windea.pls.cwt.psi.CwtProperty
  * 单别名规则是一种可以按一对一的形式，在多个位置复用（作为属性的值）的规则。
  * 单别名规则可用来简化规则文件，提升可读性和复用性。
  * 另外，包括触发块（trigger clause）、效果块（effect clause）在内的多种代码片段对应的规则，都建议以单别名规则的形式提供。
+ *
+ * 单别名规则可以被展开和内联，每个名字仅拥有一个作为候选项的规则。
  *
  * 路径定位：
  * - `single_alias[{name}]`。其中 `{name}` 匹配规则名称。
@@ -46,6 +49,7 @@ import icu.windea.pls.cwt.psi.CwtProperty
  *
  * @property name 规则名称。
  *
+ * @see CwtExpandedSingleAliasConfig
  * @see CwtConfigExpansionService.expandSingleAlias
  * @see CwtConfigInlineService.inlineSingleAlias
  */
@@ -79,7 +83,7 @@ private object CwtSingleAliasConfigResolver : CwtConfigResolutionScope {
 
 private class CwtSingleAliasConfigImpl(
     override val config: CwtPropertyConfig,
-    override val name: String
+    override val name: String,
 ) : UserDataHolderBase(), CwtSingleAliasConfig {
     override fun toString() = "CwtSingleAliasConfigImpl(name='$name')"
 }

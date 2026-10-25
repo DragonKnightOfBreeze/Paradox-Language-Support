@@ -188,6 +188,8 @@ interface CwtConfigGroupDataModel {
     val localisationLinkModel: CwtLinkModel
     /** 获取符合特定条件的别名规则的名字和键。 */
     val aliasModel: CwtAliasModel
+    /** 获取展开后的单别名规则。 */
+    val singleAliasModel: CwtSingleAliasModel
     /** 获取符合特定条件的并集规则的名字和键。 */
     val unionModel: CwtUnionModel
     /** 获取符合特定条件的宏规则。 */
@@ -270,6 +272,7 @@ class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
     override val linkModel = CwtLinkModel.create()
     override val localisationLinkModel = CwtLinkModel.create()
     override val aliasModel = CwtAliasModel.create()
+    override val singleAliasModel = CwtSingleAliasModel.create()
     override val unionModel = CwtUnionModel.create()
     override val macroModel = CwtMacroModel.create()
     override val attributes = CwtConfigGroupAttributesBase()
@@ -360,6 +363,7 @@ class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
         linkModel.trim()
         localisationLinkModel.trim()
         aliasModel.trim()
+        singleAliasModel.trim()
         unionModel.trim()
         macroModel.trim()
 
@@ -421,6 +425,7 @@ private object EmptyCwtConfigGroupDataModel : CwtConfigGroupDataModel {
     override val linkModel: CwtLinkModel get() = CwtLinkModel.createEmpty()
     override val localisationLinkModel: CwtLinkModel get() = CwtLinkModel.createEmpty()
     override val aliasModel: CwtAliasModel get() = CwtAliasModel.createEmpty()
+    override val singleAliasModel: CwtSingleAliasModel get() = CwtSingleAliasModel.createEmpty()
     override val unionModel: CwtUnionModel get() = CwtUnionModel.createEmpty()
     override val macroModel: CwtMacroModel get() = CwtMacroModel.createEmpty()
 

@@ -4,8 +4,6 @@ import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
-import icu.windea.pls.core.runWithRecursionGuard
-import icu.windea.pls.core.util.ProcessorFactory
 import icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService
 import icu.windea.pls.lang.match.ParadoxExpressionMatchContext
 import icu.windea.pls.lang.match.ParadoxMatchResult
@@ -18,15 +16,12 @@ abstract class ParadoxExpandableScriptExpressionMatcher : ParadoxScriptExpressio
         override fun match(context: ParadoxExpressionMatchContext, configExpression: CwtDataExpression, config: CwtConfig<*>?): ParadoxMatchResult {
             if (context.expression.isParameterized()) return ParadoxMatchResult.ParameterizedMatch // 3.0.2 fast return
             val unionName = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // null -> unexpected
-            // NOTE 3.0.3 recursion guard is required here
+            // NOTE 3.0.1 recursion guard is required here
             // NOTE 3.0.3 use first actually matched match result atm, event if there are multiple match results before processing
-            val processor = ProcessorFactory.find<ParadoxMatchResult>()
-            runWithRecursionGuard("scriptExpression.match.union", unionName) {
-                ParadoxConfigExpansionService.expandAndMatchUnion(context.element, context.expression, unionName, context.configGroup, context.options) { _, matchResult ->
-                    if (matchResult.get(context.options)) processor.process(matchResult) else true
-                }
-            }
-            return processor.result ?: ParadoxMatchResult.NotMatch
+            val guardName = "csvExpression.match.union"
+            val expanded = ParadoxConfigExpansionService.expandAndMatchUnion(context.element, context.expression, unionName, context.configGroup, context.options, guardName = guardName)
+            val result = expanded.firstNotNullOrOrNull { _, mr -> if (mr.get(context.options)) mr else null }
+            return result ?: ParadoxMatchResult.NotMatch
         }
     }
 
@@ -40,13 +35,10 @@ abstract class ParadoxExpandableScriptExpressionMatcher : ParadoxScriptExpressio
             val aliasName = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // null -> unexpected
             // NOTE 3.0.3 recursion guard is required here
             // NOTE 3.0.3 use first actually matched match result atm, event if there are multiple match results before processing
-            val processor = ProcessorFactory.find<ParadoxMatchResult>()
-            runWithRecursionGuard("scriptExpression.match.alias", aliasName) {
-                ParadoxConfigExpansionService.expandAndMatchAliasKeys(context.element, context.expression, aliasName, context.configGroup, context.options) { _, matchResult ->
-                    if (matchResult.get(context.options)) processor.process(matchResult) else true
-                }
-            }
-            return processor.result ?: ParadoxMatchResult.NotMatch
+            val guardName = "csvExpression.match.union"
+            val expanded = ParadoxConfigExpansionService.expandAndMatchAlias(context.element, context.expression, aliasName, context.configGroup, context.options, guardName = guardName)
+            val result = expanded.firstNotNullOrOrNull { _, mr -> if (mr.get(context.options)) mr else null }
+            return result ?: ParadoxMatchResult.NotMatch
         }
     }
 

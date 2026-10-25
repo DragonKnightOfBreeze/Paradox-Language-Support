@@ -34,10 +34,8 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.match.PathMatcher
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runWithRecursionGuard
 import icu.windea.pls.core.sequences.process
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.ProcessorFactory
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKeyWithThis
@@ -428,20 +426,14 @@ object ParadoxConfigMatchService {
         // aliasName 和 aliasSubName 需要匹配
         val configGroup = propertyConfig.configGroup
         val aliasName = propertyConfig.keyExpression.metadata.value?.orNull() ?: return false
-        val aliasGroup = configGroup.aliasGroups[aliasName] ?: return false
         val propertyKey = property.propertyKey
         val options = context.options
-        val processor = ProcessorFactory.any<Unit>()
-        runWithRecursionGuard("subtypeConfig.match.alias", aliasName) {
-            val aliasExpression = ParadoxExpression.resolve(propertyKey, options)
-            ParadoxConfigExpansionService.expandMatchedAliasKeys(property, aliasExpression, aliasName, configGroup, options) p@{ key ->
-                val aliasConfig = aliasGroup[key]?.firstOrNull() ?: return@p true
-                val r = matchesPropertyForSubtype(context, definition, property, aliasConfig.config)
-                if (!r) return@p true
-                processor.process(Unit)
-            }
+        val aliasExpression = ParadoxExpression.resolve(propertyKey, options)
+        val guardName = "subtypeConfig.match.alias"
+        val expanded = ParadoxConfigExpansionService.expandAndMatchAlias(property, aliasExpression, aliasName, configGroup, options, guardName = guardName)
+        return expanded.filter { _, mr -> mr.get(options) }.any { r, _ ->
+            matchesPropertyForSubtype(context, definition, property, r.config.config)
         }
-        return processor.result
     }
 
     private fun matchesSingleAliasForSubtype(context: CwtSubtypeConfigMatchContext, definition: ParadoxDefinitionElement, property: ParadoxScriptProperty, propertyConfig: CwtPropertyConfig): Boolean {

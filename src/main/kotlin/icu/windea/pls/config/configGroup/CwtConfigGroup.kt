@@ -180,6 +180,7 @@ private class CwtConfigGroupImpl(
     override val localisationLinkModel get() = dataModel.localisationLinkModel
     override val aliasModel get() = dataModel.aliasModel
     override val unionModel get() = dataModel.unionModel
+    override val singleAliasModel get() = dataModel.singleAliasModel
     override val macroModel get() = dataModel.macroModel
     override val attributes get() = dataModel.attributes
     override fun getUnionAttribute(name: String) = dataModel.getUnionAttribute(name)
