@@ -104,10 +104,10 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             val configExpression = context.config?.configExpression ?: return
             ProgressManager.checkCanceled()
             // NOTE 3.0.3 recursion guard is required here
-            CwtConfigExpansionService.expandUnion(configExpression, configGroup, "scriptExpression.complete") { _, unionValueConfig ->
+            val expanded = CwtConfigExpansionService.expandUnion(configExpression, configGroup, "scriptExpression.complete")
+            expanded.forEach { _, unionValueConfig ->
                 val context = context.copy(config = unionValueConfig, configs = setOf(unionValueConfig))
                 ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
-                true
             }
         }
     }
@@ -185,10 +185,10 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             val configExpression = context.config?.configExpression ?: return
             ProgressManager.checkCanceled()
             // NOTE 3.0.3 recursion guard is required here
-            CwtConfigExpansionService.expandAlias(configExpression, configGroup, "scriptExpression.complete") { _, aliasConfigs ->
+            val expanded = CwtConfigExpansionService.expandAlias(configExpression, configGroup, "scriptExpression.complete")
+            expanded.forEach { _, aliasConfigs ->
                 val context = context.copy(config = aliasConfigs.first(), configs = aliasConfigs)
                 ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
-                true
             }
         }
     }

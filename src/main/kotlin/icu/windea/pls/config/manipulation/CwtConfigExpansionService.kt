@@ -11,6 +11,7 @@ import icu.windea.pls.config.config.delegated.CwtSingleAliasConfig
 import icu.windea.pls.config.config.delegated.CwtUnionConfig
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
+import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.annotations.RecursionSensitive
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.orNull
@@ -21,7 +22,10 @@ import icu.windea.pls.core.util.stream.BiPushStream
 import icu.windea.pls.core.util.stream.PushStream
 import icu.windea.pls.model.expressions.ParadoxDefinitionSubtypeExpression
 
+@Optimized
 object CwtConfigExpansionService {
+    // 3.0.5 optimize: public methods here should be returning push stream directly, instead of receiving processor as an argument
+
     /**
      * 递归展开 [config] 的子规则中的所有形如 `subtype[{subtypeExpression}] = {...}` 的属性规则中的子规则，保留其他形式的子规则。
      *
@@ -34,7 +38,7 @@ object CwtConfigExpansionService {
         return BiPushStream.from { expandBySubtypeExpressionWith(config, "") }
     }
 
-    context(processor: (r: CwtMemberConfig<*>, e: String) -> Boolean)
+    context(processor: (CwtMemberConfig<*>, String) -> Boolean)
     private fun expandBySubtypeExpressionWith(config: CwtMemberConfig<*>, currentExpression: String): Boolean {
         // NOTE 3.0.1 use processor pattern (instead of direct sequence builder) to optimize performance
         config.configs?.orNull()?.forEachFast { childConfig ->
@@ -53,7 +57,7 @@ object CwtConfigExpansionService {
 
     fun expandConfigExpression(config: CwtConfig<*>?, forValue: Boolean = false): PushStream<CwtDataExpression> {
         if (config == null) return PushStream.of()
-        return PushStream.from { expandConfigExpressionWith(forValue, config) }
+        return PushStream.from { expandConfigExpressionWith(config, forValue) }
     }
 
     fun expandConfigExpression(configs: Collection<CwtConfig<*>>?, forValue: Boolean = false): PushStream<CwtDataExpression> {
@@ -61,15 +65,13 @@ object CwtConfigExpansionService {
         return PushStream.from { expandConfigExpressionWith(configs, forValue) }
     }
 
-    context(processor: (CwtDataExpression) -> Boolean)
-    private fun expandConfigExpressionWith(forValue: Boolean, config: CwtConfig<*>): Boolean {
+    private fun ((CwtDataExpression) -> Boolean).expandConfigExpressionWith(config: CwtConfig<*>, forValue: Boolean): Boolean {
         val configExpression = if (forValue && config is CwtMemberConfig) config.valueExpression else config.configExpression
         val configGroup = config.configGroup
         return expandConfigExpressionWith(configExpression, configGroup)
     }
 
-    context(processor: (CwtDataExpression) -> Boolean)
-    private fun expandConfigExpressionWith(configs: Collection<CwtConfig<*>>, forValue: Boolean): Boolean {
+    private fun ((CwtDataExpression) -> Boolean).expandConfigExpressionWith(configs: Collection<CwtConfig<*>>, forValue: Boolean): Boolean {
         return configs.process { config ->
             val configExpression = if (forValue && config is CwtMemberConfig) config.valueExpression else config.configExpression
             val configGroup = config.configGroup
@@ -77,9 +79,8 @@ object CwtConfigExpansionService {
         }
     }
 
-    context(processor: (e: CwtDataExpression) -> Boolean)
+    context(processor: (CwtDataExpression) -> Boolean)
     private fun expandConfigExpressionWith(configExpression: CwtDataExpression?, configGroup: CwtConfigGroup): Boolean {
-        // NOTE 3.0.1 use processor pattern (instead of direct sequence builder) to optimize performance
         if (configExpression == null) return true
         return when (configExpression.type) {
             CwtDataTypes.UnionValue -> {
@@ -102,9 +103,13 @@ object CwtConfigExpansionService {
      * @see CwtUnionConfig
      */
     @RecursionSensitive
-    fun expandUnion(name: String?, configGroup: CwtConfigGroup, recursionGuardName: String, processor: (e: CwtDataExpression, r: CwtValueConfig) -> Boolean): Boolean {
-        // NOTE 3.0.1 use processor pattern (instead of direct sequence builder) to optimize performance
-        if (name.isNullOrEmpty()) return true
+    fun expandUnion(name: String?, configGroup: CwtConfigGroup, recursionGuardName: String): BiPushStream<CwtDataExpression, CwtValueConfig> {
+        if (name.isNullOrEmpty()) return BiPushStream.of()
+        return BiPushStream.from { expandUnionWith(name, configGroup, recursionGuardName) }
+    }
+
+    context(processor: (CwtDataExpression, CwtValueConfig) -> Boolean)
+    private fun expandUnionWith(name: String, configGroup: CwtConfigGroup, recursionGuardName: String): Boolean {
         val unionConfig = configGroup.unions[name] ?: return true
         val valueConfigs = unionConfig.valueConfigs
         if (valueConfigs.isEmpty()) return true
@@ -124,9 +129,13 @@ object CwtConfigExpansionService {
      * @see CwtAliasConfig
      */
     @RecursionSensitive
-    fun expandAlias(name: String?, configGroup: CwtConfigGroup, recursionGuardName: String, processor: (e: CwtDataExpression, r: List<CwtAliasConfig>) -> Boolean): Boolean {
-        // NOTE 3.0.1 use processor pattern (instead of direct sequence builder) to optimize performance
-        if (name.isNullOrEmpty()) return true
+    fun expandAlias(name: String?, configGroup: CwtConfigGroup, recursionGuardName: String): BiPushStream<CwtDataExpression, List<CwtAliasConfig>> {
+        if (name.isNullOrEmpty()) return BiPushStream.of()
+        return BiPushStream.from { expandAliasWith(name, configGroup, recursionGuardName) }
+    }
+
+    context(processor: (CwtDataExpression, List<CwtAliasConfig>) -> Boolean)
+    private fun expandAliasWith(name: String, configGroup: CwtConfigGroup, recursionGuardName: String): Boolean {
         val aliasGroup = configGroup.aliasGroups[name] ?: return true
         if (aliasGroup.isEmpty()) return true
         val recursionGuardKey = "a:$name"
@@ -143,9 +152,13 @@ object CwtConfigExpansionService {
      *
      * @see CwtSingleAliasConfig
      */
-    fun expandSingleAlias(name: String?, configGroup: CwtConfigGroup, recursionGuardName: String, processor: (e: CwtDataExpression, r: CwtSingleAliasConfig) -> Boolean): Boolean {
-        // NOTE 3.0.1 use processor pattern (instead of direct sequence builder) to optimize performance
-        if (name.isNullOrEmpty()) return true
+    fun expandSingleAlias(name: String?, configGroup: CwtConfigGroup, recursionGuardName: String): BiPushStream<CwtDataExpression, CwtSingleAliasConfig> {
+        if (name.isNullOrEmpty()) return BiPushStream.of()
+        return BiPushStream.from { expandSingleAliasWith(name, configGroup, recursionGuardName) }
+    }
+
+    context(processor: (CwtDataExpression, CwtSingleAliasConfig) -> Boolean)
+    private fun expandSingleAliasWith(name: String, configGroup: CwtConfigGroup, recursionGuardName: String): Boolean {
         val singleAliasConfig = configGroup.singleAliases[name] ?: return true
         val recursionGuardKey = "sa:$name"
         return runWithRecursionGuard(recursionGuardName, recursionGuardKey) {
@@ -162,11 +175,11 @@ object CwtConfigExpansionService {
      * @see CwtDataTypes.UnionValue
      */
     @RecursionSensitive
-    fun expandUnion(configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, recursionGuardName: String, processor: (e: CwtDataExpression, r: CwtValueConfig) -> Boolean): Boolean {
-        if (configExpression == null) return true
-        if (configExpression.type != CwtDataTypes.UnionValue) return true
-        val name = configExpression.metadata.value ?: return true
-        return expandUnion(name, configGroup, recursionGuardName, processor)
+    fun expandUnion(configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, recursionGuardName: String): BiPushStream<CwtDataExpression, CwtValueConfig> {
+        if (configExpression == null) return BiPushStream.of()
+        if (configExpression.type != CwtDataTypes.UnionValue) return BiPushStream.of()
+        val name = configExpression.metadata.value
+        return expandUnion(name, configGroup, recursionGuardName)
     }
 
     /**
@@ -179,11 +192,11 @@ object CwtConfigExpansionService {
      * @see CwtDataTypes.AliasKeysField
      */
     @RecursionSensitive
-    fun expandAlias(configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, recursionGuardName: String, processor: (e: CwtDataExpression, r: List<CwtAliasConfig>) -> Boolean): Boolean {
-        if (configExpression == null) return true
-        if (configExpression.type != CwtDataTypes.AliasName && configExpression.type != CwtDataTypes.AliasKeysField) return true
-        val name = configExpression.metadata.value ?: return true
-        return expandAlias(name, configGroup, recursionGuardName, processor)
+    fun expandAlias(configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, recursionGuardName: String): BiPushStream<CwtDataExpression, List<CwtAliasConfig>> {
+        if (configExpression == null) return BiPushStream.of()
+        if (configExpression.type != CwtDataTypes.AliasName && configExpression.type != CwtDataTypes.AliasKeysField) return BiPushStream.of()
+        val name = configExpression.metadata.value
+        return expandAlias(name, configGroup, recursionGuardName)
     }
 
     /**
@@ -192,11 +205,11 @@ object CwtConfigExpansionService {
      * @see CwtSingleAliasConfig
      * @see CwtDataTypes.SingleAliasRight
      */
-    fun expandSingleAlias(configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, recursionGuardName: String, processor: (e: CwtDataExpression, r: CwtSingleAliasConfig) -> Boolean): Boolean {
-        if (configExpression == null) return true
-        if (configExpression.type != CwtDataTypes.SingleAliasRight) return true
-        val name = configExpression.metadata.value ?: return true
-        return expandSingleAlias(name, configGroup, recursionGuardName, processor)
+    fun expandSingleAlias(configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, recursionGuardName: String): BiPushStream<CwtDataExpression, CwtSingleAliasConfig> {
+        if (configExpression == null) return BiPushStream.of()
+        if (configExpression.type != CwtDataTypes.SingleAliasRight) return BiPushStream.of()
+        val name = configExpression.metadata.value
+        return expandSingleAlias(name, configGroup, recursionGuardName)
     }
 
     /**
@@ -208,15 +221,15 @@ object CwtConfigExpansionService {
      * @see CwtDataTypeSets.Expandable
      */
     @RecursionSensitive
-    fun expandExpandable(configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, recursionGuardName: String, processor: (e: CwtDataExpression) -> Boolean): Boolean {
-        if (configExpression == null) return true
-        if (configExpression.type !in CwtDataTypeSets.Expandable) return true
-        val name = configExpression.metadata.value ?: return true
+    fun expandExpandable(configExpression: CwtDataExpression?, configGroup: CwtConfigGroup, recursionGuardName: String): PushStream<CwtDataExpression> {
+        if (configExpression == null) return PushStream.of()
+        if (configExpression.type !in CwtDataTypeSets.Expandable) return PushStream.of()
+        val name = configExpression.metadata.value ?: return PushStream.of()
         return when (configExpression.type) {
-            CwtDataTypes.UnionValue -> expandUnion(name, configGroup, recursionGuardName) { e, _ -> processor(e) }
-            CwtDataTypes.AliasName, CwtDataTypes.AliasKeysField -> expandAlias(name, configGroup, recursionGuardName) { e, _ -> processor(e) }
-            CwtDataTypes.SingleAliasRight -> expandSingleAlias(name, configGroup, recursionGuardName) { e, _ -> processor(e) }
-            else -> true
+            CwtDataTypes.UnionValue -> expandUnion(name, configGroup, recursionGuardName).map { e, _ -> e }
+            CwtDataTypes.AliasName, CwtDataTypes.AliasKeysField -> expandAlias(name, configGroup, recursionGuardName).map { e, _ -> e }
+            CwtDataTypes.SingleAliasRight -> expandSingleAlias(name, configGroup, recursionGuardName).map { e, _ -> e }
+            else -> PushStream.of()
         }
     }
 }

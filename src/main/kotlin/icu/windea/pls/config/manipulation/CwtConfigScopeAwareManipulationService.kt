@@ -5,7 +5,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.aliasConfig
 import icu.windea.pls.config.config.parents
 
-@Suppress("unused")
 object CwtConfigScopeAwareManipulationService {
     fun isTrigger(config: CwtMemberConfig<*>): Boolean {
         if (config !is CwtPropertyConfig) return false

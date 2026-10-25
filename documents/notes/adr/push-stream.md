@@ -168,6 +168,7 @@ value class PushStream<out T>(val dispatch: ((T, U) -> Boolean) -> Unit)
 
 - [x] 提供 `PushStream` 和 `BiPushStream`
 - [x] 重构 `CwtConfigExpansionService`：从 processor 模式改为返回 pushStream
+- [x] 重构 `ParadoxConfigExpansionService`：从 processor 模式改为返回 pushStream
 - [x] 补充相关的单元测试
 
 ## 参见
@@ -177,3 +178,4 @@ value class PushStream<out T>(val dispatch: ((T, U) -> Boolean) -> Unit)
 - `icu.windea.pls.core.util.stream.PushStream`
 - `icu.windea.pls.core.util.stream.BiPushStream`
 - `icu.windea.pls.config.manipulation.CwtConfigExpansionService` - 需要迁移
+- `icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService` - 需要迁移

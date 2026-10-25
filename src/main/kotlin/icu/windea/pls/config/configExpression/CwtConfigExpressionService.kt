@@ -66,10 +66,8 @@ object CwtConfigExpressionService {
             }
             in CwtDataTypeSets.Expandable -> {
                 // NOTE 3.0.3 recursion guard is required here
-                CwtConfigExpansionService.expandExpandable(dataExpression, configGroup, "configExpression.collectLiterals") { e ->
-                    collectLiterals(e, configGroup, result)
-                    true
-                }
+                val expanded = CwtConfigExpansionService.expandExpandable(dataExpression, configGroup, "configExpression.collectLiterals")
+                expanded.forEach { e -> collectLiterals(e, configGroup, result) }
             }
         }
     }

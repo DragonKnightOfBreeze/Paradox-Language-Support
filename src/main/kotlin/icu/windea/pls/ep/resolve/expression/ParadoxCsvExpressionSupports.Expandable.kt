@@ -82,10 +82,10 @@ abstract class ParadoxExpandableCsvExpressionSupport : ParadoxCsvExpressionSuppo
             val configExpression = context.config?.configExpression ?: return
             ProgressManager.checkCanceled()
             // NOTE 3.0.3 recursion guard is required here
-            CwtConfigExpansionService.expandUnion(configExpression, configGroup, "csvExpression.complete") { _, unionValueConfig ->
+            val expanded = CwtConfigExpansionService.expandUnion(configExpression, configGroup, "csvExpression.complete")
+            expanded.forEach { _, unionValueConfig ->
                 val context = context.copy(config = unionValueConfig, configs = setOf(unionValueConfig))
                 ParadoxExpressionCompletionManager.completeCsvExpression(context, result)
-                true
             }
         }
     }

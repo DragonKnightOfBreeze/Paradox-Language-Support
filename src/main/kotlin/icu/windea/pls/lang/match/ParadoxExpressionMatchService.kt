@@ -11,7 +11,6 @@ import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.manipulation.CwtConfigExpansionService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.util.ProcessorFactory
 import icu.windea.pls.ep.match.expression.ParadoxCsvExpressionMatcher
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatchOptimizer
 import icu.windea.pls.ep.match.expression.ParadoxScriptExpressionMatcher
@@ -90,10 +89,8 @@ object ParadoxExpressionMatchService {
             // NOTE 3.0.3 for expandable data types, only include union values here
             CwtDataTypes.UnionValue -> {
                 // NOTE 3.0.3 recursion guard is required here
-                val processor = ProcessorFactory.any<Unit>()
-                CwtConfigExpansionService.expandUnion(configExpression, configGroup, "exprssion.matchesConstant") { e, _ ->
-                    if (matchesConstant(expression, e, configGroup)) processor.process(Unit) else true
-                }
+                val expanded = CwtConfigExpansionService.expandUnion(configExpression, configGroup, "exprssion.matchesConstant")
+                expanded.any { e, _ -> matchesConstant(expression, e, configGroup) }
             }
             else -> false
         }

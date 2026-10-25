@@ -24,7 +24,6 @@ import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.util.ProcessorFactory
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.to
 import icu.windea.pls.core.withRecursionGuard
@@ -328,12 +327,8 @@ object CwtConfigManipulationService {
             }
             in CwtDataTypeSets.Expandable -> {
                 // NOTE 3.0.3 recursion guard is required here
-                val processor = ProcessorFactory.find<String>()
-                CwtConfigExpansionService.expandExpandable(dataExpression, configGroup, "configExpression.mergeDataExpression") { e ->
-                    val r = mergeDataExpressionDirectional(e, otherDataExpression, configGroup)
-                    if (r != null) processor.process(r) else true
-                }
-                return processor.result
+                val expanded = CwtConfigExpansionService.expandExpandable(dataExpression, configGroup, "configExpression.mergeDataExpression")
+                return expanded.firstNotNullOrOrNull { e -> mergeDataExpressionDirectional(e, otherDataExpression, configGroup) }
             }
         }
         return null
