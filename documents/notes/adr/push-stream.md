@@ -1,4 +1,4 @@
-## 提供 `PushStream`
+## 提供轻量化的推流（push stream）
 
 > - 模块：后端 > 通用
 > - 版本：v3.0.5
@@ -7,9 +7,9 @@
 
 ## 说明
 
-为了在保持代码的简洁性和易读性的同时，保持性能，需要提供一种轻量级的 pushStream（推流）。
+为了在保持代码的简洁性和易读性的同时，保持性能，需要提供一种轻量级的 push stream（推流）。
 
-这样的 pushStream 不要求中间操作（例如首先遍历所有元素并收集到列表中），也不会引入状态机和堆分配（例如协程上下文和中间结果列表）。
+这样的 pushStream 不需要额外的中间操作（例如首先遍历所有元素并收集到列表中），也不会引入状态机和堆分配（例如协程上下文和中间结果列表）。
 相比常见的 pullStream（拉流），例如 Iterator/Stream/Sequence，这在一些场景（例如惰性遍历）下可以拥有更好的性能。
 相比平台代码中常见的 processor 模式（例如 `psiClass.procesMethods(processor)`），还可以通过链式调用写法（类似 Stream/Sequence）来获得更好的可读性。
 
@@ -53,8 +53,6 @@ fun interface PushStream<out T> {
 ```
 
 在 JVM 字节码和 JIT 视角下，两者的开销几乎是一致的（除非发生内联类的意外装箱）。
-
-为了避免引入过多的扩展函数，目前采用方案B。
 
 ### 实现示例
 
@@ -145,12 +143,37 @@ inline fun <T> pushStreamOf(crossinline producer: (Processor<in T>) -> Any?): Pu
 fun <T> emptyPushStream(): PushStream<T> = PushStream { true }
 ```
 
+### 实现方案决策
+
+由于 `com.intellij.util.Processor` 仅允许接受一个参数，而插件代码中一些需要考虑迁移的位置存在两个参数，
+因此最终采用的决策方案应直接基于对应的函数（如 `(T) -> Boolean`），而非基于函数式接口（`Processor<T>`）。
+
+processor 的语义与 `java.util.function.Predicate` 或 `java.util.function.BiPredicate` 并不相同，因此也不基于这些函数式接口。
+
+为了避免引入过多的扩展函数，最终决定采用以下方案：
+
+```kotlin
+@JvmInline
+value class PushStream<out T>(val dispatch: ((T) -> Boolean) -> Unit)
+```
+
+```kotlin
+@JvmInline
+value class PushStream<out T>(val dispatch: ((T, U) -> Boolean) -> Unit)
+```
+
 ## 任务
 
 ### 主要
+
+- [x] 提供 `PushStream` 和 `BiPushStream`
+- [ ] 补充相关的单元测试
+- [ ] 重构 `CwtConfigExpansionService`：从 processor 模式改为返回 pushStream
 
 ## 参见
 
 ### 相关代码位置
 
-- [ ] `icu.windea.pls.core.util.PushStream`
+- `icu.windea.pls.core.util.stream.PushStream`
+- `icu.windea.pls.core.util.stream.BiPushStream`
+- `icu.windea.pls.config.manipulation.CwtConfigExpansionService` - 需要迁移

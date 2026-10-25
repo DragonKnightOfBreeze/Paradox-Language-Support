@@ -59,7 +59,7 @@
 - [引号模式与引号处理](adr/quote-pattern.md)
 - [转义模式与转义处理](adr/escape-pattern.md)
 - [颜色处理](adr/color-pattern.md)
-- [提供 `PushStream`](adr/push-stream.md)
+- [提供轻量化的推流（push stream）](adr/push-stream.md)
 
 #### 通用基础设施
 
