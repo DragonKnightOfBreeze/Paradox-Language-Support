@@ -55,13 +55,13 @@ class CwtModelConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
         computeLinkModel(configGroup, dataModel.localisationLinkModel, dataModel.localisationLinks.values)
 
         checkCanceled()
+        computeUnionModel(configGroup, dataModel.unionModel)
+
+        checkCanceled()
         computeAliasModel(configGroup, dataModel.aliasModel)
 
         checkCanceled()
         computeSingleAliasModel(configGroup, dataModel.singleAliasModel)
-
-        checkCanceled()
-        computeUnionModel(configGroup, dataModel.unionModel)
 
         checkCanceled()
         computeMacroModel(configGroup, dataModel.macroModel)
@@ -214,9 +214,47 @@ class CwtModelConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
         }
     }
 
+    private fun computeUnionModel(configGroup: CwtConfigGroup, unionModel: CwtUnionModelBase) {
+        with(unionModel) {
+            for ((unionName, union) in configGroup.unions) {
+                val expandedList = ObjectArrayList<CwtExpandedUnionConfig>()
+                val const = CaseInsensitiveStringKeyMap<CwtExpandedUnionConfig>()
+                val nonConst = ObjectArrayList<CwtExpandedUnionConfig>()
+                var constConfigCount = 0
+                var nonConstConfigCount = 0
+
+                for (valueConfig in union.valueConfigs) {
+                    val configExpression = valueConfig.configExpression
+                    val expandedConfig = CwtExpandedUnionConfig(configExpression, valueConfig)
+                    expandedList += expandedConfig
+                    if (configExpression.type == CwtDataTypes.Constant) {
+                        const[configExpression.expressionString] = expandedConfig
+                        constConfigCount += 1
+                    } else {
+                        nonConst += expandedConfig
+                        nonConstConfigCount += 1
+                    }
+                }
+                if (expandedList.isNotEmpty()) {
+                    expanded[unionName] = expandedList
+                }
+                if (const.isNotEmpty()) {
+                    expandedForConst[unionName] = const
+                    countForConst.put(unionName, constConfigCount)
+                }
+                if (nonConst.isNotEmpty()) {
+                    val nonConstSorted = nonConst.sortedByPriority({ it.configExpression }, { configGroup })
+                    expandedForNonConst[unionName] = ObjectArrayList(nonConstSorted)
+                    countForNonConst.put(unionName, nonConstConfigCount)
+                }
+            }
+        }
+    }
+
     private fun computeAliasModel(configGroup: CwtConfigGroup, aliasModel: CwtAliasModelBase) {
         with(aliasModel) {
             for ((aliasName, aliases) in configGroup.aliasGroups) {
+                val expandedList = ObjectArrayList<CwtExpandedAliasConfig>()
                 val const = CaseInsensitiveStringKeyMap<CwtExpandedAliasConfig>()
                 val nonConst = ObjectArrayList<CwtExpandedAliasConfig>()
                 var constConfigCount = 0
@@ -225,6 +263,7 @@ class CwtModelConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
                     if (aliasConfigs.isEmpty()) continue
                     val configExpression = CwtDataExpression.resolve(key, CwtDataExpressionRole.Key)
                     val expandedConfig = CwtExpandedAliasConfig(configExpression, aliasConfigs.first(), aliasConfigs)
+                    expandedList += expandedConfig
                     if (configExpression.type == CwtDataTypes.Constant) {
                         const[key] = expandedConfig
                         constConfigCount += 1
@@ -232,6 +271,9 @@ class CwtModelConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
                         nonConst += expandedConfig
                         nonConstConfigCount += aliasConfigs.size
                     }
+                }
+                if (expandedList.isNotEmpty()) {
+                    expanded[aliasName] = expandedList
                 }
                 if (const.isNotEmpty()) {
                     expandedForConst[aliasName] = const
@@ -250,38 +292,6 @@ class CwtModelConfigGroupPostProcessor : CwtConfigGroupPostProcessor {
         with(singleAliasModel) {
             for ((name, singleAliasConfig) in configGroup.singleAliases) {
                 expanded[name] = CwtExpandedSingleAliasConfig(singleAliasConfig.config.valueExpression, singleAliasConfig)
-            }
-        }
-    }
-
-    private fun computeUnionModel(configGroup: CwtConfigGroup, unionModel: CwtUnionModelBase) {
-        with(unionModel) {
-            for ((unionName, union) in configGroup.unions) {
-                val const = CaseInsensitiveStringKeyMap<CwtExpandedUnionConfig>()
-                val nonConst = ObjectArrayList<CwtExpandedUnionConfig>()
-                var constConfigCount = 0
-                var nonConstConfigCount = 0
-
-                for (valueConfig in union.valueConfigs) {
-                    val configExpression = valueConfig.configExpression
-                    val expandedConfig = CwtExpandedUnionConfig(configExpression, valueConfig, listOf(valueConfig))
-                    if (configExpression.type == CwtDataTypes.Constant) {
-                        const[configExpression.expressionString] = expandedConfig
-                        constConfigCount += 1
-                    } else {
-                        nonConst += expandedConfig
-                        nonConstConfigCount += 1
-                    }
-                }
-                if (const.isNotEmpty()) {
-                    expandedForConst[unionName] = const
-                    coundForConst.put(unionName, constConfigCount)
-                }
-                if (nonConst.isNotEmpty()) {
-                    val nonConstSorted = nonConst.sortedByPriority({ it.configExpression }, { configGroup })
-                    expandedForNonConst[unionName] = ObjectArrayList(nonConstSorted)
-                    countForNonConst.put(unionName, nonConstConfigCount)
-                }
             }
         }
     }

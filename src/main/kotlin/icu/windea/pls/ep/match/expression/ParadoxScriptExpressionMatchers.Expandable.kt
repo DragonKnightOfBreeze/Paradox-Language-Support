@@ -18,10 +18,10 @@ abstract class ParadoxExpandableScriptExpressionMatcher : ParadoxScriptExpressio
             val unionName = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // null -> unexpected
             // NOTE 3.0.1 recursion guard is required here
             // NOTE 3.0.3 use first actually matched match result atm, event if there are multiple match results before processing
-            val guardName = "csvExpression.match.union"
+            val guardName = "scriptExpression.match.union"
             val expanded = ParadoxConfigExpansionService.expandAndMatchUnion(context.element, context.expression, unionName, context.configGroup, context.options, guardName = guardName)
-            val result = expanded.firstNotNullOrOrNull { _, mr -> if (mr.get(context.options)) mr else null }
-            return result ?: ParadoxMatchResult.NotMatch
+            val matchResult = expanded.firstNotNullOrOrNull { _, mr -> if (mr.get(context.options)) mr else null }
+            return matchResult ?: ParadoxMatchResult.NotMatch
         }
     }
 
@@ -35,10 +35,10 @@ abstract class ParadoxExpandableScriptExpressionMatcher : ParadoxScriptExpressio
             val aliasName = configExpression.metadata.value ?: return ParadoxMatchResult.NotMatch // null -> unexpected
             // NOTE 3.0.3 recursion guard is required here
             // NOTE 3.0.3 use first actually matched match result atm, event if there are multiple match results before processing
-            val guardName = "csvExpression.match.union"
+            val guardName = "scriptExpression.match.union"
             val expanded = ParadoxConfigExpansionService.expandAndMatchAlias(context.element, context.expression, aliasName, context.configGroup, context.options, guardName = guardName)
-            val result = expanded.firstNotNullOrOrNull { _, mr -> if (mr.get(context.options)) mr else null }
-            return result ?: ParadoxMatchResult.NotMatch
+            val matchResult = expanded.firstNotNullOrOrNull { _, mr -> if (mr.get(context.options)) mr else null }
+            return matchResult ?: ParadoxMatchResult.NotMatch
         }
     }
 

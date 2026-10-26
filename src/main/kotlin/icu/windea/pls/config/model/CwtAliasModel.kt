@@ -14,6 +14,8 @@ import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet
  * 用于保存和获取符合特定条件的别名规则的名字和键。
  */
 interface CwtAliasModel {
+    /** 名字到展开后的所有别名规则的映射。按原始声明顺序排列。 */
+    val expanded: Map<String, List<CwtExpandedAliasConfig>>
     /** 名字到展开后的一组常量型的别名规则的映射。 */
     val expandedForConst: Map<String, Map<@CaseInsensitive String, CwtExpandedAliasConfig>>
     /** 名字到展开后的一组常量型以外的别名规则的映射。按数据类型的优先级排序。 */
@@ -37,6 +39,7 @@ interface CwtAliasModel {
 // region Implementations
 
 class CwtAliasModelBase : CwtAliasModel {
+    override val expanded = Object2ObjectLinkedOpenHashMap<String, ObjectArrayList<CwtExpandedAliasConfig>>()
     override val expandedForConst = Object2ObjectLinkedOpenHashMap<String, Object2ObjectLinkedOpenCustomHashMap<@CaseInsensitive String, CwtExpandedAliasConfig>>()
     override val expandedForNonConst = Object2ObjectLinkedOpenHashMap<String, ObjectArrayList<CwtExpandedAliasConfig>>()
     override val countForConst = Object2IntOpenHashMap<String>()
@@ -44,15 +47,20 @@ class CwtAliasModelBase : CwtAliasModel {
     override val supportScope = ObjectLinkedOpenHashSet<String>()
 
     fun trim() {
+        expanded.trim()
+        expanded.values.forEach { it.trim() }
         expandedForConst.trim()
         expandedForConst.values.forEach { it.trim() }
         expandedForNonConst.trim()
         expandedForNonConst.values.forEach { it.trim() }
+        countForConst.trim()
+        countForNonConst.trim()
         supportScope.trim()
     }
 }
 
 private object EmptyCwtAliasModel : CwtAliasModel {
+    override val expanded: Map<String, List<CwtExpandedAliasConfig>> get() = emptyMap()
     override val expandedForConst: Map<String, Map<@CaseInsensitive String, CwtExpandedAliasConfig>> get() = emptyMap()
     override val expandedForNonConst: Map<String, List<CwtExpandedAliasConfig>> get() = emptyMap()
     override val countForConst: Map<String, Int> get() = emptyMap()

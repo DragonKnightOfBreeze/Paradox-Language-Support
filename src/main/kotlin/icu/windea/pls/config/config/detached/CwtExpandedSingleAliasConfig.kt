@@ -8,10 +8,10 @@ import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.manipulation.CwtConfigExpansionService
 
 /**
- * 展开后的单别名规则。
+ * 展开后的作为候选项的单别名规则。
  *
- * @property configExpression 这组候选项对应的数据表达式。
- * @property config 这组候选项对应的唯一一个规则。
+ * @property configExpression 对应的数据表达式。
+ * @property config 对应的唯一一个规则。
  *
  * @see CwtSingleAliasConfig
  * @see CwtConfigExpansionService.expandSingleAlias

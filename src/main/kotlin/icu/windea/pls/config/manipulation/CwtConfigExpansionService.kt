@@ -46,7 +46,6 @@ object CwtConfigExpansionService {
 
     context(processor: (CwtMemberConfig<*>, String) -> Boolean)
     private fun expandBySubtypeExpressionWith(config: CwtMemberConfig<*>, currentExpression: String): Boolean {
-        // NOTE 3.0.1 use processor pattern (instead of direct sequence builder) to optimize performance
         config.configs?.orNull()?.forEachFast { childConfig ->
             val nextExpression = CwtConfigManipulationService.extractSubtypeExpression(childConfig)
             if (nextExpression != null) {
@@ -120,18 +119,15 @@ object CwtConfigExpansionService {
         if (name.isNullOrEmpty()) return PushStream.of()
         return PushStream.from {
             runWithRecursionGuard(guardName, "u:$name") {
-                val model = configGroup.unionModel
-                val consts = model.expandedForConst[name]
-                if (consts != null) {
-                    for (config in consts.values) if (!invoke(config)) return@runWithRecursionGuard false
-                }
-                val nonConsts = model.expandedForNonConst[name]
-                if (nonConsts != null) {
-                    for (config in nonConsts) if (!invoke(config)) return@runWithRecursionGuard false
-                }
-                true
+                expandUnionWith(configGroup, name)
             }
         }
+    }
+
+    context(processor: (CwtExpandedUnionConfig) -> Boolean)
+    private fun expandUnionWith(configGroup: CwtConfigGroup, name: String): Boolean {
+        val candidates = configGroup.unionModel.expanded[name] ?: return true
+        return candidates.processFast { candidate -> processor(candidate) }
     }
 
     /**
@@ -147,18 +143,15 @@ object CwtConfigExpansionService {
         if (name.isNullOrEmpty()) return PushStream.of()
         return PushStream.from {
             runWithRecursionGuard(guardName, "a:$name") {
-                val model = configGroup.aliasModel
-                val consts = model.expandedForConst[name]
-                if (consts != null) {
-                    for (config in consts.values) if (!invoke(config)) return@runWithRecursionGuard false
-                }
-                val nonConsts = model.expandedForNonConst[name]
-                if (nonConsts != null) {
-                    for (config in nonConsts) if (!invoke(config)) return@runWithRecursionGuard false
-                }
-                true
+                expandAliasWith(configGroup, name)
             }
         }
+    }
+
+    context(processor: (CwtExpandedAliasConfig) -> Boolean)
+    private fun expandAliasWith(configGroup: CwtConfigGroup, name: String): Boolean {
+        val candidates = configGroup.aliasModel.expanded[name] ?: return true
+        return candidates.processFast { candidate -> processor(candidate) }
     }
 
     /**
@@ -171,10 +164,15 @@ object CwtConfigExpansionService {
         if (name.isNullOrEmpty()) return PushStream.of()
         return PushStream.from {
             runWithRecursionGuard(guardName, "sa:$name") {
-                val config = configGroup.singleAliasModel.expanded[name] ?: return@runWithRecursionGuard true
-                invoke(config)
+                expandSingleAliasWith(configGroup, name)
             }
         }
+    }
+
+    context(processor: (CwtExpandedSingleAliasConfig) -> Boolean)
+    private fun expandSingleAliasWith(configGroup: CwtConfigGroup, name: String): Boolean {
+        val candidate = configGroup.singleAliasModel.expanded[name] ?: return true
+        return processor(candidate)
     }
 
     /**

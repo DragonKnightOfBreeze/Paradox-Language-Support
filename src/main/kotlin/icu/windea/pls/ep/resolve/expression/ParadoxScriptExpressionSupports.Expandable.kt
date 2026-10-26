@@ -10,7 +10,6 @@ import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.manipulation.CwtConfigExpansionService
-import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
 import icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService
@@ -36,8 +35,9 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val guardName = "scriptExpression.annotate.union"
             val expanded = ParadoxConfigExpansionService.expandAndMatchUnion(element, expression, unionName, configGroup, guardName = guardName)
-            val matched = expanded.filter { _, mr -> mr.get() }
-            return matched.any { r, _ -> ParadoxExpressionService.annotateScriptExpression(element, text, rangeInExpression, r.config, holder) }
+            return expanded.filter { _, mr -> mr.get() }.any { r, _ ->
+                ParadoxExpressionService.annotateScriptExpression(element, text, rangeInExpression, r.config, holder)
+            }
         }
 
         override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -49,9 +49,8 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val guardName = "scriptExpression.resolve.union"
             val expanded = ParadoxConfigExpansionService.expandAndMatchUnion(element, expression, unionName, configGroup, guardName = guardName)
-            val matched = expanded.filter { _, mr -> mr.get() }
-            val result = matched.firstNotNullOrOrNull { r, _ -> ParadoxExpressionService.resolveScriptExpression(element, text, rangeInExpression, r.config, role) }
-            return result
+            val matched = expanded.firstNotNullOrOrNull { m, mr -> if (mr.get()) m else null } ?: return null
+            return ParadoxExpressionService.resolveScriptExpression(element, text, rangeInExpression, matched.config, role)
         }
 
         override fun resolveAll(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
@@ -62,9 +61,8 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             // NOTE 3.0.1 recursion guard is required here
             val guardName = "scriptExpression.resolveAll.union"
             val expanded = ParadoxConfigExpansionService.expandAndMatchUnion(element, expression, unionName, configGroup, guardName = guardName)
-            val matched = expanded.filter { _, mr -> mr.get() }
-            val result = matched.firstNotNullOrOrNull { r, _ -> ParadoxExpressionService.resolveAllScriptExpression(element, text, rangeInExpression, r.config, role).orNull() }
-            return result.orEmpty()
+            val matched = expanded.firstNotNullOrOrNull { m, mr -> if (mr.get()) m else null } ?: return emptyList()
+            return ParadoxExpressionService.resolveAllScriptExpression(element, text, rangeInExpression, matched.config, role)
         }
 
         override fun getReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
@@ -77,10 +75,8 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val guardName = "scriptExpression.getReferences.union"
             val expanded = ParadoxConfigExpansionService.expandAndMatchUnion(element, expression, unionName, configGroup, guardName = guardName)
-            val matched = expanded.filter { _, mr -> mr.get() }
-            val result = matched.firstNotNullOrOrNull { r, _ -> r.config }
-            if (result == null) return emptyList()
-            return ParadoxExpressionService.getScriptExpressionReferences(element, text, rangeInExpression, result, role)
+            val matched = expanded.firstNotNullOrOrNull { m, mr -> if (mr.get()) m else null } ?: return emptyList()
+            return ParadoxExpressionService.getScriptExpressionReferences(element, text, rangeInExpression, matched.config, role)
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -91,7 +87,7 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             val guardName = "scriptExpression.complete"
             val expanded = CwtConfigExpansionService.expandUnion(configExpression, configGroup, guardName = guardName)
             expanded.forEach { r ->
-                val context = context.copy(config = r.config, configs = r.configs)
+                val context = context.copy(config = r.config, configs = setOf(r.config))
                 ParadoxExpressionCompletionManager.completeScriptExpression(context, result)
             }
         }
@@ -117,10 +113,9 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val guardName = "scriptExpression.annotate.alias"
             val expanded = ParadoxConfigExpansionService.expandAndMatchAlias(element, expression, aliasName, configGroup, guardName = guardName)
-            val result = expanded.filter { _, mr -> mr.get() }.any { r, _ ->
+            return expanded.filter { _, mr -> mr.get() }.any { r, _ ->
                 ParadoxExpressionService.annotateScriptExpression(element, text, rangeInExpression, r.config, holder)
             }
-            return result
         }
 
         override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
@@ -131,10 +126,8 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             // NOTE 3.0.1 recursion guard is required here
             val guardName = "scriptExpression.resolve.alias"
             val expanded = ParadoxConfigExpansionService.expandAndMatchAlias(element, expression, aliasName, configGroup, guardName = guardName)
-            val result = expanded.filter { _, mr -> mr.get() }.firstNotNullOrOrNull { r, _ ->
-                ParadoxExpressionService.resolveScriptExpression(element, text, rangeInExpression, r.config, role)
-            }
-            return result
+            val matched = expanded.firstNotNullOrOrNull { m, mr -> if (mr.get()) m else null } ?: return null
+            return ParadoxExpressionService.resolveScriptExpression(element, text, rangeInExpression, matched.config, role)
         }
 
         override fun resolveAll(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
@@ -145,10 +138,8 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             // NOTE 3.0.1 recursion guard is required here
             val guardName = "scriptExpression.resolveAll.alias"
             val expanded = ParadoxConfigExpansionService.expandAndMatchAlias(element, expression, aliasName, configGroup, guardName = guardName)
-            val result = expanded.filter { _, mr -> mr.get() }.firstNotNullOrOrNull { r, _ ->
-                ParadoxExpressionService.resolveAllScriptExpression(element, text, rangeInExpression, r.config, role).orNull()
-            }
-            return result.orEmpty()
+            val matched = expanded.firstNotNullOrOrNull { m, mr -> if (mr.get()) m else null } ?: return emptyList()
+            return ParadoxExpressionService.resolveAllScriptExpression(element, text, rangeInExpression, matched.config, role)
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

@@ -9,7 +9,6 @@ import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.manipulation.CwtConfigExpansionService
-import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.csv.psi.ParadoxCsvExpressionElement
 import icu.windea.pls.lang.codeInsight.completion.ParadoxCompletionContext
 import icu.windea.pls.lang.codeInsight.completion.ParadoxExpressionCompletionManager
@@ -35,10 +34,9 @@ abstract class ParadoxExpandableCsvExpressionSupport : ParadoxCsvExpressionSuppo
             // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val guardName = "csvExpression.annotate.union"
             val expanded = ParadoxConfigExpansionService.expandAndMatchUnion(element, expression, unionName, configGroup, guardName = guardName)
-            val result = expanded.filter { _, mr -> mr.get() }.any { r, _ ->
-                ParadoxExpressionService.annotateScriptExpression(element, text, rangeInExpression, r.config, holder)
+            return expanded.filter { _, mr -> mr.get() }.any { r, _ ->
+                ParadoxExpressionService.annotateCsvExpression(element, text, rangeInExpression, r.config, holder)
             }
-            return result
         }
 
         override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
@@ -50,10 +48,8 @@ abstract class ParadoxExpandableCsvExpressionSupport : ParadoxCsvExpressionSuppo
             // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
             val guardName = "csvExpression.resolve.union"
             val expanded = ParadoxConfigExpansionService.expandAndMatchUnion(element, expression, unionName, configGroup, guardName = guardName)
-            val result = expanded.filter { _, mr -> mr.get() }.firstNotNullOrOrNull { r, _ ->
-                ParadoxExpressionService.resolveCsvExpression(element, text, rangeInExpression, r.config)
-            }
-            return result
+            val matched = expanded.firstNotNullOrOrNull { m, mr -> if (mr.get()) m else null } ?: return null
+            return ParadoxExpressionService.resolveCsvExpression(element, text, rangeInExpression, matched.config)
         }
 
         override fun resolveAll(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): List<PsiElement> {
@@ -64,10 +60,8 @@ abstract class ParadoxExpandableCsvExpressionSupport : ParadoxCsvExpressionSuppo
             // NOTE 3.0.1 recursion guard is required here
             val guardName = "csvExpression.resolveAll.union"
             val expanded = ParadoxConfigExpansionService.expandAndMatchUnion(element, expression, unionName, configGroup, guardName = guardName)
-            val result = expanded.filter { _, mr -> mr.get() }.firstNotNullOrOrNull { r, _ ->
-                ParadoxExpressionService.resolveAllCsvExpression(element, text, rangeInExpression, r.config).orNull()
-            }
-            return result.orEmpty()
+            val matched = expanded.firstNotNullOrOrNull { m, mr -> if (mr.get()) m else null } ?: return emptyList()
+            return ParadoxExpressionService.resolveAllCsvExpression(element, text, rangeInExpression, matched.config)
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -78,7 +72,7 @@ abstract class ParadoxExpandableCsvExpressionSupport : ParadoxCsvExpressionSuppo
             val guardName = "csvExpression.complete"
             val expanded = CwtConfigExpansionService.expandUnion(configExpression, configGroup, guardName = guardName)
             expanded.forEach { r ->
-                val context = context.copy(config = r.config, configs = r.configs)
+                val context = context.copy(config = r.config, configs = setOf(r.config))
                 ParadoxExpressionCompletionManager.completeCsvExpression(context, result)
             }
         }

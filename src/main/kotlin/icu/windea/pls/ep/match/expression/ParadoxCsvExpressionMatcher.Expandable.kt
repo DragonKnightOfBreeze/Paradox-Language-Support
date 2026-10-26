@@ -18,8 +18,8 @@ abstract class ParadoxExpandableCsvExpressionMatcher : ParadoxCsvExpressionMatch
             // NOTE 3.0.3 use first actually matched match result atm, event if there are multiple match results before processing
             val guardName = "csvExpression.match.union"
             val expanded = ParadoxConfigExpansionService.expandAndMatchUnion(context.element, context.expression, unionName, context.configGroup, context.options, guardName = guardName)
-            val result = expanded.firstNotNullOrOrNull { _, mr -> if (mr.get(context.options)) mr else null }
-            return result ?: ParadoxMatchResult.NotMatch
+            val matchResult = expanded.firstNotNullOrOrNull { _, mr -> if (mr.get(context.options)) mr else null }
+            return matchResult ?: ParadoxMatchResult.NotMatch
         }
     }
 }

@@ -186,12 +186,12 @@ interface CwtConfigGroupDataModel {
     val linkModel: CwtLinkModel
     /** 获取符合特定条件的本地化的链接规则。 */
     val localisationLinkModel: CwtLinkModel
+    /** 获取符合特定条件的并集规则的名字和键。 */
+    val unionModel: CwtUnionModel
     /** 获取符合特定条件的别名规则的名字和键。 */
     val aliasModel: CwtAliasModel
     /** 获取展开后的单别名规则。 */
     val singleAliasModel: CwtSingleAliasModel
-    /** 获取符合特定条件的并集规则的名字和键。 */
-    val unionModel: CwtUnionModel
     /** 获取符合特定条件的宏规则。 */
     val macroModel: CwtMacroModel
 
@@ -271,9 +271,9 @@ class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
     override val scopeModel = CwtScopeModel.create()
     override val linkModel = CwtLinkModel.create()
     override val localisationLinkModel = CwtLinkModel.create()
+    override val unionModel = CwtUnionModel.create()
     override val aliasModel = CwtAliasModel.create()
     override val singleAliasModel = CwtSingleAliasModel.create()
-    override val unionModel = CwtUnionModel.create()
     override val macroModel = CwtMacroModel.create()
     override val attributes = CwtConfigGroupAttributesBase()
     val unionAttributes = Object2ObjectLinkedOpenHashMap<String, CwtExpandableConfigAttributes>()
@@ -362,9 +362,9 @@ class CwtConfigGroupDataModelBase : CwtConfigGroupDataModel {
         scopeModel.trim()
         linkModel.trim()
         localisationLinkModel.trim()
+        unionModel.trim()
         aliasModel.trim()
         singleAliasModel.trim()
-        unionModel.trim()
         macroModel.trim()
 
         attributes.trim()
@@ -424,9 +424,9 @@ private object EmptyCwtConfigGroupDataModel : CwtConfigGroupDataModel {
     override val scopeModel: CwtScopeModel get() = CwtScopeModel.createEmpty()
     override val linkModel: CwtLinkModel get() = CwtLinkModel.createEmpty()
     override val localisationLinkModel: CwtLinkModel get() = CwtLinkModel.createEmpty()
+    override val unionModel: CwtUnionModel get() = CwtUnionModel.createEmpty()
     override val aliasModel: CwtAliasModel get() = CwtAliasModel.createEmpty()
     override val singleAliasModel: CwtSingleAliasModel get() = CwtSingleAliasModel.createEmpty()
-    override val unionModel: CwtUnionModel get() = CwtUnionModel.createEmpty()
     override val macroModel: CwtMacroModel get() = CwtMacroModel.createEmpty()
 
     override val attributes: CwtConfigGroupAttributes get() = CwtConfigGroupAttributes.EMPTY
