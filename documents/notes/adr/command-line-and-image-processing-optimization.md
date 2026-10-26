@@ -37,6 +37,7 @@
 - 基于外部检查工具的代码检查（`ChronicleTigerLintInspection`） - 需要考虑进行取消检查
 - GIT 命令相关（`ChronicleGitService`）
 - 特殊路径相关（`SpecialPathService`）
+- 图片预览（在编辑器中打开 DDS/TGA 图片）
 
 ### 堆栈分析
 
@@ -147,6 +148,8 @@ com.intellij.diagnostic.Freeze
 
 内嵌提示的刷新逻辑位于 EDT 中，而在 EDT 中进行取消检查是没有意义的。
 因此需要考虑异步操作（异步加载、异步刷新、批量、防抖），而这又会到来额外的复杂性。
+
+### 任务计划
 
 ## 任务
 
