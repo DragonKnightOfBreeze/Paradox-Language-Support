@@ -136,12 +136,26 @@ value class BiPushStream<out T1, out T2>(val dispatch: ((T1, T2) -> Boolean) -> 
         }
     }
 
+    inline fun <R : Any> mapNotNull(crossinline transform: (T1, T2) -> R?): PushStream<R> {
+        return PushStream { downstream ->
+            dispatch { e1, e2 ->
+                val r = transform(e1, e2)
+                if (r != null) downstream(r) else true
+            }
+        }
+    }
+
     inline fun filter(crossinline predicate: (T1, T2) -> Boolean): BiPushStream<T1, T2> {
         return BiPushStream { downstream ->
             dispatch { e1, e2 ->
                 if (predicate(e1, e2)) downstream(e1, e2) else true
             }
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun filterNotNull(): BiPushStream<T1 & Any, T2 & Any> {
+        return filter { e1, e2 -> e1 != null && e2 != null } as BiPushStream<T1 & Any, T2 & Any>
     }
 
     fun take(count: Int): BiPushStream<T1, T2> {
@@ -179,6 +193,35 @@ value class BiPushStream<out T1, out T2>(val dispatch: ((T1, T2) -> Boolean) -> 
         fun <T1, T2> of(): BiPushStream<T1, T2> {
             @Suppress("UNCHECKED_CAST")
             return EMPTY as BiPushStream<T1, T2>
+        }
+
+        @JvmStatic
+        fun <T1, T2> of(vararg elements: Pair<T1, T2>): BiPushStream<T1, T2> {
+            if (elements.isEmpty()) {
+                @Suppress("UNCHECKED_CAST")
+                return EMPTY as BiPushStream<T1, T2>
+            }
+            return from { for ((e1, e2) in elements) if (!invoke(e1, e2)) break }
+        }
+
+        @JvmStatic
+        fun <T1, T2> of(source: Iterable<Pair<T1, T2>>): BiPushStream<T1, T2> {
+            return from { for ((e1, e2) in source) if (!invoke(e1, e2)) break }
+        }
+
+        @JvmStatic
+        fun <T1, T2> of(source: Iterator<Pair<T1, T2>>): BiPushStream<T1, T2> {
+            return from {
+                while (source.hasNext()) {
+                    val (e1, e2) = source.next()
+                    if (!invoke(e1, e2)) break
+                }
+            }
+        }
+
+        @JvmStatic
+        fun <T1, T2> of(source: Sequence<Pair<T1, T2>>): BiPushStream<T1, T2> {
+            return from { for ((e1, e2) in source) if (!invoke(e1, e2)) break }
         }
 
         @JvmStatic

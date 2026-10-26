@@ -53,6 +53,89 @@ class PushStreamTest {
 
     // endregion
 
+    // region of overloads
+
+    @Test
+    fun of_vararg_test() {
+        val result = PushStream.of(SoulsTestData.solaire, SoulsTestData.siegmeyer, SoulsTestData.anri).toList()
+        Assert.assertEquals(listOf(SoulsTestData.solaire, SoulsTestData.siegmeyer, SoulsTestData.anri), result)
+    }
+
+    @Test
+    fun of_vararg_empty_test() {
+        val result = PushStream.of(*emptyArray<SoulsCharacter>()).toList()
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun of_iterable_test() {
+        val result = PushStream.of(SoulsTestData.soulsBosses).toList()
+        Assert.assertEquals(SoulsTestData.soulsBosses, result)
+    }
+
+    @Test
+    fun of_iterable_empty_test() {
+        val result = PushStream.of(emptyList<SoulsCharacter>()).toList()
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun of_iterator_test() {
+        val result = PushStream.of(SoulsTestData.soulsWeapons.iterator()).toList()
+        Assert.assertEquals(SoulsTestData.soulsWeapons, result)
+    }
+
+    @Test
+    fun of_iterator_empty_test() {
+        val result = PushStream.of(emptyList<SoulsWeapon>().iterator()).toList()
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun of_iterator_respectsShortCircuit_test() {
+        var nextCount = 0
+        val delegate = SoulsTestData.soulsBosses.iterator()
+        val iterator = object : Iterator<SoulsCharacter> {
+            override fun hasNext() = delegate.hasNext()
+
+            override fun next(): SoulsCharacter {
+                nextCount++
+                return delegate.next()
+            }
+        }
+        val result = PushStream.of(iterator).take(2).toList()
+        Assert.assertEquals(SoulsTestData.soulsBosses.take(2), result)
+        Assert.assertEquals(2, nextCount)
+    }
+
+    @Test
+    fun of_sequence_test() {
+        val result = PushStream.of(SoulsTestData.soulsSpells.asSequence()).toList()
+        Assert.assertEquals(SoulsTestData.soulsSpells, result)
+    }
+
+    @Test
+    fun of_sequence_empty_test() {
+        val result = PushStream.of(emptySequence<SoulsSpell>()).toList()
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun of_sequence_isLazy_test() {
+        var produced = 0
+        val sequence = sequence {
+            for (boss in SoulsTestData.soulsBosses) {
+                produced++
+                yield(boss)
+            }
+        }
+        val result = PushStream.of(sequence).take(2).toList()
+        Assert.assertEquals(SoulsTestData.soulsBosses.take(2), result)
+        Assert.assertEquals(2, produced)
+    }
+
+    // endregion
+
     // region forEach
 
     @Test
@@ -294,6 +377,75 @@ class PushStreamTest {
 
     // endregion
 
+    // region mapNotNull
+
+    @Test
+    fun mapNotNull_transformAndFilter_test() {
+        val expected = SoulsTestData.soulsWeapons
+            .filter { it.category == SoulsWeaponCategory.Katana }
+            .map { it.name }
+        val result = SoulsTestData.soulsWeapons.toPushStream().mapNotNull { weapon ->
+            weapon.name.takeIf { weapon.category == SoulsWeaponCategory.Katana }
+        }.toList()
+        Assert.assertEquals(expected, result)
+    }
+
+    @Test
+    fun mapNotNull_allNull_returnsEmpty_test() {
+        val result = SoulsTestData.soulsSpells.toPushStream().mapNotNull { _ ->
+            null as String?
+        }.toList()
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun mapNotNull_emptyStream_test() {
+        val result = PushStream.of<SoulsWeapon>().mapNotNull { weapon -> weapon.name }.toList()
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun mapNotNull_isLazy_test() {
+        var transformed = 0
+        val target = SoulsTestData.zweihander
+        val result = SoulsTestData.soulsWeapons.toPushStream()
+            .mapNotNull { weapon ->
+                transformed++
+                weapon.name.takeIf { weapon == target }
+            }
+            .take(1)
+            .toList()
+        Assert.assertEquals(listOf(target.name), result)
+        Assert.assertEquals(2, transformed)
+    }
+
+    @Test
+    fun mapNotNull_stopsWhenDownstreamStops_test() {
+        var transformed = 0
+        val result = SoulsTestData.soulsWeapons.toPushStream()
+            .mapNotNull { weapon ->
+                transformed++
+                weapon.name.takeIf { weapon.category == SoulsWeaponCategory.Katana }
+            }
+            .firstOrNull()
+        Assert.assertEquals(SoulsTestData.soulsWeapons.first { it.category == SoulsWeaponCategory.Katana }.name, result)
+        Assert.assertEquals(3, transformed)
+    }
+
+    @Test
+    fun mapNotNull_afterMap_test() {
+        val expected = SoulsTestData.soulsSpells
+            .filter { it.category == SoulsSpellCategory.Sorcery }
+            .map { it.name }
+        val result = SoulsTestData.soulsSpells.toPushStream()
+            .map { spell -> spell.category to spell.name }
+            .mapNotNull { (category, name) -> name.takeIf { category == SoulsSpellCategory.Sorcery } }
+            .toList()
+        Assert.assertEquals(expected, result)
+    }
+
+    // endregion
+
     // region filter
 
     @Test
@@ -322,6 +474,67 @@ class PushStreamTest {
     @Test
     fun filter_emptyStream_test() {
         Assert.assertTrue(PushStream.of<SoulsSpell>().filter { it.category == SoulsSpellCategory.Hex }.toList().isEmpty())
+    }
+
+    // endregion
+
+    // region filterNotNull
+
+    @Test
+    fun filterNotNull_keepsNonNullInOrder_test() {
+        val result = listOf(2, null, 1, null, 3).toPushStream().filterNotNull().toList()
+        Assert.assertEquals(listOf(2, 1, 3), result)
+    }
+
+    @Test
+    fun filterNotNull_allNull_returnsEmpty_test() {
+        val result = listOf<Int?>(null, null, null).toPushStream().filterNotNull().toList()
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun filterNotNull_emptyStream_test() {
+        val result = PushStream.of<Int?>().filterNotNull().toList()
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun filterNotNull_isLazy_test() {
+        var visited = 0
+        val source = PushStream.from {
+            for (e in listOf(null, 2, 3, null)) {
+                visited++
+                if (!invoke(e)) break
+            }
+        }
+        val result = source.filterNotNull().take(1).toList()
+        Assert.assertEquals(listOf(2), result)
+        Assert.assertEquals(2, visited)
+    }
+
+    @Test
+    fun filterNotNull_stopsWhenDownstreamStops_test() {
+        var visited = 0
+        val source = PushStream.from {
+            for (e in listOf(null, null, 1, 2)) {
+                visited++
+                if (!invoke(e)) break
+            }
+        }
+        Assert.assertEquals(1, source.filterNotNull().firstOrNull())
+        Assert.assertEquals(3, visited)
+    }
+
+    @Test
+    fun filterNotNull_afterMap_test() {
+        val expected = SoulsTestData.soulsSpells
+            .filter { it.category == SoulsSpellCategory.Miracle }
+            .map { it.name }
+        val result = SoulsTestData.soulsSpells.toPushStream()
+            .map { spell -> spell.name.takeIf { spell.category == SoulsSpellCategory.Miracle } }
+            .filterNotNull()
+            .toList()
+        Assert.assertEquals(expected, result)
     }
 
     // endregion

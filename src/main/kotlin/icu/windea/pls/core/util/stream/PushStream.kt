@@ -136,12 +136,26 @@ value class PushStream<out T>(val dispatch: ((T) -> Boolean) -> Unit) {
         }
     }
 
+    inline fun <R : Any> mapNotNull(crossinline transform: (T) -> R?): PushStream<R> {
+        return PushStream { downstream ->
+            dispatch { e ->
+                val r = transform(e)
+                if (r != null) downstream(r) else true
+            }
+        }
+    }
+
     inline fun filter(crossinline predicate: (T) -> Boolean): PushStream<T> {
         return PushStream { downstream ->
             dispatch { e ->
                 if (predicate(e)) downstream(e) else true
             }
         }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun filterNotNull(): PushStream<T & Any> {
+        return filter { it != null } as PushStream<T & Any>
     }
 
     fun take(count: Int): PushStream<T> {
@@ -179,6 +193,30 @@ value class PushStream<out T>(val dispatch: ((T) -> Boolean) -> Unit) {
         fun <T> of(): PushStream<T> {
             @Suppress("UNCHECKED_CAST")
             return EMPTY as PushStream<T>
+        }
+
+        @JvmStatic
+        fun <T> of(vararg elements: T): PushStream<T> {
+            if (elements.isEmpty()) {
+                @Suppress("UNCHECKED_CAST")
+                return EMPTY as PushStream<T>
+            }
+            return from { for (e in elements) if (!invoke(e)) break }
+        }
+
+        @JvmStatic
+        fun <T> of(source: Iterable<T>): PushStream<T> {
+            return from { for (e in source) if (!invoke(e)) break }
+        }
+
+        @JvmStatic
+        fun <T> of(source: Iterator<T>): PushStream<T> {
+            return from { while (source.hasNext()) if (!invoke(source.next())) break }
+        }
+
+        @JvmStatic
+        fun <T> of(source: Sequence<T>): PushStream<T> {
+            return from { for (e in source) if (!invoke(e)) break }
         }
 
         @JvmStatic

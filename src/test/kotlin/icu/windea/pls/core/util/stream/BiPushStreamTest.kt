@@ -57,6 +57,95 @@ class BiPushStreamTest {
 
     // endregion
 
+    // region of overloads
+
+    @Test
+    fun of_vararg_test() {
+        val pairs = SoulsTestData.soulsWeapons.take(3).map { it.category to it }
+        val result = BiPushStream.of(pairs[0], pairs[1], pairs[2]).toList()
+        Assert.assertEquals(pairs, result)
+    }
+
+    @Test
+    fun of_vararg_empty_test() {
+        val result = BiPushStream.of(*emptyArray<Pair<Int, String>>()).toList()
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun of_iterable_test() {
+        val pairs = SoulsTestData.soulsBosses.map { it.game to it }
+        val result = BiPushStream.of(pairs).toList()
+        Assert.assertEquals(pairs, result)
+    }
+
+    @Test
+    fun of_iterable_empty_test() {
+        val result = BiPushStream.of(emptyList<Pair<Int, String>>()).toList()
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun of_iterator_test() {
+        val pairs = SoulsTestData.soulsSpells.map { it.category to it }
+        val result = BiPushStream.of(pairs.iterator()).toList()
+        Assert.assertEquals(pairs, result)
+    }
+
+    @Test
+    fun of_iterator_empty_test() {
+        val result = BiPushStream.of(emptyList<Pair<Int, String>>().iterator()).toList()
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun of_iterator_respectsShortCircuit_test() {
+        var nextCount = 0
+        val pairs = SoulsTestData.soulsWeapons.map { it.category to it }
+        val delegate = pairs.iterator()
+        val iterator = object : Iterator<Pair<SoulsWeaponCategory, SoulsWeapon>> {
+            override fun hasNext() = delegate.hasNext()
+
+            override fun next(): Pair<SoulsWeaponCategory, SoulsWeapon> {
+                nextCount++
+                return delegate.next()
+            }
+        }
+        val result = BiPushStream.of(iterator).take(2).toList()
+        Assert.assertEquals(pairs.take(2), result)
+        Assert.assertEquals(2, nextCount)
+    }
+
+    @Test
+    fun of_sequence_test() {
+        val pairs = SoulsTestData.soulsCharacters.map { it.kind to it }
+        val result = BiPushStream.of(pairs.asSequence()).toList()
+        Assert.assertEquals(pairs, result)
+    }
+
+    @Test
+    fun of_sequence_empty_test() {
+        val result = BiPushStream.of(emptySequence<Pair<Int, String>>()).toList()
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun of_sequence_isLazy_test() {
+        var produced = 0
+        val pairs = SoulsTestData.soulsBosses.map { it.game to it }
+        val sequence = sequence {
+            for (pair in pairs) {
+                produced++
+                yield(pair)
+            }
+        }
+        val result = BiPushStream.of(sequence).take(2).toList()
+        Assert.assertEquals(pairs.take(2), result)
+        Assert.assertEquals(2, produced)
+    }
+
+    // endregion
+
     // region forEach
 
     @Test
@@ -319,6 +408,67 @@ class BiPushStreamTest {
 
     // endregion
 
+    // region mapNotNull
+
+    @Test
+    fun mapNotNull_transformAndFilter_test() {
+        val pairs = SoulsTestData.soulsWeapons.map { it.category to it }
+        val expected = pairs
+            .filter { (category, _) -> category == SoulsWeaponCategory.Katana }
+            .map { (_, weapon) -> weapon.name }
+        val result = pairs.toBiPushStream().mapNotNull { category, weapon ->
+            weapon.name.takeIf { category == SoulsWeaponCategory.Katana }
+        }.toList()
+        Assert.assertEquals(expected, result)
+    }
+
+    @Test
+    fun mapNotNull_allNull_returnsEmpty_test() {
+        val pairs = SoulsTestData.soulsSpells.map { it.category to it }
+        val result = pairs.toBiPushStream().mapNotNull { _, _ ->
+            null as String?
+        }.toList()
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun mapNotNull_emptyStream_test() {
+        val result = BiPushStream.of<SoulsWeaponCategory, SoulsWeapon>().mapNotNull { _, weapon -> weapon.name }.toList()
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun mapNotNull_isLazy_test() {
+        val pairs = SoulsTestData.soulsWeapons.map { it.category to it }
+        var transformed = 0
+        val target = SoulsTestData.zweihander
+        val result = pairs.toBiPushStream()
+            .mapNotNull { _, weapon ->
+                transformed++
+                weapon.name.takeIf { weapon == target }
+            }
+            .take(1)
+            .toList()
+        Assert.assertEquals(listOf(target.name), result)
+        Assert.assertEquals(2, transformed)
+    }
+
+    @Test
+    fun mapNotNull_stopsWhenDownstreamStops_test() {
+        val pairs = SoulsTestData.soulsWeapons.map { it.category to it }
+        var transformed = 0
+        val result = pairs.toBiPushStream()
+            .mapNotNull { category, weapon ->
+                transformed++
+                weapon.name.takeIf { category == SoulsWeaponCategory.Katana }
+            }
+            .firstOrNull()
+        Assert.assertEquals(pairs.first { (category, _) -> category == SoulsWeaponCategory.Katana }.second.name, result)
+        Assert.assertEquals(3, transformed)
+    }
+
+    // endregion
+
     // region filter
 
     @Test
@@ -355,6 +505,65 @@ class BiPushStreamTest {
             .filter { category, _ -> category == SoulsSpellCategory.Hex }
             .toList()
         Assert.assertTrue(result.isEmpty())
+    }
+
+    // endregion
+
+    // region filterNotNull
+
+    @Test
+    fun filterNotNull_keepsNonNullPairsInOrder_test() {
+        val pairs = listOf(
+            SoulsTestData.solaire.name to 1,
+            null to 2,
+            SoulsTestData.siegmeyer.name to null,
+            null to null,
+            SoulsTestData.anri.name to 3,
+        )
+        val result = pairs.toBiPushStream().filterNotNull().toList()
+        Assert.assertEquals(listOf(SoulsTestData.solaire.name to 1, SoulsTestData.anri.name to 3), result)
+    }
+
+    @Test
+    fun filterNotNull_allNull_returnsEmpty_test() {
+        val pairs = listOf<Pair<String?, Int?>>(null to null, null to 2)
+        val result = pairs.toBiPushStream().filterNotNull().toList()
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun filterNotNull_emptyStream_test() {
+        val result = BiPushStream.of<String?, Int?>().filterNotNull().toList()
+        Assert.assertTrue(result.isEmpty())
+    }
+
+    @Test
+    fun filterNotNull_isLazy_test() {
+        val pairs = listOf(null to 1, null to null, SoulsTestData.anri.name to 3, SoulsTestData.gwyn.name to 4)
+        var visited = 0
+        val source = BiPushStream.from {
+            for ((e1, e2) in pairs) {
+                visited++
+                if (!invoke(e1, e2)) break
+            }
+        }
+        val result = source.filterNotNull().take(1).toList()
+        Assert.assertEquals(listOf(SoulsTestData.anri.name to 3), result)
+        Assert.assertEquals(3, visited)
+    }
+
+    @Test
+    fun filterNotNull_stopsWhenDownstreamStops_test() {
+        val pairs = listOf(null to 1, null to null, SoulsTestData.gwyn.name to 4)
+        var visited = 0
+        val source = BiPushStream.from {
+            for ((e1, e2) in pairs) {
+                visited++
+                if (!invoke(e1, e2)) break
+            }
+        }
+        Assert.assertEquals(SoulsTestData.gwyn.name to 4, source.filterNotNull().firstOrNull())
+        Assert.assertEquals(3, visited)
     }
 
     // endregion
