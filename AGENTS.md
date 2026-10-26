@@ -50,7 +50,7 @@ In addition to language features, the plugin also includes:
 - `src/test/testData/`: test data files (e.g., test-specific config files and script files).
 - `src/main/resources/META-INF/plugin.xml`: plugin entry (registrations are split into `META-INF/*.xml`).
 
-## Setup and build commands (Windows)
+## Setup and build commands
 
 This project uses **Gradle** and the **IntelliJ Platform Gradle Plugin**.
 
@@ -165,7 +165,7 @@ Package `icu.windea.pls.test.chronicle` hosts a family of "snapshot" tests drive
 - `ChronicleInspectionBasedSnapshotTest`: runs every bundled `LocalInspectionTool` (filtered to this plugin) over all files under `chronicle/` and asserts no warnings/errors are produced.
 - `ChronicleAnnotatedSnapshotTest`: renders script/CSV files via `ParadoxScriptTextAnnotatedRenderer` / `ParadoxCsvTextAnnotatedRenderer` and diffs the result against expected files under `chronicle/.annotated/**/*.annotated.*`.
 
-### Optional / on-demand tests (assume-based)
+### Optional tests (assume-based, on-demand running)
 
 Some tests are intentionally **disabled by default** and only run when explicitly enabled via system properties, gated through `icu.windea.pls.test.ChronicleAssume` (each method wraps `org.junit.Assume.assumeTrue(...)`, so a gated-out test is reported as *skipped*, not *failed*). Flags are read by `icu.windea.pls.ChronicleCapabilities.Test` from system properties:
 
@@ -351,12 +351,12 @@ Do not read the entire `documents/` directory at once, instead, read specific do
 - **AI-generated notes**: check `documents/ai-notes/` (archived as-is; see `adr.md`, `solutions.md`, `analysis.md`, `reports.md`, etc.).
 - **System design specs** (UI, colors, language abstractions): check `documents/design/` (see `documents/README.md`).
 
-## Agent instructions
+## Agent instructions (IMPORTANT)
 
 ### Communication
 
-- Communicate with the maintainer in Chinese or English, depends on what language is used in the conversation. **NOTE**: Chinese is usually used by the maintainer.
-- Write documents in Chinese or/and English, depending on the specific scenario. **NOTE**: Chinese is usually used for maintainer documents.
+- Communicate with the maintainer in Chinese or English, depends on what language is used in the conversation. Note Chinese is usually used by the maintainer.
+- Write documents in Chinese or/and English, depending on the specific scenario. Note Chinese is usually used for maintainer documents.
 - Write doc comments and normal comments in Chinese or English, depending on previous requirements, or based on the context.
 
 ### Markdown specifics
@@ -375,12 +375,12 @@ Do not read the entire `documents/` directory at once, instead, read specific do
 
 - Keep **conceptual consistency** during editing code, comments or documents, and even during thinking and discussing.
 - Follow the best practice for Kotlin programming and IntelliJ platform development.
-- Use available MCP server tools flexibly.
+- Use available MCP tools smartly and flexibly.
 - Keep changes minimal and localized.
 - Add and/or update tests when feasible.
 - Run inspections and/or tests before finishing.
 
-## Tooling preferences
+## Tooling preferences (IMPORTANT)
 
 ### General operations
 
@@ -393,8 +393,8 @@ Do not read the entire `documents/` directory at once, instead, read specific do
 
 ### IntelliJ MCP server
 
-When you need to **drive IDE actions**, prefer the built-in **intellij** MCP server tools when available.
+IMPORTANT: When applicable, prefer using built-in **intellij** MCP tools for IDE-driven actions and IDE-related actions.
 
 ### IDE Index MCP server
 
-When you need to **do code navigation, code refactoring, code inspections and so on**, prefer the **intellij-index** MCP server tools when available.
+IMPORTANT: When applicable, prefer using **intellij-index** MCP tools for code navigation, code refactoring, code inspections, etc.
