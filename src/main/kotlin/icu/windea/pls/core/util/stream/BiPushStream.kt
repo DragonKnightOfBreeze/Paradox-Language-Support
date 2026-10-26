@@ -34,7 +34,7 @@ import java.util.stream.Stream
  */
 @JvmInline
 value class BiPushStream<out T1, out T2>(val dispatch: ((T1, T2) -> Boolean) -> Unit) {
-    // Termination operation
+    // Termination operations
 
     inline fun forEach(crossinline action: (T1, T2) -> Unit) {
         dispatch { e1, e2 ->
@@ -153,8 +153,8 @@ value class BiPushStream<out T1, out T2>(val dispatch: ((T1, T2) -> Boolean) -> 
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun filterNotNull(): BiPushStream<T1 & Any, T2 & Any> {
+        @Suppress("UNCHECKED_CAST")
         return filter { e1, e2 -> e1 != null && e2 != null } as BiPushStream<T1 & Any, T2 & Any>
     }
 
@@ -197,26 +197,19 @@ value class BiPushStream<out T1, out T2>(val dispatch: ((T1, T2) -> Boolean) -> 
 
         @JvmStatic
         fun <T1, T2> of(vararg elements: Pair<T1, T2>): BiPushStream<T1, T2> {
-            if (elements.isEmpty()) {
-                @Suppress("UNCHECKED_CAST")
-                return EMPTY as BiPushStream<T1, T2>
-            }
+            if (elements.isEmpty()) return of()
             return from { for ((e1, e2) in elements) if (!invoke(e1, e2)) break }
         }
 
         @JvmStatic
-        fun <T1, T2> of(source: Iterable<Pair<T1, T2>>): BiPushStream<T1, T2> {
-            return from { for ((e1, e2) in source) if (!invoke(e1, e2)) break }
+        fun <T1, T2> of(elements: Iterable<Pair<T1, T2>>): BiPushStream<T1, T2> {
+            if (elements is Collection && elements.isEmpty()) return of()
+            return from { for ((e1, e2) in elements) if (!invoke(e1, e2)) break }
         }
 
         @JvmStatic
         fun <T1, T2> of(source: Iterator<Pair<T1, T2>>): BiPushStream<T1, T2> {
-            return from {
-                while (source.hasNext()) {
-                    val (e1, e2) = source.next()
-                    if (!invoke(e1, e2)) break
-                }
-            }
+            return from { while (source.hasNext()) if (source.next().let { (e1, e2) -> !invoke(e1, e2) }) break }
         }
 
         @JvmStatic

@@ -34,7 +34,7 @@ import java.util.stream.Stream
  */
 @JvmInline
 value class PushStream<out T>(val dispatch: ((T) -> Boolean) -> Unit) {
-    // Termination operation
+    // Termination operations
 
     inline fun forEach(crossinline action: (T) -> Unit) {
         dispatch { e ->
@@ -153,8 +153,8 @@ value class PushStream<out T>(val dispatch: ((T) -> Boolean) -> Unit) {
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     fun filterNotNull(): PushStream<T & Any> {
+        @Suppress("UNCHECKED_CAST")
         return filter { it != null } as PushStream<T & Any>
     }
 
@@ -197,16 +197,14 @@ value class PushStream<out T>(val dispatch: ((T) -> Boolean) -> Unit) {
 
         @JvmStatic
         fun <T> of(vararg elements: T): PushStream<T> {
-            if (elements.isEmpty()) {
-                @Suppress("UNCHECKED_CAST")
-                return EMPTY as PushStream<T>
-            }
+            if (elements.isEmpty()) return of()
             return from { for (e in elements) if (!invoke(e)) break }
         }
 
         @JvmStatic
-        fun <T> of(source: Iterable<T>): PushStream<T> {
-            return from { for (e in source) if (!invoke(e)) break }
+        fun <T> of(elements: Iterable<T>): PushStream<T> {
+            if (elements is Collection && elements.isEmpty()) return of()
+            return from { for (e in elements) if (!invoke(e)) break }
         }
 
         @JvmStatic
