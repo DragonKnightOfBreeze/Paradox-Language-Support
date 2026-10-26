@@ -169,3 +169,8 @@ com.intellij.diagnostic.Freeze
 ### 相关代码位置（平台）
 
 - `com.intellij.execution.configurations.GeneralCommandLine`
+- `com.intellij.execution.process.CapturingProcessRunner`
+- `com.intellij.execution.process.CapturingProcessHandler`
+- `com.intellij.execution.process.OSProcessHandler`
+  - `com.intellij.execution.process.OSProcessHandler.checkEdtAndReadAction`
+- `com.intellij.execution.util.ExecUtil`
