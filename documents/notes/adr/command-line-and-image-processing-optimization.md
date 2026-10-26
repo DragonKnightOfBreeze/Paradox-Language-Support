@@ -37,6 +37,7 @@
 - 基于外部检查工具的代码检查（`ChronicleTigerLintInspection`） - 需要考虑进行取消检查
 - GIT 命令相关（`ChronicleGitService`）
 - 特殊路径相关（`SpecialPathService`）
+- 图片预览（在编辑器中打开 DDS/TGA 图片）
 
 ### 堆栈分析
 
@@ -148,14 +149,64 @@ com.intellij.diagnostic.Freeze
 内嵌提示的刷新逻辑位于 EDT 中，而在 EDT 中进行取消检查是没有意义的。
 因此需要考虑异步操作（异步加载、异步刷新、批量、防抖），而这又会到来额外的复杂性。
 
-## 任务
+### 任务计划草案
 
-- 基础设施
-  - TBD
-- 重构
-  - TBD
-- 测试
-  - TBD
+关于初步的任务计划：
+- 命令行执行逻辑的相关重构：弃用 `CommandLineService` 等，新增 `ExecutionService`，提供存在多种变体的方法 `execute`
+  - 例如：`ExecutionService.execute(commandLine: GeneralCommandLine): ProcessOutput`
+- 解决卡死与隐患（通过 metadata 获取图片尺寸，图片无需切分时也缓存到磁盘，等等）
+  - 需要提取 `icu.windea.pls.images.ImageMetadataService` 以统一地获取图片的元数据（获取的应是原始的尺寸）
+- 命令行执行的进一步重构和优化（不超出当前任务范围）
+  - 一些次要的问题修复和代码重构
+- 图片处理的进一步重构和优化（不超出当前任务范围）
+  - 一些次要的问题修复和代码重构
+- 进一步的清理和重构（包括人工修订）
+- 补充测试（考虑包括使用特定断言逻辑的回归测试、针对常见场景的冒烟测试、可自动下载相关工具到 build 目录的进阶测试）
+- 作为总结，补充 ADR（两份：AI编写 + 人工编写）
+
+备注：
+- 目前不能移除注入器，因为我们需要通过 ImageIO + SPI 提供图片预览（直接在编辑器中打开 DDS/TGA 图片）。
+- 需要保证图片渲染是在后台进程中执行的，且采用更好的缓存策略（暂时不处理由插件代码处理的，异步渲染逻辑）。
+- 对于内嵌提示中的图标，可以考虑首先改为直接获取缓存后的图标（如 `IconUtil.createImageIcon`），而不是一个延迟加载的图表（如 `CachedImageIcon`）。之后再考虑异步加载策略。
+- 注入器中本身可能并不需要EDT断言，因为 `OSProcessHandler.checkEdtAndReadAction` 中已经存在更严格的断言。但是这个断言在一些情况下可能会被忽略，而我们可能仍然需要给出警告。
+- 这里涉及的一些常量可以首先作为 kotlin 常量，以后再考虑是否作为能力项（`ChronicleCapabilities`）或配置项。
+
+关于命令行执行的断言问题：
+- `OSProcessHandler.checkEdtAndReadAction` 中存在额外的断言策略。由于开发环境和用户环境是有可能启用 internal 模式的。我们需要尽可能兼容这里的断言策略。
+- 这意味着在一些地方，比如内嵌提示、快速文档、tiger等，我们需要保证命令行执行既不发生在 EDT 中，也不发生在 readAction 中。
+- 我们目前有一些地方并不符合这样的断言策略，因此后续还需要考虑确保是异步执行的（考虑使用 `withBackgroundProgress`）。
+- 参见 `ParadoxImageManager`。
+
+### 任务计划（AI 协助）
+
+TBD
+
+### 后续修订
+
+> 目前尚未确定是否需要采用这些待办事项。
+
+- [ ] 由于模块依赖问题，`icu.windea.pls.images.ImageFrameInfo` 可能需要移到 `icu.windea.pls` 中的某个子包下
+- [ ] 考虑新增 `ParadoxImageService`，将 `ParadoxImageManager` 中的具体解析逻辑移到 `ParadoxImageService`
+- [ ] 考虑新增 `ParadoxImageResolveResult`，其中包括必要的信息，以及实际加载图片的/属性（比如可以直接是 `image: Image`）
+- [ ] 考虑将 `ParadoxImageManager.isImageFile` 移动到 `ImageService` 中
+- [ ] 考虑将 `ImageService.requestRender` 和 `ImageService.render` 的其中一些参数封装到 `ImageRenderConstraint` 或 `ImageRenderSettings` 中
+- [ ] `icu.windea.pls.core.execution` 中的代码的后续清理和重构
+- [ ] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
+
+### 后续参考
+
+- `com.intellij.codeInspection.ex.GlobalInspectionContextImpl.runTools` L345
+  - 这里声明了一个 `ProgressIndicator`。
+  - 也就是说 `com.intellij.lang.annotation.ExternalAnnotator.doAnnotate` 的调用链上层是有 indicator 的，但不能直接获取。
+  - 由于 indicator API 已经过时，如果需要明确的状态指示，建议的方式可能仍然是 `runBlockingCancellable` + `withBlackgroundProgresss`。
+
+## 任务（AI 协助）
+
+TBD
+
+## 任务（修订）
+
+TBD
 
 ## 参见
 
@@ -165,7 +216,17 @@ com.intellij.diagnostic.Freeze
 - `icu.windea.pls.core.execution.CommandLineService`
 - `icu.windea.pls.integrations.images.ImageToolService`
 - `icu.windea.pls.integrations.lints.TigerLintToolService`
+- `icu.windea.pls.lang.util.ParadoxImageManager`
 
 ### 相关代码位置（平台）
 
 - `com.intellij.execution.configurations.GeneralCommandLine`
+- `com.intellij.execution.process.CapturingProcessRunner`
+- `com.intellij.execution.process.CapturingProcessHandler`
+- `com.intellij.execution.process.OSProcessHandler`
+  - `com.intellij.execution.process.OSProcessHandler.checkEdtAndReadAction`
+- `com.intellij.execution.util.ExecUtil`
+
+### 参考代码位置（平台）
+
+- `com.intellij.codeInspection.javaDoc.JavadocHtmlLintAnnotator` - 这里并没有特别地使用取消检查/状态指示
