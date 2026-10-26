@@ -3,7 +3,8 @@
 > - 模块：后端 > 通用
 > - 版本：v3.0.5
 > - 日期：2026.10.24
-> - 状态：WIP
+> - 结束日期：2026-10-26
+> - 状态：已完成（告一段落）
 
 ## 说明
 
@@ -170,7 +171,7 @@ value class BiPushStream<out T1, out T2>(val dispatch: ((T1, T2) -> Boolean) -> 
 - [x] 重构 `CwtConfigExpansionService` 和 `ParadoxConfigExpansionService`：从 processor 模式改为返回 pushStream
 - [x] 重构 `CwtConfigExpansionService` 和 `ParadoxConfigExpansionService`：创建并应用 `CwtExpandedConfig`
 - [x] 补充相关的单元测试，以验证 pushStream 实现的正确性
-- [ ] 补充相关的集成测试，以验证规则展开行为的正确性
+- [x] 补充相关的集成测试，以验证规则展开行为的正确性
 
 ## 参见
 

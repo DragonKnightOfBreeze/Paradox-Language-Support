@@ -3,7 +3,24 @@ unions = {
         int
         value[test_flag]
     }
+    union[test_union_constant] = {
+        v1
+        v2
+    }
+    union[test_union_mixed] = {
+        v1
+        int
+    }
+    union[test_union_duplicate] = {
+        v1
+        v1
+    }
 }
 
 alias[test_alias:int] = v1
 alias[test_alias:scalar] = v2
+alias[test_alias:foo] = v1
+alias[test_alias:foo] = v2
+alias[test_alias:bar] = v1
+
+single_alias[test_single_alias] = int

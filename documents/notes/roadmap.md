@@ -531,7 +531,7 @@
   - 分别位于 `docs/` 和 `documents/`。
   - 通过置顶的链接导航栏提供语言切换。
   - 同步更新 `AGENTS.md` 和 `CONTRIBUTING.md`。
-- [ ] P3 提供轻量化的推流（push stream）
+- [x] P3 提供轻量化的推流（push stream）
   - 参见：[adr/push-stream.md](adr/push-stream.md)
 - [ ] P2 优化插件自身提供的 `CommandLineExecutor` API ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
   - 考虑默认委托给平台提供的 `ExecUtil` `GeneralCommandLine`。

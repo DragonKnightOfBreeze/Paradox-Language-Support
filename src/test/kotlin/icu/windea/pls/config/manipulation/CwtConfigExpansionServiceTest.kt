@@ -7,6 +7,8 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.expandBySubtypeExpression
 import icu.windea.pls.config.config.expandConfigExpression
+import icu.windea.pls.config.configExpression.CwtDataExpression
+import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.core.children
 import icu.windea.pls.core.select.oneBy
 import icu.windea.pls.core.util.tupleOf
@@ -82,4 +84,123 @@ class CwtConfigExpansionServiceTest : BasePlatformTestCase(), ChronicleTestScope
         assertTrue(propMap.getValue("k5").expandConfigExpression(forValue = true).all { it.type != CwtDataTypes.Int }) // ignored
         assertTrue(propMap.getValue("k0").expandConfigExpression(forValue = true).all { it.type != CwtDataTypes.Int })
     }
+
+    // region union
+
+    @Test
+    fun testExpandUnion_name() {
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
+
+        val result = CwtConfigExpansionService.expandUnion("test_union", configGroup, guardName = "test.expandUnion")
+        val expressions = result.map { it.configExpression.expressionString }.toList()
+        assertEquals(listOf("int", "value[test_flag]"), expressions)
+        assertTrue(result.all { it.config.configExpression == it.configExpression })
+    }
+
+    @Test
+    fun testExpandUnion_configExpression() {
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
+        val configExpression = CwtDataExpression.resolve("union[test_union]", CwtDataExpressionRole.Value)
+
+        val result = CwtConfigExpansionService.expandUnion(configExpression, configGroup, guardName = "test.expandUnion")
+        val expressions = result.map { it.configExpression.expressionString }.toList()
+        assertEquals(listOf("int", "value[test_flag]"), expressions)
+    }
+
+    @Test
+    fun testExpandUnion_preservesDeclarationOrderAndDuplicates() {
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
+
+        val mixed = CwtConfigExpansionService.expandUnion("test_union_mixed", configGroup, guardName = "test.expandUnion")
+        assertEquals(listOf("v1", "int"), mixed.map { it.configExpression.expressionString }.toList())
+
+        val duplicated = CwtConfigExpansionService.expandUnion("test_union_duplicate", configGroup, guardName = "test.expandUnion")
+        assertEquals(listOf("v1", "v1"), duplicated.map { it.configExpression.expressionString }.toList())
+        assertEquals(2, duplicated.toList().size)
+    }
+
+    // endregion
+
+    // region alias
+
+    @Test
+    fun testExpandAlias_name() {
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
+
+        val result = CwtConfigExpansionService.expandAlias("test_alias", configGroup, guardName = "test.expandAlias").toList()
+        assertEquals(listOf("int", "scalar", "foo", "bar"), result.map { it.configExpression.expressionString })
+        val foo = result.first { it.configExpression.expressionString == "foo" }
+        assertEquals(2, foo.configs.size)
+        assertSame(foo.config, foo.configs.first())
+    }
+
+    @Test
+    fun testExpandAlias_configExpression() {
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
+        val keysFieldExpression = CwtDataExpression.resolve("alias_keys_field[test_alias]", CwtDataExpressionRole.Key)
+        val nameExpression = CwtDataExpression.resolve("alias_name[test_alias]", CwtDataExpressionRole.Key)
+        val expected = listOf("int", "scalar", "foo", "bar")
+
+        val byKeysField = CwtConfigExpansionService.expandAlias(keysFieldExpression, configGroup, guardName = "test.expandAlias")
+        val byName = CwtConfigExpansionService.expandAlias(nameExpression, configGroup, guardName = "test.expandAlias")
+        assertEquals(expected, byKeysField.map { it.configExpression.expressionString }.toList())
+        assertEquals(expected, byName.map { it.configExpression.expressionString }.toList())
+    }
+
+    // endregion
+
+    // region singleAlias
+
+    @Test
+    fun testExpandSingleAlias_name() {
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
+
+        val result = CwtConfigExpansionService.expandSingleAlias("test_single_alias", configGroup, guardName = "test.expandSingleAlias").toList()
+        assertEquals(1, result.size)
+        val expanded = result.single()
+        assertEquals("int", expanded.configExpression.expressionString)
+        assertEquals("test_single_alias", expanded.config.name)
+    }
+
+    @Test
+    fun testExpandSingleAlias_configExpression() {
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
+        val configExpression = CwtDataExpression.resolve("single_alias_right[test_single_alias]", CwtDataExpressionRole.Value)
+
+        val result = CwtConfigExpansionService.expandSingleAlias(configExpression, configGroup, guardName = "test.expandSingleAlias").toList()
+        assertEquals(1, result.size)
+        assertEquals("int", result.single().configExpression.expressionString)
+    }
+
+    // endregion
+
+    // region expandable
+
+    @Test
+    fun testExpandExpandable() {
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
+
+        val unionExpression = CwtDataExpression.resolve("union[test_union_constant]", CwtDataExpressionRole.Value)
+        val unionResult = CwtConfigExpansionService.expandExpandable(unionExpression, configGroup, guardName = "test.expandExpandable")
+        assertEquals(listOf("v1", "v2"), unionResult.map { it.configExpression.expressionString }.toList())
+
+        val aliasExpression = CwtDataExpression.resolve("alias_keys_field[test_alias]", CwtDataExpressionRole.Key)
+        val aliasResult = CwtConfigExpansionService.expandExpandable(aliasExpression, configGroup, guardName = "test.expandExpandable")
+        assertEquals(listOf("int", "scalar", "foo", "bar"), aliasResult.map { it.configExpression.expressionString }.toList())
+
+        val singleAliasExpression = CwtDataExpression.resolve("single_alias_right[test_single_alias]", CwtDataExpressionRole.Value)
+        val singleAliasResult = CwtConfigExpansionService.expandExpandable(singleAliasExpression, configGroup, guardName = "test.expandExpandable")
+        assertEquals(listOf("int"), singleAliasResult.map { it.configExpression.expressionString }.toList())
+    }
+
+    @Test
+    fun testExpandExpandable_nonExpandable_returnsEmpty() {
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Stellaris)
+        val configExpression = CwtDataExpression.resolve("int", CwtDataExpressionRole.Key)
+
+        val result = CwtConfigExpansionService.expandExpandable(configExpression, configGroup, guardName = "test.expandExpandable")
+        assertTrue(result.toList().isEmpty())
+    }
+
+    // endregion
 }
