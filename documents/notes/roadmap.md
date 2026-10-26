@@ -533,12 +533,14 @@
   - 同步更新 `AGENTS.md` 和 `CONTRIBUTING.md`。
 - [x] P3 提供轻量化的推流（push stream）
   - 参见：[adr/push-stream.md](adr/push-stream.md)
+- [ ] P2 优化命令行执行逻辑和图片处理逻辑 ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
+  - 适用取消检查和超时限制，以避免可能的 IDE 冻结。
+  - 避免在 EDT 中直接执行（预期存在一定耗时的）命令行，以避免可能的 IDE 冻结。
+  - 执行命令行时，通常需要考虑进行取消检查（抵达时间间隔阈值时）。
+  - 执行命令行时，通常需要考虑指定超时。
+  - 进行图片IO（渲染/转换/等等）时，也需要考虑进行取消检查（抵达字节大小阈值时）。
 - [ ] P2 优化插件自身提供的 `CommandLineExecutor` API ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
-  - 考虑默认委托给平台提供的 `ExecUtil` `GeneralCommandLine`。
-  - 可以通过传入 `ProgressIndicator` 来进行取消检查（抵达时间间隔阈值时）。
-  - 可以指定执行超时。
-- [ ] P3 优化图片处理逻辑 ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
-  - 进行图片IO（渲染/转换/等等）时，也进行取消检查（抵达字节大小阈值时）。
+  - 考虑默认委托给平台提供的 `ExecUtil` `GeneralCommandLine`，从而有可能通过传入 `ProgressIndicator` 来进行取消检查。
 - [x] P1 修复插件在 IDEA 2026.3 EAP 中存在的兼容性问题
   - 参见：`com.intellij.util.OpenSourceUtil`
 - [x] P1 修复 CWT 文件和脚本文件的结构视图无法正常显示的回归BUG（自插件版本 3.0.3）
@@ -565,6 +567,7 @@
   - 参见：[adr/push-stream.md](adr/push-stream.md)
 - [x] P3 重构 `CwtConfigExpansionService` 和 `ParadoxConfigExpansionService`：创建并应用 `CwtExpandedConfig`
   - 参见：[adr/push-stream.md](adr/push-stream.md)
+- [ ] P4 排序：在 `ParadoxScriptExpressionSupport` 等处，将 `annotate` 方法的顺序移到 `complete` 方法之前
 
 ## 按主题 {#by-topic}
 

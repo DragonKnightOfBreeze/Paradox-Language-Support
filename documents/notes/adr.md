@@ -60,6 +60,7 @@
 - [转义模式与转义处理](adr/escape-pattern.md)
 - [颜色处理](adr/color-pattern.md)
 - [提供轻量化的推流（push stream）](adr/push-stream.md)
+- [优化命令行执行逻辑和图片处理逻辑](adr/command-line-and-image-processing-optimization.md)
 
 #### 通用基础设施
 
