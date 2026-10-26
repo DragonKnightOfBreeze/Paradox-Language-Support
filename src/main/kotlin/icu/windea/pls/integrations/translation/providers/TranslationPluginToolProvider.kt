@@ -9,6 +9,7 @@ import com.intellij.openapi.application.UI
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.integrations.translation.TranslationCallback
 import icu.windea.pls.integrations.translation.TranslationToolProvider
+import icu.windea.pls.lang.util.ParadoxLocaleManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -22,9 +23,9 @@ class TranslationPluginToolProvider : TranslationToolProvider {
     }
 
     override suspend fun translate(text: String, sourceLocale: String?, targetLocale: String, callback: TranslationCallback) {
+        val translateService = TranslateService.getInstance()
         val sourceLang = if (sourceLocale == null) Lang.AUTO else Lang[sourceLocale]
         val targetLang = Lang[targetLocale]
-        val translateService = TranslateService.getInstance()
 
         // NOTE 使用 TranslateService 之前，必须先转到 EDT
         withContext(Dispatchers.UI) {
@@ -63,7 +64,7 @@ class TranslationPluginToolProvider : TranslationToolProvider {
 
     private fun toLang(localeConfig: CwtLocaleConfig?, supportedLangList: Collection<Lang> = emptyList()): Lang {
         if (localeConfig == null) return Lang.AUTO
-        if (localeConfig.name == "l_default") {
+        if (localeConfig.name == ParadoxLocaleManager.ID_DEFAULT) {
             return Lang.default
         }
         for (code in localeConfig.codes) {

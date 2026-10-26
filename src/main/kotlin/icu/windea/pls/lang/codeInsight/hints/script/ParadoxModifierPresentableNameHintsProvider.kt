@@ -40,7 +40,7 @@ class ParadoxModifierPresentableNameHintsProvider : ParadoxHintsProvider() {
 
     context(context: ParadoxHintsContext)
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
-        // TODO 3.0.x refactor: use `icu.windea.pls.lang.util.ParadoxModifierManager.getModifierPresentableNames` directly?
+        // TODO 3.0.x refactor: use `icu.windea.pls.lang.util.ParadoxModifierManager.getPresentableNames` directly?
         if (element !is ParadoxScriptStringExpressionElement) return
         if (!element.isDataExpression()) return
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
