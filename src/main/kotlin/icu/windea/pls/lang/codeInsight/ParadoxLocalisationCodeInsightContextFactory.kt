@@ -22,7 +22,7 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
-import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
+import icu.windea.pls.lang.resolve.ParadoxLocalisationLocationExpressionResolveResult
 import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.locale
@@ -155,8 +155,8 @@ object ParadoxLocalisationCodeInsightContextFactory {
                     checkOptionalForDefinitions(inspection) && !info.required -> true
                     else -> false
                 }
-                val missing = resolveResult is CwtLocalisationLocationResolveResult.Static && resolveResult.element == null
-                val dynamic = resolveResult is CwtLocalisationLocationResolveResult.Dynamic
+                val missing = resolveResult is ParadoxLocalisationLocationExpressionResolveResult.Static && resolveResult.element == null
+                val dynamic = resolveResult is ParadoxLocalisationLocationExpressionResolveResult.Dynamic
                 val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, info, locale, check, missing, dynamic)
                 codeInsightInfos += codeInsightInfo
             }

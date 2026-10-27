@@ -16,7 +16,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
  *
  * @see CwtLocationExpression
  */
-interface CwtLocationResolveResult<T> {
+interface ParadoxLocationExpressionResolveResult<T> {
     val name: String? get() = null
     val element: T? get() = null
     val elements: Collection<T> get() = emptySet()
@@ -33,19 +33,19 @@ interface CwtLocationResolveResult<T> {
  *
  * @see CwtLocalisationLocationExpression
  */
-sealed class CwtLocalisationLocationResolveResult : CwtLocationResolveResult<ParadoxLocalisationProperty> {
+sealed class ParadoxLocalisationLocationExpressionResolveResult : ParadoxLocationExpressionResolveResult<ParadoxLocalisationProperty> {
     class Static(
         override val name: String,
         resolveAction: () -> ParadoxLocalisationProperty? = { null },
         resolveAllAction: () -> Collection<ParadoxLocalisationProperty> = { emptySet() },
-    ) : CwtLocalisationLocationResolveResult() {
+    ) : ParadoxLocalisationLocationExpressionResolveResult() {
         override val element: ParadoxLocalisationProperty? by lazy { resolveAction() }
         override val elements: Collection<ParadoxLocalisationProperty> by lazy { resolveAllAction() }
     }
 
     class Dynamic(
-        val message: String
-    ) : CwtLocalisationLocationResolveResult()
+        val message: String,
+    ) : ParadoxLocalisationLocationExpressionResolveResult()
 }
 
 /**
@@ -55,18 +55,18 @@ sealed class CwtLocalisationLocationResolveResult : CwtLocationResolveResult<Par
  *
  * @see CwtImageLocationExpression
  */
-sealed class CwtImageLocationResolveResult : CwtLocationResolveResult<PsiElement> {
+sealed class ParadoxImageLocationExpressionResolveResult : ParadoxLocationExpressionResolveResult<PsiElement> {
     class Static(
         override val name: String,
         val frameInfo: ImageFrameInfo? = null,
         resolveAction: () -> PsiElement? = { null },
         resolveAllAction: () -> Collection<PsiElement> = { emptySet() },
-    ) : CwtImageLocationResolveResult() {
+    ) : ParadoxImageLocationExpressionResolveResult() {
         override val element: PsiElement? by lazy { resolveAction() }
         override val elements: Collection<PsiElement> by lazy { resolveAllAction() }
     }
 
     class Dynamic(
-        val message: String
-    ) : CwtImageLocationResolveResult()
+        val message: String,
+    ) : ParadoxImageLocationExpressionResolveResult()
 }

@@ -31,9 +31,9 @@ import icu.windea.pls.lang.psi.light.ParadoxMeshLocatorLightElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.psi.light.ParadoxShaderEffectLightElement
-import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
-import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
+import icu.windea.pls.lang.resolve.ParadoxImageLocationExpressionResolveResult
+import icu.windea.pls.lang.resolve.ParadoxLocalisationLocationExpressionResolveResult
 import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.lang.resolve.ParadoxModifierCategoryService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
@@ -705,7 +705,7 @@ object ParadoxDocumentationManager {
             ProgressManager.checkCanceled()
             val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(usedLocale) } ?: continue // 发生意外，直接跳过
             when (resolveResult) {
-                is CwtLocalisationLocationResolveResult.Static -> {
+                is ParadoxLocalisationLocationExpressionResolveResult.Static -> {
                     val resolvedElement = resolveResult.element
                     if (resolvedElement != null) {
                         map[key] = buildDocumentation {
@@ -721,7 +721,7 @@ object ParadoxDocumentationManager {
                         map.putIfAbsent(key, resolveResult.name.escapeXml())
                     }
                 }
-                is CwtLocalisationLocationResolveResult.Dynamic -> {
+                is ParadoxLocalisationLocationExpressionResolveResult.Dynamic -> {
                     map[key] = resolveResult.message.escapeXml()
                 }
             }
@@ -744,7 +744,7 @@ object ParadoxDocumentationManager {
             ProgressManager.checkCanceled()
             val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo) ?: continue // 发生意外，直接跳过
             when (resolveResult) {
-                is CwtImageLocationResolveResult.Static -> {
+                is ParadoxImageLocationExpressionResolveResult.Static -> {
                     val resolvedElement = resolveResult.element
                     if (resolvedElement != null) {
                         val name = resolveResult.name
@@ -779,7 +779,7 @@ object ParadoxDocumentationManager {
                         map.putIfAbsent(key, resolveResult.name.escapeXml())
                     }
                 }
-                is CwtImageLocationResolveResult.Dynamic -> {
+                is ParadoxImageLocationExpressionResolveResult.Dynamic -> {
                     map[key] = resolveResult.message.escapeXml()
                 }
             }

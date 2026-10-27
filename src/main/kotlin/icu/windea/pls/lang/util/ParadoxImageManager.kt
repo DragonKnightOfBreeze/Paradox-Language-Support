@@ -26,7 +26,7 @@ import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
-import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
+import icu.windea.pls.lang.resolve.ParadoxImageLocationExpressionResolveResult
 import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -125,7 +125,7 @@ object ParadoxImageManager {
                 ParadoxLocationExpressionService.resolve(it.locationExpression, definition, definitionInfo, frameInfo, toFile = true)
             }
         }
-        if (resolved !is CwtImageLocationResolveResult.Static) return null
+        if (resolved !is ParadoxImageLocationExpressionResolveResult.Static) return null
         val resolvedFile = resolved.element?.castOrNull<PsiFile>() ?: return null
         return doResolveUrl(resolvedFile.virtualFile, resolvedFile.project, resolved.frameInfo)
     }

@@ -17,7 +17,7 @@ import icu.windea.pls.lang.inspections.ChronicleInspections
 import icu.windea.pls.lang.inspections.script.common.MissingImageInspection
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
-import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
+import icu.windea.pls.lang.resolve.ParadoxImageLocationExpressionResolveResult
 import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.util.ParadoxConfigManager
@@ -81,8 +81,8 @@ object ParadoxImageCodeInsightContextFactory {
                 (inspection == null || inspection.checkOptionalForDefinitions) && !info.required -> true
                 else -> false
             }
-            val missing = resolveResult is CwtImageLocationResolveResult.Static && resolveResult.element == null
-            val dynamic = resolveResult is CwtImageLocationResolveResult.Dynamic
+            val missing = resolveResult is ParadoxImageLocationExpressionResolveResult.Static && resolveResult.element == null
+            val dynamic = resolveResult is ParadoxImageLocationExpressionResolveResult.Dynamic
             val codeInsightInfo = ParadoxImageCodeInsightInfo(type, name, gfxName, info, check, missing, dynamic)
             codeInsightInfos += codeInsightInfo
         }

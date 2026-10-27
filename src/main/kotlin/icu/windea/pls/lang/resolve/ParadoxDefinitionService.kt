@@ -224,7 +224,7 @@ object ParadoxDefinitionService {
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         primaryLocalisations.forEachFast f@{ primaryLocalisation ->
             val resolveResult = ParadoxLocationExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
-            if (resolveResult !is CwtLocalisationLocationResolveResult.Static) return@f
+            if (resolveResult !is ParadoxLocalisationLocationExpressionResolveResult.Static) return@f
             return resolveResult.name
         }
         return null
@@ -270,7 +270,7 @@ object ParadoxDefinitionService {
         for ((_, locationExpression) in imageInfos) {
             ProgressManager.checkCanceled()
             val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo, toFile = true)
-            if (resolveResult !is CwtImageLocationResolveResult.Static) continue
+            if (resolveResult !is ParadoxImageLocationExpressionResolveResult.Static) continue
             element.putUserData(Keys.imageFrameInfo, resolveResult.frameInfo)
             result.addAll(resolveResult.elements.filterIsInstance<PsiFile>())
         }

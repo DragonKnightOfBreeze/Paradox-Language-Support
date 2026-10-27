@@ -10,7 +10,7 @@ import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.lang.actions.ChronicleActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
+import icu.windea.pls.lang.resolve.ParadoxImageLocationExpressionResolveResult
 import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxDefinitionSource
@@ -68,11 +68,11 @@ class ParadoxDefinitionRelatedImagesLineMarkerProvider : ParadoxLineMarkerProvid
             resolved.addAll(resolveResult.elements)
             if (!toDistinct.add(key)) break
             when (resolveResult) {
-                is CwtImageLocationResolveResult.Static -> {
+                is ParadoxImageLocationExpressionResolveResult.Static -> {
                     if (resolveResult.elements.isEmpty()) continue
                     tooltipLines.add("$prefix $key = ${resolveResult.name}")
                 }
-                is CwtImageLocationResolveResult.Dynamic -> {
+                is ParadoxImageLocationExpressionResolveResult.Dynamic -> {
                     tooltipLines.add("$prefix $key = ${resolveResult.message}")
                 }
             }

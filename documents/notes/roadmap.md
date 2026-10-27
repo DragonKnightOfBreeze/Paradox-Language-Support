@@ -569,6 +569,7 @@
   - 参见：[adr/push-stream.md](adr/push-stream.md)
 - [x] P3 重构 `CwtConfigExpansionService` 和 `ParadoxConfigExpansionService`：创建并应用 `CwtExpandedConfig`
   - 参见：[adr/push-stream.md](adr/push-stream.md)
+- [x] P4 重构：将 `CwtLocationResolveResult` 重命名为 `ParadoxLocationExpressionResolveResult`，子类同理
 - [ ] P4 排序：在 `ParadoxScriptExpressionSupport` 等处，将 `annotate` 方法的顺序移到 `complete` 方法之前
 
 ## 按主题 {#by-topic}
