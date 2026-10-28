@@ -8,6 +8,7 @@ import org.junit.Test
 /**
  * @see CommandLineExecutor
  */
+@Suppress("DEPRECATION")
 class CommandLineExecutorTest {
     @Test
     fun testUtf8OutputForCmd() {

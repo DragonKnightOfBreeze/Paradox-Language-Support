@@ -1,29 +1,30 @@
+@file:Suppress("DEPRECATION")
+
 package icu.windea.pls.core.execution
 
-import com.intellij.openapi.diagnostic.logger
+import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.util.SystemInfo
-import io.ktor.utils.io.charsets.Charset
 import java.io.File
 import java.io.IOException
-import java.util.concurrent.TimeUnit
+import java.nio.charset.Charset
 import kotlin.text.Charsets
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * 外部命令的执行器。
+ *
+ * 备注：3.0.5 起请优先使用 [ProgressExecutor]。这里暂时保留，以便兼容已有调用点和测试。
  *
  * @param environment 额外环境变量。
  * @param workDirectory 工作目录。
  * @param timeout 超时（毫秒）。
  */
+@Deprecated("Use ProgressExecutor instead.")
 class CommandLineExecutor(
     val environment: Map<String, String> = emptyMap(),
     val workDirectory: File? = null,
     val timeout: Long? = null
 ) {
-    companion object {
-        private val logger = logger<CommandLineExecutor>()
-    }
-
     /**
      * 执行外部命令数组。
      *
@@ -32,12 +33,12 @@ class CommandLineExecutor(
      *
      * @throws IOException 启动进程失败时抛出。
      * @throws InterruptedException 进程被中断。
-     * @throws CommandLineExecutionException 退出码非 0 且无标准输出，或有错误输出时抛出。
+     * @throws CommandLineExecutionException 退出码非 0 且无标准输出时抛出。
      */
     @Throws(IOException::class, InterruptedException::class, CommandLineExecutionException::class)
     fun execute(commands: List<String>): String {
-        logger.info("Executing commands: $commands")
-        return doExecute(commands, Charsets.UTF_8)
+        val commandLine = createCommandLine(commands, Charsets.UTF_8)
+        return doExecute(commandLine)
     }
 
     /**
@@ -49,40 +50,34 @@ class CommandLineExecutor(
      *
      * @throws IOException 启动进程失败时抛出。
      * @throws InterruptedException 进程被中断。
-     * @throws CommandLineExecutionException 退出码非 0 且无标准输出，或有错误输出时抛出。
+     * @throws CommandLineExecutionException 退出码非 0 且无标准输出时抛出。
      */
     @Throws(IOException::class, InterruptedException::class, CommandLineExecutionException::class)
     fun execute(command: String, commandType: CommandType = CommandType.AUTO): String {
-        logger.info("Executing command: $command")
         val commands = CommandLineService.getCommands(command, commandType)
         val outputCharset = CommandLineService.getOutputCharset(commandType)
-        return doExecute(commands, outputCharset)
+        val commandLine = createCommandLine(commands, outputCharset)
+        return doExecute(commandLine)
     }
 
-    private fun doExecute(commands: List<String>, outputCharset: Charset): String {
-        val processBuilder = ProcessBuilder(commands)
-        val env = processBuilder.environment()
-        env.putAll(environment)
+    private fun createCommandLine(commands: List<String>, charset: Charset): GeneralCommandLine {
+        return GeneralCommandLine(commands)
+            .withEnvironment(environment)
+            .withWorkingDirectory(workDirectory?.toPath())
+            .withCharset(charset)
+    }
+
+    private fun doExecute(commandLine: GeneralCommandLine): String {
         if (!SystemInfo.isWindows) {
-            env.put("LANG", "en_US.UTF-8")
-            env.put("LC_ALL", "en_US.UTF-8")
+            commandLine.withEnvironment("LANG", "en_US.UTF-8")
+            commandLine.withEnvironment("LC_ALL", "en_US.UTF-8")
         }
-        processBuilder.directory(workDirectory)
-        val process = processBuilder.start()
-        if (timeout == null) {
-            process.waitFor()
-        } else {
-            process.waitFor(timeout, TimeUnit.MILLISECONDS)
-        }
-        val result = process.inputStream.bufferedReader(outputCharset).readText().trim()
-        if (result.isNotEmpty()) {
-            logger.info("Command result: $result")
-        } else {
-            logger.info("Done.")
-        }
-        if (result.isNotEmpty() || process.exitValue() == 0) return result
-        val errorResult = process.errorStream.bufferedReader(outputCharset).readText().trim()
-        logger.info("Command error result: $errorResult")
+        val executor = ProgressExecutor(commandLine)
+        timeout?.let { executor.withTimeout(it.milliseconds) }
+        val output = executor.execute()
+        val result = output.stdout.trim()
+        if (result.isNotEmpty() || output.exitCode == 0) return result
+        val errorResult = output.stderr.trim()
         throw CommandLineExecutionException(errorResult)
     }
 }
