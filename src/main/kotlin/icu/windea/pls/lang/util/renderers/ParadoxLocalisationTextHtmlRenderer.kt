@@ -13,10 +13,12 @@ import icu.windea.pls.core.text.EscapePatterns
 import icu.windea.pls.core.text.HtmlBuilder
 import icu.windea.pls.core.text.buildHtml
 import icu.windea.pls.core.toFileUrl
+import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.core.unescape
 import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.images.ImageMetadataService
 import icu.windea.pls.lang.getDocumentationFontSize
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.resolveLocalisation
@@ -41,7 +43,6 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationTextIcon
 import icu.windea.pls.localisation.text.ParadoxLocalisation
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.Color
-import javax.imageio.ImageIO
 
 /**
  * 将本地化文本渲染为通用 HTML 文本的渲染器。
@@ -165,10 +166,12 @@ class ParadoxLocalisationTextHtmlRenderContext(
             // 如果无法解析（包括对应文件不存在的情况）就直接跳过
             if (!ParadoxImageManager.canResolve(iconUrl)) return@r
 
+            // 原始高度是后续缩放和大小限制的依据；无法获取时直接跳过，避免使用可能已被缩放的 icon 高度
+            val originalIconHeight = iconUrl.toPathOrNull()?.let {
+                ImageMetadataService.getInstance().getMetadata(it)?.height
+            } ?: return@r
             val iconFileUrl = iconUrl.toFileUrl()
             val icon = iconFileUrl.toIconOrNull() ?: return@r
-            // 这里需要尝试使用图标的原始高度
-            val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
             // 如果图标高度在 `localisationFontSize` 到 `localisationTextIconSizeLimit` 之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
             // 实际上，本地化文本可以嵌入任意大小的图片
             val docFontSize = getDocumentationFontSize().size

@@ -67,7 +67,7 @@ class ImageMetadataService : Disposable {
                 } else {
                     DdsMetadataReader.readOrNull(file)
                 }
-                metadata?.let { ImageMetadata(it.width, it.height, format = it.format) }
+                metadata?.let { ImageMetadata(it.width, it.height) }
             }
             TgaFileType -> {
                 val metadata = if (project != null && !project.isDisposed) {
@@ -75,7 +75,7 @@ class ImageMetadataService : Disposable {
                 } else {
                     TgaMetadataReader.readOrNull(file)
                 }
-                metadata?.let { ImageMetadata(it.width, it.height, bpp = it.bpp) }
+                metadata?.let { ImageMetadata(it.width, it.height) }
             }
             else -> {
                 readMetadata(file.inputStream)
@@ -89,13 +89,7 @@ class ImageMetadataService : Disposable {
                 val imageReader = ImageIO.getImageReaders(imageInputStream).asSequence().firstOrNull() ?: return null
                 try {
                     imageReader.input = imageInputStream
-                    val width = imageReader.getWidth(0)
-                    val height = imageReader.getHeight(0)
-                    val format = imageReader.formatName
-                    val bpp = runCatchingCancelable {
-                        imageReader.getImageTypes(0).asSequence().firstOrNull()?.colorModel?.pixelSize
-                    }.getOrNull()
-                    ImageMetadata(width, height, format, bpp)
+                    ImageMetadata(imageReader.getWidth(0), imageReader.getHeight(0))
                 } finally {
                     imageReader.dispose()
                 }
@@ -104,6 +98,7 @@ class ImageMetadataService : Disposable {
     }
 
     override fun dispose() {
+        cache.invalidateAll()
         cache.cleanUp()
     }
 

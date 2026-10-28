@@ -29,7 +29,7 @@ object TgaMetadataReader {
 
     fun read(inputStream: InputStream): TgaMetadata {
         return runCatchingCancelable { readInternal(inputStream) }
-            .getOrElse { e -> throw IllegalStateException("Cannot read DDS metadata from input stream.", e) }
+            .getOrElse { e -> throw IllegalStateException("Cannot read TGA metadata from input stream.", e) }
     }
 
     private fun readInternal(file: VirtualFile): TgaMetadata {

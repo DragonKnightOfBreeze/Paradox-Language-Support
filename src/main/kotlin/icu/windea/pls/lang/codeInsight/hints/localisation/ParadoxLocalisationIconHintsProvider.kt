@@ -7,10 +7,11 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.createPointer
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
+import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.images.ImageMetadataService
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
@@ -20,7 +21,6 @@ import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocalisationIconManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
-import javax.imageio.ImageIO
 
 /**
  * 为本地化图标显示渲染后图标。
@@ -58,11 +58,13 @@ class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
         // 如果无法解析（包括对应文件不存在的情况）就直接跳过
         if (!ParadoxImageManager.canResolve(iconUrl)) return
 
+        // 原始高度是后续缩放和大小限制的依据；无法获取时直接跳过，避免使用可能已被缩放的 icon 高度
+        val originalIconHeight = iconUrl.toPathOrNull()?.let {
+            ImageMetadataService.getInstance().getMetadata(it)?.height
+        } ?: return
         // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
         val iconFileUrl = iconUrl.toFileUrl()
         val icon = iconFileUrl.toIconOrNull() ?: return
-        // 这里需要尝试使用图标的原始高度
-        val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
         if (originalIconHeight > context.settings.iconHeightLimit) return
 
         sink.addInlinePresentation(element.endOffset, smallInset = true) {

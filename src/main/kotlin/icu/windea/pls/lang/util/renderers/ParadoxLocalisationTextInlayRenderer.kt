@@ -216,13 +216,13 @@ class ParadoxLocalisationTextInlayRenderContext(
             // 如果无法解析（包括对应文件不存在的情况）就直接跳过
             if (!ParadoxImageManager.canResolve(iconUrl)) return@r
 
+            // 原始高度是后续缩放和大小限制的依据；无法获取时直接跳过，避免使用可能已被缩放的 icon 高度
+            val originalIconHeight = iconUrl.toPathOrNull()?.let {
+                ImageMetadataService.getInstance().getMetadata(it)?.height
+            } ?: return@r
             val iconFileUrl = iconUrl.toFileUrl()
             // 找不到图标的话就直接跳过
             val icon = iconFileUrl.toIconOrNull() ?: return@r
-            // 这里需要尝试使用图标的原始高度
-            val originalIconHeight = runCatchingCancelable {
-                iconUrl.toPathOrNull()?.let { ImageMetadataService.getInstance().getMetadata(it)?.height }
-            }.getOrNull() ?: icon.iconHeight
             // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             if (originalIconHeight > hintsContext.settings.iconHeightLimit) return@r // 图标过大，不再尝试渲染
             // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
