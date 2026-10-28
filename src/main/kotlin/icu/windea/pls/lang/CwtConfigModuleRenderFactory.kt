@@ -4,7 +4,7 @@ import com.intellij.ide.util.ModuleRendererFactory
 import com.intellij.psi.PsiElement
 import com.intellij.util.TextWithIcon
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.config.configGroup.CwtConfigFileService
 import icu.windea.pls.cwt.CwtLanguage
 
 /**
@@ -22,7 +22,8 @@ class CwtConfigModuleRenderFactory : ModuleRendererFactory() {
 
     private fun forConfig(element: Any?): TextWithIcon? {
         if (element !is PsiElement || element.language !== CwtLanguage) return null
-        val configGroup = CwtConfigManager.getContainingConfigGroup(element) ?: return null
+        val file = element.containingFile ?: return null
+        val configGroup = CwtConfigFileService.getInstance().getContainingConfigGroup(file) ?: return null
         val gameType = configGroup.gameType
         val text = "${gameType.title} Config"
         return TextWithIcon(text, ChronicleIcons.General.ConfigGroupDirectory)

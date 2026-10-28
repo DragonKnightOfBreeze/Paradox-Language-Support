@@ -1,10 +1,12 @@
 package icu.windea.pls.images
 
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.concurrency.annotations.RequiresReadLock
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.images.dds.DdsFileType
@@ -23,7 +25,7 @@ import kotlin.io.path.inputStream
  * 统一获取图片的原始元数据。
  */
 @Service
-class ImageMetadataService {
+class ImageMetadataService : Disposable {
     private data class CacheKey(
         val path: String,
         val length: Long,
@@ -34,6 +36,7 @@ class ImageMetadataService {
     private val cache = CacheBuilder("maximumSize=4096,expireAfterAccess=10m")
         .build<CacheKey, ImageMetadata>()
 
+    @RequiresReadLock(generateAssertion = false)
     fun getMetadata(file: VirtualFile, project: Project? = null): ImageMetadata? {
         val key = CacheKey(file.path, file.length, file.modificationStamp)
         cache.getIfPresent(key)?.let { return it }
@@ -62,7 +65,7 @@ class ImageMetadataService {
                 val metadata = if (project != null && !project.isDisposed) {
                     DdsMetadataIndex.getInstance().getMetadata(file, project)
                 } else {
-                    DdsMetadataReader.read(file)
+                    DdsMetadataReader.readOrNull(file)
                 }
                 metadata?.let { ImageMetadata(it.width, it.height, format = it.format) }
             }
@@ -70,33 +73,38 @@ class ImageMetadataService {
                 val metadata = if (project != null && !project.isDisposed) {
                     TgaMetadataIndex.getInstance().getMetadata(file, project)
                 } else {
-                    TgaMetadataReader.read(file)
+                    TgaMetadataReader.readOrNull(file)
                 }
                 metadata?.let { ImageMetadata(it.width, it.height, bpp = it.bpp) }
             }
-            else -> readMetadata(file.getInputStream())
+            else -> {
+                readMetadata(file.inputStream)
+            }
         }
     }
 
     private fun readMetadata(inputStream: InputStream): ImageMetadata? {
         return inputStream.buffered().use { input ->
-            val imageInput = ImageIO.createImageInputStream(input) ?: return null
-            imageInput.use { stream ->
-                val reader = ImageIO.getImageReaders(stream).asSequence().firstOrNull() ?: return null
+            ImageIO.createImageInputStream(input)?.use { imageInputStream ->
+                val imageReader = ImageIO.getImageReaders(imageInputStream).asSequence().firstOrNull() ?: return null
                 try {
-                    reader.input = stream
-                    val width = reader.getWidth(0)
-                    val height = reader.getHeight(0)
-                    val format = reader.formatName
+                    imageReader.input = imageInputStream
+                    val width = imageReader.getWidth(0)
+                    val height = imageReader.getHeight(0)
+                    val format = imageReader.formatName
                     val bpp = runCatchingCancelable {
-                        reader.getImageTypes(0).asSequence().firstOrNull()?.colorModel?.pixelSize
+                        imageReader.getImageTypes(0).asSequence().firstOrNull()?.colorModel?.pixelSize
                     }.getOrNull()
                     ImageMetadata(width, height, format, bpp)
                 } finally {
-                    reader.dispose()
+                    imageReader.dispose()
                 }
             }
         }
+    }
+
+    override fun dispose() {
+        cache.cleanUp()
     }
 
     companion object {

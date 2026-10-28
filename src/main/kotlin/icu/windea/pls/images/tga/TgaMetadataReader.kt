@@ -1,19 +1,45 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.images.tga
 
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.concurrency.annotations.RequiresReadLock
 import icu.windea.pls.core.runCatchingCancelable
-import java.io.ByteArrayInputStream
+import java.io.IOException
+import java.io.InputStream
 import javax.imageio.ImageIO.*
 
 object TgaMetadataReader {
-    fun read(file: VirtualFile): TgaMetadata? {
-        return runCatchingCancelable { doRead(file) }.getOrNull()
+    @RequiresReadLock(generateAssertion = false)
+    fun readOrNull(file: VirtualFile): TgaMetadata? {
+        return runCatchingCancelable { readInternal(file) }
+            .getOrNull()
     }
 
-    private fun doRead(file: VirtualFile): TgaMetadata? {
+    fun readOrNull(inputStream: InputStream): TgaMetadata? {
+        return runCatchingCancelable { readInternal(inputStream) }
+            .getOrNull()
+    }
+
+    @RequiresReadLock(generateAssertion = false)
+    fun read(file: VirtualFile): TgaMetadata {
+        return runCatchingCancelable { readInternal(file) }
+            .getOrElse { e -> throw IllegalStateException("Cannot read tga metadata from file ${file.path}.", e) }
+    }
+
+    fun read(inputStream: InputStream): TgaMetadata {
+        return runCatchingCancelable { readInternal(inputStream) }
+            .getOrElse { e -> throw IllegalStateException("Cannot read DDS metadata from input stream.", e) }
+    }
+
+    private fun readInternal(file: VirtualFile): TgaMetadata {
+        // val inputStream = ByteArrayInputStream(file.contentsToByteArray())
+        return readInternal(file.inputStream)
+    }
+
+    private fun readInternal(inputStream: InputStream): TgaMetadata {
         // org.intellij.images.util.ImageInfoReader.read
         setUseCache(false)
-        val inputStream = ByteArrayInputStream(file.contentsToByteArray())
         createImageInputStream(inputStream).use { iis ->
             getImageReaders(iis).forEach { reader ->
                 reader.setInput(iis, true)
@@ -23,6 +49,6 @@ object TgaMetadataReader {
                 return TgaMetadata(width, height, bpp)
             }
         }
-        return null
+        throw IOException("No image reader found.")
     }
 }

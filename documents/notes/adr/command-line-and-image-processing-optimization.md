@@ -276,7 +276,7 @@ com.intellij.diagnostic.Freeze
 - 新增 `ProcessExecutorTest`，覆盖冒烟、区分 OS、UTF-8、退出码/stderr、超时、显式 indicator 取消、当前 indicator 取消。
 - 完成阶段 1 的迁移：Git、Texconv、Magick、Tiger、SpecialPath、CwtConfigService；移除 `isValid` 中的版本命令；Git 使用非交互参数 + 超时；SpecialPath 使用 JNA（回退 `reg query`）；CwtConfigService 直接读取 `.git/config`。
 - 旧命令行 API 暂时保留（已弃用）；旧测试仅补充 `@Suppress("DEPRECATION")`；生产调用点已迁移到 `ProcessExecutor`。
-- 将 remote URLs 的读取提取到 `ChronicleGitService.getRemoteUrls`；新增 `CwtConfigServiceRepoTest` 覆盖真实项目根目录下的 `cwt/core` 识别。
+- 将 remote URLs 的读取提取到 `ChronicleGitService.getRemoteUrls`；新增 `CwtConfigFileServiceTest` 覆盖真实项目根目录下的 `cwt/core` 识别。
 - 更新 `ProcessExecutor.execute` 与 `ChronicleGitService` 的异常注解和文档注释（主要是 `ExecutionException`）。
 
 #### 2026-10-28 - step 2
@@ -324,6 +324,35 @@ com.intellij.diagnostic.Freeze
 - [x] 需要为 `CwtConfigService.getContainingConfigGroupForRepo` 补充测试（集成测试）。应当可以从测试数据根目录（`src/test/testData`）向上找到项目的根目录，从而检查 `cwt/` 中的那些子目录。
 - [x] 需要确认 `ChronicleGitService` 中那些需要执行命令行的方法可能会抛出哪些常见异常（可能并不存在），并且同步更新这些方法以及 `ProcessExecutor.execute` 等相关方法的注解和文档注释。
 
+#### 2026-10-29 - step 2
+
+- [x] 修订 `icu.windea.pls.images.supports.DefaultImageSupport.doConvertImageFormat`，确保妥善关闭 stream/reader。
+- [x] 将 `getContainingConfigGroup` 从 `CwtConfigManager` 移到 `CwtConfigFileService`。
+  - 目的：避免内存泄露（如果要在 `VirtualFile` 上缓存数据，当插件卸载时，必须确保妥善清空）。
+  - `ChronicleFacade` `CwtConfigService` 等处也要重构。
+- [ ] 需要考虑进一步整理和重构 `ImageMetadata` 以及相关代码。
+  - 另外参见：`org.intellij.images.index.ImageInfoIndex` `org.intellij.images.util.ImageInfoReader`
+  - 我们需要避免重复造轮子，但是 `ImageInfoReader` 要求传入 byteArray，而这可能是不必要的，对于大文件来说也存在一些问题。
+  - 需要决策。
+- [ ] 在 `icu.windea.pls.config.configGroup.CwtConfigFileServiceTest` 中，除了验证 `cwt/core` 目录外，也需要验证 `cwt/cwtools-stellaris-config` 等目录。
+  - 各种游戏类型对应的子目录都需要验证。
+  - 如果要获取 `core` 以外的规则分组，必须先在集成测试中显式初始化。因此，我们在这里的测试中，实际上只需要验证 `getGameTypeFromRepoFile` 即可。
+- [ ] 将与图片渲染相关的代码（包括使用 `ImageRenderRequest`/`ImageRenderSession` 作为参数的）从 `ImageService` 提取到 `ImageRenderService`。
+- [ ] `ImageRenderService`/`ImageMetadataService` 需要实现接口 `Disposable`，并妥善地实现方法 `dispose`。
+- [ ] 如果无法从 `ImageMetadata` 获取图片尺寸，可能需要直接返回，而不是作为回退尝试从 `icon.iconHeight` 获取。
+  - 这可能会意外触发图片加载，获取的也可能不是原始高度。
+  - 需要决策。
+- [ ] 与图片处理相关的测试，如果是图片格式敏感的，应覆盖支持的标准图片格式（jpg/png/dds/tga）。
+  - 这可能需要先转换图片格式。
+- [ ] 与图片处理相关的测试，其测试数据（主要是各种格式的图片）应位于 `src/test/testData/images/` 目录下。
+  - 原始图片可以来自各个本地游戏目录中的某个真实图片，或者来自 `src/test/resources/images/mod_unknown.png` 等。
+- [ ] 需要补充测试，以验证图片格式转换的正确性和幂等性（转换/转换+反向转换）。
+  - 需要基于 `ImageService`/`ImageRenderService`。
+
+#### 2026-10-29 - step 6 - test & wrap-up
+
+- [ ] 需要补充测试，需要验证在各种策略下（TwelveMonkeys/texconv/magick），图片转换操作能够符合预期地成功/失败。这要求在测试时下载外部工具。
+
 ### 评估
 
 #### 2026-10-28 - step 0
@@ -342,9 +371,14 @@ com.intellij.diagnostic.Freeze
 - [ ] 考虑为 `ChronicleGitService` 补充测试。需要考虑如何获取一个可用的 Git 仓库路径。
 - [ ] 考虑为 `ChronicleSqliteService` 补充测试。
 
+#### 2026-10-29 - step 2
+
+
 ### 分析
 
-TBD
+#### 2026-10-29
+
+- [ ] 无法正确地从 DDS/PNG 转换图片格式为 TGA - 需要验证和分析，可使用 `src/test/resources/mod_unknown.png` 作为测试数据。
 
 ### 修订
 
@@ -413,6 +447,8 @@ TBD
 - `com.intellij.codeInsight.daemon.impl.InlayHintsPassFactoryInternal.clearModificationStamp`
 - `com.intellij.platform.ide.progress.withBackgroundProgress`
 - `com.intellij.execution.util.ExecUtil`
+- `org.intellij.images.index.ImageInfoIndex`
+- `org.intellij.images.util.ImageInfoReader`
 - TBD
 
 参考（次要）：

@@ -11,6 +11,7 @@ import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.tagType
+import icu.windea.pls.config.configGroup.CwtConfigFileService
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.documentation
 import icu.windea.pls.config.util.CwtConfigManager
@@ -455,7 +456,8 @@ object CwtDocumentationManager {
             return ChronicleFacade.getConfigGroup(project, originalElement)
         }
         if (element.language === CwtLanguage) {
-            return CwtConfigManager.getContainingConfigGroup(element)
+            val file = element.containingFile ?: return null
+            return CwtConfigFileService.getInstance().getContainingConfigGroup(file)
         }
         return null
     }

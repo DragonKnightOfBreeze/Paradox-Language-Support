@@ -8,8 +8,8 @@ import com.intellij.psi.util.siblings
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.CwtMemberConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
+import icu.windea.pls.config.configGroup.CwtConfigFileService
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.config.util.CwtConfigSchemaManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.completion.GlobalBasedCompletionContext
@@ -117,7 +117,8 @@ private object CwtCompletionContextFactory {
 
     private fun getConfigGroup(globalContext: GlobalCompletionContext): CwtConfigGroup {
         // 3.0.2 如果无法获取所属的规则分组，仍然回退到通用的规则分组
-        return CwtConfigManager.getContainingConfigGroup(globalContext.file) ?: ChronicleFacade.getConfigGroup(globalContext.file)
+        return CwtConfigFileService.getInstance().getContainingConfigGroup(globalContext.file)
+            ?: ChronicleFacade.getConfigGroup(globalContext.file)
     }
 
     private fun getExpressionElement(element: PsiElement): CwtExpressionElement? {

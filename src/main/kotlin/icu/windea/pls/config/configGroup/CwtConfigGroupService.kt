@@ -1,3 +1,5 @@
+@file:Suppress("unused", "UnstableApiUsage")
+
 package icu.windea.pls.config.configGroup
 
 import com.intellij.notification.NotificationAction
@@ -31,78 +33,9 @@ import kotlinx.coroutines.withContext
 /**
  * 规则分组的服务。主要用于获取与刷新规则分组，以及初始化其中的规则数据。
  */
-@Suppress("UnstableApiUsage")
 @Service(Service.Level.APP, Service.Level.PROJECT)
 class CwtConfigGroupService(private val project: Project = getDefaultProject()) : Disposable {
     private var cache = createConfigGroups()
-
-    suspend fun refreshBuiltInConfigFiles() {
-        if (project.isDisposed) return
-        val files = CwtConfigGroupFileProvider.EP_NAME.extensionList
-            .filter { it.source == CwtConfigGroupFileSource.BuiltIn }
-            .mapNotNull { it.getRootDirectory(project) }
-        if (files.isEmpty()) return
-        // 必须先切换到 EDT
-        withContext(Dispatchers.EDT) {
-            // 显示可以取消的模态进度条
-            val title = ChronicleBundle.message("configGroup.refresh.builtin.progress.title")
-            runWithModalProgressBlocking(project, title) {
-                files.forEach { file ->
-                    VfsUtil.markDirtyAndRefresh(false, true, true, file)
-                }
-            }
-        }
-    }
-
-    suspend fun initConfigGroups(configGroups: Collection<CwtConfigGroup>) {
-        if (configGroups.isEmpty()) return
-        if (project.isDisposed) return
-        val start = System.currentTimeMillis()
-        processConfigGroups(configGroups, false)
-        val end = System.currentTimeMillis()
-        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
-        logger.info("Initialized config groups for $targetName in ${end - start} ms.")
-    }
-
-    suspend fun refreshConfigGroups(configGroups: Collection<CwtConfigGroup>) {
-        if (configGroups.isEmpty()) return
-        if (project.isDisposed) return
-        val start = System.currentTimeMillis()
-        processConfigGroups(configGroups, true)
-        val end = System.currentTimeMillis()
-        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
-        logger.info("Refreshed config groups for $targetName in ${end - start} ms.")
-    }
-
-    private suspend fun processConfigGroups(configGroups: Collection<CwtConfigGroup>, refresh: Boolean) {
-        if (project.isDefault) {
-            val toProcess = configGroups.toSet()
-            toProcess.forEachConcurrent { configGroup ->
-                configGroup.init()
-            }
-        } else {
-            val toProcess = buildSet {
-                addAll(configGroups)
-                // 之后也要初始化应用级别的规则数据
-                configGroups.mapTo(this) { configGroup -> ChronicleFacade.getConfigGroup(configGroup.gameType) }
-            }
-            reportProgress(toProcess.size) { reporter ->
-                toProcess.forEachConcurrent { configGroup ->
-                    val default = configGroup.project.isDefault
-                    val gameTypeId = configGroup.gameType.id
-                    val step = when {
-                        default && !refresh -> ChronicleBundle.message("configGroup.process.step.application", gameTypeId)
-                        default -> ChronicleBundle.message("configGroup.process.step.application.refresh", gameTypeId)
-                        !refresh -> ChronicleBundle.message("configGroup.process.step.project", gameTypeId)
-                        else -> ChronicleBundle.message("configGroup.process.step.project.refresh", gameTypeId)
-                    }
-                    reporter.itemStep(step) {
-                        configGroup.init()
-                    }
-                }
-            }
-        }
-    }
 
     private fun createConfigGroups(): Map<ParadoxGameType, CwtConfigGroup> {
         val gameTypes = ParadoxGameType.getAll().toSet()
@@ -205,6 +138,74 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         if (project.isDefault || project.isDisposed) return
         // 通知规则分组的刷新状态发生更改
         application.messageBus.syncPublisher(CwtConfigGroupRefreshStatusListener.TOPIC).onChange(project)
+    }
+
+    suspend fun initConfigGroups(configGroups: Collection<CwtConfigGroup>) {
+        if (configGroups.isEmpty()) return
+        if (project.isDisposed) return
+        val start = System.currentTimeMillis()
+        processConfigGroups(configGroups, false)
+        val end = System.currentTimeMillis()
+        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
+        logger.info("Initialized config groups for $targetName in ${end - start} ms.")
+    }
+
+    suspend fun refreshConfigGroups(configGroups: Collection<CwtConfigGroup>) {
+        if (configGroups.isEmpty()) return
+        if (project.isDisposed) return
+        val start = System.currentTimeMillis()
+        processConfigGroups(configGroups, true)
+        val end = System.currentTimeMillis()
+        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
+        logger.info("Refreshed config groups for $targetName in ${end - start} ms.")
+    }
+
+    private suspend fun processConfigGroups(configGroups: Collection<CwtConfigGroup>, refresh: Boolean) {
+        if (project.isDefault) {
+            val toProcess = configGroups.toSet()
+            toProcess.forEachConcurrent { configGroup ->
+                configGroup.init()
+            }
+        } else {
+            val toProcess = buildSet {
+                addAll(configGroups)
+                // 之后也要初始化应用级别的规则数据
+                configGroups.mapTo(this) { configGroup -> ChronicleFacade.getConfigGroup(configGroup.gameType) }
+            }
+            reportProgress(toProcess.size) { reporter ->
+                toProcess.forEachConcurrent { configGroup ->
+                    val default = configGroup.project.isDefault
+                    val gameTypeId = configGroup.gameType.id
+                    val step = when {
+                        default && !refresh -> ChronicleBundle.message("configGroup.process.step.application", gameTypeId)
+                        default -> ChronicleBundle.message("configGroup.process.step.application.refresh", gameTypeId)
+                        !refresh -> ChronicleBundle.message("configGroup.process.step.project", gameTypeId)
+                        else -> ChronicleBundle.message("configGroup.process.step.project.refresh", gameTypeId)
+                    }
+                    reporter.itemStep(step) {
+                        configGroup.init()
+                    }
+                }
+            }
+        }
+    }
+
+    suspend fun refreshBuiltInConfigFiles() {
+        if (project.isDisposed) return
+        val files = CwtConfigGroupFileProvider.EP_NAME.extensionList
+            .filter { it.source == CwtConfigGroupFileSource.BuiltIn }
+            .mapNotNull { it.getRootDirectory(project) }
+        if (files.isEmpty()) return
+        // 必须先切换到 EDT
+        withContext(Dispatchers.EDT) {
+            // 显示可以取消的模态进度条
+            val title = ChronicleBundle.message("configGroup.refresh.builtin.progress.title")
+            runWithModalProgressBlocking(project, title) {
+                files.forEach { file ->
+                    VfsUtil.markDirtyAndRefresh(false, true, true, file)
+                }
+            }
+        }
     }
 
     override fun dispose() {

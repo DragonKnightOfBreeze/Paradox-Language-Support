@@ -1,9 +1,10 @@
-package icu.windea.pls.config.config
+package icu.windea.pls.config.configGroup
 
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.base.io.ChronicleGitService
+import icu.windea.pls.config.config.CwtConfigService
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
@@ -15,11 +16,11 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 /**
- * @see CwtConfigService.getContainingConfigGroupForRepo
+ * @see CwtConfigFileService
  */
 @RunWith(JUnit4::class)
-@TestDataPath("\$CONTENT_ROOT/testData")
-class CwtConfigServiceRepoTest : BasePlatformTestCase(), ChronicleTestScope {
+@TestDataPath("/testData")
+class CwtConfigFileServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
 
     @Test
@@ -30,24 +31,26 @@ class CwtConfigServiceRepoTest : BasePlatformTestCase(), ChronicleTestScope {
         val rootFile = VfsUtil.findFileByIoFile(projectRoot.toFile(), true) ?: error("Cannot find project root: $projectRoot")
         val remoteUrls = ChronicleGitService.getInstance().getRemoteUrls(rootFile)
         Assert.assertFalse(remoteUrls.toString(), remoteUrls.isEmpty())
-        rootFile.putUserData(CwtConfigService.Keys.gameTypeIdFromRepoFile, null)
+        rootFile.putUserData(CwtConfigService.Keys.gameTypeFromRepoRoot, null)
 
         val file = projectRoot.resolve("cwt/core/00_aliases.cwt")
         Assert.assertTrue("Test data file does not exist: $file", Files.isRegularFile(file))
         val virtualFile = VfsUtil.findFileByIoFile(file.toFile(), true) ?: error("Cannot find virtual file: $file")
         Assert.assertTrue(
             "File is not under cwt/core: ${virtualFile.path}",
-            virtualFile.path.startsWith(rootFile.path.trimEnd('/') + "/cwt/core/")
+            virtualFile.path.startsWith(rootFile.path.trimEnd('/') + "/cwt/core/"),
         )
 
-        val gameType = CwtConfigService.getGameTypeFromRepoFile(virtualFile, project)
+        val service = CwtConfigFileService.getInstance()
+
+        val gameType = service.getGameTypeFromRepoFile(virtualFile)
         Assert.assertEquals(
             "remoteUrls=$remoteUrls, root=${rootFile.path}, file=${virtualFile.path}",
             ParadoxGameType.Core,
-            gameType
+            gameType,
         )
 
-        val configGroup = CwtConfigService.getContainingConfigGroupForRepo(virtualFile, project)
+        val configGroup = service.getContainingConfigGroupForRepo(virtualFile, project)
 
         Assert.assertNotNull(configGroup)
         Assert.assertEquals(ParadoxGameType.Core, configGroup?.gameType)

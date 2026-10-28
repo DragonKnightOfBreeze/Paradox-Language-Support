@@ -73,7 +73,7 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
 
         sink.addInlinePresentation(element.endOffset, smallInset = true) {
             // 点击可以导航到声明处（图片）
-            icon(icon, iconFile?.toPsiFile(project)?.createPointer())
+            icon(icon, iconFile.toPsiFile(project)?.createPointer())
         }
     }
 }

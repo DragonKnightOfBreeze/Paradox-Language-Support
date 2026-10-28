@@ -41,10 +41,10 @@ import icu.windea.pls.config.config.extended.CwtExtendedScriptedVariableConfig
 import icu.windea.pls.config.config.internal.CwtFoldingSettingsConfig
 import icu.windea.pls.config.config.internal.CwtPostfixTemplateSettingsConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
+import icu.windea.pls.config.configGroup.CwtConfigFileService
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileInfo
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
-import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.process
 import icu.windea.pls.core.withState
 import icu.windea.pls.model.ParadoxGameType
@@ -63,6 +63,8 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
         // 按照文件路径（相对于规则分组的根目录）正序读取所有规则文件
         // 后加入的规则文件会覆盖先加入的同路径的规则文件
         // 后加入的数据项会覆盖先加入的同名同类型的数据项
+
+        val configFileService = CwtConfigFileService.getInstance()
 
         checkCanceled()
         val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
@@ -84,7 +86,7 @@ class CwtFileBasedConfigGroupProcessor : CwtConfigGroupProcessor {
                 currentCoroutineContext.ensureActive()
                 fileProvider.processFiles(configGroup, rootDirectory) { filePath, file ->
                     val targetFileInfos = when {
-                        CwtConfigManager.isInternalFile(filePath) -> internalFileInfos
+                        configFileService.isInternalFile(filePath) -> internalFileInfos
                         else -> fileInfos
                     }
                     targetFileInfos += CwtConfigGroupFileInfo(filePath, file, fileProvider.source)

@@ -16,6 +16,7 @@ import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Path
+import java.util.concurrent.ConcurrentMap
 
 object ParadoxAnalysisDataManager {
     object Keys : KeyRegistry() {
@@ -40,7 +41,7 @@ object ParadoxAnalysisDataManager {
         val injectedRootKeys by registerKey<List<String>>(this)
     }
 
-    val trackedFiles: MutableMap<VirtualFile, Boolean> = CollectionFactory.createConcurrentWeakIdentityMap()
+    val trackedFiles: ConcurrentMap<VirtualFile, Boolean> = CollectionFactory.createConcurrentWeakIdentityMap()
 
     /** 是否直接根据文件扩展名决定是否需要将文件类型重载为对应的文件类型（[ParadoxFileType]）。可用于集成测试。 */
     @Volatile var useDefaultFileExtensions: Boolean = false

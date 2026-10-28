@@ -22,7 +22,8 @@ import kotlin.time.Duration.Companion.milliseconds
  * 基于 [GeneralCommandLine] 和 [CapturingProcessHandler] 实现，从而取得更好的兼容性和性能。
  * 例如命令解析、取消检查和超时限制。
  *
- * 说明：
+ * ## 实现笔记
+ *
  * - 默认绑定构造时的当前 [ProgressIndicator]，从而尽可能支持取消。
  * - 默认不设置超时，调用点应按需设置超时。
  * - 为了与 [GeneralCommandLine] 对齐，配置方法仍然返回当前实例；
@@ -72,11 +73,11 @@ class ProcessExecutor(
     /**
      * 阻塞执行外部命令，并返回进程输出。
      *
-     * 说明：
-     * - 这是一个阻塞方法，通常应在后台线程中调用；这不属于硬性限制，如果检测到 EDT/readAction，会输出警告。
-     * - 如果进程无法启动（例如可执行文件不存在），会抛出 [ExecutionException]。
+     * 这是一个阻塞方法，通常应在后台线程中调用；这不属于硬性限制，如果检测到 EDT/readAction，会输出警告。
      *
-     * @throws ExecutionException 进程无法启动时抛出。
+     * @throws ExecutionException 如果进程无法启动（例如可执行文件不存在）。
+     *
+     * @see CapturingProcessHandler.runProcess
      * @see CapturingProcessHandler.runProcessWithProgressIndicator
      */
     @Throws(ExecutionException::class)

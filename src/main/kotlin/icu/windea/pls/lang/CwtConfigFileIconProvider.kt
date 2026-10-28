@@ -6,9 +6,8 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.config.configGroup.CwtConfigFileService
 import icu.windea.pls.cwt.CwtFileType
-import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import javax.swing.Icon
 
 /**
@@ -20,15 +19,14 @@ class CwtConfigFileIconProvider : FileIconProvider, DumbAware {
         if (file.isDirectory) {
             if (ProjectRootsUtil.isModuleContentRoot(file, project)) return null
             if (ProjectRootsUtil.isModuleSourceRoot(file, project)) return null
-            val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-            val fileProvider = fileProviders.find { it.getRootDirectory(project) == file }
-            if (fileProvider != null) {
+            val isRootDirectory = CwtConfigFileService.getInstance().isRootDirectory(file, project)
+            if (isRootDirectory) {
                 return ChronicleIcons.General.ConfigGroupDirectory
             }
         } else {
             // 兼容插件或者规则仓库中的 CWT 文件（此时将其视为规则文件）
             if (file.fileType !== CwtFileType) return null
-            val configGroup = CwtConfigManager.getContainingConfigGroup(file, project)
+            val configGroup = CwtConfigFileService.getInstance().getContainingConfigGroup(file, project)
             if (configGroup != null) {
                 return ChronicleIcons.FileTypes.CwtConfig
             }

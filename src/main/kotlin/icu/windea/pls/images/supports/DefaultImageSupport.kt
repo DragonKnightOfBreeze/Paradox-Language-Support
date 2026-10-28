@@ -47,16 +47,21 @@ class DefaultImageSupport : ImageSupport {
     @Suppress("NAME_SHADOWING")
     private fun doConvertImageFormat(inputStream: InputStream, outputStream: OutputStream, targetFormat: String): OutputStream {
         inputStream.buffered().use { inputStream ->
-            val imageInputStream = ImageIO.createImageInputStream(inputStream)
-            val imageReader = ImageIO.getImageReaders(imageInputStream).next()
-            imageReader.input = imageInputStream
-            val numImages = imageReader.getNumImages(false)
-            if (numImages == 0) throw IllegalStateException()
-            outputStream.use { outputStream ->
-                repeat(numImages) { i ->
-                    val image0 = imageReader.read(i)
-                    ImageIO.write(image0, targetFormat, outputStream)
-                    outputStream.flush()
+            ImageIO.createImageInputStream(inputStream)?.use { imageInputStream ->
+                val imageReader = ImageIO.getImageReaders(imageInputStream).next()
+                try {
+                    imageReader.input = imageInputStream
+                    val numImages = imageReader.getNumImages(false)
+                    if (numImages == 0) throw IllegalStateException()
+                    outputStream.use { outputStream ->
+                        repeat(numImages) { i ->
+                            val image0 = imageReader.read(i)
+                            ImageIO.write(image0, targetFormat, outputStream)
+                            outputStream.flush()
+                        }
+                    }
+                } finally {
+                    imageReader.dispose()
                 }
             }
         }

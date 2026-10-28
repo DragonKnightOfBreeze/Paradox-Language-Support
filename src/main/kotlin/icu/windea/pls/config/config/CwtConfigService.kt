@@ -1,22 +1,17 @@
 package icu.windea.pls.config.config
 
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.NlsSafe
-import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.base.io.ChronicleGitService
+import com.intellij.util.concurrency.annotations.RequiresReadLock
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypeCategories
 import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtConfigExpressionService
+import icu.windea.pls.config.configGroup.CwtConfigFileService
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.util.CwtConfigManager.getConfigPath
-import icu.windea.pls.config.util.CwtConfigManager.isInternalFile
 import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.CaseInsensitiveStringSet
@@ -26,11 +21,9 @@ import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.substringIn
-import icu.windea.pls.core.substringInLast
 import icu.windea.pls.core.surroundsWith
 import icu.windea.pls.core.toDelimitedList
 import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -43,7 +36,6 @@ import icu.windea.pls.cwt.psi.isDirectValue
 import icu.windea.pls.ep.config.config.CwtConfigFilterProvider
 import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
 import icu.windea.pls.ep.config.config.CwtInjectedConfigProvider
-import icu.windea.pls.ep.config.configGroup.CwtConfigGroupFileProvider
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.orSpecific
@@ -52,7 +44,7 @@ import icu.windea.pls.model.paths.CwtConfigPath
 @Optimized
 object CwtConfigService {
     object Keys : KeyRegistry() {
-        val gameTypeIdFromRepoFile by registerKey<String>(this)
+        val gameTypeFromRepoRoot by registerKey<ParadoxGameType>(this)
     }
 
     /**
@@ -100,61 +92,13 @@ object CwtConfigService {
         return r
     }
 
-    fun getContainingConfigGroupFromFileProviders(file: VirtualFile, project: Project): CwtConfigGroup? {
-        val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        val configGroup = fileProviders.firstNotNullOfOrNull { fileProvider ->
-            fileProvider.getContainingConfigGroup(file, project)
-        }
-        return configGroup
-    }
-
-    fun getContainingConfigGroupForRepo(file: VirtualFile, project: Project): CwtConfigGroup? {
-        val gameType = getGameTypeFromRepoFile(file, project)
-        if (gameType == null) return null
-        return ChronicleFacade.getConfigGroup(project, gameType)
-    }
-
-    fun getGameTypeFromRepoFile(file: VirtualFile, @Suppress("UNUSED_PARAMETER") project: Project): ParadoxGameType? {
-        // 使用缓存以优化性能
-        val parents = generateSequence(file.parent) { it.parent }
-        val root = parents.find { it.findChild(".git") != null } ?: return null
-        val gameTypeId = root.getOrPutUserData(Keys.gameTypeIdFromRepoFile) {
-            ProgressManager.checkCanceled()
-            // 直接读取 `.git/config`，避免为此启动 git 进程
-            val remoteUrls = ChronicleGitService.getInstance().getRemoteUrls(root)
-            remoteUrls.firstNotNullOfOrNull t@{ remoteUrl ->
-                when {
-                    remoteUrl.contains("Paradox-Language-Support") || remoteUrl.contains("Paradox-Chronicle") -> {
-                        val coreRootPath = root.path.trimEnd('/') + "/cwt/core/"
-                        if (file.path.startsWith(coreRootPath)) "core" else null
-                    }
-                    else -> remoteUrl.substringInLast("cwtools-", "-config", "").orNull()
-                }
-            }
-        }
-        if (gameTypeId.isNullOrEmpty()) return null
-        return ParadoxGameType.get(gameTypeId)
-    }
-
-    fun resolveFilePath(file: VirtualFile, configGroup: CwtConfigGroup): @NlsSafe String? {
-        val project = configGroup.project
-        val gameType = configGroup.gameType
-        val fileProviders = CwtConfigGroupFileProvider.EP_NAME.extensionList
-        fileProviders.forEach f@{ fileProvider ->
-            val rootDirectory = fileProvider.getRootDirectory(project) ?: return@f
-            val directoryName = fileProvider.getDirectoryName(project, gameType) ?: return@f
-            val directory = rootDirectory.findChild(directoryName) ?: return@f
-            val relativePath = VfsUtil.getRelativePath(file, directory) ?: return@f
-            return relativePath
-        }
-        return null
-    }
-
+    @RequiresReadLock(generateAssertion = false)
     fun resolveConfigPath(element: CwtMember): CwtConfigPath? {
         var current: PsiElement = element
         var depth = 0
         val subPaths = ArrayDeque<String>()
         while (current !is PsiFile) {
+            ProgressManager.checkCanceled()
             // 3.0.1 optimize: get and cache parent first
             val parent = current.parent ?: break
             when {
@@ -173,11 +117,14 @@ object CwtConfigService {
         return CwtConfigPath.resolve(subPaths)
     }
 
+    @RequiresReadLock(generateAssertion = false)
     fun resolveConfigType(element: CwtMember, file: PsiFile): CwtConfigType? {
         if (element !is CwtProperty && element !is CwtValue) return null
-        if (isInternalFile(file)) return null // 排除内部规则文件
-        val configPath = getConfigPath(element) ?: return null
-        if (configPath.isEmpty()) return null
+        // 排除规则路径不存在或者为空的情况
+        val configPath = getConfigPath(element)
+        if (configPath == null || configPath.isEmpty()) return null
+        // 排除内部规则文件
+        if (CwtConfigFileService.getInstance().isInternalFile(file)) return null
 
         val isProperty = element is CwtProperty
         val length = configPath.length
@@ -290,6 +237,8 @@ object CwtConfigService {
         }
     }
 
+
+    @RequiresReadLock(generateAssertion = false)
     fun getDocumentation(element: CwtMember): String? {
         val ownedComments = CwtPsiService.getOwnedDocComments(element)
         val documentation = CwtPsiService.getDocCommentText(ownedComments)

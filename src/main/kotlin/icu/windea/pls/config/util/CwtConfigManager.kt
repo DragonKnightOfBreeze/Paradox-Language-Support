@@ -1,13 +1,10 @@
 package icu.windea.pls.config.util
 
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.openapi.vfs.toNioPathOrNull
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.parentOfType
+import com.intellij.util.concurrency.annotations.RequiresReadLock
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.config.CwtConfig
 import icu.windea.pls.config.config.CwtConfigService
@@ -31,7 +28,6 @@ import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.toListOrThis
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getOrPutUserData
@@ -41,14 +37,11 @@ import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.values.singletonList
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.core.vfs.VirtualFileService
-import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.CwtLanguage
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtRootBlock
 import icu.windea.pls.model.paths.CwtConfigPath
-import kotlin.io.path.name
 
 @Optimized
 object CwtConfigManager {
@@ -64,53 +57,7 @@ object CwtConfigManager {
         val config by registerKey<CwtConfig<*>>(this)
     }
 
-    fun getContainingConfigGroup(element: PsiElement): CwtConfigGroup? {
-        val file = runSmartReadAction { element.containingFile } ?: return null
-        val vFile = file.virtualFile ?: return null
-        return getContainingConfigGroup(vFile, file.project)
-    }
-
-    fun getContainingConfigGroup(file: VirtualFile, project: Project): CwtConfigGroup? {
-        CwtConfigService.getContainingConfigGroupFromFileProviders(file, project)?.let { return it }
-
-        // 兼容插件或者规则仓库中的 CWT 文件（此时将其视为规则文件）
-        CwtConfigService.getContainingConfigGroupForRepo(file, project)?.let { return it }
-
-        return null
-    }
-
-    fun isInternalFile(file: PsiFile): Boolean {
-        val vFile = file.virtualFile ?: return false
-        return isInternalFile(vFile, file.project)
-    }
-
-    fun isInternalFile(file: VirtualFile, project: Project): Boolean {
-        if (VirtualFileService.isLightFile(file)) return false
-        val filePath = getFilePath(file, project)
-        if (filePath == null) {
-            // 兼容插件或者规则仓库中的 CWT 文件（此时将其视为规则文件）
-            val gameType = CwtConfigService.getGameTypeFromRepoFile(file, project)
-            if (gameType == null) return false
-            return file.parent.toNioPathOrNull()?.any { it.name == "internal" } ?: false
-        }
-        return isInternalFile(filePath)
-    }
-
-    fun isInternalFile(filePath: String): Boolean {
-        return filePath.startsWith("internal/")
-    }
-
-    fun getFilePath(file: PsiFile): String? {
-        val vFile = file.virtualFile ?: return null
-        return getFilePath(vFile, file.project)
-    }
-
-    fun getFilePath(file: VirtualFile, project: Project): String? {
-        if (file.fileType !== CwtFileType) return null
-        val configGroup = getContainingConfigGroup(file, project) ?: return null
-        return CwtConfigService.resolveFilePath(file, configGroup)
-    }
-
+    @RequiresReadLock(generateAssertion = false)
     fun getConfigPath(element: PsiElement): CwtConfigPath? {
         if (element.language !== CwtLanguage) return null
         if (element is CwtFile || element is CwtRootBlock) return CwtConfigPath.resolveEmpty()
@@ -127,6 +74,7 @@ object CwtConfigManager {
         }
     }
 
+    @RequiresReadLock(generateAssertion = false)
     fun getConfigType(element: PsiElement): CwtConfigType? {
         if (element.language !== CwtLanguage) return null
         val memberElement = element.parentOfType<CwtMember>(withSelf = true) ?: return null
@@ -142,6 +90,7 @@ object CwtConfigManager {
         }
     }
 
+    @RequiresReadLock(generateAssertion = false)
     fun getDocumentation(config: CwtMemberConfig<*>): String? {
         val memberElement = config.pointer.element ?: return null
         return getDocumentationInternal(memberElement)
