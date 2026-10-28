@@ -540,8 +540,8 @@
   - 执行命令行时，通常需要考虑指定超时。
   - 进行图片IO（渲染/转换/等等）时，也需要考虑进行取消检查（抵达字节大小阈值时）。
   - 参见：[adr/command-line-and-image-processing-optimization.md](adr/command-line-and-image-processing-optimization.md)
-- [ ] P2 优化插件自身提供的 `CommandLineExecutor` API ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
-  - 考虑默认委托给平台提供的 `ExecUtil` `GeneralCommandLine`，从而有可能通过传入 `ProgressIndicator` 来进行取消检查。
+- [x] P2 优化插件自身提供的 `CommandLineExecutor` API ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
+  - 考虑默认委托给平台提供的 `GeneralCommandLine`/`CapturingProcessHandler`，从而有可能通过传入 `ProgressIndicator` 来进行取消检查。
   - 参见：[adr/command-line-and-image-processing-optimization.md](adr/command-line-and-image-processing-optimization.md)
 - [x] P1 修复插件在 IDEA 2026.3 EAP 中存在的兼容性问题
   - 参见：`com.intellij.util.OpenSourceUtil`
@@ -603,8 +603,8 @@
 
 #### 内容
 
-- [ ] P2 优化插件自身提供的 `CommandLineExecutor` API ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
-  - 考虑默认委托给平台提供的 `ExecUtil` `GeneralCommandLine`。
+- [x] P2 优化插件自身提供的 `CommandLineExecutor` API ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
+  - 考虑默认委托给平台提供的 `GeneralCommandLine`/`CapturingProcessHandler`。
   - 可以通过传入 `ProgressIndicator` 来进行取消检查（抵达时间间隔阈值时）。
   - 可以指定执行超时。
 - [ ] P3 优化图片处理逻辑 ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))

@@ -26,8 +26,8 @@
   - 执行命令行时，通常需要考虑进行取消检查（抵达时间间隔阈值时）。
   - 执行命令行时，通常需要考虑指定超时。
   - 进行图片IO（渲染/转换/等等）时，也需要考虑进行取消检查（抵达字节大小阈值时）。
-- [ ] P2 优化插件自身提供的 `CommandLineExecutor` API
-  - 考虑默认委托给平台提供的 `ExecUtil` `GeneralCommandLine`，从而有可能通过传入 `ProgressIndicator` 来进行取消检查。
+- [x] P2 优化插件自身提供的 `CommandLineExecutor` API
+  - 考虑默认委托给平台提供的 `GeneralCommandLine`/`CapturingProcessHandler`，从而有可能通过传入 `ProgressIndicator` 来进行取消检查。
 
 ### 范围
 

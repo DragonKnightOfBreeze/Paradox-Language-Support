@@ -587,10 +587,6 @@
 
 ### 2026-09-01
 
-- [ ] P2 3.0.3 优化插件自身提供的 `CommandLineExecutor` API
-  - 考虑默认委托给平台提供的 `ExecUtil` `GeneralCommandLine`。
-  - 可以通过传入 `ProgressIndicator` 来进行取消检查（抵达时间间隔阈值时）。
-  - 可以指定执行超时。
 - [ ] P2/MAYBE 提供更完善的“块模版/子句模板”的代码补全
   - 基于规则文件以及特定算法，且提供一定的配置项。
   - 不需要依赖LLM（无论远程和本地），而是通过算法实现。
@@ -683,8 +679,8 @@
 ## 2026-10-08
 
 - [ ] P2 3.0.5 优化插件自身提供的 `CommandLineExecutor` API
-  - 考虑默认委托给平台提供的 `ExecUtil` `GeneralCommandLine`。
-  - 可以通过传入 `ProgressIndicator` 来进行取消检查
+  - 考虑默认委托给平台提供的 `GeneralCommandLine`/`CapturingProcessHandler`。
+  - 可以通过传入 `ProgressIndicator` 来进行取消检查（抵达时间间隔阈值时）。
   - 可以指定执行超时。
 - [ ] P3 3.0.5+ 考虑将 scriptedVariable/localisation 的 type 属性改为 lang 模块下的扩展属性，因为它们实际上是语义层的。然而，由于 type 的 resolve 静态方法直接位于 model 模块下，需要可能需要进一步的决策和重构
 - [ ] P3 3.0.x 考虑提供一种纯文本形式的 hintTextRenderer
