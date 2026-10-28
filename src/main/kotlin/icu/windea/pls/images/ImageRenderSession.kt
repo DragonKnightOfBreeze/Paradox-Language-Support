@@ -19,7 +19,7 @@ class ImageRenderSession(
 
     fun record(request: ImageRenderRequest): Deferred<Path?> {
         val job = scope.async(Dispatchers.IO) {
-            ImageService.getInstance().renderImage(request)
+            ImageRenderService.getInstance().renderImage(request)
         }
         synchronized(jobs) { jobs += job }
         return job

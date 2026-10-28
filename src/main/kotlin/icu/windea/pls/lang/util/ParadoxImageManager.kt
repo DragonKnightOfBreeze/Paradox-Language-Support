@@ -19,6 +19,7 @@ import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toUUID
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.images.ImageRenderService
 import icu.windea.pls.images.ImageService
 import icu.windea.pls.images.dds.DdsFileType
 import icu.windea.pls.images.tga.TgaFileType
@@ -193,7 +194,7 @@ object ParadoxImageManager {
         imagePath.create()
         ProgressManager.checkCanceled()
         val image = ImageIO.read(filePath.toFile()) ?: return false
-        val slicedImage = ImageService.getInstance().sliceImage(image, frameInfo) ?: return false
+            val slicedImage = ImageRenderService.getInstance().sliceImage(image, frameInfo) ?: return false
         ProgressManager.checkCanceled()
         ImageIO.write(slicedImage, "png", imagePath.toFile())
         return true

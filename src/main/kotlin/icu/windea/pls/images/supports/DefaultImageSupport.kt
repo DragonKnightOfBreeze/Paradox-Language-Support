@@ -3,6 +3,7 @@ package icu.windea.pls.images.supports
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.images.ImageSupport
+import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
@@ -51,12 +52,14 @@ class DefaultImageSupport : ImageSupport {
                 val imageReader = ImageIO.getImageReaders(imageInputStream).next()
                 try {
                     imageReader.input = imageInputStream
-                    val numImages = imageReader.getNumImages(false)
-                    if (numImages == 0) throw IllegalStateException()
+                    // 某些图片读取器（如 JPEG）在无法预先确定帧数时会返回 -1，此时至少转换第一帧
+                    val numImages = imageReader.getNumImages(false).takeIf { it > 0 } ?: 1
                     outputStream.use { outputStream ->
                         repeat(numImages) { i ->
                             val image0 = imageReader.read(i)
-                            ImageIO.write(image0, targetFormat, outputStream)
+                            val image = toCompatibleImage(image0)
+                            val written = ImageIO.write(image, targetFormat, outputStream)
+                            if (!written) throw IllegalStateException("No image writer found for format: $targetFormat")
                             outputStream.flush()
                         }
                     }
@@ -66,5 +69,21 @@ class DefaultImageSupport : ImageSupport {
             }
         }
         return outputStream
+    }
+
+    /**
+     * 将图片转换为标准颜色模型，避免 JPEG 的 CMYK 等自定义颜色模型导致 `ImageIO.write` 静默失败。
+     */
+    private fun toCompatibleImage(image: BufferedImage): BufferedImage {
+        val type = if (image.colorModel.hasAlpha()) BufferedImage.TYPE_INT_ARGB else BufferedImage.TYPE_INT_RGB
+        if (image.type == type) return image
+        val result = BufferedImage(image.width, image.height, type)
+        val graphics = result.createGraphics()
+        try {
+            graphics.drawImage(image, 0, 0, null)
+        } finally {
+            graphics.dispose()
+        }
+        return result
     }
 }
