@@ -175,7 +175,7 @@ com.intellij.diagnostic.Freeze
   - 也就是说 `com.intellij.lang.annotation.ExternalAnnotator.doAnnotate` 的调用链上层是有 indicator 的，但不能直接获取。
   - 由于 indicator API 已经过时，如果需要明确的状态指示，建议的方式可能仍然是 `runBlockingCancellable` + `withBlackgroundProgresss`。
 
-### 任务计划草案
+### 探讨
 
 关于初步的任务计划：
 - 命令行执行逻辑的相关重构：弃用 `CommandLineService` 等，新增 `ExecutionService`，提供存在多种变体的方法 `execute`
@@ -230,7 +230,7 @@ com.intellij.diagnostic.Freeze
     - 因此直接发生在 `ParadoxHintsProvider.collectFromElement` 中是可行的，但这本身可能发生在 readAction 中，可能需要另开线程/协程来渲染。
     - 超时设置可以与 `iconHeightLimit` 对齐，参见 `ParadoxHintsSettings`。
 
-### 任务计划 （AI 协助）
+### 任务计划草案（AI 协助）
 
 > 初版计划；执行过程中在 `任务计划 （修订）` 章节记录调整。
 
@@ -267,9 +267,9 @@ com.intellij.diagnostic.Freeze
 - `ParadoxImageManager` 暂时保留，后续再评估是否拆分/重命名。
 - 测试工具默认启用。
 
-### 任务计划 （修订）
+### 任务计划（AI 协助）
 
-#### 2026-10-28 - v1
+#### 2026-10-28 - step 1
 
 - 完成阶段 1 的基础设施部分：新增 `ProgressExecutor`、`ExecutionTimeouts`，并将 `CommandLineExecutor`/`executeCommandLine`/`CommandLineService`/`CommandType` 标记为弃用。
 - `ProgressExecutor` 默认绑定当前 indicator；提供 `withIndicator`/`withoutIndicator`/`withTimeout`/`withDestroyOnTimeout`。
@@ -304,11 +304,14 @@ com.intellij.diagnostic.Freeze
 
 ### 主要 & 次要（修订）
 
-TBD
+#### 2026-10-28 - step 1
+
+- [x] 修订 `core.execution` 中旧代码：也弃用 `CommandLineExecutionException`，更新快速文档（`## 弃用声明`）
+- [x] 修订 `core.execution` 中的新增代码：添加 `@file:Suppress("unused")`
 
 ### 评估
 
-#### 2026-10-28 - v0
+#### 2026-10-28 - step 0
 
 - [ ] 考虑将 `icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext` 移到 `icu.windea.pls.lang.codeInsight.hints.InlayHintsContext`（与 `DocumentationContext` 对齐），并且移出属性 `settings`（因为这是语义相关的）
 - [ ] 由于模块依赖问题，`icu.windea.pls.images.ImageFrameInfo` 可能需要移到 `icu.windea.pls` 中的某个子包下
@@ -325,7 +328,7 @@ TBD
 
 ### 修订
 
-- 2026-10-28：完成阶段 1 基础设施部分；详见 `笔记 > 任务计划 （修订）`。
+TBD
 
 ## 参见
 
@@ -349,7 +352,7 @@ TBD
 
 测试代码：
 
-- [x] `icu.windea.pls.core.execution.ProgressExecutorTest` - 常见命令/区分 OS/取消行为/超时行为/编码/stderr/退出码
+- [x] `icu.windea.pls.core.execution.ProgressExecutorTest` - 常见命令/区分OS/区分编码/取消行为/超时行为/编码/stderr/退出码
 - [ ] `icu.windea.pls.core.execution.ProgressExecutorExternalToolBasedTest` - 需要下载外部工具并验证
 - [ ] `icu.windea.pls.images.ImageMetadataServiceTest`
 - TBD

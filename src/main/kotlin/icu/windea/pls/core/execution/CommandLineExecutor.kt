@@ -1,4 +1,4 @@
-@file:Suppress("DEPRECATION")
+@file:Suppress("unused", "DEPRECATION")
 
 package icu.windea.pls.core.execution
 
@@ -7,19 +7,21 @@ import com.intellij.openapi.util.SystemInfo
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
-import kotlin.text.Charsets
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
- * 外部命令的执行器。
+ * 外部命令执行器。
  *
- * 备注：3.0.5 起请优先使用 [ProgressExecutor]。这里暂时保留，以便兼容已有调用点和测试。
+ * ## 弃用声明
+ *
+ * 自插件版本 3.0.5 开始，应改为使用 [ProgressExecutor]，以取得更好的兼容性和性能。
+ * 目前暂时保留。
  *
  * @param environment 额外环境变量。
  * @param workDirectory 工作目录。
  * @param timeout 超时（毫秒）。
  */
-@Deprecated("Use ProgressExecutor instead.")
+@Deprecated("Use `ProgressExecutor` instead.")
 class CommandLineExecutor(
     val environment: Map<String, String> = emptyMap(),
     val workDirectory: File? = null,

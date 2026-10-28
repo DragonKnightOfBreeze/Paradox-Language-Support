@@ -1,6 +1,8 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "DEPRECATION")
 
 package icu.windea.pls.core.execution
+
+import com.intellij.execution.ExecutionException
 
 /**
  * 命令行执行异常。
@@ -9,8 +11,8 @@ package icu.windea.pls.core.execution
  *
  * @see CommandLineExecutor
  */
-class CommandLineExecutionException : IllegalStateException {
-    constructor() : super()
+@Deprecated("Use `ProgressExecutor` with `GeneralCommandLine` instead.")
+class CommandLineExecutionException : ExecutionException {
     constructor(message: String) : super(message)
     constructor(message: String, cause: Throwable) : super(message, cause)
     constructor(cause: Throwable) : super(cause)

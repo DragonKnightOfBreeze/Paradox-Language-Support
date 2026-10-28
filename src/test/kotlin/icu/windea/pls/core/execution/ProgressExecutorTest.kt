@@ -15,7 +15,6 @@ import org.junit.runners.JUnit4
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
 
 /**
  * @see ProgressExecutor
@@ -43,7 +42,7 @@ class ProgressExecutorTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun execute_utf8Output_test() {
+    fun execute_encoding_utf8Output_test() {
         val commandLine = if (SystemInfo.isWindows) {
             GeneralCommandLine(
                 "powershell",
@@ -77,7 +76,7 @@ class ProgressExecutorTest : BasePlatformTestCase() {
 
     @Test
     fun execute_exitCode_and_stderr_test() {
-        val output = ProgressExecutor(createFailCommandLine()).execute()
+        val output = ProgressExecutor(createFailCommandLine("boom")).execute()
 
         Assert.assertNotEquals(0, output.exitCode)
         Assert.assertTrue(output.stderr.contains("boom"))
@@ -151,6 +150,7 @@ class ProgressExecutorTest : BasePlatformTestCase() {
         Assert.assertTrue("current indicator cancellation should take effect, elapsed=$elapsedMillis ms", elapsedMillis < 5000)
     }
 
+    @Suppress("SameParameterValue")
     private fun createEchoCommandLine(text: String): GeneralCommandLine {
         return if (SystemInfo.isWindows) {
             GeneralCommandLine("cmd", "/c", "echo $text")
@@ -159,14 +159,16 @@ class ProgressExecutorTest : BasePlatformTestCase() {
         }
     }
 
-    private fun createFailCommandLine(): GeneralCommandLine {
+    @Suppress("SameParameterValue")
+    private fun createFailCommandLine(text: String): GeneralCommandLine {
         return if (SystemInfo.isWindows) {
-            GeneralCommandLine("cmd", "/c", "echo boom 1>&2 & exit /b 1")
+            GeneralCommandLine("cmd", "/c", "echo $text 1>&2 & exit /b 1")
         } else {
-            GeneralCommandLine("/bin/sh", "-c", "echo boom 1>&2; exit 1")
+            GeneralCommandLine("/bin/sh", "-c", "echo $text 1>&2; exit 1")
         }
     }
 
+    @Suppress("SameParameterValue")
     private fun createSleepCommandLine(seconds: Int): GeneralCommandLine {
         return if (SystemInfo.isWindows) {
             // `ping` 的 `-n` 参数表示次数；额外增加一次以接近指定的秒数

@@ -9,7 +9,7 @@ import java.io.File
 import java.io.IOException
 
 /** @see CommandLineExecutor.execute */
-@Deprecated("Use ProgressExecutor instead.")
+@Deprecated("Use `ProgressExecutor` instead.")
 @Throws(IOException::class, InterruptedException::class, CommandLineExecutionException::class)
 inline fun executeCommandLine(
     command: String,
@@ -22,7 +22,7 @@ inline fun executeCommandLine(
 }
 
 /** @see CommandLineExecutor.execute */
-@Deprecated("Use ProgressExecutor instead.")
+@Deprecated("Use `ProgressExecutor` instead.")
 @Throws(IOException::class, InterruptedException::class, CommandLineExecutionException::class)
 inline fun executeCommandLine(
     commands: List<String>,
