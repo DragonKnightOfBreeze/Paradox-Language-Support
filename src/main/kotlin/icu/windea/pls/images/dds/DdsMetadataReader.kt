@@ -31,7 +31,7 @@ object DdsMetadataReader {
 
     fun read(inputStream: InputStream): DdsMetadata {
         return runCatchingCancelable { readInternal(inputStream) }
-            .getOrElse { e -> throw IllegalStateException("Cannot read DDS metadata from input stream.", e) }
+            .getOrElse { e -> throw IllegalStateException("Cannot read dds metadata from input stream.", e) }
     }
 
     private fun readInternal(file: VirtualFile): DdsMetadata {
@@ -39,6 +39,7 @@ object DdsMetadataReader {
     }
 
     private fun readInternal(inputStream: InputStream): DdsMetadata {
+        // org.intellij.images.util.ImageInfoReader.read
         val info = inputStream.use { DdsInfoReader.read(it) }
         return DdsMetadata(info.width, info.height, info.format)
     }

@@ -194,7 +194,7 @@ object ParadoxImageManager {
         imagePath.create()
         ProgressManager.checkCanceled()
         val image = ImageIO.read(filePath.toFile()) ?: return false
-            val slicedImage = ImageRenderService.getInstance().sliceImage(image, frameInfo) ?: return false
+        val slicedImage = ImageRenderService.getInstance().sliceImage(image, frameInfo) ?: return false
         ProgressManager.checkCanceled()
         ImageIO.write(slicedImage, "png", imagePath.toFile())
         return true

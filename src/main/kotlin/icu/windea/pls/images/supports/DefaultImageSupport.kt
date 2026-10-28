@@ -52,8 +52,7 @@ class DefaultImageSupport : ImageSupport {
                 val imageReader = ImageIO.getImageReaders(imageInputStream).next()
                 try {
                     imageReader.input = imageInputStream
-                    // 某些图片读取器（如 JPEG）在无法预先确定帧数时会返回 -1，此时至少转换第一帧
-                    val numImages = imageReader.getNumImages(false).takeIf { it > 0 } ?: 1
+                    val numImages = getNumImages(imageReader)
                     outputStream.use { outputStream ->
                         repeat(numImages) { i ->
                             val image0 = imageReader.read(i)
@@ -71,13 +70,21 @@ class DefaultImageSupport : ImageSupport {
         return outputStream
     }
 
-    /**
-     * 将图片转换为标准颜色模型，避免 JPEG 的 CMYK 等自定义颜色模型导致 `ImageIO.write` 静默失败。
-     */
+    private fun getNumImages(imageReader: ImageReader?): Int {
+        // NOTE 3.0.5 某些图片读取器（如 JPEG）在无法预先确定帧数时会返回 -1，此时至少转换第一帧
+        return imageReader?.getNumImages(false)?.takeIf { it > 0 } ?: 1
+    }
+
+
     private fun toCompatibleImage(image: BufferedImage): BufferedImage {
+        // NOTE 3.0.5 将图片转换为标准颜色模型，避免 JPEG 的 CMYK 等自定义颜色模型导致 `ImageIO.write` 静默失败。
         val type = if (image.colorModel.hasAlpha()) BufferedImage.TYPE_INT_ARGB else BufferedImage.TYPE_INT_RGB
         if (image.type == type) return image
-        val result = BufferedImage(image.width, image.height, type)
+        val width = image.width
+        val height = image.height
+        @Suppress("UndesirableClassUsage") // NOTE 3.0.5 （目前认为）这里应当直接构造 `BufferedImage`，不进行缩放
+        val result = BufferedImage(width, height, type)
+        // val result = ImageUtil.createImage(width, height, type)
         val graphics = result.createGraphics()
         try {
             graphics.drawImage(image, 0, 0, null)

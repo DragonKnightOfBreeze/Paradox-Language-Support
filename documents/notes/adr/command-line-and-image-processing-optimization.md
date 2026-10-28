@@ -286,9 +286,9 @@ com.intellij.diagnostic.Freeze
 - 新增 `ImageCacheCleanupPolicy`、`ImageRenderFailurePolicy`、`ImageRenderPolicy` 及 bundle 文案。
 - 新增 `ImageMetadataServiceTest`、`ImageServiceTest`、`ImageCacheCleanerTest`。
 
-## 任务
+## 任务（AI 协助）
 
-### 主要 & 次要（AI 协助）
+### 主要 & 次要
 
 - [x] 基础设施
   - [x] 新增 `ProcessExecutor`、`ExecutionTimeouts`；弃用旧命令行 API
@@ -381,15 +381,17 @@ com.intellij.diagnostic.Freeze
 
 #### 2026-10-29
 
-- [x] 无法正确地从 DDS/PNG 转换图片格式为 TGA。
+- [x] 无法正确地从 DDS/PNG 转换图片格式为 TGA
   - 原因：`DefaultImageSupport` 使用 `ImageReader.getNumImages(false)` 判断帧数；JPEG/DDS 等读取器在无法预知帧数时会返回 `-1`，导致 `repeat(-1)` 不执行任何转换，最终产出空文件。
   - 修复：当帧数不确定（`<= 0`）时至少转换第一帧；同时将图片转换为标准颜色模型，避免 CMYK 等自定义颜色模型导致 `ImageIO.write` 静默失败；`ImageService` 对空产出继续尝试下一个 `ImageSupport`。
+- [ ] 无法正确地从 DDS/PNG 转换图片格式为 TGA（进阶，暂时搁置）
+  - 需要验证（且仅验证/单独验证）使用基于外部工具的 imageSupport 时，是否也可以正确工作。
 
 ### 修订
 
 TBD
 
-## 参见
+## 参见（AI 协助）
 
 ### 相关代码位置
 

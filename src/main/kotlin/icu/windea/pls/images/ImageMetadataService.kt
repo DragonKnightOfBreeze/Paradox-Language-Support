@@ -89,7 +89,9 @@ class ImageMetadataService : Disposable {
                 val imageReader = ImageIO.getImageReaders(imageInputStream).asSequence().firstOrNull() ?: return null
                 try {
                     imageReader.input = imageInputStream
-                    ImageMetadata(imageReader.getWidth(0), imageReader.getHeight(0))
+                    val width = imageReader.getWidth(0)
+                    val height = imageReader.getHeight(0)
+                    ImageMetadata(width, height)
                 } finally {
                     imageReader.dispose()
                 }
