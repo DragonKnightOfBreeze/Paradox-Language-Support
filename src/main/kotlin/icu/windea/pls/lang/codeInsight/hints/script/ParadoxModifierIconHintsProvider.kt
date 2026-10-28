@@ -11,6 +11,7 @@ import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.ui.toIconOrNull
+import icu.windea.pls.images.ImageMetadataService
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
@@ -23,7 +24,6 @@ import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
-import javax.imageio.ImageIO
 
 /**
  * 通过内嵌提示显示修正的渲染后的图标。
@@ -56,11 +56,8 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
         val iconFile = paths.firstNotNullOfOrNull { path ->
             val iconSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
             ParadoxFilePathSearch.searchModifierIcon(path, iconSelector).find()
-        }
-        val iconUrl = when {
-            iconFile != null -> ParadoxImageManager.resolveUrlByFile(iconFile, project)
-            else -> null
-        }
+        } ?: return
+        val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile, project)
 
         // 如果无法解析（包括对应文件不存在的情况）就直接跳过
         if (!ParadoxImageManager.canResolve(iconUrl)) return
@@ -69,7 +66,9 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
         val iconFileUrl = iconUrl.toFileUrl()
         val icon = iconFileUrl.toIconOrNull() ?: return
         // 这里需要尝试使用图标的原始高度
-        val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
+        val originalIconHeight = runCatchingCancelable {
+            ImageMetadataService.getInstance().getMetadata(iconFile, context.project)?.height
+        }.getOrNull() ?: icon.iconHeight
         if (originalIconHeight > context.settings.iconHeightLimit) return
 
         sink.addInlinePresentation(element.endOffset, smallInset = true) {

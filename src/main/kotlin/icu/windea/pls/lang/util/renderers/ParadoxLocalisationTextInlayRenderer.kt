@@ -17,11 +17,13 @@ import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.text.EscapePatterns
 import icu.windea.pls.core.toFileUrl
+import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.ui.UiService
 import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.core.unescape
 import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.images.ImageMetadataService
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.highlighting.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
@@ -48,7 +50,6 @@ import icu.windea.pls.localisation.text.ParadoxLocalisation
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.Color
 import java.util.concurrent.atomic.AtomicInteger
-import javax.imageio.ImageIO
 
 /**
  * 将本地化文本渲染为内嵌提示（[InlayPresentation]）的渲染器。
@@ -219,7 +220,9 @@ class ParadoxLocalisationTextInlayRenderContext(
             // 找不到图标的话就直接跳过
             val icon = iconFileUrl.toIconOrNull() ?: return@r
             // 这里需要尝试使用图标的原始高度
-            val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
+            val originalIconHeight = runCatchingCancelable {
+                iconUrl.toPathOrNull()?.let { ImageMetadataService.getInstance().getMetadata(it)?.height }
+            }.getOrNull() ?: icon.iconHeight
             // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             if (originalIconHeight > hintsContext.settings.iconHeightLimit) return@r // 图标过大，不再尝试渲染
             // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
