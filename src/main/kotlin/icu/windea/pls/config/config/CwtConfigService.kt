@@ -23,10 +23,6 @@ import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.substringIn
 import icu.windea.pls.core.surroundsWith
 import icu.windea.pls.core.toDelimitedList
-import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.cwt.psi.CwtFile
 import icu.windea.pls.cwt.psi.CwtMember
 import icu.windea.pls.cwt.psi.CwtProperty
@@ -37,16 +33,11 @@ import icu.windea.pls.ep.config.config.CwtConfigFilterProvider
 import icu.windea.pls.ep.config.config.CwtConfigPostProcessor
 import icu.windea.pls.ep.config.config.CwtInjectedConfigProvider
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
-import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.orSpecific
 import icu.windea.pls.model.paths.CwtConfigPath
 
 @Optimized
 object CwtConfigService {
-    object Keys : KeyRegistry() {
-        val gameTypeFromRepoRoot by registerKey<ParadoxGameType>(this)
-    }
-
     /**
      * @see CwtConfigFilterProvider.filter
      */
