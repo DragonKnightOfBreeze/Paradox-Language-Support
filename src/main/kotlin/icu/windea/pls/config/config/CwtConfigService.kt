@@ -20,12 +20,11 @@ import icu.windea.pls.core.annotations.CaseInsensitive
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.executeCommandLine
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.splitByBlank
+import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.substringIn
 import icu.windea.pls.core.substringInLast
 import icu.windea.pls.core.surroundsWith
@@ -122,25 +121,21 @@ object CwtConfigService {
         val root = parents.find { it.findChild(".git") != null } ?: return null
         val rootPsi = root.toPsiDirectory(project) ?: return null
         val gameTypeId = rootPsi.getOrPutUserData(Keys.gameTypeIdFromRepoFile) {
-            ProgressManager.checkCanceled() // 在执行命令前检查进度是否被取消
-            runCatching {
-                val command = "git remote -v"
-                val workDirectory = root.toNioPath().toFile()
-                val commandResult = executeCommandLine(command, workDirectory = workDirectory)
-                val gameTypeId = commandResult.lines()
-                    .mapNotNull { it.splitByBlank(3).getOrNull(1) }
-                    .firstNotNullOfOrNull t@{
-                        when {
-                            it.contains("Paradox-Language-Support") || it.contains("Paradox-Chronicle") -> {
-                                val coreRoot = VfsUtil.findRelativeFile(root, "cwt/core")
-                                val r = coreRoot != null && VfsUtil.isAncestor(coreRoot, file, true)
-                                if (r) "core" else null
-                            }
-                            else -> it.substringInLast("cwtools-", "-config", "").orNull()
-                        }
+            ProgressManager.checkCanceled()
+            // 直接读取 `.git/config`，避免为此启动 git 进程
+            val configFile = root.findChild(".git")?.findChild("config") ?: return@getOrPutUserData null
+            val configText = runCatchingCancelable { VfsUtil.loadText(configFile) }.getOrNull() ?: return@getOrPutUserData null
+            val remoteUrls = Regex("""(?m)^\s*url\s*=\s*([^\r\n]+?)\s*$""").findAll(configText).map { it.groupValues[1].trim() }
+            remoteUrls.firstNotNullOfOrNull t@{ remoteUrl ->
+                when {
+                    remoteUrl.contains("Paradox-Language-Support") || remoteUrl.contains("Paradox-Chronicle") -> {
+                        val coreRoot = VfsUtil.findRelativeFile(root, "cwt/core")
+                        val r = coreRoot != null && VfsUtil.isAncestor(coreRoot, file, true)
+                        if (r) "core" else null
                     }
-                gameTypeId
-            }.getOrNull()
+                    else -> remoteUrl.substringInLast("cwtools-", "-config", "").orNull()
+                }
+            }
         }
         if (gameTypeId.isNullOrEmpty()) return null
         return ParadoxGameType.get(gameTypeId)
