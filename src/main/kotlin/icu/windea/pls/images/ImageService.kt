@@ -27,6 +27,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
 import javax.imageio.spi.IIORegistry
 import kotlin.math.min
@@ -239,12 +240,16 @@ class ImageService : AppLifecycleListener, DynamicPluginListener {
     }
 
     private fun cleanupImageCacheAsync() {
-        AppExecutorUtil.getAppExecutorService().execute {
-            try {
-                cacheCleaner.cleanup()
-            } catch (e: Exception) {
-                logger.warn("Failed to clean up image cache.", e)
-            }
+        val executor = AppExecutorUtil.getAppScheduledExecutorService()
+        executor.execute { cleanupImageCache() }
+        executor.scheduleWithFixedDelay({ cleanupImageCache() }, 1, 1, TimeUnit.HOURS)
+    }
+
+    private fun cleanupImageCache() {
+        try {
+            cacheCleaner.cleanup()
+        } catch (e: Exception) {
+            logger.warn("Failed to clean up image cache.", e)
         }
     }
 }
