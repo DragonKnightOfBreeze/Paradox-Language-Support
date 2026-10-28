@@ -290,7 +290,7 @@ com.intellij.diagnostic.Freeze
 
 ### 主要 & 次要（AI 协助）
 
-- [ ] 基础设施
+- [x] 基础设施
   - [x] 新增 `ProcessExecutor`、`ExecutionTimeouts`；弃用旧命令行 API
   - [x] 新增 `ImageMetadataService`
   - [x] 扩展 `ImageService`：缓存、渲染、`ImageRenderSession`、`ImageCacheCleaner`
