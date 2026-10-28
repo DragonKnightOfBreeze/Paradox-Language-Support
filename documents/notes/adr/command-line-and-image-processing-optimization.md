@@ -330,23 +330,23 @@ com.intellij.diagnostic.Freeze
 - [x] 将 `getContainingConfigGroup` 从 `CwtConfigManager` 移到 `CwtConfigFileService`。
   - 目的：避免内存泄露（如果要在 `VirtualFile` 上缓存数据，当插件卸载时，必须确保妥善清空）。
   - `ChronicleFacade` `CwtConfigService` 等处也要重构。
-- [ ] 需要考虑进一步整理和重构 `ImageMetadata` 以及相关代码。
-  - 另外参见：`org.intellij.images.index.ImageInfoIndex` `org.intellij.images.util.ImageInfoReader`
-  - 我们需要避免重复造轮子，但是 `ImageInfoReader` 要求传入 byteArray，而这可能是不必要的，对于大文件来说也存在一些问题。
-  - 需要决策。
-- [ ] 在 `icu.windea.pls.config.configGroup.CwtConfigFileServiceTest` 中，除了验证 `cwt/core` 目录外，也需要验证 `cwt/cwtools-stellaris-config` 等目录。
+- [x] 需要考虑进一步整理和重构 `ImageMetadata` 以及相关代码。
+  - 决策：保留基于流式读取的 `ImageMetadataService`，不直接采用 `ImageInfoIndex`/`ImageInfoReader`。
+  - `ImageInfoReader` 只接受 `byte[]`，对大文件不必要；`ImageInfoIndex` 主要覆盖平台 `ImageFileType`/SVG，不覆盖 DDS/TGA。
+  - 同时将 `ImageMetadata` 收敛为 `width`/`height`，移除未使用的 `format`/`bpp`。
+- [x] 在 `icu.windea.pls.config.configGroup.CwtConfigFileServiceTest` 中，除了验证 `cwt/core` 目录外，也需要验证 `cwt/cwtools-stellaris-config` 等目录。
   - 各种游戏类型对应的子目录都需要验证。
   - 如果要获取 `core` 以外的规则分组，必须先在集成测试中显式初始化。因此，我们在这里的测试中，实际上只需要验证 `getGameTypeFromRepoFile` 即可。
-- [ ] 将与图片渲染相关的代码（包括使用 `ImageRenderRequest`/`ImageRenderSession` 作为参数的）从 `ImageService` 提取到 `ImageRenderService`。
-- [ ] `ImageRenderService`/`ImageMetadataService` 需要实现接口 `Disposable`，并妥善地实现方法 `dispose`。
-- [ ] 如果无法从 `ImageMetadata` 获取图片尺寸，可能需要直接返回，而不是作为回退尝试从 `icon.iconHeight` 获取。
+- [x] 将与图片渲染相关的代码（包括使用 `ImageRenderRequest`/`ImageRenderSession` 作为参数的）从 `ImageService` 提取到 `ImageRenderService`。
+- [x] `ImageRenderService`/`ImageMetadataService` 需要实现接口 `Disposable`，并妥善地实现方法 `dispose`。
+- [x] 如果无法从 `ImageMetadata` 获取图片尺寸，可能需要直接返回，而不是作为回退尝试从 `icon.iconHeight` 获取。
   - 这可能会意外触发图片加载，获取的也可能不是原始高度。
-  - 需要决策。
-- [ ] 与图片处理相关的测试，如果是图片格式敏感的，应覆盖支持的标准图片格式（jpg/png/dds/tga）。
+  - 决策：直接跳过图标渲染；同时先读取元数据再加载 icon，避免无意义的图片加载。
+- [x] 与图片处理相关的测试，如果是图片格式敏感的，应覆盖支持的标准图片格式（jpg/png/dds/tga）。
   - 这可能需要先转换图片格式。
-- [ ] 与图片处理相关的测试，其测试数据（主要是各种格式的图片）应位于 `src/test/testData/images/` 目录下。
+- [x] 与图片处理相关的测试，其测试数据（主要是各种格式的图片）应位于 `src/test/testData/images/` 目录下。
   - 原始图片可以来自各个本地游戏目录中的某个真实图片，或者来自 `src/test/resources/images/mod_unknown.png` 等。
-- [ ] 需要补充测试，以验证图片格式转换的正确性和幂等性（转换/转换+反向转换）。
+- [x] 需要补充测试，以验证图片格式转换的正确性和幂等性（转换/转换+反向转换）。
   - 需要基于 `ImageService`/`ImageRenderService`。
 
 #### 2026-10-29 - step 6 - test & wrap-up
@@ -373,12 +373,17 @@ com.intellij.diagnostic.Freeze
 
 #### 2026-10-29 - step 2
 
+- [x] `ImageMetadata` 不直接复用平台图片索引：平台 API 需要 `byte[]` 或只覆盖标准图片文件类型，DDS/TGA 仍需自定义读取器。
+- [x] 渲染代码按职责拆分：`ImageService` 保留格式转换/文件类型/SPI 生命周期，`ImageRenderService` 负责缓存、渲染和清理。
+- [x] 原始高度不可获取时直接跳过图标，不使用 `icon.iconHeight` 作为回退。
 
 ### 分析
 
 #### 2026-10-29
 
-- [ ] 无法正确地从 DDS/PNG 转换图片格式为 TGA - 需要验证和分析，可使用 `src/test/resources/mod_unknown.png` 作为测试数据。
+- [x] 无法正确地从 DDS/PNG 转换图片格式为 TGA。
+  - 原因：`DefaultImageSupport` 使用 `ImageReader.getNumImages(false)` 判断帧数；JPEG/DDS 等读取器在无法预知帧数时会返回 `-1`，导致 `repeat(-1)` 不执行任何转换，最终产出空文件。
+  - 修复：当帧数不确定（`<= 0`）时至少转换第一帧；同时将图片转换为标准颜色模型，避免 CMYK 等自定义颜色模型导致 `ImageIO.write` 静默失败；`ImageService` 对空产出继续尝试下一个 `ImageSupport`。
 
 ### 修订
 
@@ -402,6 +407,7 @@ TBD
 - [x] `icu.windea.pls.integrations.lints.providers.TigerLintToolProvider` - 已迁移
 - [x] `icu.windea.pls.lang.tools.SpecialPathServiceImpl` - 已迁移
 - [x] `icu.windea.pls.images.ImageService` - 基础设施已扩展，语义层待迁移
+- [x] `icu.windea.pls.images.ImageRenderService` - 新增
 - [x] `icu.windea.pls.images.ImageMetadataService` - 新增
 - [x] `icu.windea.pls.images.ImageCacheCleaner` - 新增
 - [x] `icu.windea.pls.images.ImageRenderRequest` - 新增
@@ -418,10 +424,11 @@ TBD
 测试代码：
 
 - [x] `icu.windea.pls.core.execution.ProcessExecutorTest` - 常见命令/区分OS/区分编码/取消行为/超时行为/编码/stderr/退出码
-- [x] `icu.windea.pls.config.config.CwtConfigServiceRepoTest` - `getContainingConfigGroupForRepo` 集成测试
+- [x] `icu.windea.pls.config.configGroup.CwtConfigFileServiceTest` - `getGameTypeFromRepoFile` 集成测试（含各游戏规则仓库）
 - [ ] `icu.windea.pls.core.execution.ProcessExecutorExternalToolBasedTest` - 需要下载外部工具并验证
 - [x] `icu.windea.pls.images.ImageMetadataServiceTest`
-- [x] `icu.windea.pls.images.ImageServiceTest`
+- [x] `icu.windea.pls.images.ImageServiceTest` - 格式转换/往返转换
+- [x] `icu.windea.pls.images.ImageRenderServiceTest`
 - [x] `icu.windea.pls.images.ImageCacheCleanerTest`
 - [ ] `icu.windea.pls.integrations.lints.RunTigerTest` - 待移除（因为已存在 `ProcessExecutorExternalToolBasedTest`）
 - TBD
