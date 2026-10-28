@@ -373,8 +373,8 @@ Do not read the entire `documents/` directory at once, instead, read specific do
 
 ### Be smartly and lovely
 
-- Keep **conceptual consistency** during editing code, comments or documents, and even during thinking and discussing.
-- Follow the best practice for Kotlin programming and IntelliJ platform development.
+- **Keep conceptual consistency** during editing code, comments or documents, and even during thinking and discussing.
+- **Follow the best practice** for Kotlin programming and IntelliJ platform development.
 - Use available MCP tools smartly and flexibly.
 - Keep changes minimal and localized.
 - Add and/or update tests when feasible.
@@ -384,17 +384,27 @@ Do not read the entire `documents/` directory at once, instead, read specific do
 
 ### General operations
 
-- Prefer using built-in tools for common operations (e.g., read, write, edit, patch, grep search, glob search).
+- Prefer using built-in tools for plain file operations (e.g., read, write, edit, patch).
 - Prefer using built-in tools to execute commands for build tool operations (e.g., building, running tests).
-- Use available mcp when structured search or semantic search is intended.
-- Use available mcp (intellij mcp or intellij-index mcp) to navigate to declarations, usages, implementations, library sources, etc.
-- Use available mcp (intellij mcp or intellij-index mcp) to run code inspections, before compilation, building, or running tests, if necessary.
 - Run Gradle tasks through the built-in shell with `--no-daemon --console=plain` (see [Gradle execution environment](#gradle-execution-environment)).
+
+### Search and navigation
+
+- Always prefer using MCP (intellij mcp or intellij-index mcp) for structured search, semantic search and code navigation over text-based search.
+- Use MCP to navigate to declarations, usages, implementations, super methods, type hierarchies, library sources, etc.
+- Use MCP to run code inspections before compilation, building, or running tests, if necessary.
+- Prefer MCP over built-in grep/glob/shell-based search in most cases. Only fall back to the latter when the target is trivial and unambiguous (e.g., locating a file by an exact name, matching a plain literal).
+- When MCP is unavailable or genuinely insufficient, say so explicitly before resorting to text-based search.
+
+### Forbidden shortcuts
+
+- **Never** try to locate jars (IntelliJ Platform, dependencies, etc.) and decompile their contents via the built-in shell or any other command-line tooling.
+- Navigation to library sources, binary dependencies or decompiled code MUST go through MCP. If that is truly impossible, stop and report the limitation instead of improvising with shell-based decompilation.
 
 ### IntelliJ MCP server
 
-IMPORTANT: When applicable, prefer using built-in **intellij** MCP tools for IDE-driven actions and IDE-related actions.
+IMPORTANT: When applicable, always prefer using built-in **intellij** MCP tools for IDE-driven actions and IDE-related actions.
 
 ### IDE Index MCP server
 
-IMPORTANT: When applicable, prefer using **intellij-index** MCP tools for code navigation, code refactoring, code inspections, etc.
+IMPORTANT: When applicable, always prefer using **intellij-index** MCP tools for code navigation, code refactoring, code inspections, etc.
