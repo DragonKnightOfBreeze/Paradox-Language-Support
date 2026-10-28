@@ -2,6 +2,7 @@
 
 package icu.windea.pls.core.execution
 
+import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.CapturingProcessHandler
 import com.intellij.execution.process.ProcessOutput
@@ -73,9 +74,12 @@ class ProcessExecutor(
      *
      * 说明：
      * - 这是一个阻塞方法，通常应在后台线程中调用；这不属于硬性限制，如果检测到 EDT/readAction，会输出警告。
+     * - 如果进程无法启动（例如可执行文件不存在），会抛出 [ExecutionException]。
      *
+     * @throws ExecutionException 进程无法启动时抛出。
      * @see CapturingProcessHandler.runProcessWithProgressIndicator
      */
+    @Throws(ExecutionException::class)
     @RequiresBackgroundThread(generateAssertion = false)
     fun execute(): ProcessOutput {
         warnIfIncorrectContext()
