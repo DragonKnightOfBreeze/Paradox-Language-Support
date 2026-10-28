@@ -274,7 +274,8 @@ com.intellij.diagnostic.Freeze
 - 完成阶段 1 的基础设施部分：新增 `ProgressExecutor`、`ExecutionTimeouts`，并将 `CommandLineExecutor`/`executeCommandLine`/`CommandLineService`/`CommandType` 标记为弃用。
 - `ProgressExecutor` 默认绑定当前 indicator；提供 `withIndicator`/`withoutIndicator`/`withTimeout`/`withDestroyOnTimeout`。
 - 新增 `ProgressExecutorTest`，覆盖冒烟、区分 OS、UTF-8、退出码/stderr、超时、显式 indicator 取消、当前 indicator 取消。
-- 本阶段暂不迁移调用点；旧测试仅补充 `@Suppress("DEPRECATION")`。
+- 完成阶段 1 的迁移：Git、Texconv、Magick、Tiger、SpecialPath、CwtConfigService；移除 `isValid` 中的版本命令；Git 使用非交互参数 + 超时；SpecialPath 使用 JNA（回退 `reg query`）；CwtConfigService 直接读取 `.git/config`。
+- 旧命令行 API 暂时保留（已弃用）；旧测试仅补充 `@Suppress("DEPRECATION")`；生产调用点已迁移到 `ProgressExecutor`。
 
 ## 任务
 
@@ -286,7 +287,7 @@ com.intellij.diagnostic.Freeze
   - [ ] 扩展 `ImageService`：缓存、渲染、`ImageRenderSession`、`ImageCacheCleaner`
   - [ ] 新增 `ImageCacheCleanupPolicy`、`ImageRenderFailurePolicy`、`ImageRenderPolicy` 及文案
 - [ ] 重构
-  - [ ] 迁移 Git、Texconv、Magick、Tiger、SpecialPath、CwtConfigService
+  - [x] 迁移 Git、Texconv、Magick、Tiger、SpecialPath、CwtConfigService
   - [ ] 新增 `ParadoxImageService`/`ParadoxImageResolveResult`，保留 `ParadoxImageManager` facade
   - [ ] 快速文档：`toDocumentation` 移出 RA，等待 `ImageRenderSession`
   - [ ] 内嵌提示：`Sync` 渲染 + `clearModificationStamp`
@@ -341,6 +342,12 @@ TBD
 - [x] `icu.windea.pls.core.execution.ExecutionTimeouts` - 新增
 - [x] `icu.windea.pls.core.execution.CommandLineService` - 已弃用
 - [x] `icu.windea.pls.core.execution.CommandType` - 已弃用
+- [x] `icu.windea.pls.base.io.ChronicleGitServiceImpl` - 已迁移
+- [x] `icu.windea.pls.config.config.CwtConfigService` - 已迁移
+- [x] `icu.windea.pls.integrations.images.providers.TexconvToolProvider` - 已迁移
+- [x] `icu.windea.pls.integrations.images.providers.MagickToolProvider` - 已迁移
+- [x] `icu.windea.pls.integrations.lints.providers.TigerLintToolProvider` - 已迁移
+- [x] `icu.windea.pls.lang.tools.SpecialPathServiceImpl` - 已迁移
 - [ ] `icu.windea.pls.images.ImageService` - 待重构
 - [ ] `icu.windea.pls.images.ImageMetadataService` - 新增
 - [ ] `icu.windea.pls.images.ImageCacheCleaner` - 新增
