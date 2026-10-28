@@ -212,13 +212,92 @@ com.intellij.diagnostic.Freeze
 - 对于基础设施层的图片渲染与解析逻辑（如 `ImageService`），应当采用合适的缓存策略（基础缓存策略+过期/上限），即使其底层是基于命令行的。
 - 对于语义层的图片渲染与解析逻辑（如 `ParadoxImageService`），应当支持懒加载（例如仅直接返回 resolveResult，而不会直接写入图片）。
 
+关于“基于策略的实现细节”：
+- 这里涉及到了一些可能需要准备多种“策略”的代码实现。
+- 目前来说，最理想的方式是，在 `icu.windea.pls.model.policies` 提供对应的“策略/policy”枚举，并且允许在插件设置页面自定义。
+- 但是这相对来说不是那么重要，因此我们可以将其作为“需要评估的后续任务”。一开始仅“记录决策、添加注释、预先封装”，到时候再进一步优化即可。
+
+关于“策略/policy”枚举：
+- 策略枚举应统一位于 `icu.windea.pls.model.policies` 中。它们可以涉及不同的模块/层次。
+- `Paradox` 前缀意味着是“（需要依赖游戏/模组文件的）语义的”，然而有些策略是直接发生在基础设施层的（`images` 模块），并且未来可能会“扩展语义”。
+- 因此更合适的命名应分别是：
+  - `ImageCacheCleanupPolicy`
+    - 这直接发生在基础设施层，而缓存计算策略可能取决于具体场景。
+  - `ImageRenderFailurePolicy`
+    - 这适用于快速文档。但也可能适用于内嵌提示（同步加载的情况，并且仅适用于部分策略选项）。
+  - `ImageRenderPolicy` - `Sync` + `Async`，默认 `Sync`。
+    - 我们预期内嵌提示中要渲染的图片仅包括“文本图标”，并且存在“尺寸限制”。
+    - 因此直接发生在 `ParadoxHintsProvider.collectFromElement` 中是可行的，但这本身可能发生在 readAction 中，可能需要另开线程/协程来渲染。
+    - 超时设置可以与 `iconHeightLimit` 对齐，参见 `ParadoxHintsSettings`。
+
 ### 任务计划 （AI 协助）
+
+> 初版计划；执行过程中在 `任务计划 （修订）` 章节记录调整。
+
+- 阶段 1：命令行执行基础设施
+  - 新增 `ProgressExecutor`，作为唯一执行入口；通过 `withIndicator`/`withTimeout`/`withDestroyOnTimeout` 做可变配置（与 `GeneralCommandLine` 对齐）。
+  - 弃用 `CommandLineExecutor`/`executeCommandLine`/`CommandLineService`/`CommandType`；旧测试保留。
+  - 迁移 Git、Texconv、Magick、Tiger、SpecialPath、CwtConfigService；移除 `isValid` 中的版本命令。
+  - 执行时不硬禁止 EDT/RA，仅 warning；协程内通过 `coroutineToIndicator` 提供 indicator。
+- 阶段 2：图片元数据与基础设施缓存
+  - 新增 `ImageMetadataService`；统一获取原始尺寸，替换 `ImageIO.read(...).height`。
+  - `ImageService`：磁盘 PNG 缓存（文件名 UUID 即索引；`@h36` 缩略图）+ 内存缓存（TTL/上限）+ `ImageCacheCleaner`。
+  - 基础缓存策略：TTL 30 天、总大小 1 GiB、文件数 10k、清理间隔 1 小时。
+- 阶段 3：图片语义层与渲染
+  - `ParadoxImageService` 返回 `ParadoxImageResolveResult`，支持懒加载；`ParadoxImageManager` 暂时保留为 facade。
+  - 快速文档：`ImageService` 线程本地 `ImageRenderSession`，在 RA 外 `awaitAll`；默认失败策略为 `AcceptBroken`。
+  - 内嵌提示：默认 `ImageRenderPolicy.Sync`；缓存命中直接使用；需要渲染时在非 RA 线程执行；`Async` 后续。
+  - 注入器保留；EDT/RA 时跳过外部工具并 warning。
+- 阶段 4：Tiger
+  - `TigerLintToolService` 使用 app-level service；`TrackingCache<TigerLintRequest, TigerLintResult>`。
+  - `TigerLintResult` 增加 `request` 与 `modificationTracker`；结合 `VirtualFile` 和 `MergedModificationTracker`；不依赖 project/PSI。
+  - 暂不增加 `withBackgroundProgress`；仅设置超时。
+- 阶段 5：外围
+  - SpecialPath 使用 JNA（回退 `reg query`）；Git 使用非交互参数 + 超时；CwtConfigService 直接读取 `.git/config`。
+- 阶段 6：测试与收尾
+  - 新增 `includeExternalTools`，默认启用；工具下载到 `build/test-tools`。
+  - 补充单元、平台、回归、冒烟和进阶测试；清理代码；修订 ADR；后续补充 AI note。
+
+关键决策：
+- `ProgressExecutor` 采用可变配置，不是线程安全对象。
+- 图片缓存文件名中的 UUID 即索引，不引入集中索引文件。
+- `ImageCacheCleanupPolicy` 默认 `TtlAndSize`；`ImageRenderFailurePolicy` 默认 `AcceptBroken`；`ImageRenderPolicy` 默认 `Sync`。
+- 策略枚举放在 `icu.windea.pls.images.policies`（不含 `Paradox` 前缀），文案同步补充。
+- `TigerLintToolService` 为 app-level，使用 `TrackingCache`，不依赖 project/PSI。
+- `ParadoxImageManager` 暂时保留，后续再评估是否拆分/重命名。
+- 测试工具默认启用。
+
+### 任务计划 （修订）
 
 TBD
 
 ## 任务
 
 ### 主要 & 次要（AI 协助）
+
+- [ ] 基础设施
+  - [ ] 新增 `ProgressExecutor`、`ExecutionTimeouts`；弃用旧命令行 API
+  - [ ] 新增 `ImageMetadataService`
+  - [ ] 扩展 `ImageService`：缓存、渲染、`ImageRenderSession`、`ImageCacheCleaner`
+  - [ ] 新增 `ImageCacheCleanupPolicy`、`ImageRenderFailurePolicy`、`ImageRenderPolicy` 及文案
+- [ ] 重构
+  - [ ] 迁移 Git、Texconv、Magick、Tiger、SpecialPath、CwtConfigService
+  - [ ] 新增 `ParadoxImageService`/`ParadoxImageResolveResult`，保留 `ParadoxImageManager` facade
+  - [ ] 快速文档：`toDocumentation` 移出 RA，等待 `ImageRenderSession`
+  - [ ] 内嵌提示：`Sync` 渲染 + `clearModificationStamp`
+  - [ ] 注入器：EDT/RA 跳过外部工具并 warning
+  - [ ] Tiger：`TigerLintToolService` + `TrackingCache` + `TigerLintResult` 扩展
+- [ ] 测试
+  - [ ] `ProgressExecutor`：超时、取消、stderr、退出码、编码
+  - [ ] `ImageMetadataService`/`ImageService`：元数据、缓存、去重、失效、清理
+  - [ ] issue #396 回归测试
+  - [ ] 进阶测试：`includeExternalTools` + `build/test-tools`
+- [ ] 清理与文档
+  - [ ] 清理旧 API、注释、常量
+  - [ ] 修订 ADR
+  - [ ] 补充 AI note
+
+### 主要 & 次要（修订）
 
 TBD
 
@@ -247,21 +326,51 @@ TBD
 
 ### 相关代码位置
 
-- `icu.windea.pls.core.execution.CommandLineExecutor`
-- `icu.windea.pls.core.execution.CommandLineService`
-- `icu.windea.pls.integrations.images.ImageToolService`
-- `icu.windea.pls.integrations.lints.TigerLintToolService`
-- `icu.windea.pls.lang.util.ParadoxImageManager`
+生产代码：
+
+- [ ] `icu.windea.pls.core.execution.CommandLineExecutor` - 待弃用
+- [ ] `icu.windea.pls.core.execution.ProgressExecutor` - 新增
+- [ ] `icu.windea.pls.core.execution.CommandLineService` - 待弃用
+- [ ] `icu.windea.pls.images.ImageService` - 待重构
+- [ ] `icu.windea.pls.images.ImageMetadataService` - 新增
+- [ ] `icu.windea.pls.images.ImageCacheCleaner` - 新增
+- [ ] `icu.windea.pls.integrations.images.ImageToolService` - 待重构
+- [ ] `icu.windea.pls.integrations.lints.TigerLintToolService` - 待重构
+- [ ] `icu.windea.pls.lang.util.ParadoxImageManager` - 待重构
+- [ ] `icu.windea.pls.lang.util.ParadoxImageService` - 新增
+- TBD
+
+测试代码：
+
+- [ ] `icu.windea.pls.core.execution.ProcessExecutorTest` - 常见命令/区分 OS/取消行为/超时行为/等等
+- [ ] `icu.windea.pls.core.execution.ProcessExecutorExternalToolBasedTest` - 需要下载外部工具并验证
+- [ ] `icu.windea.pls.images.ImageMetadataServiceTest`
+- TBD
+
+参考：
+
+- `icu.windea.pls.core.cache.TrackingCache`
+- `icu.windea.pls.core.util.MergedModificationTracker`
+- `icu.windea.pls.images.policies.*`
+- TBD
 
 ### 相关代码位置（平台）
+
+参考（主要）：
 
 - `com.intellij.execution.configurations.GeneralCommandLine`
 - `com.intellij.execution.process.CapturingProcessRunner`
 - `com.intellij.execution.process.CapturingProcessHandler`
+  - `com.intellij.execution.process.CapturingProcessHandler.runProcessWithProgressIndicator`
 - `com.intellij.execution.process.OSProcessHandler`
   - `com.intellij.execution.process.OSProcessHandler.checkEdtAndReadAction`
+- `com.intellij.openapi.progress.coroutinesKt.coroutineToIndicator`
+- `com.intellij.codeInsight.daemon.impl.InlayHintsPassFactoryInternal.clearModificationStamp`
+- `com.intellij.platform.ide.progress.withBackgroundProgress`
 - `com.intellij.execution.util.ExecUtil`
+- TBD
 
-### 参考代码位置（平台）
+参考（次要）：
 
 - `com.intellij.codeInspection.javaDoc.JavadocHtmlLintAnnotator` - 这里并没有特别地使用取消检查/状态指示
+- TBD
