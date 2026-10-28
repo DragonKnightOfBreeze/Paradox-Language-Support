@@ -15,7 +15,6 @@ import java.nio.file.StandardCopyOption
 import kotlin.io.path.createDirectories
 import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.notExists
-import kotlin.text.Charsets
 
 /**
  * 参见：[Texconv · microsoft/DirectXTex Wiki](https://github.com/microsoft/DirectXTex/wiki/Texconv)
@@ -34,6 +33,8 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
     }
 
     override fun isValidExePath(path: String): Boolean {
+        // NOTE 3.0.5 出于轻量化的目的，仅检测路径是否是常规文件，而不再通过执行命令行来检测工具是否可用
+        // NOTE 3.0.5 由于目前会在插件包中内置此工具，直接返回 `true` 即可（未来可能会改为不再内置）
         return true
     }
 
@@ -62,31 +63,31 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
         ).withWorkingDirectory(exePath.parent).withCharset(Charsets.UTF_8)
 
         ProgressManager.checkCanceled()
-        val output = ProgressExecutor(commandLine)
-            .withTimeout(ExecutionTimeouts.normal)
-            .execute()
+        val output = ProgressExecutor(commandLine).withTimeout(ExecutionTimeouts.normal).execute()
 
         if (output.isCancelled) {
             ProgressManager.checkCanceled() // 如果的确被取消，则抛出 `ProcessCanceledException`
-            throw IllegalStateException("Failed to convert image: command was cancelled.\nCommand: ${commandLine.commandLineString}")
+            val message = "Failed to convert image: command was cancelled." +
+                "\nCommand: ${commandLine.commandLineString}"
+            throw IllegalStateException(message)
         }
         if (output.isTimeout) {
-            throw IllegalStateException("Failed to convert image: command timed out.\nCommand: ${commandLine.commandLineString}")
+            val message = "Failed to convert image: command timed out." +
+                "\nCommand: ${commandLine.commandLineString}"
+            throw IllegalStateException(message)
         }
         if (output.exitCode != 0) {
-            throw IllegalStateException(
-                "Failed to convert image: command failed (exitCode=${output.exitCode}).\n" +
-                    "Command: ${commandLine.commandLineString}\n" +
-                    "Error: ${output.stderr.trim()}"
-            )
+            val message = "Failed to convert image: command failed (exitCode=${output.exitCode})." +
+                "\nCommand: ${commandLine.commandLineString}" +
+                "\nError: ${output.stderr.trim()}"
+            throw IllegalStateException(message)
         }
         if (outputPath.notExists()) {
-            throw IllegalStateException(
-                "Failed to convert image: output file not found.\n" +
-                    "Command: ${commandLine.commandLineString}\n" +
-                    "Result: ${output.stdout.trim()}\n" +
-                    "Error: ${output.stderr.trim()}"
-            )
+            val message = "Failed to convert image: output file not found." +
+                "\nCommand: ${commandLine.commandLineString}" +
+                "\nResult: ${output.stdout.trim()}" +
+                "\nError: ${output.stderr.trim()}"
+            throw IllegalStateException(message)
         }
 
         val finalOutputPath = outputDirectoryPath.resolve(targetFileName ?: outputFileName)

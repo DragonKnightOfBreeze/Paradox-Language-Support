@@ -4,8 +4,10 @@ import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.core.normalizePath
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.decodeFromStream
 import java.io.File
+import java.io.IOException
 
 /**
  * Tiger 检查工具的检查结果。
@@ -19,7 +21,7 @@ data class TigerLintResult(
     val name: String,
     val items: Collection<Item> = emptySet(),
     val itemGroup: Map<String, Collection<Item>> = emptyMap(),
-    val error: Throwable? = null
+    val error: Throwable? = null,
 ) : LintResult {
     fun fromPath(path: String): TigerLintResult? {
         val items = itemGroup[path]
@@ -144,6 +146,7 @@ data class TigerLintResult(
     companion object {
         @JvmField val EMPTY = TigerLintResult("")
 
+        @Throws(SerializationException::class, IllegalArgumentException::class, IOException::class)
         @JvmStatic
         fun parse(name: String, outputFile: File): TigerLintResult {
             val items = outputFile.inputStream().use { JsonService.json.decodeFromStream<List<Item>>(it) }

@@ -7,7 +7,6 @@ import icu.windea.pls.core.execution.ProgressExecutor
 import icu.windea.pls.core.toPath
 import java.nio.file.Path
 import kotlin.io.path.exists
-import kotlin.text.Charsets
 import kotlin.time.Duration
 
 class ChronicleGitServiceImpl : ChronicleGitService {
@@ -52,6 +51,7 @@ class ChronicleGitServiceImpl : ChronicleGitService {
     }
 
     private fun createGitCommandLine(vararg arguments: String): GeneralCommandLine {
+        // NOTE 3.0.5 加上额外的设置项（如非交互），以避免在一些特殊场景（如要求凭证输入）下被永久挂起
         return GeneralCommandLine(listOf("git") + arguments.asList())
             .withEnvironment("GIT_TERMINAL_PROMPT", "0")
             .withEnvironment("GCM_INTERACTIVE", "never")
@@ -64,15 +64,17 @@ class ChronicleGitServiceImpl : ChronicleGitService {
         val output = ProgressExecutor(commandLine).withTimeout(timeout).execute()
         if (output.isCancelled) {
             ProgressManager.checkCanceled() // 如果的确被取消，则抛出 `ProcessCanceledException`
-            throw IllegalStateException("Git command was cancelled: ${commandLine.commandLineString}")
+            val message = "Git command was cancelled: ${commandLine.commandLineString}"
+            throw IllegalStateException(message)
         }
         if (output.isTimeout) {
-            throw IllegalStateException("Git command timed out (${timeout}): ${commandLine.commandLineString}")
+            val message = "Git command timed out (${timeout}): ${commandLine.commandLineString}"
+            throw IllegalStateException(message)
         }
         if (output.exitCode != 0) {
-            throw IllegalStateException(
-                "Git command failed (exitCode=${output.exitCode}): ${commandLine.commandLineString}\n${output.stderr.trim()}"
-            )
+            val message = "Git command failed (exitCode=${output.exitCode}): ${commandLine.commandLineString}" +
+                "\n${output.stderr.trim()}"
+            throw IllegalStateException(message)
         }
         return output.stdout.trim()
     }

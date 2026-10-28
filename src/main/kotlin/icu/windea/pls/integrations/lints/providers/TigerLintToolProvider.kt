@@ -19,7 +19,6 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Files
 import kotlin.io.path.nameWithoutExtension
-import kotlin.text.Charsets
 
 /**
  * 参见：[Tiger](https://github.com/amtep/tiger)
@@ -76,7 +75,8 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
 
         // 必须指定输出的 json 文件，然后从中读取检查结果（之后不删除这个临时文件）
         val lintResultsPath = ChronicleDataPathService.getInstance().lintResultsPath
-        val outputPath = lintResultsPath.resolve("$name-result@${rootDirectory.url.toUuidString()}.json")
+        val outputUuid = rootDirectory.url.toUuidString()
+        val outputPath = lintResultsPath.resolve("$name-result@$outputUuid.json")
 
         val commandLine = GeneralCommandLine(buildList {
             add(fullExePath.toString())
@@ -99,17 +99,20 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
 
         if (output.isCancelled) {
             ProgressManager.checkCanceled() // 如果的确被取消，则抛出 `ProcessCanceledException`
-            throw IllegalStateException("Tiger command was cancelled.\nCommand: ${commandLine.commandLineString}")
+            val message = "Tiger command was cancelled." +
+                "\nCommand: ${commandLine.commandLineString}"
+            throw IllegalStateException(message)
         }
         if (output.isTimeout) {
-            throw IllegalStateException("Tiger command timed out.\nCommand: ${commandLine.commandLineString}")
+            val message = "Tiger command timed out." +
+                "\nCommand: ${commandLine.commandLineString}"
+            throw IllegalStateException(message)
         }
         if (output.exitCode != 0) {
-            throw IllegalStateException(
-                "Tiger command failed (exitCode=${output.exitCode}).\n" +
-                    "Command: ${commandLine.commandLineString}\n" +
-                    "Error: ${output.stderr.trim()}"
-            )
+            val message = "Tiger command failed (exitCode=${output.exitCode})." +
+                "\nCommand: ${commandLine.commandLineString}" +
+                "\nError: ${output.stderr.trim()}"
+            throw IllegalStateException(message)
         }
 
         Files.writeString(outputPath, output.stdout, Charsets.UTF_8)

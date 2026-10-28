@@ -40,7 +40,7 @@
 - 图片预览（在编辑器中打开 DDS/TGA 图片）
 
 目标（主要）：
-- 重构命令行执行的基础设施（统一入口、取消检查、超时限制、命令数组，等等） - `ProgressExecutor` 等
+- 重构命令行执行的基础设施（统一入口、取消检查、超时限制、命令数组，等等） - `ProcessExecutor` 等
 - 重构图片处理的基础设施（取消检查、可能的异步渲染） - `ImageToolService` `ImageService` 等
 - 重构相关代码，从而确保解决 Issue [#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396)
 - 重构相关代码，从而尽力确保命令行执行发生在正确的上下文中（非 EDT、非 readAction）
@@ -205,7 +205,7 @@ com.intellij.diagnostic.Freeze
 
 关于命令行执行的入口：
 - 理想的方案是仅提供一个（或者少数几个）入口，而如果采用 `ExecutionService.execute(...)`，由于存在多种参数组合，难以避免存在多个入口。
-- 更合适的方案是，不再新增 `ExecutionService`，仅提供 `ProgressExecutor(commandLine)` 最为唯一入口。
+- 更合适的方案是，不再新增 `ExecutionService`，仅提供 `ProcessExecutor(commandLine)` 最为唯一入口。
 - 之后可以再通过类似 `.withTimeout(...)` 的方式，添加更多配置。
 
 关于图片渲染与图片解析：
@@ -235,7 +235,7 @@ com.intellij.diagnostic.Freeze
 > 初版计划；执行过程中在 `任务计划 （修订）` 章节记录调整。
 
 - 阶段 1：命令行执行基础设施
-  - 新增 `ProgressExecutor`，作为唯一执行入口；默认绑定当前 indicator，通过 `withIndicator`/`withoutIndicator`/`withTimeout`/`withDestroyOnTimeout` 做可变配置（与 `GeneralCommandLine` 对齐）。
+  - 新增 `ProcessExecutor`，作为唯一执行入口；默认绑定当前 indicator，通过 `withIndicator`/`withoutIndicator`/`withTimeout`/`withDestroyOnTimeout` 做可变配置（与 `GeneralCommandLine` 对齐）。
   - 弃用 `CommandLineExecutor`/`executeCommandLine`/`CommandLineService`/`CommandType`；旧测试保留。
   - 迁移 Git、Texconv、Magick、Tiger、SpecialPath、CwtConfigService；移除 `isValid` 中的版本命令。
   - 执行时不硬禁止 EDT/RA，仅 warning；协程内通过 `coroutineToIndicator` 提供 indicator。
@@ -259,7 +259,7 @@ com.intellij.diagnostic.Freeze
   - 补充单元、平台、回归、冒烟和进阶测试；清理代码；修订 ADR；后续补充 AI note。
 
 关键决策：
-- `ProgressExecutor` 采用可变配置，不是线程安全对象。
+- `ProcessExecutor` 采用可变配置，不是线程安全对象。
 - 图片缓存文件名中的 UUID 即索引，不引入集中索引文件。
 - `ImageCacheCleanupPolicy` 默认 `TtlAndSize`；`ImageRenderFailurePolicy` 默认 `AcceptBroken`；`ImageRenderPolicy` 默认 `Sync`。
 - 策略枚举放在 `icu.windea.pls.images.policies`（不含 `Paradox` 前缀），文案同步补充。
@@ -271,18 +271,18 @@ com.intellij.diagnostic.Freeze
 
 #### 2026-10-28 - step 1
 
-- 完成阶段 1 的基础设施部分：新增 `ProgressExecutor`、`ExecutionTimeouts`，并将 `CommandLineExecutor`/`executeCommandLine`/`CommandLineService`/`CommandType` 标记为弃用。
-- `ProgressExecutor` 默认绑定当前 indicator；提供 `withIndicator`/`withoutIndicator`/`withTimeout`/`withDestroyOnTimeout`。
-- 新增 `ProgressExecutorTest`，覆盖冒烟、区分 OS、UTF-8、退出码/stderr、超时、显式 indicator 取消、当前 indicator 取消。
+- 完成阶段 1 的基础设施部分：新增 `ProcessExecutor`、`ExecutionTimeouts`，并将 `CommandLineExecutor`/`executeCommandLine`/`CommandLineService`/`CommandType` 标记为弃用。
+- `ProcessExecutor` 默认绑定当前 indicator；提供 `withIndicator`/`withoutIndicator`/`withTimeout`/`withDestroyOnTimeout`。
+- 新增 `ProcessExecutorTest`，覆盖冒烟、区分 OS、UTF-8、退出码/stderr、超时、显式 indicator 取消、当前 indicator 取消。
 - 完成阶段 1 的迁移：Git、Texconv、Magick、Tiger、SpecialPath、CwtConfigService；移除 `isValid` 中的版本命令；Git 使用非交互参数 + 超时；SpecialPath 使用 JNA（回退 `reg query`）；CwtConfigService 直接读取 `.git/config`。
-- 旧命令行 API 暂时保留（已弃用）；旧测试仅补充 `@Suppress("DEPRECATION")`；生产调用点已迁移到 `ProgressExecutor`。
+- 旧命令行 API 暂时保留（已弃用）；旧测试仅补充 `@Suppress("DEPRECATION")`；生产调用点已迁移到 `ProcessExecutor`。
 
 ## 任务
 
 ### 主要 & 次要（AI 协助）
 
 - [ ] 基础设施
-  - [x] 新增 `ProgressExecutor`、`ExecutionTimeouts`；弃用旧命令行 API
+  - [x] 新增 `ProcessExecutor`、`ExecutionTimeouts`；弃用旧命令行 API
   - [ ] 新增 `ImageMetadataService`
   - [ ] 扩展 `ImageService`：缓存、渲染、`ImageRenderSession`、`ImageCacheCleaner`
   - [ ] 新增 `ImageCacheCleanupPolicy`、`ImageRenderFailurePolicy`、`ImageRenderPolicy` 及文案
@@ -294,7 +294,7 @@ com.intellij.diagnostic.Freeze
   - [ ] 注入器：EDT/RA 跳过外部工具并 warning
   - [ ] Tiger：`TigerLintToolService` + `TrackingCache` + `TigerLintResult` 扩展
 - [ ] 测试
-  - [x] `ProgressExecutor`：超时、取消、stderr、退出码、编码
+  - [x] `ProcessExecutor`：超时、取消、stderr、退出码、编码
   - [ ] `ImageMetadataService`/`ImageService`：元数据、缓存、去重、失效、清理
   - [ ] issue #396 回归测试
   - [ ] 进阶测试：`includeExternalTools` + `build/test-tools`
@@ -309,6 +309,11 @@ com.intellij.diagnostic.Freeze
 
 - [x] 修订 `core.execution` 中旧代码：也弃用 `CommandLineExecutionException`，更新快速文档（`## 弃用声明`）
 - [x] 修订 `core.execution` 中的新增代码：添加 `@file:Suppress("unused")`
+- [x] 应使用 `ProcessExecutor`（对齐 `CapturingProcessHandler`），而非 `ProgressExecutor`。
+- [x] 提取 `icu.windea.pls.core.util.system.WindowsRegistryService`（方法：`getStringValue`）。
+- [ ] 将 `CwtConfigService.getContainingConfigGroupForRepo` 中获取 remoteUrls 的方法提取到 `ChronicleGitService`。
+- [ ] 需要为 `CwtConfigService.getContainingConfigGroupForRepo` 补充测试（集成测试）。应当可以从测试数据根目录（`src/test/testData`）向上找到项目的根目录，从而检查 `cwt/` 中的那些子目录。
+- [ ] 需要确认 `ChronicleGitService` 中那些需要执行命令行的方法可能会抛出哪些常见异常（可能并不存在），并且同步更新这些方法以及 `ProcessExecutor.execute` 等相关方法的注解和文档注释。
 
 ### 评估
 
@@ -322,6 +327,11 @@ com.intellij.diagnostic.Freeze
 - [ ] 考虑将 `ImageService.requestRender` 和 `ImageService.render` 的其中一些参数封装到 `ImageRenderConstraint` 或 `ImageRenderSettings` 中
 - [ ] `icu.windea.pls.core.execution` 中的代码的后续清理和重构
 - [ ] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
+
+#### 2026-10-28 - step 1
+
+- [ ] 考虑为 `ChronicleGitService` 补充测试。需要考虑如何获取一个可用的 Git 仓库路径。
+- [ ] 考虑为 `ChronicleSqliteService` 补充测试。
 
 ### 分析
 
@@ -338,7 +348,7 @@ TBD
 生产代码：
 
 - [x] `icu.windea.pls.core.execution.CommandLineExecutor` - 已弃用
-- [x] `icu.windea.pls.core.execution.ProgressExecutor` - 新增
+- [x] `icu.windea.pls.core.execution.ProcessExecutor` - 新增
 - [x] `icu.windea.pls.core.execution.ExecutionTimeouts` - 新增
 - [x] `icu.windea.pls.core.execution.CommandLineService` - 已弃用
 - [x] `icu.windea.pls.core.execution.CommandType` - 已弃用
@@ -359,9 +369,10 @@ TBD
 
 测试代码：
 
-- [x] `icu.windea.pls.core.execution.ProgressExecutorTest` - 常见命令/区分OS/区分编码/取消行为/超时行为/编码/stderr/退出码
-- [ ] `icu.windea.pls.core.execution.ProgressExecutorExternalToolBasedTest` - 需要下载外部工具并验证
+- [x] `icu.windea.pls.core.execution.ProcessExecutorTest` - 常见命令/区分OS/区分编码/取消行为/超时行为/编码/stderr/退出码
+- [ ] `icu.windea.pls.core.execution.ProcessExecutorExternalToolBasedTest` - 需要下载外部工具并验证
 - [ ] `icu.windea.pls.images.ImageMetadataServiceTest`
+- [ ] `icu.windea.pls.integrations.lints.RunTigerTest` - 待移除（因为已存在 `ProcessExecutorExternalToolBasedTest`）
 - TBD
 
 参考：

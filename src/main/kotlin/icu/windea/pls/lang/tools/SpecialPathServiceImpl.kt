@@ -1,24 +1,17 @@
 package icu.windea.pls.lang.tools
 
-import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.ide.actions.RevealFileAction
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.util.SystemInfo
-import com.sun.jna.platform.win32.Advapi32Util
-import com.sun.jna.platform.win32.WinReg
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.core.execution.ExecutionTimeouts
-import icu.windea.pls.core.execution.ProgressExecutor
 import icu.windea.pls.core.formatted
-import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.core.util.system.WindowsRegistryService
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.launch
 import java.awt.datatransfer.StringSelection
-import java.nio.charset.Charset
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.Path
@@ -54,10 +47,17 @@ class SpecialPathServiceImpl : SpecialPathService, Disposable {
     }
 
     private fun resolveSteamPathFromRegistry(): Path? {
-        // 64位系统：查找 WOW6432Node 重定向键；32位系统：查找非重定向键
-        val path = resolveRegistryValue("SOFTWARE\\WOW6432Node\\Valve\\Steam", "InstallPath")
-            ?: resolveRegistryValue("SOFTWARE\\Valve\\Steam", "InstallPath")
-        return path?.toPathOrNull()?.formatted()
+        // 64位系统：查找 WOW6432Node 重定向键
+        val key64 = "SOFTWARE\\WOW6432Node\\Valve\\Steam"
+        val result64 = WindowsRegistryService.getStringValue(key64, "InstallPath")
+        result64?.toPathOrNull()?.formatted()?.let { return it }
+
+        // 32位系统：查找非重定向键
+        val key32 = "SOFTWARE\\WOW6432Node\\Valve\\Steam"
+        val result32 = WindowsRegistryService.getStringValue(key32, "InstallPath")
+        result32?.toPathOrNull()?.formatted()?.let { return it }
+
+        return null
     }
 
     private fun resolveSteamPathForLinux(): Path {
@@ -96,35 +96,17 @@ class SpecialPathServiceImpl : SpecialPathService, Disposable {
     }
 
     private fun resolveSteamGamePathFromRegistry(steamId: String): Path? {
-        // 64位系统：查找 WOW6432Node 重定向键；32位系统：查找非重定向键
+        // 64位系统：查找 WOW6432Node 重定向键
         val key64 = "SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App $steamId"
+        val result64 = WindowsRegistryService.getStringValue(key64, "InstallLocation")
+        result64?.toPathOrNull()?.formatted()?.let { return it }
+
+        // 32位系统：查找非重定向键
         val key32 = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App $steamId"
-        val path = resolveRegistryValue(key64, "InstallLocation")
-            ?: resolveRegistryValue(key32, "InstallLocation")
-        return path?.toPathOrNull()?.formatted()
-    }
+        val result32 = WindowsRegistryService.getStringValue(key32, "InstallLocation")
+        result32?.toPathOrNull()?.formatted()?.let { return it }
 
-    /**
-     * 读取注册表字符串值。
-     *
-     * 优先使用 JNA；如果 JNA 不可用或读取失败，则回退到 `reg query`。
-     */
-    private fun resolveRegistryValue(key: String, valueName: String): String? {
-        if (!SystemInfo.isWindows) return null
-        return try {
-            Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, key, valueName).orNull()
-        } catch (_: Throwable) {
-            runCatchingCancelable { resolveRegistryValueFromCommand(key, valueName) }.getOrNull()
-        }
-    }
-
-    private fun resolveRegistryValueFromCommand(key: String, valueName: String): String? {
-        val commandLine = GeneralCommandLine("reg", "query", "HKLM\\$key", "/v", valueName)
-            .withCharset(Charset.defaultCharset())
-        val output = ProgressExecutor(commandLine).withTimeout(ExecutionTimeouts.short).execute()
-        if (output.isCancelled || output.isTimeout || output.exitCode != 0) return null
-        val pattern = Regex("""(?im)^\s*${Regex.escape(valueName)}\s+REG_\w+\s+(.+?)\s*$""")
-        return pattern.find(output.stdout)?.groupValues?.get(1)
+        return null
     }
 
     override fun getSteamGameWorkshopPath(steamId: String): Path? {
