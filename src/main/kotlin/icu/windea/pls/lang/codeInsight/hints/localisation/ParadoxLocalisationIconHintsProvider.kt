@@ -62,7 +62,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
         val iconFileUrl = iconUrl.toFileUrl()
         val icon = iconFileUrl.toIconOrNull() ?: return
         // 这里需要尝试使用图标的原始高度
-        val originalIconHeight = context.runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
+        val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
         if (originalIconHeight > context.settings.iconHeightLimit) return
 
         sink.addInlinePresentation(element.endOffset, smallInset = true) {

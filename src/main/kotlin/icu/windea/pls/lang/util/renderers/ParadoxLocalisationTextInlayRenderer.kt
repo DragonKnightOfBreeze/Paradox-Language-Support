@@ -221,7 +221,7 @@ class ParadoxLocalisationTextInlayRenderContext(
             // 这里需要尝试使用图标的原始高度
             val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
             // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-            if (originalIconHeight > this@ParadoxLocalisationTextInlayRenderContext.hintsContext.settings.iconHeightLimit) return@r // 图标过大，不再尝试渲染
+            if (originalIconHeight > hintsContext.settings.iconHeightLimit) return@r // 图标过大，不再尝试渲染
             // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             val presentation = factory.psiSingleReference(factory.smallScaledIcon(icon)) { resolved }
             builder.add(presentation)

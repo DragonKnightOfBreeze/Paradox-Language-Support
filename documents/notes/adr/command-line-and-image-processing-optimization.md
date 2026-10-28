@@ -39,6 +39,25 @@
 - 特殊路径相关（`SpecialPathService`）
 - 图片预览（在编辑器中打开 DDS/TGA 图片）
 
+目标（主要）：
+- 重构命令行执行的基础设施（统一入口、取消检查、超时限制、命令数组，等等） - `ProcessExecutor` 等
+- 重构图片处理的基础设施（取消检查、可能的异步渲染） `ImageToolService` `ImageService` 等
+- 重构相关代码，从而确保解决 Issue [#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396)
+- 重构相关代码，从而尽力确保命令行执行发生在正确的上下文中（非 EDT、非 readAction）
+- 应用这些重构后的基础设施，重构和迁移相关代码
+
+目标（次要）：
+- 重构图片处理中涉及语义的那部分解析逻辑 - `ParadoxImageManager` `ParadoxImageService` `ParadoxImageResolveResult` 等
+- 重构相关代码，从而尽力解决一些向东容易处理的次要问题
+- 补充测试（包括使用特定断言逻辑的回归测试、针对常见场景的冒烟测试、可自动下载相关工具到 build 目录的进阶测试）
+
+非目标：
+- 移除图片处理相关的代码注入器（如 `DDSImageReaderCodeInjector`） - 因为需要支持直接在编辑器中渲染 DDS/TGA 图片，目前无法这样做
+- 内置图片解析代码，移除对外部库的依赖，移除相关的代码注入器 - 尽管这是更理想的选择，但是会带来更多的复杂性，存在无法避免的调研、维护和测试成本
+
+需要评估：
+- 内置所有图片工具（以及检查工具），或者提供便捷入口以在使用插件时一键下载对应的工具 - 完成主要和次要目标后，再另行评估
+
 ### 堆栈分析
 
 关键调用堆栈：
@@ -149,6 +168,13 @@ com.intellij.diagnostic.Freeze
 内嵌提示的刷新逻辑位于 EDT 中，而在 EDT 中进行取消检查是没有意义的。
 因此需要考虑异步操作（异步加载、异步刷新、批量、防抖），而这又会到来额外的复杂性。
 
+### 参考
+
+- `com.intellij.codeInspection.ex.GlobalInspectionContextImpl.runTools` L345
+  - 这里声明了一个 `ProgressIndicator`。
+  - 也就是说 `com.intellij.lang.annotation.ExternalAnnotator.doAnnotate` 的调用链上层是有 indicator 的，但不能直接获取。
+  - 由于 indicator API 已经过时，如果需要明确的状态指示，建议的方式可能仍然是 `runBlockingCancellable` + `withBlackgroundProgresss`。
+
 ### 任务计划草案
 
 关于初步的任务计划：
@@ -177,14 +203,30 @@ com.intellij.diagnostic.Freeze
 - 我们目前有一些地方并不符合这样的断言策略，因此后续还需要考虑确保是异步执行的（考虑使用 `withBackgroundProgress`）。
 - 参见 `ParadoxImageManager`。
 
-### 任务计划（AI 协助）
+关于命令行执行的入口：
+- 理想的方案是仅提供一个（或者少数几个）入口，而如果采用 `ExecutionService.execute(...)`，由于存在多种参数组合，难以避免存在多个入口。
+- 更合适的方案是，不再新增 `ExecutionService`，仅提供 `ProcessExecutor(commandLine)` 最为唯一入口。
+- 之后可以再通过类似 `.withTimeout(...)` 的方式，添加更多配置。
+
+关于图片渲染与图片解析：
+- 对于基础设施层的图片渲染与解析逻辑（如 `ImageService`），应当采用合适的缓存策略（基础缓存策略+过期/上限），即使其底层是基于命令行的。
+- 对于语义层的图片渲染与解析逻辑（如 `ParadoxImageService`），应当支持懒加载（例如仅直接返回 resolveResult，而不会直接写入图片）。
+
+### 任务计划 （AI 协助）
 
 TBD
 
-### 后续修订
+## 任务
 
-> 目前尚未确定是否需要采用这些待办事项。
+### 主要 & 次要（AI 协助）
 
+TBD
+
+### 评估
+
+#### 2026-10-28 - v0
+
+- [ ] 考虑将 `icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext` 移到 `icu.windea.pls.lang.codeInsight.hints.InlayHintsContext`（与 `DocumentationContext` 对齐），并且移出属性 `settings`（因为这是语义相关的）
 - [ ] 由于模块依赖问题，`icu.windea.pls.images.ImageFrameInfo` 可能需要移到 `icu.windea.pls` 中的某个子包下
 - [ ] 考虑新增 `ParadoxImageService`，将 `ParadoxImageManager` 中的具体解析逻辑移到 `ParadoxImageService`
 - [ ] 考虑新增 `ParadoxImageResolveResult`，其中包括必要的信息，以及实际加载图片的/属性（比如可以直接是 `image: Image`）
@@ -193,18 +235,11 @@ TBD
 - [ ] `icu.windea.pls.core.execution` 中的代码的后续清理和重构
 - [ ] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
 
-### 后续参考
-
-- `com.intellij.codeInspection.ex.GlobalInspectionContextImpl.runTools` L345
-  - 这里声明了一个 `ProgressIndicator`。
-  - 也就是说 `com.intellij.lang.annotation.ExternalAnnotator.doAnnotate` 的调用链上层是有 indicator 的，但不能直接获取。
-  - 由于 indicator API 已经过时，如果需要明确的状态指示，建议的方式可能仍然是 `runBlockingCancellable` + `withBlackgroundProgresss`。
-
-## 任务（AI 协助）
+### 分析
 
 TBD
 
-## 任务（修订）
+### 修订
 
 TBD
 
