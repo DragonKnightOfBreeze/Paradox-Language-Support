@@ -276,6 +276,8 @@ com.intellij.diagnostic.Freeze
 - 新增 `ProcessExecutorTest`，覆盖冒烟、区分 OS、UTF-8、退出码/stderr、超时、显式 indicator 取消、当前 indicator 取消。
 - 完成阶段 1 的迁移：Git、Texconv、Magick、Tiger、SpecialPath、CwtConfigService；移除 `isValid` 中的版本命令；Git 使用非交互参数 + 超时；SpecialPath 使用 JNA（回退 `reg query`）；CwtConfigService 直接读取 `.git/config`。
 - 旧命令行 API 暂时保留（已弃用）；旧测试仅补充 `@Suppress("DEPRECATION")`；生产调用点已迁移到 `ProcessExecutor`。
+- 将 remote URLs 的读取提取到 `ChronicleGitService.getRemoteUrls`；新增 `CwtConfigServiceRepoTest` 覆盖真实项目根目录下的 `cwt/core` 识别。
+- 更新 `ProcessExecutor.execute` 与 `ChronicleGitService` 的异常注解和文档注释（主要是 `ExecutionException`）。
 
 ## 任务
 
@@ -311,9 +313,9 @@ com.intellij.diagnostic.Freeze
 - [x] 修订 `core.execution` 中的新增代码：添加 `@file:Suppress("unused")`
 - [x] 应使用 `ProcessExecutor`（对齐 `CapturingProcessHandler`），而非 `ProgressExecutor`。
 - [x] 提取 `icu.windea.pls.core.util.system.WindowsRegistryService`（方法：`getStringValue`）。
-- [ ] 将 `CwtConfigService.getContainingConfigGroupForRepo` 中获取 remoteUrls 的方法提取到 `ChronicleGitService`。
-- [ ] 需要为 `CwtConfigService.getContainingConfigGroupForRepo` 补充测试（集成测试）。应当可以从测试数据根目录（`src/test/testData`）向上找到项目的根目录，从而检查 `cwt/` 中的那些子目录。
-- [ ] 需要确认 `ChronicleGitService` 中那些需要执行命令行的方法可能会抛出哪些常见异常（可能并不存在），并且同步更新这些方法以及 `ProcessExecutor.execute` 等相关方法的注解和文档注释。
+- [x] 将 `CwtConfigService.getContainingConfigGroupForRepo` 中获取 remoteUrls 的方法提取到 `ChronicleGitService`。
+- [x] 需要为 `CwtConfigService.getContainingConfigGroupForRepo` 补充测试（集成测试）。应当可以从测试数据根目录（`src/test/testData`）向上找到项目的根目录，从而检查 `cwt/` 中的那些子目录。
+- [x] 需要确认 `ChronicleGitService` 中那些需要执行命令行的方法可能会抛出哪些常见异常（可能并不存在），并且同步更新这些方法以及 `ProcessExecutor.execute` 等相关方法的注解和文档注释。
 
 ### 评估
 
@@ -370,6 +372,7 @@ TBD
 测试代码：
 
 - [x] `icu.windea.pls.core.execution.ProcessExecutorTest` - 常见命令/区分OS/区分编码/取消行为/超时行为/编码/stderr/退出码
+- [x] `icu.windea.pls.config.config.CwtConfigServiceRepoTest` - `getContainingConfigGroupForRepo` 集成测试
 - [ ] `icu.windea.pls.core.execution.ProcessExecutorExternalToolBasedTest` - 需要下载外部工具并验证
 - [ ] `icu.windea.pls.images.ImageMetadataServiceTest`
 - [ ] `icu.windea.pls.integrations.lints.RunTigerTest` - 待移除（因为已存在 `ProcessExecutorExternalToolBasedTest`）
