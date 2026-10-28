@@ -279,15 +279,22 @@ com.intellij.diagnostic.Freeze
 - 将 remote URLs 的读取提取到 `ChronicleGitService.getRemoteUrls`；新增 `CwtConfigServiceRepoTest` 覆盖真实项目根目录下的 `cwt/core` 识别。
 - 更新 `ProcessExecutor.execute` 与 `ChronicleGitService` 的异常注解和文档注释（主要是 `ExecutionException`）。
 
+#### 2026-10-28 - step 2
+
+- 新增 `ImageMetadataService`，统一获取原始图片尺寸；替换内嵌提示/快速文档中的 `ImageIO.read(...).height`。
+- 扩展 `ImageService`：缓存检查、同步/后台渲染、`ImageRenderSession`、`ImageCacheCleaner`。
+- 新增 `ImageCacheCleanupPolicy`、`ImageRenderFailurePolicy`、`ImageRenderPolicy` 及 bundle 文案。
+- 新增 `ImageMetadataServiceTest`、`ImageServiceTest`、`ImageCacheCleanerTest`。
+
 ## 任务
 
 ### 主要 & 次要（AI 协助）
 
 - [ ] 基础设施
   - [x] 新增 `ProcessExecutor`、`ExecutionTimeouts`；弃用旧命令行 API
-  - [ ] 新增 `ImageMetadataService`
-  - [ ] 扩展 `ImageService`：缓存、渲染、`ImageRenderSession`、`ImageCacheCleaner`
-  - [ ] 新增 `ImageCacheCleanupPolicy`、`ImageRenderFailurePolicy`、`ImageRenderPolicy` 及文案
+  - [x] 新增 `ImageMetadataService`
+  - [x] 扩展 `ImageService`：缓存、渲染、`ImageRenderSession`、`ImageCacheCleaner`
+  - [x] 新增 `ImageCacheCleanupPolicy`、`ImageRenderFailurePolicy`、`ImageRenderPolicy` 及文案
 - [ ] 重构
   - [x] 迁移 Git、Texconv、Magick、Tiger、SpecialPath、CwtConfigService
   - [ ] 新增 `ParadoxImageService`/`ParadoxImageResolveResult`，保留 `ParadoxImageManager` facade
@@ -297,7 +304,7 @@ com.intellij.diagnostic.Freeze
   - [ ] Tiger：`TigerLintToolService` + `TrackingCache` + `TigerLintResult` 扩展
 - [ ] 测试
   - [x] `ProcessExecutor`：超时、取消、stderr、退出码、编码
-  - [ ] `ImageMetadataService`/`ImageService`：元数据、缓存、去重、失效、清理
+  - [x] `ImageMetadataService`/`ImageService`：元数据、缓存、渲染、清理
   - [ ] issue #396 回归测试
   - [ ] 进阶测试：`includeExternalTools` + `build/test-tools`
 - [ ] 清理与文档
@@ -360,9 +367,14 @@ TBD
 - [x] `icu.windea.pls.integrations.images.providers.MagickToolProvider` - 已迁移
 - [x] `icu.windea.pls.integrations.lints.providers.TigerLintToolProvider` - 已迁移
 - [x] `icu.windea.pls.lang.tools.SpecialPathServiceImpl` - 已迁移
-- [ ] `icu.windea.pls.images.ImageService` - 待重构
-- [ ] `icu.windea.pls.images.ImageMetadataService` - 新增
-- [ ] `icu.windea.pls.images.ImageCacheCleaner` - 新增
+- [x] `icu.windea.pls.images.ImageService` - 基础设施已扩展，语义层待迁移
+- [x] `icu.windea.pls.images.ImageMetadataService` - 新增
+- [x] `icu.windea.pls.images.ImageCacheCleaner` - 新增
+- [x] `icu.windea.pls.images.ImageRenderRequest` - 新增
+- [x] `icu.windea.pls.images.ImageRenderSession` - 新增
+- [x] `icu.windea.pls.images.policies.ImageCacheCleanupPolicy` - 新增
+- [x] `icu.windea.pls.images.policies.ImageRenderFailurePolicy` - 新增
+- [x] `icu.windea.pls.images.policies.ImageRenderPolicy` - 新增
 - [ ] `icu.windea.pls.integrations.images.ImageToolService` - 待重构
 - [ ] `icu.windea.pls.integrations.lints.TigerLintToolService` - 待重构
 - [ ] `icu.windea.pls.lang.util.ParadoxImageManager` - 待重构
@@ -374,7 +386,9 @@ TBD
 - [x] `icu.windea.pls.core.execution.ProcessExecutorTest` - 常见命令/区分OS/区分编码/取消行为/超时行为/编码/stderr/退出码
 - [x] `icu.windea.pls.config.config.CwtConfigServiceRepoTest` - `getContainingConfigGroupForRepo` 集成测试
 - [ ] `icu.windea.pls.core.execution.ProcessExecutorExternalToolBasedTest` - 需要下载外部工具并验证
-- [ ] `icu.windea.pls.images.ImageMetadataServiceTest`
+- [x] `icu.windea.pls.images.ImageMetadataServiceTest`
+- [x] `icu.windea.pls.images.ImageServiceTest`
+- [x] `icu.windea.pls.images.ImageCacheCleanerTest`
 - [ ] `icu.windea.pls.integrations.lints.RunTigerTest` - 待移除（因为已存在 `ProcessExecutorExternalToolBasedTest`）
 - TBD
 
