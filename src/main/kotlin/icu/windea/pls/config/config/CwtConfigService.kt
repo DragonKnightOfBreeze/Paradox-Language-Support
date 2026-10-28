@@ -8,6 +8,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.config.CwtConfigType
 import icu.windea.pls.config.CwtConfigTypeCategories
 import icu.windea.pls.config.CwtConfigTypes
@@ -24,12 +25,10 @@ import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.substringIn
 import icu.windea.pls.core.substringInLast
 import icu.windea.pls.core.surroundsWith
 import icu.windea.pls.core.toDelimitedList
-import icu.windea.pls.core.toPsiDirectory
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
@@ -115,23 +114,19 @@ object CwtConfigService {
         return ChronicleFacade.getConfigGroup(project, gameType)
     }
 
-    fun getGameTypeFromRepoFile(file: VirtualFile, project: Project): ParadoxGameType? {
+    fun getGameTypeFromRepoFile(file: VirtualFile, @Suppress("UNUSED_PARAMETER") project: Project): ParadoxGameType? {
         // 使用缓存以优化性能
         val parents = generateSequence(file.parent) { it.parent }
         val root = parents.find { it.findChild(".git") != null } ?: return null
-        val rootPsi = root.toPsiDirectory(project) ?: return null
-        val gameTypeId = rootPsi.getOrPutUserData(Keys.gameTypeIdFromRepoFile) {
+        val gameTypeId = root.getOrPutUserData(Keys.gameTypeIdFromRepoFile) {
             ProgressManager.checkCanceled()
             // 直接读取 `.git/config`，避免为此启动 git 进程
-            val configFile = root.findChild(".git")?.findChild("config") ?: return@getOrPutUserData null
-            val configText = runCatchingCancelable { VfsUtil.loadText(configFile) }.getOrNull() ?: return@getOrPutUserData null
-            val remoteUrls = Regex("""(?m)^\s*url\s*=\s*([^\r\n]+?)\s*$""").findAll(configText).map { it.groupValues[1].trim() }
+            val remoteUrls = ChronicleGitService.getInstance().getRemoteUrls(root)
             remoteUrls.firstNotNullOfOrNull t@{ remoteUrl ->
                 when {
                     remoteUrl.contains("Paradox-Language-Support") || remoteUrl.contains("Paradox-Chronicle") -> {
-                        val coreRoot = VfsUtil.findRelativeFile(root, "cwt/core")
-                        val r = coreRoot != null && VfsUtil.isAncestor(coreRoot, file, true)
-                        if (r) "core" else null
+                        val coreRootPath = root.path.trimEnd('/') + "/cwt/core/"
+                        if (file.path.startsWith(coreRootPath)) "core" else null
                     }
                     else -> remoteUrl.substringInLast("cwtools-", "-config", "").orNull()
                 }
