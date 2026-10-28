@@ -1,22 +1,21 @@
 package icu.windea.pls.integrations.images.providers
 
+import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
-import icu.windea.pls.core.executeCommandLine
-import icu.windea.pls.core.quote
-import icu.windea.pls.core.quoteIfNeeded
+import icu.windea.pls.core.execution.ExecutionTimeouts
+import icu.windea.pls.core.execution.ProgressExecutor
 import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.core.text.QuotePatterns
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.createDirectories
-import kotlin.io.path.name
 import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.notExists
+import kotlin.text.Charsets
 
 /**
  * 参见：[Texconv · microsoft/DirectXTex Wiki](https://github.com/microsoft/DirectXTex/wiki/Texconv)
@@ -54,18 +53,40 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
         val outputPath = outputDirectoryPath.resolve(outputFileName)
 
         val exePath = ChronicleDataPathService.getInstance().texconvExePath
-        val wd = exePath.parent?.toFile()
-        val exe = exePath.name.quoteIfNeeded(QuotePatterns.CommandLine)
-        val input = path.toString().quote(QuotePatterns.CommandLine)
-        val output = outputDirectoryPath.toString().quote(QuotePatterns.CommandLine)
+        val commandLine = GeneralCommandLine(
+            exePath.toString(),
+            path.toString(),
+            "-o", outputDirectoryPath.toString(),
+            "-ft", targetFormat,
+            "-y", // overwrite existing files
+        ).withWorkingDirectory(exePath.parent).withCharset(Charsets.UTF_8)
 
-        ProgressManager.checkCanceled() // 在执行命令前检查进度是否被取消
+        ProgressManager.checkCanceled()
+        val output = ProgressExecutor(commandLine)
+            .withTimeout(ExecutionTimeouts.normal)
+            .execute()
 
-        val command = "./$exe $input -o $output -ft $targetFormat -y" // -y: overwrite existing files
-        val result = executeCommandLine(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
-
+        if (output.isCancelled) {
+            ProgressManager.checkCanceled() // 如果的确被取消，则抛出 `ProcessCanceledException`
+            throw IllegalStateException("Failed to convert image: command was cancelled.\nCommand: ${commandLine.commandLineString}")
+        }
+        if (output.isTimeout) {
+            throw IllegalStateException("Failed to convert image: command timed out.\nCommand: ${commandLine.commandLineString}")
+        }
+        if (output.exitCode != 0) {
+            throw IllegalStateException(
+                "Failed to convert image: command failed (exitCode=${output.exitCode}).\n" +
+                    "Command: ${commandLine.commandLineString}\n" +
+                    "Error: ${output.stderr.trim()}"
+            )
+        }
         if (outputPath.notExists()) {
-            throw IllegalStateException("Failed to convert image: output file not found.\nCommand: $command\nResult: $result")
+            throw IllegalStateException(
+                "Failed to convert image: output file not found.\n" +
+                    "Command: ${commandLine.commandLineString}\n" +
+                    "Result: ${output.stdout.trim()}\n" +
+                    "Error: ${output.stderr.trim()}"
+            )
         }
 
         val finalOutputPath = outputDirectoryPath.resolve(targetFileName ?: outputFileName)
