@@ -8,7 +8,7 @@ import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
 import icu.windea.pls.base.settings.ChronicleProfilesSettings
 import icu.windea.pls.core.execution.ExecutionTimeouts
-import icu.windea.pls.core.execution.ProgressExecutor
+import icu.windea.pls.core.execution.ProcessExecutor
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPathOrNull
@@ -93,7 +93,7 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
         }).withWorkingDirectory(fullExePath.parent).withCharset(Charsets.UTF_8)
 
         ProgressManager.checkCanceled()
-        val output = ProgressExecutor(commandLine)
+        val output = ProcessExecutor(commandLine)
             .withTimeout(ExecutionTimeouts.veryLong)
             .execute()
 

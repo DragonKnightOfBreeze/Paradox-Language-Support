@@ -14,14 +14,14 @@ import kotlin.time.Duration.Companion.milliseconds
  *
  * ## 弃用声明
  *
- * 自插件版本 3.0.5 开始，应改为使用 [ProgressExecutor]，以取得更好的兼容性和性能。
+ * 自插件版本 3.0.5 开始，应改为使用 [ProcessExecutor]，以取得更好的兼容性和性能。
  * 目前暂时保留。
  *
  * @param environment 额外环境变量。
  * @param workDirectory 工作目录。
  * @param timeout 超时（毫秒）。
  */
-@Deprecated("Use `ProgressExecutor` instead.")
+@Deprecated("Use `ProcessExecutor` instead.")
 class CommandLineExecutor(
     val environment: Map<String, String> = emptyMap(),
     val workDirectory: File? = null,
@@ -74,7 +74,7 @@ class CommandLineExecutor(
             commandLine.withEnvironment("LANG", "en_US.UTF-8")
             commandLine.withEnvironment("LC_ALL", "en_US.UTF-8")
         }
-        val executor = ProgressExecutor(commandLine)
+        val executor = ProcessExecutor(commandLine)
         timeout?.let { executor.withTimeout(it.milliseconds) }
         val output = executor.execute()
         val result = output.stdout.trim()

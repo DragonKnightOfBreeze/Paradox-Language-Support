@@ -31,11 +31,11 @@ import kotlin.time.Duration.Companion.milliseconds
  *
  * @see ExecutionTimeouts
  */
-class ProgressExecutor(
+class ProcessExecutor(
     val commandLine: GeneralCommandLine
 ) {
     companion object {
-        private val logger = logger<ProgressExecutor>()
+        private val logger = logger<ProcessExecutor>()
         private val warnedStacks = ConcurrentHashMap.newKeySet<String>()
     }
 
@@ -46,27 +46,27 @@ class ProgressExecutor(
     /**
      * 使用指定的 indicator 进行执行，从而支持取消。
      */
-    fun withIndicator(indicator: ProgressIndicator): ProgressExecutor = apply { this.indicator = indicator }
+    fun withIndicator(indicator: ProgressIndicator): ProcessExecutor = apply { this.indicator = indicator }
 
     /**
      * 不使用 indicator 进行执行，此时仅能通过超时限制执行时间。
      */
-    fun withoutIndicator(): ProgressExecutor = apply { this.indicator = null }
+    fun withoutIndicator(): ProcessExecutor = apply { this.indicator = null }
 
     /**
      * 设置执行超时。未设置或设置为无限时，表示不设置超时。
      */
-    fun withTimeout(timeout: Duration): ProgressExecutor = apply { this.timeout = timeout }
+    fun withTimeout(timeout: Duration): ProcessExecutor = apply { this.timeout = timeout }
 
     /**
      * 设置执行超时（毫秒）。`0` 表示不设置超时。
      */
-    fun withTimeoutMillis(timeoutMillis: Int): ProgressExecutor = apply { this.timeout = timeoutMillis.milliseconds }
+    fun withTimeoutMillis(timeoutMillis: Int): ProcessExecutor = apply { this.timeout = timeoutMillis.milliseconds }
 
     /**
      * 设置超时后是否销毁进程。为了与 [CapturingProcessHandler] 对齐，默认销毁。
      */
-    fun withDestroyOnTimeout(destroyOnTimeout: Boolean): ProgressExecutor = apply { this.destroyOnTimeout = destroyOnTimeout }
+    fun withDestroyOnTimeout(destroyOnTimeout: Boolean): ProcessExecutor = apply { this.destroyOnTimeout = destroyOnTimeout }
 
     /**
      * 阻塞执行外部命令，并返回进程输出。

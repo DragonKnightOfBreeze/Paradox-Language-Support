@@ -17,13 +17,13 @@ import kotlin.concurrent.thread
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
- * @see ProgressExecutor
+ * @see ProcessExecutor
  */
 @RunWith(JUnit4::class)
-class ProgressExecutorTest : BasePlatformTestCase() {
+class ProcessExecutorTest : BasePlatformTestCase() {
     @Test
     fun execute_echo_smokeTest() {
-        val output = ProgressExecutor(createEchoCommandLine("hello")).execute()
+        val output = ProcessExecutor(createEchoCommandLine("hello")).execute()
 
         Assert.assertEquals(0, output.exitCode)
         Assert.assertEquals("hello", output.stdout.trim())
@@ -33,7 +33,7 @@ class ProgressExecutorTest : BasePlatformTestCase() {
 
     @Test
     fun execute_echo_withoutIndicator_smokeTest() {
-        val output = ProgressExecutor(createEchoCommandLine("hello"))
+        val output = ProcessExecutor(createEchoCommandLine("hello"))
             .withoutIndicator()
             .execute()
 
@@ -54,7 +54,7 @@ class ProgressExecutorTest : BasePlatformTestCase() {
         } else {
             GeneralCommandLine("/bin/sh", "-c", "printf '中文测试'")
         }
-        val output = ProgressExecutor(commandLine.withCharset(Charsets.UTF_8)).execute()
+        val output = ProcessExecutor(commandLine.withCharset(Charsets.UTF_8)).execute()
 
         Assert.assertEquals(0, output.exitCode)
         Assert.assertEquals("中文测试", output.stdout.trim())
@@ -64,7 +64,7 @@ class ProgressExecutorTest : BasePlatformTestCase() {
     fun execute_git_smokeTest() {
         Assume.assumeTrue("git is not available", PathEnvironmentVariableUtil.findInPath("git") != null)
 
-        val output = ProgressExecutor(
+        val output = ProcessExecutor(
             GeneralCommandLine("git", "--version").withCharset(Charsets.UTF_8)
         ).withTimeout(ExecutionTimeouts.normal).execute()
 
@@ -76,7 +76,7 @@ class ProgressExecutorTest : BasePlatformTestCase() {
 
     @Test
     fun execute_exitCode_and_stderr_test() {
-        val output = ProgressExecutor(createFailCommandLine("boom")).execute()
+        val output = ProcessExecutor(createFailCommandLine("boom")).execute()
 
         Assert.assertNotEquals(0, output.exitCode)
         Assert.assertTrue(output.stderr.contains("boom"))
@@ -87,7 +87,7 @@ class ProgressExecutorTest : BasePlatformTestCase() {
     @Test
     fun execute_timeout_test() {
         val startTime = System.nanoTime()
-        val output = ProgressExecutor(createSleepCommandLine(10))
+        val output = ProcessExecutor(createSleepCommandLine(10))
             .withoutIndicator()
             .withTimeout(200.milliseconds)
             .execute()
@@ -108,7 +108,7 @@ class ProgressExecutorTest : BasePlatformTestCase() {
             indicator.cancel()
         }
         val output = try {
-            ProgressExecutor(createSleepCommandLine(10))
+            ProcessExecutor(createSleepCommandLine(10))
                 .withIndicator(indicator)
                 .withTimeout(ExecutionTimeouts.short)
                 .execute()
@@ -134,7 +134,7 @@ class ProgressExecutorTest : BasePlatformTestCase() {
         val output = try {
             ProgressManager.getInstance().runProcess(
                 Computable {
-                    ProgressExecutor(createSleepCommandLine(10))
+                    ProcessExecutor(createSleepCommandLine(10))
                         .withTimeout(ExecutionTimeouts.short)
                         .execute()
                 },

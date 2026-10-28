@@ -11,7 +11,7 @@ import com.intellij.execution.ExecutionException
  *
  * @see CommandLineExecutor
  */
-@Deprecated("Use `ProgressExecutor` with `GeneralCommandLine` instead.")
+@Deprecated("Use `ProcessExecutor` with `GeneralCommandLine` instead.")
 class CommandLineExecutionException : ExecutionException {
     constructor(message: String) : super(message)
     constructor(message: String, cause: Throwable) : super(message, cause)

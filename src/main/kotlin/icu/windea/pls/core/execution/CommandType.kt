@@ -5,7 +5,7 @@ package icu.windea.pls.core.execution
 /**
  * 命令类型。
  */
-@Deprecated("Use `ProgressExecutor` with `GeneralCommandLine` instead.")
+@Deprecated("Use `ProcessExecutor` with `GeneralCommandLine` instead.")
 enum class CommandType {
     /** 基于操作系统（Windows 使用 [POWER_SHELL]），类 Unix 使用 [SHELL]。 */
     AUTO,

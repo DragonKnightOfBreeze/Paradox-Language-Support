@@ -3,7 +3,7 @@ package icu.windea.pls.base.io
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.core.execution.ExecutionTimeouts
-import icu.windea.pls.core.execution.ProgressExecutor
+import icu.windea.pls.core.execution.ProcessExecutor
 import icu.windea.pls.core.toPath
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -61,7 +61,7 @@ class ChronicleGitServiceImpl : ChronicleGitService {
     }
 
     private fun execute(commandLine: GeneralCommandLine, timeout: Duration): String {
-        val output = ProgressExecutor(commandLine).withTimeout(timeout).execute()
+        val output = ProcessExecutor(commandLine).withTimeout(timeout).execute()
         if (output.isCancelled) {
             ProgressManager.checkCanceled() // 如果的确被取消，则抛出 `ProcessCanceledException`
             val message = "Git command was cancelled: ${commandLine.commandLineString}"

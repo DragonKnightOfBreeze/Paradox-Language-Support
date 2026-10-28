@@ -7,7 +7,7 @@ import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
 import icu.windea.pls.core.execution.ExecutionTimeouts
-import icu.windea.pls.core.execution.ProgressExecutor
+import icu.windea.pls.core.execution.ProcessExecutor
 import icu.windea.pls.core.runCatchingCancelable
 import java.nio.file.Files
 import java.nio.file.Path
@@ -63,7 +63,7 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
         ).withWorkingDirectory(exePath.parent).withCharset(Charsets.UTF_8)
 
         ProgressManager.checkCanceled()
-        val output = ProgressExecutor(commandLine).withTimeout(ExecutionTimeouts.normal).execute()
+        val output = ProcessExecutor(commandLine).withTimeout(ExecutionTimeouts.normal).execute()
 
         if (output.isCancelled) {
             ProgressManager.checkCanceled() // 如果的确被取消，则抛出 `ProcessCanceledException`
