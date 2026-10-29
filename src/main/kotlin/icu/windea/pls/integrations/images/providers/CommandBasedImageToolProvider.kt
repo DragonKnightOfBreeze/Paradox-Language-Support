@@ -2,6 +2,9 @@ package icu.windea.pls.integrations.images.providers
 
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.util.io.ImageInputStreamAdapter
+import icu.windea.pls.core.util.io.copyImageFile
+import icu.windea.pls.core.util.io.copyImageStream
+import icu.windea.pls.core.util.io.isSameImageFormat
 import icu.windea.pls.integrations.images.ImageToolProvider
 import org.apache.commons.io.IOUtils
 import java.awt.image.BufferedImage
@@ -47,6 +50,10 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
     }
 
     final override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String) {
+        if (isSameImageFormat(sourceFormat, targetFormat)) {
+            copyImageStream(inputStream, outputStream)
+            return
+        }
         val pathsToDelete = mutableSetOf<Path>()
         try {
             val tempParentPath = ChronicleDataPathService.getInstance().imagesTempPath
@@ -64,6 +71,10 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
     }
 
     final override fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
+        if (isSameImageFormat(sourceFormat, targetFormat)) {
+            copyImageFile(path, targetPath)
+            return
+        }
         convertImageFormat(path, targetPath.parent, targetPath.name, sourceFormat, targetFormat)
     }
 

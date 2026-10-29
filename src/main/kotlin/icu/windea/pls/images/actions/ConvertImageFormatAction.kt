@@ -4,6 +4,7 @@ import com.intellij.codeInspection.InspectionsBundle
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ex.ApplicationManagerEx
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressIndicator
@@ -31,6 +32,8 @@ import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.images.ImageService
 import java.io.IOException
+import java.nio.file.Path
+import java.util.concurrent.ExecutionException
 import java.util.concurrent.atomic.AtomicReference
 import java.util.function.Consumer
 
@@ -266,7 +269,7 @@ abstract class ConvertImageFormatAction(
         }
     }
 
-    private fun doConvertImageFormat(file: PsiFile, targetDirectory: PsiDirectory, targetFileName: String): PsiFile? {
+    internal fun doConvertImageFormat(file: PsiFile, targetDirectory: PsiDirectory, targetFileName: String): PsiFile? {
         val s = file.virtualFile ?: return null
         val td = targetDirectory.virtualFile
         val sf = s.extension?.orNull() ?: return null
@@ -274,8 +277,22 @@ abstract class ConvertImageFormatAction(
         val targetPath = td.toNioPath().resolve(targetFileName)
         val sourceFormat = sf.lowercase()
         val targetFormat = targetFormatName.lowercase()
-        ImageService.getInstance().convertImageFormat(path, targetPath, sourceFormat, targetFormat)
+        convertImageFormat(path, targetPath, sourceFormat, targetFormat)
         val t = targetPath.toVirtualFile(refreshIfNeed = true)
         return t?.toPsiFile(file.project)
+    }
+
+    private fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
+        // 外部图片工具不能在 EDT/readAction 中执行；当前动作通常运行在 EDT 中，因此必要时放到后台线程
+        val action = { ImageService.getInstance().convertImageFormat(path, targetPath, sourceFormat, targetFormat) }
+        if (ApplicationManager.getApplication().isDispatchThread) {
+            try {
+                ApplicationManager.getApplication().executeOnPooledThread(action).get()
+            } catch (e: ExecutionException) {
+                throw e.cause ?: e
+            }
+        } else {
+            action()
+        }
     }
 }

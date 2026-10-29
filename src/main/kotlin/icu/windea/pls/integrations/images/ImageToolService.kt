@@ -5,6 +5,9 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.util.ExceptionUtil
+import icu.windea.pls.core.util.io.copyImageFile
+import icu.windea.pls.core.util.io.copyImageStream
+import icu.windea.pls.core.util.io.isSameImageFormat
 import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.io.OutputStream
@@ -30,6 +33,10 @@ class ImageToolService {
 
     /** @see ImageToolProvider.convertImageFormat */
     fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
+        if (isSameImageFormat(sourceFormat, targetFormat)) {
+            copyImageStream(inputStream, outputStream)
+            return true
+        }
         if (warnIfIncorrectContext()) return false
         val tool = findTool() ?: return false
         tool.convertImageFormat(inputStream, outputStream, sourceFormat, targetFormat)
@@ -38,6 +45,10 @@ class ImageToolService {
 
     /** @see ImageToolProvider.convertImageFormat */
     fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
+        if (isSameImageFormat(sourceFormat, targetFormat)) {
+            copyImageFile(path, targetPath)
+            return true
+        }
         if (warnIfIncorrectContext()) return false
         val tool = findTool() ?: return false
         tool.convertImageFormat(path, targetPath, sourceFormat, targetFormat)
