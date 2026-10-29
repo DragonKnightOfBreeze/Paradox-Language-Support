@@ -9,6 +9,7 @@ import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
 import icu.windea.pls.base.settings.ChronicleProfilesSettings
 import icu.windea.pls.base.settings.ParadoxModDescriptorSettingsState
 import icu.windea.pls.base.settings.ParadoxModSettingsState
+import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.ep.analysis.ParadoxDescriptorModBasedModMetadataProvider
 import icu.windea.pls.integrations.ExternalToolDownloadTestService
 import icu.windea.pls.integrations.lints.TigerLintToolService
@@ -32,7 +33,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.readText
+import kotlin.io.path.isDirectory
 
 /**
  * Tiger 检查逻辑和 `ChronicleTigerLintInspection` 的进阶测试。
@@ -148,7 +149,7 @@ class Issue396TigerLintTest : BasePlatformTestCase(), ChronicleTestScope {
         val highlights = myFixture.doHighlighting()
         Assert.assertTrue(
             "Tiger external annotation was not applied: ${highlights.map { it.description }}",
-            highlights.any { it.description?.contains("unknown-field") == true }
+            highlights.any { it.description?.contains("unknown-field") == true },
         )
     }
 
@@ -166,13 +167,16 @@ class Issue396TigerLintTest : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     private fun findCk3GameDirectory(): Path? {
-        SpecialPathService.getInstance().getGameDataPath(ParadoxGameType.Ck3)?.let {
-            if (Files.isDirectory(it)) return it
-        }
-        System.getProperty("chronicle.test.tiger.gameDir")?.let {
-            val path = Path.of(it)
-            if (Files.isDirectory(path)) return path
-        }
+        // `SpecialPathService.getGameDataPath` 应当就已经足够，但是……
+        // OK 大肥鱼，你是懂“防御性编程”的，就这样吧……
+
+        SpecialPathService.getInstance().getGameDataPath(ParadoxGameType.Ck3)
+            ?.takeIf { it.isDirectory() }
+            ?.let { return it }
+        System.getProperty("chronicle.test.tiger.gameDir")?.toPathOrNull()
+            ?.takeIf { it.isDirectory() }
+            ?.let { return it }
+
         val candidates = listOf(
             "D:\\Program Files\\Steam\\steamapps\\common\\Crusader Kings III",
             "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Crusader Kings III",

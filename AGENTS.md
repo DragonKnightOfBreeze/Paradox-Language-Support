@@ -142,7 +142,7 @@ For the showcase test demonstrating `ChronicleTestScope` usage, see `icu.windea.
 
 ### About test DSL
 
-Additionally, the plugin provides some DSLs for unit tests and platform tasks, which can be used to write tests that are simpler and clearer.
+Additionally, the plugin provides some DSLs for unit tests and platform tests, which can be used to write tests that are simpler and clearer.
 
 They are defined in package `icu.windea.pls.test.dsl`, with corresponding DSL marker annotations, scope objects and scope methods. These scope methods should be used on certain limited scope.
 
@@ -153,7 +153,7 @@ Introduce to these DSLs:
 Examples:
 - `expectScope { result.expectNotNull().someMethodForNonNullType() }`
 - `expectScope { result.expectIs<SomeType>().someMethodForThisType() }`
-- `myFixture.configureByText("test.txt") { "${error(message)}key${errorEnd} = value" }`
+- `myFixture.configureByText("test.txt") { "${error(message)}key${errorEnd()} = value" }`
 
 For the showcase test demonstrating `ChronicleTestScope` usage in DSL-style, see `icu.windea.pls.test.chronicle.ChronicleHelloWorldDslTest`.
 
@@ -172,9 +172,10 @@ Some tests are intentionally **disabled by default** and only run when explicitl
 | `ChronicleAssume` method   | System property                           | Category                                                                          |
 |----------------------------|-------------------------------------------|-----------------------------------------------------------------------------------|
 | `includeAi()`              | `chronicle.test.include.ai`               | AI-backed tests                                                                   |
-| `includeRemote()`          | `chronicle.test.include.remote`           | Tests requiring access remote network (e.g., `SpecialUrlServiceTest`)                                    |
+| `includeRemote()`          | `chronicle.test.include.remote`           | Tests requiring access remote network (e.g., `SpecialUrlServiceTest`)             |
 | `includeLocalEnv()`        | `chronicle.test.include.local.env`        | Tests requiring a real local game/mod environment (e.g. `ParadoxModImporterTest`) |
-| `includeConfigGenerator()` | `chronicle.test.include.config.generator` | Config generator tests                                                            |
+| `includeConfigGenerator()` | `chronicle.test.include.config.generator` | Config generator tests (require local game dirs)                                  |
+| `includeExternalTools()`   | `chronicle.test.include.external.tools`   | External tool tests (require downloading)                                         |
 
 `chronicle.test.include.all` (checked via `includeAll()`) unconditionally enables every category above. Example: `./gradlew test -Dchronicle.test.include.local.env=true --no-daemon --console=plain`.
 
