@@ -1,0 +1,4 @@
+test_trigger = {
+    always = yes # should be valid
+    unresolved = 123 # should be invalid
+}
