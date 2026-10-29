@@ -31,7 +31,7 @@ class ImageRenderSession(
     private val failedRequests = CopyOnWriteArrayList<ImageRenderRequest>()
 
     fun launch(request: ImageRenderRequest): Deferred<Path?> {
-        val job = scope.async<Path?> {
+        val job = scope.async {
             try {
                 withContext(Dispatchers.IO) {
                     coroutineToIndicator { _: ProgressIndicator ->

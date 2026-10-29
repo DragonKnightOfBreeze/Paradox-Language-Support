@@ -130,7 +130,7 @@ class ImageRenderService : Disposable {
         // Note that `runBlockingCancellable` relies on the job/indicator already present on the current thread,
         // and using it directly throws an exception at call sites without a progress context,
         // so we use `CompletableFuture` instead of `Deferred` here.
-        val future = job.asCompletableFuture().thenApply<Path?> { it } // use `Deferred.asCompletableFuture()` instead of manually construction
+        val future = job.asCompletableFuture().thenApply { it } // use `Deferred.asCompletableFuture()` instead of manually construction
         val existing = renderFutures.putIfAbsent(request, future)
         if (existing != null) {
             future.cancel(true)
