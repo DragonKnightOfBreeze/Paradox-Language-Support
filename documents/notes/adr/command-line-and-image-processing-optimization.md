@@ -608,7 +608,7 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.base.io.ChronicleSqliteServiceTest` - 临时 SQLite 数据库
 - [x] `icu.windea.pls.test.issues.Issue396Test` - 外部图片工具上下文回归测试
 - [x] `icu.windea.pls.test.issues.Issue396TigerLintTest` - Tiger 服务与 `ChronicleTigerLintInspection` 端到端测试
-- [ ] `icu.windea.pls.integrations.lints.RunTigerTest` - 待移除（因为已存在 `ExternalToolDownloadTest`）
+- [x] ~~`icu.windea.pls.integrations.lints.RunTigerTest`~~ - 已移除（因为已存在 `ExternalToolDownloadTest`）
 - TBD
 
 参考：
