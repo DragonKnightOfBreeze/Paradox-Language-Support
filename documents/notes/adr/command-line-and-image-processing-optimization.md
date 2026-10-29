@@ -423,8 +423,11 @@ com.intellij.diagnostic.Freeze
 - [x] 将 `ParadoxImageService` `ParadoxImageResolveResult` 移到 `icu.windea.pls.lang.resolve`
 - [x] 将 `icu.windea.pls.images.policies` 中的代码移动到 `icu.windea.pls.model.policies`
 - [ ] 需要补充测试，验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），`ConvertImageFormatAction` 能够符合预期地成功/失败
+  - 需要尽可能全面，覆盖各种组合。
 - [ ] 需要补充测试，验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），图片转换操作能够符合预期地成功/失败
+  - 需要尽可能全面，覆盖各种组合。
 - [ ] `convertImageFormat` 中的 NOP 处理：如果 `sourceFormat` 等同于 `targetFormat`，可能需要直接返回，不执行转换操作
+  - 可能需要适用于多个级别（toolProvider/toolService/imageSupport/imageService）
 - [ ] 与 `imagePolicy` 相关的优化和测试
 - [ ] 图片处理（渲染/读取/写入）时的取消检查
 - [x] 与 `ExternalToolDownloadService` 相关的测试
@@ -453,7 +456,7 @@ com.intellij.diagnostic.Freeze
   - `icu.windea.pls.util.net.ProxyService` - 也需要补充测试（冒烟，简单场景）
   - `icu.windea.pls.util.net.DownloadService` - 也需要补充测试（冒烟，简单场景）
   - 一些通用的 model/enum/constant，也一并提取到对应位置（同包下/直接作为类成员或内部类）。
-  - 需要允许更加灵活的配置，并提供一个合理的默认配置。例如提供 `DownloadSettings`（速度检测/超时检测/等等）。
+  - 需要允许更加灵活的配置，并提供一个合理的默认配置。例如提供默认参数 `settings: DownloadSettings`（速度检测/超时检测/等等）。
 
 #### 2026-10-30 - step 6 - doc
 
