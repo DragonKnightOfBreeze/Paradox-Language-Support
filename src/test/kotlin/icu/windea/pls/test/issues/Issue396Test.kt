@@ -3,8 +3,10 @@ package icu.windea.pls.test.issues
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.testFramework.ExtensionTestUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.inject.injectors.DDSImageReaderCodeInjector
 import icu.windea.pls.integrations.images.ImageToolProvider
 import icu.windea.pls.integrations.images.ImageToolService
+import icu.windea.pls.lang.codeInsight.hints.script.ParadoxModifierIconHintsProvider
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -16,8 +18,8 @@ import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
-import javax.imageio.ImageReadParam
 import javax.imageio.ImageIO
+import javax.imageio.ImageReadParam
 import javax.imageio.stream.ImageInputStream
 
 /**
@@ -31,8 +33,8 @@ import javax.imageio.stream.ImageInputStream
  * 这里使用记录调用的测试 `ImageToolProvider` 模拟外部工具。
  *
  * @see ImageToolService
- * @see icu.windea.pls.inject.injectors.DDSImageReaderCodeInjector
- * @see icu.windea.pls.lang.codeInsight.hints.script.ParadoxModifierIconHintsProvider
+ * @see DDSImageReaderCodeInjector
+ * @see ParadoxModifierIconHintsProvider
  */
 @RunWith(JUnit4::class)
 class Issue396Test : BasePlatformTestCase() {

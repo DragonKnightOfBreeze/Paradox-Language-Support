@@ -35,6 +35,8 @@ import java.nio.file.Path
 import kotlin.io.path.isDirectory
 
 /**
+ * See: [#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396)
+ *
  * Tiger 检查逻辑和 `ChronicleTigerLintInspection` 的进阶测试。
  *
  * 测试使用测试数据目录中的简单 CK3 模组：
