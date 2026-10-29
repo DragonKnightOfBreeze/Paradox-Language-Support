@@ -9,6 +9,7 @@ import com.intellij.openapi.util.SystemInfo
 import com.intellij.platform.util.progress.RawProgressReporter
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.util.progress.reportRawProgress
+import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.net.ProxyConfiguration
 import com.intellij.util.net.ProxySettings
 import icu.windea.pls.core.execution.ExecutionTimeouts
@@ -34,6 +35,8 @@ import java.nio.file.Path
 import java.nio.file.attribute.PosixFilePermission
 import java.security.MessageDigest
 import java.time.Duration
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicLong
 import java.util.zip.ZipFile
 import kotlin.io.path.createDirectories
 import kotlin.io.path.deleteIfExists
@@ -120,8 +123,18 @@ class ExternalToolDownloadService {
         val digest = MessageDigest.getInstance("SHA-256")
         var downloaded = 0L
         val startedAt = System.nanoTime()
+        val lastActivity = AtomicLong(startedAt)
+        val body = response.body()
+        val watchdog = AppExecutorUtil.getAppScheduledExecutorService().scheduleWithFixedDelay({
+            val now = System.nanoTime()
+            val elapsed = (now - startedAt) / 1_000_000
+            val idle = (now - lastActivity.get()) / 1_000_000
+            if (elapsed >= MAX_DOWNLOAD_DURATION_MILLIS || idle >= STALL_TIMEOUT_MILLIS) {
+                runCatching { body.close() }
+            }
+        }, 5, 5, TimeUnit.SECONDS)
         try {
-            response.body().buffered().use { input ->
+            body.buffered().use { input ->
                 targetPath.outputStream().buffered().use { output ->
                     val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
                     while (true) {
@@ -129,6 +142,7 @@ class ExternalToolDownloadService {
                         ProgressManager.checkCanceled()
                         val length = input.read(buffer)
                         if (length < 0) break
+                        lastActivity.set(System.nanoTime())
                         output.write(buffer, 0, length)
                         digest.update(buffer, 0, length)
                         downloaded += length
@@ -143,6 +157,8 @@ class ExternalToolDownloadService {
         } catch (e: Throwable) {
             targetPath.deleteIfExists()
             throw e
+        } finally {
+            watchdog.cancel(false)
         }
 
         val elapsedMillis = (System.nanoTime() - startedAt) / 1_000_000
@@ -422,6 +438,7 @@ class ExternalToolDownloadService {
         private const val READ_TIMEOUT_MILLIS = 30_000
         private const val MIN_SPEED_CHECK_DELAY_MILLIS = 10_000L
         private const val MIN_DOWNLOAD_SPEED_BYTES_PER_SECOND = 32L * 1024
+        private const val STALL_TIMEOUT_MILLIS = 60_000L
         private const val MAX_DOWNLOAD_DURATION_MILLIS = 10L * 60 * 1000
 
         @JvmStatic
