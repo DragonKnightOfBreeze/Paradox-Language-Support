@@ -7,7 +7,6 @@ import com.intellij.psi.util.endOffset
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.createPointer
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.ui.toIconOrNull
@@ -49,32 +48,26 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
         if (name.isParameterized()) return
         val config = ParadoxConfigManager.getConfigs(element).firstOrNull() ?: return
         if (config.configExpression.type != CwtDataTypes.Modifier) return
-        val configGroup = config.configGroup
-        val project = configGroup.project
 
         val paths = ParadoxModifierManager.getModifierIconPaths(name, element)
         val iconFile = paths.firstNotNullOfOrNull { path ->
-            val iconSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
+            val iconSelector = ParadoxFilePathSearch.selector(context.project, element).contextSensitive()
             ParadoxFilePathSearch.searchModifierIcon(path, iconSelector).find()
         } ?: return
-        val image = ParadoxImageManager.resolveImageByFile(iconFile, project)
+        val image = ParadoxImageManager.resolveImageByFile(iconFile)
 
         // 如果无法解析（包括对应文件不存在的情况）就直接跳过
         if (!ParadoxImageManager.canResolve(image)) return
-
-        // 这里需要使用图标的原始高度；无法获取时直接跳过，避免使用可能已被缩放的 icon 高度
-        val originalIconHeight = runCatchingCancelable {
-            ImageMetadataService.getInstance().getMetadata(image.sourcePath)?.height
-        }.getOrNull() ?: return
-        if (originalIconHeight > context.settings.iconHeightLimit) return
-        // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
+        // 原始高度是后续缩放和大小限制的依据（无法获取时直接跳过，避免使用可能已被缩放的 icon 高度）
+        val iconHeight = ImageMetadataService.getInstance().getMetadata(image.sourcePath)?.height ?: return
+        if (iconHeight > context.settings.iconHeightLimit) return
+        // 找不到图标的话就直接跳过
         val iconUrl = ParadoxImageManager.resolveUrl(image, context.project) ?: return
-        val iconFileUrl = iconUrl.toFileUrl()
-        val icon = iconFileUrl.toIconOrNull() ?: return
+        val icon = iconUrl.toFileUrl().toIconOrNull() ?: return
 
         sink.addInlinePresentation(element.endOffset, smallInset = true) {
             // 点击可以导航到声明处（图片）
-            icon(icon, iconFile.toPsiFile(project)?.createPointer())
+            icon(icon, iconFile.toPsiFile(context.project)?.createPointer())
         }
     }
 }

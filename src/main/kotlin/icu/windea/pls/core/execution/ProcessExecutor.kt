@@ -36,11 +36,6 @@ import kotlin.time.Duration.Companion.milliseconds
 class ProcessExecutor(
     val commandLine: GeneralCommandLine
 ) {
-    companion object {
-        private val logger = logger<ProcessExecutor>()
-        private val warnedStacks = ConcurrentHashMap.newKeySet<String>()
-    }
-
     private var indicator: ProgressIndicator? = ProgressIndicatorProvider.getGlobalProgressIndicator()
     private var timeout: Duration = Duration.INFINITE
     private var destroyOnTimeout: Boolean = true
@@ -101,6 +96,7 @@ class ProcessExecutor(
     }
 
     private fun warnIfIncorrectContext() {
+        // 3.0.5 warn if current contxt is incorrect (EDT or readAction), but continue execution
         val application = ApplicationManager.getApplication() ?: return
         val message = when {
             application.isDispatchThread -> "on EDT"
@@ -109,9 +105,11 @@ class ProcessExecutor(
         }
         val stack = ExceptionUtil.currentStackTrace()
         if (!warnedStacks.add(stack)) return
-        logger.warn(
-            "Command line is executed $message: ${commandLine.commandLineString}. " +
-                "See `OSProcessHandler.checkEdtAndReadAction()` for details."
-        )
+        logger.warn("Command line is executed $message: ${commandLine.commandLineString}. See `OSProcessHandler.checkEdtAndReadAction()` for details.")
+    }
+
+    companion object {
+        private val logger = logger<ProcessExecutor>()
+        private val warnedStacks = ConcurrentHashMap.newKeySet<String>()
     }
 }

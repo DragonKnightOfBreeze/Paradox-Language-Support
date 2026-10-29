@@ -5,16 +5,17 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
-import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.util.concurrency.AppExecutorUtil
+import com.intellij.util.io.fileSizeSafe
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.withContext
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
@@ -25,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
+import kotlin.io.path.isRegularFile
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -51,7 +53,7 @@ class ImageRenderService : Disposable {
 
     fun newRenderSession(scope: CoroutineScope): ImageRenderSession = ImageRenderSession(scope)
 
-    fun getCurrentRenderSession(): ImageRenderSession? = renderSession.get()
+    fun currentRenderSession(): ImageRenderSession? = renderSession.get()
 
     fun <T> withRenderSession(session: ImageRenderSession, action: () -> T): T {
         val oldSession = renderSession.get()
@@ -64,18 +66,23 @@ class ImageRenderService : Disposable {
     }
 
     /**
-     * 在当前渲染会话中记录渲染请求，并返回预期的目标路径。
+     * 如果存在对应的本地缓存，则直接返回预期的目标路径。
+     */
+    fun getCachedImagePath(request: ImageRenderRequest): Path? {
+        val targetPath = request.targetPath
+        if (!targetPath.isRegularFile() || targetPath.fileSizeSafe() == 0L) return null
+        return targetPath
+    }
+
+    /**
+     * 尝试在当前渲染会话中记录渲染请求，并返回预期的目标路径。
      *
      * 如果当前没有渲染会话，则不会自动开始渲染；调用方应使用 [requestImageRender]。
      */
-    fun recordRender(request: ImageRenderRequest): Path {
-        renderSession.get()?.record(request)
+    fun getRecordedImagePath(request: ImageRenderRequest): Path? {
+        val currentSession = currentRenderSession() ?: return null
+        @Suppress("DeferredResultUnused") currentSession.launch(request)
         return request.targetPath
-    }
-
-    fun getCachedImage(request: ImageRenderRequest): Path? {
-        val targetPath = request.targetPath
-        return if (Files.isRegularFile(targetPath) && Files.size(targetPath) > 0) targetPath else null
     }
 
     /**
@@ -84,12 +91,14 @@ class ImageRenderService : Disposable {
      * 注意：不能在 EDT 中调用；如果在 EDT 中调用，只会返回已有缓存或 `null`。
      */
     fun requestImageRender(request: ImageRenderRequest, project: Project): Path? {
-        getCachedImage(request)?.let { return it }
-        if (ApplicationManager.getApplication().isDispatchThread) {
+        if (project.isDisposed) return null
+        getCachedImagePath(request)?.let { return it }
+
+        val application = ApplicationManager.getApplication()
+        if (application != null && application.isDispatchThread) {
             logger.warn("Skip image rendering in EDT: ${request.sourcePath}")
             return null
         }
-        if (project.isDisposed) return null
 
         return requestImageRenderAsync(request, project).get()
     }
@@ -98,39 +107,28 @@ class ImageRenderService : Disposable {
      * 在后台请求渲染图片。相同请求会被合并。
      */
     fun requestImageRenderAsync(request: ImageRenderRequest, project: Project): CompletableFuture<Path?> {
-        getCachedImage(request)?.let { return CompletableFuture.completedFuture(it) }
-        if (project.isDisposed) {
-            return CompletableFuture.completedFuture(null)
-        }
+        if (project.isDisposed) return CompletableFuture.completedFuture(null)
+        getCachedImagePath(request)?.let { return CompletableFuture.completedFuture(it) }
 
-        val future = CompletableFuture<Path?>()
-        val previous = renderFutures.putIfAbsent(request, future)
-        if (previous != null) return previous
+        renderFutures.get(request)?.let { return it }
 
-        val scope = ChronicleFacade.getCoroutineScope(project)
-        scope.launch {
-            try {
-                val result = withBackgroundProgress(project, ChronicleBundle.message("image.render.progress.title"), cancellable = true) {
-                    withContext(Dispatchers.IO) { renderImage(request) }
-                }
-                future.complete(result)
-            } catch (e: ProcessCanceledException) {
-                future.completeExceptionally(e)
-                throw e
-            } catch (e: Exception) {
-                future.completeExceptionally(e)
-            } finally {
-                renderFutures.remove(request, future)
+        val coroutineScope = ChronicleFacade.getCoroutineScope(project)
+        val job = coroutineScope.async {
+            withBackgroundProgress(project, ChronicleBundle.message("image.render.progress.title"), cancellable = true) {
+                withContext(Dispatchers.IO) { renderImage(request) }
             }
         }
-        return future
+        // Note that `runBlockingCancellable` relies on the job/indicator already present on the current thread,
+        // and using it directly throws an exception at call sites without a progress context,
+        // so we use `CompletableFuture` instead of `Deferred` here.
+        return job.asCompletableFuture() // use `Deferred.asCompletableFuture()` instead of manually construction
     }
 
     /**
      * 同步渲染图片到目标缓存路径；如果目标已存在则直接返回。
      */
     fun renderImage(request: ImageRenderRequest): Path? {
-        getCachedImage(request)?.let { return it }
+        getCachedImagePath(request)?.let { return it }
         val sourcePath = request.sourcePath
         val targetPath = request.targetPath
         if (sourcePath == targetPath) return targetPath

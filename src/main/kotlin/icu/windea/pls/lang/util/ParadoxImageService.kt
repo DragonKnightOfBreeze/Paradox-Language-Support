@@ -51,7 +51,7 @@ object ParadoxImageService {
         }
     }
 
-    fun resolveByFile(file: VirtualFile, project: Project, frameInfo: ImageFrameInfo? = null): ParadoxImageResolveResult? {
+    fun resolveByFile(file: VirtualFile, frameInfo: ImageFrameInfo? = null): ParadoxImageResolveResult? {
         try {
             return doResolve(file, frameInfo)
         } catch (e: Exception) {
@@ -108,16 +108,22 @@ object ParadoxImageService {
         val imagesPath = ChronicleDataPathService.getInstance().imagesPath
         val imageAbsPath = sourcePath.absolutePathString().normalizePath()
         val imageRelPath = file.fileInfo?.let { it.gameType.id + "/" + it.path.path }?.normalizePath()
-        // UUID：基于源文件路径、大小、修改时间、帧数信息和目标格式，源文件变化后会得到不同的缓存路径
+        // UUID：
+        // - 基于源文件路径、大小、修改时间、帧数信息和目标格式
+        // - 源文件变化后会得到不同的缓存路径
         val uuid = buildCacheUuid(sourcePath, imageAbsPath, frameInfo)
         val frameText = "@${frameInfo.frame}_${frameInfo.frames}"
         return if (imageRelPath != null) {
-            // 路径：~/.windea/chronicle/images/${relPathWithoutExtension}@${frame}_${frames}@${uuid}.png
+            // 路径：
+            // - `~/.windea/chronicle/images/{relPathWithoutExtension}@{uuid}.png`
+            // - `~/.windea/chronicle/images/{relPathWithoutExtension}@{frame}_{frames}@{uuid}.png`
             val relPathWithoutExtension = imageRelPath.substringBeforeLast('.')
             val finalPath = "${relPathWithoutExtension}${frameText}@${uuid}.png"
             imagesPath.resolve(finalPath).toAbsolutePath()
         } else {
-            // 路径：~/.windea/chronicle/images/_external/${fileNameWithoutExtension}@${frame}_${frames}@${uuid}.png
+            // 路径：
+            // - `~/.windea/chronicle/images/_external/{fileNameWithoutExtension}@{uuid}.png`
+            // - `~/.windea/chronicle/images/_external/{fileNameWithoutExtension}@{frame}_{frames}@{uuid}.png`
             val index = imageAbsPath.lastIndexOf('/')
             val fileName = if (index == -1) imageAbsPath else imageAbsPath.substring(index + 1)
             val fileNameWithoutExtension = fileName.substringBeforeLast('.')

@@ -333,7 +333,8 @@ com.intellij.diagnostic.Freeze
 - [x] 提取 `icu.windea.pls.core.util.system.WindowsRegistryService`（方法：`getStringValue`）。
 - [x] 将 `CwtConfigService.getContainingConfigGroupForRepo` 中获取 remoteUrls 的方法提取到 `ChronicleGitService`。
 - [x] 需要为 `CwtConfigService.getContainingConfigGroupForRepo` 补充测试（集成测试）。应当可以从测试数据根目录（`src/test/testData`）向上找到项目的根目录，从而检查 `cwt/` 中的那些子目录。
-- [x] 需要确认 `ChronicleGitService` 中那些需要执行命令行的方法可能会抛出哪些常见异常（可能并不存在），并且同步更新这些方法以及 `ProcessExecutor.execute` 等相关方法的注解和文档注释。
+- [x] 需要确认 `ChronicleGitService` 中那些需要执行命令行的方法可能会抛出哪些常见异常，并且同步更新这些方法以及 `ProcessExecutor.execute` 等相关方法的注解和文档注释。
+  - 常见异常包括：`ExecutionException` `IlegalStateException` 
 
 #### 2026-10-29 - step 2
 
@@ -401,6 +402,16 @@ com.intellij.diagnostic.Freeze
 ### 修订
 
 TBD
+
+### 验证
+
+#### 人工验证
+
+- [ ] 需要验证在各种策略下（TwelveMonkeys/texconv/magick），是否可以正常在编辑器中渲染图片
+- [ ] 需要验证在各种策略下（TwelveMonkeys/texconv/magick），是否可以正常在快速文档中渲染图片
+- [ ] 需要验证在各种策略下（TwelveMonkeys/texconv/magick），是否可以正常在内嵌提示中渲染图片
+- [ ] 需要基于外部检查工具的代码检查（`ChronicleTigerLintInspection`），是否可以正常工作
+- [ ] 需要结合调式断点，对于命令行执行以及外部图片工具操作，确保不会发生在不正确的上下文中
 
 ## 参见（AI 协助）
 

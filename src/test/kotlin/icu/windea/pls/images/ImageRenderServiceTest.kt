@@ -36,7 +36,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
 
         Assert.assertEquals(target, result)
         Assert.assertTrue(Files.isRegularFile(target))
-        Assert.assertEquals(target, service.getCachedImage(request))
+        Assert.assertEquals(target, service.getCachedImagePath(request))
         val metadata = ImageMetadataService.getInstance().getMetadata(target)
         Assert.assertNotNull(metadata)
         Assert.assertTrue(metadata!!.width <= 5)
@@ -53,7 +53,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
 
         val request = ImageRenderRequest(source, target)
         val service = ImageRenderService.getInstance()
-        Assert.assertNull(service.getCachedImage(request))
+        Assert.assertNull(service.getCachedImagePath(request))
 
         // `requestImageRender` 需要在后台线程执行
         val result = ApplicationManager.getApplication()
@@ -62,7 +62,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
 
         Assert.assertEquals(target, result)
         Assert.assertTrue(Files.isRegularFile(target))
-        Assert.assertEquals(target, service.getCachedImage(request))
+        Assert.assertEquals(target, service.getCachedImagePath(request))
     }
 
     @Test
@@ -82,7 +82,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         Assert.assertEquals(target.absolutePathString(), result)
         Assert.assertEquals(listOf(target), session.awaitAll())
         Assert.assertTrue(Files.isRegularFile(target))
-        Assert.assertEquals(target, service.getCachedImage(ImageRenderRequest(source, target)))
+        Assert.assertEquals(target, service.getCachedImagePath(ImageRenderRequest(source, target)))
     }
 
     private fun testDirectory(): Path {

@@ -3,6 +3,7 @@ package icu.windea.pls.images
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.coroutineToIndicator
+import icu.windea.pls.core.collections.synced
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -24,9 +25,9 @@ class ImageRenderSession(
         private val logger = logger<ImageRenderSession>()
     }
 
-    private val jobs = mutableListOf<Deferred<Path?>>()
+    private val jobs = mutableListOf<Deferred<Path?>>().synced()
 
-    fun record(request: ImageRenderRequest): Deferred<Path?> {
+    fun launch(request: ImageRenderRequest): Deferred<Path?> {
         val job = scope.async {
             try {
                 withContext(Dispatchers.IO) {
@@ -42,12 +43,12 @@ class ImageRenderSession(
                 null
             }
         }
-        synchronized(jobs) { jobs += job }
+        jobs += job
         return job
     }
 
     suspend fun awaitAll(): List<Path?> {
-        val currentJobs = synchronized(jobs) { jobs.toList() }
+        val currentJobs = jobs.toList()
         return currentJobs.awaitAll()
     }
 }

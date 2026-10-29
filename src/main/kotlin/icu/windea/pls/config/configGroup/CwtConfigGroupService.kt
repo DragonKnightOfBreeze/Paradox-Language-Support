@@ -81,12 +81,12 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         coroutineScope.launch {
             if (project.isDefault) {
                 // 静默执行
-                initConfigGroups(configGroups)
+                processConfigGroupsAsync(configGroups, refresh = false)
             } else {
                 // 显示不可取消的后台进度条
                 val title = ChronicleBundle.message("configGroup.init.progress.title")
                 withBackgroundProgress(project, title, TaskCancellation.nonCancellable()) {
-                    initConfigGroups(configGroups)
+                    processConfigGroupsAsync(configGroups, refresh = false)
                 }
                 // 规则数据加载完毕后，重新解析已打开的文件
                 // 重新解析已打开的文件
@@ -107,7 +107,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
             // 显示可以取消的后台进度条
             val title = ChronicleBundle.message("configGroup.refresh.progress.title")
             withBackgroundProgress(project, title, TaskCancellation.cancellable()) {
-                refreshConfigGroups(configGroups)
+                processConfigGroupsAsync(configGroups, refresh = true)
             }
             // 规则数据刷新完毕后，重新解析已打开的文件
             // 重新解析已打开的文件
@@ -140,27 +140,10 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         application.messageBus.syncPublisher(CwtConfigGroupRefreshStatusListener.TOPIC).onChange(project)
     }
 
-    suspend fun initConfigGroups(configGroups: Collection<CwtConfigGroup>) {
+    suspend fun processConfigGroupsAsync(configGroups: Collection<CwtConfigGroup>, refresh: Boolean) {
         if (configGroups.isEmpty()) return
         if (project.isDisposed) return
         val start = System.currentTimeMillis()
-        processConfigGroups(configGroups, false)
-        val end = System.currentTimeMillis()
-        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
-        logger.info("Initialized config groups for $targetName in ${end - start} ms.")
-    }
-
-    suspend fun refreshConfigGroups(configGroups: Collection<CwtConfigGroup>) {
-        if (configGroups.isEmpty()) return
-        if (project.isDisposed) return
-        val start = System.currentTimeMillis()
-        processConfigGroups(configGroups, true)
-        val end = System.currentTimeMillis()
-        val targetName = if (project.isDefault) "application" else "project '${project.name}'"
-        logger.info("Refreshed config groups for $targetName in ${end - start} ms.")
-    }
-
-    private suspend fun processConfigGroups(configGroups: Collection<CwtConfigGroup>, refresh: Boolean) {
         if (project.isDefault) {
             val toProcess = configGroups.toSet()
             toProcess.forEachConcurrent { configGroup ->
@@ -174,24 +157,54 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
             }
             reportProgress(toProcess.size) { reporter ->
                 toProcess.forEachConcurrent { configGroup ->
-                    val default = configGroup.project.isDefault
                     val gameTypeId = configGroup.gameType.id
-                    val step = when {
-                        default && !refresh -> ChronicleBundle.message("configGroup.process.step.application", gameTypeId)
-                        default -> ChronicleBundle.message("configGroup.process.step.application.refresh", gameTypeId)
-                        !refresh -> ChronicleBundle.message("configGroup.process.step.project", gameTypeId)
-                        else -> ChronicleBundle.message("configGroup.process.step.project.refresh", gameTypeId)
-                    }
+                    val step = getProcessStep(gameTypeId, refresh)
                     reporter.itemStep(step) {
                         configGroup.init()
                     }
                 }
             }
         }
+        val end = System.currentTimeMillis()
+        val cost = end - start
+        val message = getProcessMessage(cost, refresh)
+        logger.info(message)
     }
 
-    suspend fun refreshBuiltInConfigFiles() {
-        if (project.isDisposed) return
+    private fun getProcessStep(gameTypeId: String, refresh: Boolean): String {
+        return if (refresh) {
+            if (project.isDefault) {
+                ChronicleBundle.message("configGroup.process.step.application.refresh", gameTypeId)
+            } else {
+                ChronicleBundle.message("configGroup.process.step.project.refresh", gameTypeId)
+            }
+        } else {
+            if (project.isDefault) {
+                ChronicleBundle.message("configGroup.process.step.application", gameTypeId)
+            } else {
+                ChronicleBundle.message("configGroup.process.step.project", gameTypeId)
+            }
+        }
+    }
+
+    private fun getProcessMessage(cost: Long, refresh: Boolean): String {
+        return if (refresh) {
+            if (project.isDefault) {
+                "Refreshed config groups for application in $cost ms."
+            } else {
+                "Refreshed config groups for project '${project.name}' in $cost ms."
+            }
+        } else {
+            if (project.isDefault) {
+                "Initialized config groups for application in $cost ms."
+            } else {
+                "Initialized config groups for project '${project.name}' in $cost ms."
+            }
+        }
+    }
+
+    suspend fun refreshBuiltInConfigFilesAsync() {
+        if (project.isDisposed || project.isDefault) return
         val files = CwtConfigGroupFileProvider.EP_NAME.extensionList
             .filter { it.source == CwtConfigGroupFileSource.BuiltIn }
             .mapNotNull { it.getRootDirectory(project) }
@@ -203,6 +216,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
             runWithModalProgressBlocking(project, title) {
                 files.forEach { file ->
                     VfsUtil.markDirtyAndRefresh(false, true, true, file)
+                    logger.info("Refreshed built-in config files under '${file.canonicalPath}' for project '${project.name}'.")
                 }
             }
         }

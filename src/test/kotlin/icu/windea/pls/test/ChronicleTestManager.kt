@@ -97,6 +97,6 @@ object ChronicleTestManager {
         } else {
             logger.info("Prepare to init config groups for [$gameTypesString]...")
         }
-        runBlocking { CwtConfigGroupService.getInstance(project).initConfigGroups(configGroups) }
+        runBlocking { CwtConfigGroupService.getInstance(project).processConfigGroupsAsync(configGroups, refresh = false) }
     }
 }

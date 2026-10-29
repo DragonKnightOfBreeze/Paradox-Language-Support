@@ -23,7 +23,7 @@ import kotlinx.coroutines.coroutineScope
 @Suppress("UnstableApiUsage")
 class ParadoxDocumentationTarget(
     val element: PsiElement,
-    val originalElement: PsiElement?
+    val originalElement: PsiElement?,
 ) : DocumentationTarget {
     override fun createPointer(): Pointer<out DocumentationTarget> {
         val elementPtr = element.createPointer()
@@ -42,7 +42,10 @@ class ParadoxDocumentationTarget(
     }
 
     override fun computeDocumentationHint(): String? {
-        return runSmartReadAction { ParadoxDocumentationManager.compute(element, originalElement, hint = true)?.toString() }
+        val builder = runSmartReadAction {
+            ParadoxDocumentationManager.compute(element, originalElement, hint = true)
+        } ?: return null
+        return builder.toString()
     }
 
     override fun computeDocumentation(): DocumentationResult {

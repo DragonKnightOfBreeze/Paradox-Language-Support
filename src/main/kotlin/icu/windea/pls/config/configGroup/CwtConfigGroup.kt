@@ -79,36 +79,45 @@ private class CwtConfigGroupImpl(
 
     override suspend fun init() {
         // 即使规则数据已全部加载完毕，也可能需要再次重新加载
-        mutex.withLock { doInit() }
+        mutex.withLock { initWithinLock() }
     }
 
-    private suspend fun doInit() {
+    private suspend fun initWithinLock() {
         try {
             val start = System.currentTimeMillis()
             _initializer = CwtConfigGroupDataModel.create() // refresh initializer
-            doApplyProcessors() // apply processors
+            applyProcessors() // apply processors
             _dataModel = _initializer /// bind data model
             clearUserData() // also necessary
-            doApplyPostProcessors() // apply post processors
+            applyPostProcessors() // apply post processors
             modificationTracker.incModificationCount() // 显式增加修改计数
             initialized = true // 标记规则数据已全部加载完毕
             val end = System.currentTimeMillis()
-            val targetName = if (project.isDefault) "application" else "project '${project.name}'"
-            logger.info("Initialized config group '${gameType.id}' for $targetName in ${end - start} ms.")
+            val cost = end - start
+            val message = getInitMessage(cost)
+            logger.info(message)
         } catch (e: Exception) {
             checkCancellation(e)
             logger.error(e) // 不期望在这里出现常规异常
         }
     }
 
-    private suspend fun doApplyProcessors() {
+    private suspend fun applyProcessors() {
         val dataProviders = CwtConfigGroupProcessor.EP_NAME.extensionList
         dataProviders.forEachFast { it.process(this) }
     }
 
-    private suspend fun doApplyPostProcessors() {
+    private suspend fun applyPostProcessors() {
         val postProcessors = CwtConfigGroupPostProcessor.EP_NAME.extensionList
         postProcessors.forEachFast { it.postProcess(this) }
+    }
+
+    private fun getInitMessage(cost: Long): String {
+        return if (project.isDefault) {
+            "Initialized config group '${gameType.id}' for application in $cost ms."
+        } else {
+            "Initialized config group '${gameType.id}' for project '${project.name}' in $cost ms."
+        }
     }
 
     override fun clear() {

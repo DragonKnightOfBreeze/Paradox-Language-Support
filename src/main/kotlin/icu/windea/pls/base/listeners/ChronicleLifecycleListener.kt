@@ -50,14 +50,14 @@ class ChronicleLifecycleListener : AppLifecycleListener, ProjectActivity {
     }
 
     private suspend fun refreshBuiltInConfigFiles(project: Project) {
-        if (project.isDefault || project.isDisposed) return
+        if (project.isDisposed || project.isDefault) return
         if (ChronicleFacade.isUnitTestMode()) return // 单元测试时不自动刷新内置规则文件
         if (!ChronicleCapabilities.General.refreshBuiltInConfigDirectories) return // 必须显式启用
-        CwtConfigGroupService.getInstance().refreshBuiltInConfigFiles()
+        CwtConfigGroupService.getInstance().refreshBuiltInConfigFilesAsync()
     }
 
     private fun initConfigGroupsAsync(project: Project) {
-        if (project.isDefault || project.isDisposed) return
+        if (project.isDisposed || project.isDefault) return
         if (ChronicleFacade.isUnitTestMode()) return // 单元测试时不自动加载规则数据
         CwtConfigGroupService.getInstance(project).initConfigGroupsAsync()
     }

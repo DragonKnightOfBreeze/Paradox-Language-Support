@@ -22,12 +22,6 @@ import kotlin.contracts.contract
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
 
-/**
- * 语义层图片解析与渲染的门面。
- *
- * 解析逻辑委托给 [ParadoxImageService]；只有图片确实需要渲染时才会访问
- * [ImageRenderService]，并且不会在解析阶段写入文件。
- */
 object ParadoxImageManager {
     private val logger = logger<ParadoxImageManager>()
 
@@ -48,8 +42,13 @@ object ParadoxImageManager {
         return ParadoxImageService.resolveByDefinition(definition, frameInfo)
     }
 
-    fun resolveImageByFile(file: VirtualFile, project: Project, frameInfo: ImageFrameInfo? = null): ParadoxImageResolveResult? {
-        return ParadoxImageService.resolveByFile(file, project, frameInfo)
+    fun resolveImageByFile(file: PsiFile, frameInfo: ImageFrameInfo? = null): ParadoxImageResolveResult? {
+        val vFile = file.virtualFile ?: return null
+        return ParadoxImageService.resolveByFile(vFile, frameInfo)
+    }
+
+    fun resolveImageByFile(file: VirtualFile, frameInfo: ImageFrameInfo? = null): ParadoxImageResolveResult? {
+        return ParadoxImageService.resolveByFile(file, frameInfo)
     }
 
     fun resolveImageByFilePath(filePath: String, project: Project, frameInfo: ImageFrameInfo? = null): ParadoxImageResolveResult? {
@@ -75,6 +74,23 @@ object ParadoxImageManager {
      * 基于文件解析图片的路径，返回用于渲染的图片的绝对路径。
      *
      * @param file 输入的文件。
+     * @param frameInfo 输入的帧数信息，用于切分图片。
+     * @param renderPolicy 没有渲染会话且缓存未命中时使用的渲染策略。
+     */
+    fun resolveUrlByFile(
+        file: PsiFile,
+        frameInfo: ImageFrameInfo? = null,
+        renderPolicy: ImageRenderPolicy = ImageRenderPolicy.Sync,
+    ): String? {
+        val vFile = file.virtualFile ?: return null
+        val project = file.project
+        return resolveUrl(resolveImageByFile(vFile, frameInfo), project, renderPolicy)
+    }
+
+    /**
+     * 基于文件解析图片的路径，返回用于渲染的图片的绝对路径。
+     *
+     * @param file 输入的文件。
      * @param project 输入的项目。
      * @param frameInfo 输入的帧数信息，用于切分图片。
      * @param renderPolicy 没有渲染会话且缓存未命中时使用的渲染策略。
@@ -85,7 +101,7 @@ object ParadoxImageManager {
         frameInfo: ImageFrameInfo? = null,
         renderPolicy: ImageRenderPolicy = ImageRenderPolicy.Sync,
     ): String? {
-        return resolveUrl(resolveImageByFile(file, project, frameInfo), project, renderPolicy)
+        return resolveUrl(resolveImageByFile(file, frameInfo), project, renderPolicy)
     }
 
     /**
@@ -108,8 +124,11 @@ object ParadoxImageManager {
     /**
      * 解析图片的最终 URL。
      *
-     * 当前存在渲染会话时（例如快速文档），只记录渲染请求并返回预期的缓存路径；
-     * 否则按照 [renderPolicy] 同步渲染或异步请求渲染。
+     * 说明：
+     * - 如果不需要渲染，则直接返回源路径。
+     * - 如果存在目标路径对应的本地缓存，则直接返回目标路径。
+     * - 如果存在渲染会话，则在当前渲染会话中记录渲染请求，并返回目标路径。这适用于渲染快速文档等场景。
+     * - 否则，按照渲染策略（[renderPolicy]）同步渲染或异步请求渲染，并仅在同步渲染时返回目标路径。
      */
     fun resolveUrl(
         result: ParadoxImageResolveResult?,
@@ -122,10 +141,8 @@ object ParadoxImageManager {
         val request = result.toRenderRequest()
         try {
             val renderService = ImageRenderService.getInstance()
-            renderService.getCachedImage(request)?.let { return it.absolutePathString() }
-            if (renderService.getCurrentRenderSession() != null) {
-                return renderService.recordRender(request).absolutePathString()
-            }
+            renderService.getCachedImagePath(request)?.let { return it.absolutePathString() }
+            renderService.getRecordedImagePath(request)?.let { return it.absolutePathString() }
             return when (renderPolicy) {
                 ImageRenderPolicy.Sync -> renderService.requestImageRender(request, project)?.absolutePathString()
                 ImageRenderPolicy.Async -> {
