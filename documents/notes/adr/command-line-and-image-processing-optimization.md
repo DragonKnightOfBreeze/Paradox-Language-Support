@@ -360,6 +360,16 @@ com.intellij.diagnostic.Freeze
 - `ConvertImageFormatAction` 在 EDT 中执行转换时转到后台线程，避免外部工具被 EDT 保护跳过。
 - `includeExternalTools` 默认启用；Tiger 真实模组验证、issue #396 回归和 ADR 总结仍暂缓。
 
+#### 2026-10-30 - step 6 - regression & tiger
+
+- 新增 `Issue396Test`：使用记录调用的测试 `ImageToolProvider`，验证 `ImageToolService` 在 EDT / readAction 中跳过外部工具，并在受限上下文之外正常调用外部工具。
+  - 该测试对应 `DDSImageReaderCodeInjector.read` -> `ImageToolService.read` 的关键路径，避免内嵌提示计算图标宽度时同步执行命令行。
+- 新增 `Issue396TigerLintTest` 和测试数据 `src/test/testData/issues/396/tiger-mod`：
+  - 简单 CK3 模组包含 `descriptor.mod` 和一个无效的 `scripted_trigger` 字段。
+  - 使用已下载的 `ck3-tiger` 和本地 CK3 游戏目录；如果本地环境不满足则跳过。
+  - 验证 `TigerLintToolService.collectRequest`、`TigerLintResult` 解析，以及 `ChronicleTigerLintInspection` 的端到端高亮。
+- `TigerLintRequest` 增加 `modPath`，Tiger 命令行现在传入模组描述符（`descriptor.mod` 或 `.metadata/metadata.json`），而不是模组目录。
+
 ## 任务（AI 协助）
 
 ### 主要 & 次要
@@ -379,7 +389,8 @@ com.intellij.diagnostic.Freeze
 - [ ] 测试
   - [x] `ProcessExecutor`：超时、取消、stderr、退出码、编码
   - [x] `ImageMetadataService`/`ImageService`：元数据、缓存、渲染、清理
-  - [ ] issue #396 回归测试
+  - [x] issue #396 回归测试
+  - [x] Tiger 检查逻辑与 `ChronicleTigerLintInspection` 进阶测试
   - [x] 进阶测试：`includeExternalTools` + `build/external-tools`
 - [ ] 清理与文档
   - [ ] 清理旧 API、注释、常量
@@ -438,8 +449,8 @@ com.intellij.diagnostic.Freeze
 - [ ] 图片处理（渲染/读取/写入）时的取消检查
 - [x] 与 `ExternalToolDownloadService` 相关的测试
 - [x] 为 `ChronicleGitService` 与 `ChronicleSqliteService` 补充测试
-- [ ] issue #396 回归测试
-- [ ] 验证 tiger 的检查逻辑和对应的外部代码检查（`ChronicleTigerLintInspection`）
+- [x] issue #396 回归测试
+- [x] 验证 tiger 的检查逻辑和对应的外部代码检查（`ChronicleTigerLintInspection`）
 
 `ExternalToolDownloadService` 相关：
 
@@ -598,6 +609,8 @@ TBD
 - [x] `icu.windea.pls.integrations.images.ImageToolProviderExternalTest` - 图片工具冒烟
 - [x] `icu.windea.pls.base.io.ChronicleGitServiceTest` - 本地仓库冒烟与常见场景
 - [x] `icu.windea.pls.base.io.ChronicleSqliteServiceTest` - 临时 SQLite 数据库
+- [x] `icu.windea.pls.test.issues.Issue396Test` - 外部图片工具上下文回归测试
+- [x] `icu.windea.pls.test.issues.Issue396TigerLintTest` - Tiger 服务与 `ChronicleTigerLintInspection` 端到端测试
 - [ ] `icu.windea.pls.integrations.lints.RunTigerTest` - 待移除（因为已存在 `ExternalToolDownloadTest`）
 - TBD
 
