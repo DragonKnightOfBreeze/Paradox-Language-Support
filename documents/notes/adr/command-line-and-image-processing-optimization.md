@@ -412,6 +412,25 @@ com.intellij.diagnostic.Freeze
 - [x] 将 `icu.windea.pls.images.policies` 中的代码移动到 `icu.windea.pls.model.policies`
 - [ ] 图片处理（渲染/写入）时的取消检查
 - [ ] 需要补充测试，需要验证在各种策略下（TwelveMonkeys/texconv/magick），图片转换操作能够符合预期地成功/失败。这要求在测试时下载外部工具。
+- [ ] 与 `imagePolicy` 相关的优化和测试
+- [ ] 图片处理（渲染/写入）时的取消检查
+- [ ] 与 `ExternalToolDownloadService` 相关的测试
+- [ ] 为 `ChronicleGitService` 与 `ChronicleSqliteService` 补充测试
+- [ ] issue #396 回归测试
+- [ ] 验证 tiger 的检查逻辑和对应的外部代码检查（`ChronicleTigerLintInspection`）
+
+`ExternalToolDownloadService` 相关：
+
+- [ ] 在测试代码中调用 `ExternalToolDownloadService.download` 时，需要尽可能地确保下载的是最新版本
+  - 如果不是，则移除临时目录中内容，并重新下载。
+- [ ] 改为可以在插件页面中更改 texconv 的路径，默认使用 `~/.windea/chronicle/external-tools/texconv.exe`
+  - 将 `ChronicleDataPathService.texconvExePath` 更改到此路径。
+- [ ] `ExternalToolDownloadTestService` 和 `ExternalToolDownloadTestService` 中需要适当加上一些日志输出
+  - 下载地址/文件名/目标目录/下载进度指示/等等。
+  - 测试代码中直接使用 `println` 输出日志。
+- [ ] 除了 texconv 之外，外部工具诸如 tiger/magick 也可以在 非 Windows 的 OS（如 Linux）下执行
+  - 需要在测试与生产代码中兼容它们。
+  - 主要是 `ExternalToolDownloadService` 以及相关的测试。
 
 ### 评估
 
@@ -448,6 +467,8 @@ com.intellij.diagnostic.Freeze
   - 需要验证（且仅验证/单独验证）使用基于外部工具的 imageSupport 时，是否也可以正确工作。
 
 ### 修订
+
+#### 人工修订
 
 TBD
 

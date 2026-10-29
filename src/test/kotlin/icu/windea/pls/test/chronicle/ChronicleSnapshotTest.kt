@@ -111,11 +111,11 @@ abstract class ChronicleSnapshotTest : BasePlatformTestCase(), ChronicleTestScop
     protected fun displayPath(path: Path): String = path.toString().normalizePath()
 
     /** 输出一条快照测试日志。 */
-    protected fun log(message: String) = println("[chronicle] $message")
+    protected fun log(message: String) = println("[ChronicleSnapshotTest] $message")
 
     /** 输出一个快照测试日志分段标题。 */
     protected fun logHeader(title: String) {
         println()
-        println("[chronicle] ==================== $title ====================")
+        println("[ChronicleSnapshotTest] ==================== $title ====================")
     }
 }

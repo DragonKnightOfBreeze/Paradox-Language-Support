@@ -1,6 +1,5 @@
 package icu.windea.pls.test
 
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
@@ -13,7 +12,6 @@ import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.runBlocking
 
 object ChronicleTestManager {
-    private val logger = thisLogger()
     private val refreshedConfigDirectories = mutableSetOf<VirtualFile>()
     private val initializedGameTypes = mutableSetOf<ParadoxGameType>()
     @Volatile private var initializedBuiltInGroupGroups = false
@@ -61,11 +59,11 @@ object ChronicleTestManager {
         if (files.isEmpty()) return
         files.removeAll(refreshedConfigDirectories)
         if (files.isEmpty()) return
-        logger.info("Prepare to refresh builtin config directories...")
+        log("Prepare to refresh builtin config directories...")
         files.forEach { file ->
             // `recursive = true` already refreshes the whole subtree
             VfsUtil.markDirtyAndRefresh(false, true, true, file)
-            logger.info("Refreshed builtin config directory: ${file.presentableUrl}")
+            log("Refreshed builtin config directory: ${file.presentableUrl}")
         }
         refreshedConfigDirectories.addAll(files)
     }
@@ -81,11 +79,11 @@ object ChronicleTestManager {
             .filter { it.source == CwtConfigGroupFileSource.Injected }
             .mapNotNullTo(mutableSetOf()) { it.getRootDirectory(project) }
         if (files.isEmpty()) return
-        logger.info("Prepare to refresh injected config directories...")
+        log("Prepare to refresh injected config directories...")
         files.forEach { directory ->
             // `recursive = true` already refreshes the whole subtree
             VfsUtil.markDirtyAndRefresh(false, true, true, directory)
-            logger.info("Refreshed injected config directory: ${directory.presentableUrl}")
+            log("Refreshed injected config directory: ${directory.presentableUrl}")
         }
         refreshedConfigDirectories.addAll(files)
     }
@@ -93,10 +91,12 @@ object ChronicleTestManager {
     private fun initConfigGroups(project: Project, configGroups: List<CwtConfigGroup>, onlyInjected: Boolean) {
         val gameTypesString = configGroups.joinToString { it.gameType.id }
         if (onlyInjected) {
-            logger.info("Prepare to init injected config groups for [$gameTypesString]...")
+            log("Prepare to init injected config groups for [$gameTypesString]...")
         } else {
-            logger.info("Prepare to init config groups for [$gameTypesString]...")
+            log("Prepare to init config groups for [$gameTypesString]...")
         }
         runBlocking { CwtConfigGroupService.getInstance(project).processConfigGroupsAsync(configGroups, refresh = false) }
     }
+
+    private fun log(message: String) = println("[ChronicleTestManager] $message")
 }

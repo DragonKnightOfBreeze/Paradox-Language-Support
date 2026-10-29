@@ -23,4 +23,9 @@ object ChronicleAssume {
         val v = ChronicleCapabilities.Test.includeAll || ChronicleCapabilities.Test.includeConfigGenerator
         Assume.assumeTrue("Config generator tests are not included", v)
     }
+
+    fun includeExternalTools() {
+        val v = ChronicleCapabilities.Test.includeAll || ChronicleCapabilities.Test.includeExternalTools
+        Assume.assumeTrue("External tool tests are not included", v)
+    }
 }

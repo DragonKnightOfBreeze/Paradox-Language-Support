@@ -97,6 +97,7 @@ object ChronicleCapabilities {
         var includeRemote = getBooleanProperty("chronicle.test.include.remote", false)
         var includeLocalEnv = getBooleanProperty("chronicle.test.include.local.env", false)
         var includeConfigGenerator = getBooleanProperty("chronicle.test.include.config.generator", false)
+        var includeExternalTools = getBooleanProperty("chronicle.test.include.external.tools", true)
     }
 
     /**
