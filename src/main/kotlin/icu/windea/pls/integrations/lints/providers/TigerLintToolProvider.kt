@@ -1,23 +1,16 @@
 package icu.windea.pls.integrations.lints.providers
 
 import com.intellij.execution.configurations.GeneralCommandLine
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
-import icu.windea.pls.base.settings.ChronicleProfilesSettings
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
-import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPathOrNull
-import icu.windea.pls.core.toUuidString
+import icu.windea.pls.integrations.lints.TigerLintRequest
 import icu.windea.pls.integrations.lints.TigerLintResult
-import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Files
+import kotlin.io.path.createDirectories
 import kotlin.io.path.nameWithoutExtension
 
 /**
@@ -51,46 +44,20 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
         return Files.isRegularFile(fullExePath)
     }
 
-    final override fun validateFile(file: VirtualFile): TigerLintResult? {
-        return null // unsupported
-    }
-
-    final override fun validateRootDirectory(rootDirectory: VirtualFile): TigerLintResult? {
-        return runCatchingCancelable { doValidateRootDirectory(rootDirectory) }
-            .onFailure { thisLogger().warn(it) }.getOrElse { TigerLintResult(name, error = it) }
-    }
-
-    private fun doValidateRootDirectory(rootDirectory: VirtualFile): TigerLintResult? {
-        val tigerPath = exePath?.trim() ?: return null
-        val fullExePath = tigerPath.toPathOrNull() ?: return null
-        if (fullExePath.nameWithoutExtension != name) return null
-
-        val rootInfo = rootDirectory.rootInfo ?: return null
-        if (rootInfo !is ParadoxRootInfo.Mod) return null
-        val rootFile = rootInfo.rootFile
-        val rootPath = rootFile.path
-        val modSettings = ChronicleProfilesSettings.getInstance().state.modSettings.get(rootPath)
-        val gamePath = modSettings?.finalGameDirectory?.orNull()
-        val configPath = confPath?.orNull()
-
-        // 必须指定输出的 json 文件，然后从中读取检查结果（之后不删除这个临时文件）
-        val lintResultsPath = ChronicleDataPathService.getInstance().lintResultsPath
-        val outputUuid = rootDirectory.url.toUuidString()
-        val outputPath = lintResultsPath.resolve("$name-result@$outputUuid.json")
-
+    fun validateRootDirectory(request: TigerLintRequest): TigerLintResult? {
         val commandLine = GeneralCommandLine(buildList {
-            add(fullExePath.toString())
+            add(request.exePath.toString())
             add("--json")
-            if (gamePath != null) {
+            if (request.gamePath != null) {
                 add("--game")
-                add(gamePath)
+                add(request.gamePath)
             }
-            if (configPath != null) {
+            if (request.configPath != null) {
                 add("--config")
-                add(configPath)
+                add(request.configPath)
             }
-            add(rootPath)
-        }).withWorkingDirectory(fullExePath.parent).withCharset(Charsets.UTF_8)
+            add(request.rootPath)
+        }).withWorkingDirectory(request.workingDirectory).withCharset(Charsets.UTF_8)
 
         ProgressManager.checkCanceled()
         val output = ProcessExecutor(commandLine)
@@ -115,8 +82,9 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
             throw IllegalStateException(message)
         }
 
-        Files.writeString(outputPath, output.stdout, Charsets.UTF_8)
-        return TigerLintResult.parse(name, outputPath.toFile()) // 如果无法解析 json，这里会直接报错
+        request.outputPath.parent?.createDirectories()
+        Files.writeString(request.outputPath, output.stdout, Charsets.UTF_8)
+        return TigerLintResult.parse(name, request.outputPath.toFile()) // 如果无法解析 json，这里会直接报错
     }
 
     class Ck3 : TigerLintToolProvider() {

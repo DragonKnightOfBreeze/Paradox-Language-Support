@@ -11,12 +11,14 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runSmartReadAction
+import icu.windea.pls.integrations.lints.TigerLintRequest
 import icu.windea.pls.integrations.lints.TigerLintResult
 import icu.windea.pls.integrations.lints.TigerLintToolService
 import icu.windea.pls.integrations.lints.TigerLintToolUtil
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
+import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.inspections.ChronicleInspections
+import icu.windea.pls.lang.selectFile
 
 // com.intellij.codeInspection.javaDoc.JavadocHtmlLintAnnotator
 
@@ -26,13 +28,14 @@ import icu.windea.pls.lang.inspections.ChronicleInspections
  * @see ChronicleTigerLintInspection
  */
 class ChronicleTigerLintAnnotator : ExternalAnnotator<ChronicleTigerLintAnnotator.Info, TigerLintResult>(), DumbAware {
-    data class Info(val file: PsiFile)
+    data class Info(val request: TigerLintRequest, val filePath: String)
 
     override fun getPairedBatchInspectionShortName() = ChronicleInspections.Lints.Tiger
 
     override fun collectInformation(file: PsiFile): Info? {
-        if (!TigerLintToolService.getInstance().checkAvailableFor(file)) return null
-        return Info(file)
+        val request = TigerLintToolService.getInstance().collectRequest(file) ?: return null
+        val fileInfo = selectFile(file)?.fileInfo ?: return null
+        return Info(request, fileInfo.path.path)
     }
 
     override fun collectInformation(file: PsiFile, editor: Editor, hasErrors: Boolean): Info? {
@@ -40,10 +43,9 @@ class ChronicleTigerLintAnnotator : ExternalAnnotator<ChronicleTigerLintAnnotato
     }
 
     override fun doAnnotate(collectedInfo: Info?): TigerLintResult? {
-        val file = collectedInfo?.file ?: return null
-        return runSmartReadAction(file.project, withDocumentsCommitted = true) {
-            TigerLintToolService.getInstance().getTigerLintResultForFile(file)
-        }
+        val info = collectedInfo ?: return null
+        val result = TigerLintToolService.getInstance().getTigerLintResult(info.request) ?: return null
+        return result.fromPath(info.filePath)
     }
 
     override fun apply(file: PsiFile, annotationResult: TigerLintResult?, holder: AnnotationHolder) {

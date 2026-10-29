@@ -4,39 +4,45 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.SimpleModificationTracker
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
-import com.intellij.psi.util.CachedValue
-import com.intellij.psi.util.CachedValueProvider
-import com.intellij.psi.util.CachedValuesManager
 import icu.windea.pls.base.ChronicleModificationTrackers
+import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
 import icu.windea.pls.base.settings.ChronicleProfilesSettings
+import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.cache.TrackingCache
+import icu.windea.pls.core.cache.trackedBy
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.collections.findIsInstance
-import icu.windea.pls.core.toPsiDirectory
-import icu.windea.pls.core.util.createKey
+import icu.windea.pls.core.orNull
+import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.core.toUuidString
+import icu.windea.pls.core.util.MergedModificationTracker
 import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
-import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.util.concurrent.ConcurrentHashMap
 
+/**
+ * Tiger 检查工具服务。
+ *
+ * 该服务为应用级别，不依赖项目或 PSI；检查结果通过 [TrackingCache] 按请求缓存。
+ */
 @Service
 class TigerLintToolService : Disposable {
-    // 检查结果的缓存键
-    private val cachedTigerLintResultKey = createKey<CachedValue<TigerLintResult>>("cached.tiger.lintResult")
+    private val cache = CacheBuilder("maximumSize=128,expireAfterAccess=30m,softValues")
+        .build<TigerLintRequest, TigerLintResult>()
+        .trackedBy { it.modificationTracker }
     // 追踪相关配置（包括可执行文件路径和 .conf 配置文件）的更改
     private val modificationTrackers = ConcurrentHashMap<ParadoxGameType, SimpleModificationTracker>()
-    // 根目录级别的检查结果的同步锁
-    private val lintResultLocks = ConcurrentHashMap<VirtualFile, Any>()
+    // 请求级别的检查结果同步锁
+    private val lintResultLocks = ConcurrentHashMap<TigerLintRequest, Any>()
 
     fun isEnabled(): Boolean {
         return ChronicleIntegrationsSettings.getInstance().state.lint.enableTiger
@@ -52,107 +58,93 @@ class TigerLintToolService : Disposable {
         return modificationTrackers.getOrPut(gameType) { SimpleModificationTracker() }
     }
 
-    fun getLintResultLock(file: VirtualFile): Any {
-        return lintResultLocks.getOrPut(file) { Any() }
-    }
-
-    fun checkAvailableFor(file: PsiFile): Boolean {
-        if (!isEnabled()) return false
-        if (file.language !is ParadoxLanguage) return false
-        val fileInfo = selectFile(file)?.fileInfo ?: return false
-        val rootInfo = fileInfo.rootInfo
-        if (rootInfo !is ParadoxRootInfo.Mod) return false // 目前的实现：仅适用于模组目录（中的文件）
-        val settings = ChronicleProfilesSettings.getInstance().getGameOrModSettings(rootInfo)
-        if (settings?.options?.disableTiger == true) return false // 检查是否在游戏或模组设置中禁用
-        val gameType = rootInfo.gameType
-        return findTool(gameType) != null
-    }
-
-    fun getTigerLintResultForFile(file: PsiFile): TigerLintResult? {
-        // Tiger 执行于根目录级别，而这里执行于单个文件级别，对于缓存需要做特别的处理，从而优化性能
-
+    /**
+     * 收集文件的 Tiger 检查请求。
+     *
+     * 该方法可能访问 PSI，只能在读操作中调用。
+     */
+    fun collectRequest(file: PsiFile): TigerLintRequest? {
         if (!isEnabled()) return null
-        return resolveTigerLintResultForFileFromCache(file)
-    }
-
-    private fun resolveTigerLintResultForFileFromCache(file: PsiFile): TigerLintResult? {
-        // 当当前文件发生变化时，或者相关配置发生变化时，刷新缓存
-
-        val gameType = selectGameType(file) ?: return null
-        return CachedValuesManager.getCachedValue(file, cachedTigerLintResultKey) {
-            ProgressManager.checkCanceled()
-            val value = resolveTigerLintResultForFile(file)
-            val trackers = buildList {
-                this += file
-                this += getModificationTracker(gameType)
-            }
-            CachedValueProvider.Result.create(value, trackers)
-        }
-    }
-
-    private fun resolveTigerLintResultForFile(file: PsiFile): TigerLintResult? {
+        if (file.language !is ParadoxLanguage) return null
         val fileInfo = selectFile(file)?.fileInfo ?: return null
         val rootInfo = fileInfo.rootInfo
-        val rootFile = rootInfo.rootFile ?: return null
-        val rootDirectory = rootFile.toPsiDirectory(file.project) ?: return null
-        ProgressManager.checkCanceled()
-        val lock = getLintResultLock(rootDirectory.virtualFile)
-        val allResult = synchronized(lock) { // 这里需要加锁（不要直接对 `VirtualFile` 加锁）
-            getTigerLintResultForRootDirectoryFromCache(rootDirectory)
-        } ?: return null
-        val result = allResult.fromPath(fileInfo.path.path)
-        return result
-    }
-
-    @Suppress("unused")
-    fun getTigerLintResultForRootDirectory(rootDirectory: PsiDirectory): TigerLintResult? {
-        if (!isEnabled()) return null
-        ProgressManager.checkCanceled()
-        val lock = getLintResultLock(rootDirectory.virtualFile)
-        return synchronized(lock) { // 这里需要加锁（不要直接对 `VirtualFile` 加锁）
-            getTigerLintResultForRootDirectoryFromCache(rootDirectory)
-        }
-    }
-
-    private fun getTigerLintResultForRootDirectoryFromCache(rootDirectory: PsiDirectory): TigerLintResult? {
-        // 当当前文件（即根目录）发生变化时，或者任意脚本或本地化文件发生变化时（这个条件已经足够），或者相关配置发生变化时，刷新缓存
-
-        val gameType = selectGameType(rootDirectory) ?: return null
-        return CachedValuesManager.getCachedValue(rootDirectory, cachedTigerLintResultKey) {
-            ProgressManager.checkCanceled()
-            val value = resolveTigerLintResultForRootDirectory(rootDirectory)
-            val trackers = buildList {
-                this += rootDirectory
-                this += getModificationTracker(gameType)
-                // 如果执行 Tiger 检查工具失败，当任意脚本或本地化文件发生变化时，不会刷新缓存
-                if (value == null || value.error != null) {
-                    this += ChronicleModificationTrackers.ScriptFile
-                    this += ChronicleModificationTrackers.LocalisationFile
-                }
-            }
-            CachedValueProvider.Result.create(value, trackers)
-        }
-    }
-
-    private fun resolveTigerLintResultForRootDirectory(rootDirectory: PsiDirectory): TigerLintResult? {
-        val gameType = selectGameType(rootDirectory) ?: return null
+        if (rootInfo !is ParadoxRootInfo.Mod) return null // 目前的实现：仅适用于模组目录（中的文件）
+        val settings = ChronicleProfilesSettings.getInstance().getGameOrModSettings(rootInfo)
+        if (settings?.options?.disableTiger == true) return null // 检查是否在游戏或模组设置中禁用
+        val gameType = rootInfo.gameType
         val tool = findTool(gameType) ?: return null
-        val result = tool.validateRootDirectory(rootDirectory.virtualFile)
-        if (result?.error != null) {
-            notifyWarningNotification(rootDirectory, tool, result.error)
-        }
-        return result
+        val exePath = tool.exePath?.trim()?.toPathOrNull() ?: return null
+        val workingDirectory = exePath.parent ?: return null
+        val rootFile = rootInfo.rootFile ?: return null
+        val rootPath = rootFile.path
+        val modSettings = ChronicleProfilesSettings.getInstance().state.modSettings.get(rootPath)
+        val gamePath = modSettings?.finalGameDirectory?.orNull()
+        val configPath = tool.confPath?.orNull()
+        val outputUuid = rootFile.url.toUuidString()
+        val outputPath = ChronicleDataPathService.getInstance().lintResultsPath.resolve("${tool.name}-result@$outputUuid.json")
+        return TigerLintRequest(
+            gameType = gameType,
+            name = tool.name,
+            exePath = exePath,
+            workingDirectory = workingDirectory,
+            rootPath = rootPath,
+            rootFile = rootFile,
+            gamePath = gamePath,
+            configPath = configPath,
+            outputPath = outputPath,
+        )
     }
 
-    private fun notifyWarningNotification(rootDirectory: PsiDirectory, tool: TigerLintToolProvider, e: Throwable) {
-        val fileUrl = rootDirectory.virtualFile.presentableUrl
-        val title = ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.title", tool.name)
+    /**
+     * 获取请求对应的检查结果。相同请求会被合并，并按修改追踪器自动失效。
+     */
+    fun getTigerLintResult(request: TigerLintRequest): TigerLintResult? {
+        if (!isEnabled()) return null
+        val lock = lintResultLocks.getOrPut(request) { Any() }
+        try {
+            return synchronized(lock) { // 这里需要加锁（不要直接对 `VirtualFile` 加锁）
+                cache.get(request) { loadTigerLintResult(it) }
+            }
+        } finally {
+            lintResultLocks.remove(request, lock)
+        }
+    }
+
+    private fun loadTigerLintResult(request: TigerLintRequest): TigerLintResult {
+        val modificationTracker = MergedModificationTracker(
+            request.rootFile,
+            getModificationTracker(request.gameType),
+            ChronicleModificationTrackers.ScriptFile,
+            ChronicleModificationTrackers.LocalisationFile,
+        )
+        val tool = findTool(request.gameType)
+        val result = if (tool == null) {
+            val error = IllegalStateException("Tiger lint tool is not available. (game type: ${request.gameType})")
+            notifyWarningNotification(request, error)
+            TigerLintResult(request.name, error = error)
+        } else {
+            try {
+                tool.validateRootDirectory(request) ?: TigerLintResult(request.name)
+            } catch (e: Exception) {
+                checkCancellation(e)
+                notifyWarningNotification(request, e)
+                TigerLintResult(request.name, error = e)
+            }
+        }
+        return result.copy(name = request.name, request = request, modificationTracker = modificationTracker)
+    }
+
+    private fun notifyWarningNotification(request: TigerLintRequest, e: Throwable) {
+        val fileUrl = request.rootFile.presentableUrl
+        val title = ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.title", request.name)
         val content = e.message?.let { message -> ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.content", fileUrl, message) }
             ?: ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.content1", fileUrl)
-        ChronicleNotificationGroups.global().createNotification(title, content, NotificationType.WARNING).notify(rootDirectory.project)
+        ChronicleNotificationGroups.global().createNotification(title, content, NotificationType.WARNING).notify(null)
     }
 
     override fun dispose() {
+        cache.invalidateAll()
+        cache.cleanUp()
         modificationTrackers.clear()
         lintResultLocks.clear()
     }

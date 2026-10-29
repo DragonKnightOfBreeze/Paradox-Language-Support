@@ -1,7 +1,6 @@
 package icu.windea.pls.integrations.lints
 
 import com.intellij.openapi.extensions.ExtensionPointName
-import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.model.ParadoxGameType
 
 /**
@@ -9,10 +8,6 @@ import icu.windea.pls.model.ParadoxGameType
  */
 interface LintToolProvider {
     fun isAvailable(gameType: ParadoxGameType?): Boolean
-
-    fun validateFile(file: VirtualFile): LintResult?
-
-    fun validateRootDirectory(rootDirectory: VirtualFile): LintResult?
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<LintToolProvider>("icu.windea.pls.integrations.lintToolProvider")

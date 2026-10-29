@@ -1,5 +1,6 @@
 package icu.windea.pls.integrations.lints
 
+import com.intellij.openapi.util.ModificationTracker
 import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.core.normalizePath
 import kotlinx.serialization.SerialName
@@ -14,6 +15,8 @@ import java.io.IOException
  *
  * @property name 检测工具的名字，如 `vic3-tiger`。
  * @property itemGroup 键是相对于入口目录的路径，值是对应的一组检查结果项。
+ * @property request 生成该结果的检查请求。
+ * @property modificationTracker 用于追踪结果是否失效的修改追踪器。
  *
  * 参见：[JSON output format · amtep/tiger Wiki](https://github.com/amtep/tiger/wiki/JSON-output-format)
  */
@@ -22,11 +25,13 @@ data class TigerLintResult(
     val items: Collection<Item> = emptySet(),
     val itemGroup: Map<String, Collection<Item>> = emptyMap(),
     val error: Throwable? = null,
+    val request: TigerLintRequest? = null,
+    val modificationTracker: ModificationTracker? = null,
 ) : LintResult {
     fun fromPath(path: String): TigerLintResult? {
         val items = itemGroup[path]
         if (items.isNullOrEmpty()) return null
-        return TigerLintResult(name, items)
+        return TigerLintResult(name, items, emptyMap(), error, request, modificationTracker)
     }
 
     @Serializable
