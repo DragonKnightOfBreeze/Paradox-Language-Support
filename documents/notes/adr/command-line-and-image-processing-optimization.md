@@ -500,14 +500,29 @@ com.intellij.diagnostic.Freeze
   - `icu.windea.pls.util.net.DownloadService` - 也已补充测试（冒烟，简单场景）
   - 一些通用的 model/enum/constant，也一并提取到对应位置（同包下/直接作为类成员或内部类）。
   - 需要允许更加灵活的配置，并提供一个合理的默认配置。例如提供默认参数 `settings: DownloadSettings`（速度检测/超时检测/等等）。
-- [ ] 不能假定：总是存在外部解压工具的可执行文件路径（如 7z），本地环境总是存在系统代理（如 clash） - 需要结合使用 Assume
 
-#### 2026-10-30 - step 6 - doc
+#### 2026-10-29 - step 6 - post revision
+
+- [ ] 不能假定：总是存在外部解压工具的可执行文件路径（如 7z），本地环境总是存在系统代理（如 clash） - 需要结合使用 Assume
+- [ ] `ImageMetadataService` - 考虑同时提供 `getMetadata(...): ImageMetadata` 和 `getMetadataOrNull(...): ImageMetadata?`，同时考虑提取 `ImageMetadataReader`
+- [ ] `ImageRenderServiceTest` - 需要拆分出 `ParadoxImageServiceTest`
+- [ ] `CommandBasedImageToolProvider.read` - 需要考虑如何进行有效的缓存
+- [ ] `ParadoxImageManager` 的清理和重构
+- [ ] 考虑将 `ParadoxImageManager.isImageFile` 移动到 `ImageService` 中
+- [ ] `icu.windea.pls.integrations.lints.TigerLintToolService.collectRequest` - 获取 `modPath` 时不应硬编码（改为基于 EP）
+- [ ] `LintToolProviderExternalTest` - 暂不确定 - 仅出于对齐的目的，因为 `Issue396TigerLintTest` 中已经覆盖了
+- [ ] `XxxSettingsConfigure` -> `SettingsConfigurable`
+- [ ] 重命名：`ProgressCheckingInputStream` -> `CancellableInputStream` `ProgressCheckingOutputStream` -> `CancellableOutputStream`
+- [ ] 引入扩展方法：`InputStream.cancellable()` `OutputStream.cancellable()`
+
+#### 2026-10-30 - step 6 - post doc
 
 - [ ] 作为总结，补充 ADR（AI 编写，`documents/ai-notes/adr/`）
   - 暂时搁置
 - [ ] 关于网络代理的问题：需要考虑补充解决方案笔记（AI 编写，`documents/ai-notes/solutions/`）
   - 暂时搁置
+- [ ] 编写参考文档 `images.md`
+  - 暂不确定
 
 ### 评估
 
@@ -639,15 +654,18 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.test.issues.Issue396Test` - 外部图片工具上下文回归测试
 - [x] `icu.windea.pls.test.issues.Issue396TigerLintTest` - Tiger 服务与 `ChronicleTigerLintInspection` 端到端测试
 - [x] ~~`icu.windea.pls.integrations.lints.RunTigerTest`~~ - 已移除（因为已存在 `ExternalToolDownloadTest`）
-- TBD
+- ...
 
 参考：
 
+- `icu.windea.pls.core.cache.CancelableCache`
 - `icu.windea.pls.core.cache.TrackingCache`
 - `icu.windea.pls.core.util.MergedModificationTracker`
+- `icu.windea.pls.core.util.io.ProgressCheckingInputStream`
+- `icu.windea.pls.core.util.io.ProgressCheckingOutputStream`
 - `icu.windea.pls.model.policies.*`
 - `icu.windea.pls.images.actions.ConvertImageFormatAction`
-- TBD
+- ...
 
 ### 相关代码位置（平台）
 
