@@ -21,14 +21,14 @@ fun CacheBuilder(spec: String = ""): Caffeine<Any, Any> {
     return builder
 }
 
-/** 将缓存包装为可取消的缓存（[CancelableCache]）。 */
-inline fun <K : Any, V : Any> Cache<K, V>.cancelable(): CancelableCache<K, V> {
-    return CancelableCache(this)
+/** 将缓存包装为可取消的缓存（[CancellableCache]）。 */
+inline fun <K : Any, V : Any> Cache<K, V>.cancellable(): CancellableCache<K, V> {
+    return CancellableCache(this)
 }
 
-/** 将载入缓存包装为可取消的缓存（[CancelableLoadingCache]）。 */
-inline fun <K : Any, V : Any> LoadingCache<K, V>.cancelable(): CancelableLoadingCache<K, V> {
-    return CancelableLoadingCache(this)
+/** 将载入缓存包装为可取消的缓存（[CancellableLoadingCache]）。 */
+inline fun <K : Any, V : Any> LoadingCache<K, V>.cancellable(): CancellableLoadingCache<K, V> {
+    return CancellableLoadingCache(this)
 }
 
 /** 将缓存包装为追踪缓存（[TrackingCache]），基于 [ModificationTracker] 自动失效。 */

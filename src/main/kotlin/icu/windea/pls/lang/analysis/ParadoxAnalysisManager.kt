@@ -19,7 +19,7 @@ import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.checkCancellation
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
@@ -75,7 +75,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         }
         return cachedRootInfo.initialize {
             ParadoxAnalysisLifecycleService.ensureLoaded()
-            runCatchingCancelable { doResolveRootInfo(rootFile) }.onFailure { e -> logger.warn(e) }.getOrNull()
+            runCatchingCancellable { doResolveRootInfo(rootFile) }.onFailure { e -> logger.warn(e) }.getOrNull()
         }
     }
 
@@ -128,7 +128,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         }
         return cachedFileInfo.initialize {
             ParadoxAnalysisLifecycleService.ensureLoaded()
-            runCatchingCancelable { doResolveFileInfo(file) }.onFailure { e -> logger.warn(e) }.getOrNull()
+            runCatchingCancellable { doResolveFileInfo(file) }.onFailure { e -> logger.warn(e) }.getOrNull()
         }
     }
 
@@ -221,7 +221,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         val cachedLocaleConfig = ParadoxAnalysisDataManager.getOrPutData(file, ParadoxAnalysisDataManager.Keys.cachedLocaleConfig) { LazyValue() }
         return cachedLocaleConfig.initialize {
             ParadoxAnalysisLifecycleService.ensureLoaded()
-            runCatchingCancelable { doResolveLocaleConfig(file, project) }.onFailure { e -> logger.warn(e) }.getOrNull()
+            runCatchingCancellable { doResolveLocaleConfig(file, project) }.onFailure { e -> logger.warn(e) }.getOrNull()
         }
     }
 

@@ -2,7 +2,7 @@ package icu.windea.pls.inject.supports
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.inject.CodeInjector
 import icu.windea.pls.inject.CodeInjectorContext
 import icu.windea.pls.inject.CodeInjectorSupport
@@ -133,7 +133,7 @@ class BaseCodeInjectorSupport : CodeInjectorSupport {
         }
         ctMethods = ctMethods.filter { ctMethod ->
             for (i in 0 until argSize) {
-                val r = runCatchingCancelable {
+                val r = runCatchingCancellable {
                     val parameterType = normalParameterTypes[i]
                     val targetParameterType = ctMethod.parameterTypes[i]
                     isParameterCompatible(parameterType, targetParameterType, classPool)

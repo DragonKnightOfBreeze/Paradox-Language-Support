@@ -26,7 +26,7 @@ import icu.windea.pls.core.cast
 import icu.windea.pls.core.executeCommand
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.vfs.VirtualFileService
@@ -260,7 +260,7 @@ abstract class ConvertImageFormatAction(
 
     private fun doConvert(file: PsiFile, targetDirectory: PsiDirectory, fileName: String, added: MutableList<PsiFile>, failed: MutableList<PsiFile>) {
         targetDirectory.cast<PsiDirectoryImpl>().executeWithUpdatingAddedFilesDisabled<Throwable> action@{
-            val savedPsiFile = runCatchingCancelable { doConvertImageFormat(file, targetDirectory, fileName) }.getOrNull()
+            val savedPsiFile = runCatchingCancellable { doConvertImageFormat(file, targetDirectory, fileName) }.getOrNull()
             if (savedPsiFile != null) {
                 added.add(savedPsiFile)
             } else {

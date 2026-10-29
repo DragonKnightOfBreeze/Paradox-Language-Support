@@ -107,7 +107,7 @@ fun checkCancellation(e: Throwable?) {
     checkCancellation(e.cause)
 }
 
-inline fun <T> cancelable(block: () -> T): T {
+inline fun <T> cancellable(block: () -> T): T {
     try {
         return block()
     } catch (e: Exception) {
@@ -116,11 +116,11 @@ inline fun <T> cancelable(block: () -> T): T {
     }
 }
 
-inline fun <R> runCatchingCancelable(block: () -> R): Result<R> {
+inline fun <R> runCatchingCancellable(block: () -> R): Result<R> {
     return runCatching(block).onFailure { e -> checkCancellation(e) }
 }
 
-inline fun <T, R> T.runCatchingCancelable(block: T.() -> R): Result<R> {
+inline fun <T, R> T.runCatchingCancellable(block: T.() -> R): Result<R> {
     return runCatching(block).onFailure { e -> checkCancellation(e) }
 }
 

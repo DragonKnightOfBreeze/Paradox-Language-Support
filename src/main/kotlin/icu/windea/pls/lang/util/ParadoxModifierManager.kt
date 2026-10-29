@@ -10,7 +10,7 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.cache.cancelable
+import icu.windea.pls.core.cache.cancellable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.cache.trackedBy
 import icu.windea.pls.core.optimized
@@ -45,7 +45,7 @@ object ParadoxModifierManager {
         // rootFile -> cacheKey -> modifierInfo
         // 3.0.3 use expireAfterAccess + softValues to optimize memory
         createNestedCache<VirtualFile, _, _> {
-            CacheBuilder("expireAfterAccess=1h,softValues").build<String, ParadoxModifierInfo>().cancelable().trackedBy { it.modificationTracker }
+            CacheBuilder("expireAfterAccess=1h,softValues").build<String, ParadoxModifierInfo>().cancellable().trackedBy { it.modificationTracker }
         }
     }
 

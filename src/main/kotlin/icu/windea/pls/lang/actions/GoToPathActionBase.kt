@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.fileChooser.FileChooserPanel
 import com.intellij.openapi.fileChooser.FileSystemTree
 import com.intellij.openapi.fileChooser.actions.FileChooserAction
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
@@ -33,14 +33,14 @@ abstract class GoToPathActionBase : FileChooserAction(), LightEditCompatible {
     }
 
     override fun actionPerformed(panel: FileChooserPanel, e: AnActionEvent) {
-        runCatchingCancelable {
+        runCatchingCancellable {
             val targetPath = getFinalTargetPath(e) ?: return
             panel.load(targetPath)
         }
     }
 
     override fun actionPerformed(fileChooser: FileSystemTree, e: AnActionEvent) {
-        runCatchingCancelable {
+        runCatchingCancellable {
             val targetPath = getFinalTargetPath(e) ?: return
             val file = targetPath.toVirtualFile(refreshIfNeed = true) ?: return
             val onDone = if (shouldExpand(fileChooser, e)) Runnable { fileChooser.expand(file, null) } else null
@@ -54,7 +54,7 @@ abstract class GoToPathActionBase : FileChooserAction(), LightEditCompatible {
     }
 
     private fun isUnderRoots(targetPath: Path, fileChooser: FileSystemTree): Boolean {
-        runCatchingCancelable {
+        runCatchingCancellable {
             val file = targetPath.toVirtualFile() ?: return false
             return fileChooser.isUnderRoots(file)
         }

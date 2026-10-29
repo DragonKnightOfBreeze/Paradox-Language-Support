@@ -4,7 +4,7 @@ package icu.windea.pls.images.dds
 
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.concurrency.annotations.RequiresReadLock
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.images.dds.info.DdsInfoReader
 import java.io.InputStream
 
@@ -14,23 +14,23 @@ import java.io.InputStream
 object DdsMetadataReader {
     @RequiresReadLock(generateAssertion = false)
     fun readOrNull(file: VirtualFile): DdsMetadata? {
-        return runCatchingCancelable { readInternal(file) }
+        return runCatchingCancellable { readInternal(file) }
             .getOrNull()
     }
 
     fun readOrNull(inputStream: InputStream): DdsMetadata? {
-        return runCatchingCancelable { readInternal(inputStream) }
+        return runCatchingCancellable { readInternal(inputStream) }
             .getOrNull()
     }
 
     @RequiresReadLock(generateAssertion = false)
     fun read(file: VirtualFile): DdsMetadata {
-        return runCatchingCancelable { readInternal(file) }
+        return runCatchingCancellable { readInternal(file) }
             .getOrElse { e -> throw IllegalStateException("Cannot read dds metadata from file ${file.path}.", e) }
     }
 
     fun read(inputStream: InputStream): DdsMetadata {
-        return runCatchingCancelable { readInternal(inputStream) }
+        return runCatchingCancellable { readInternal(inputStream) }
             .getOrElse { e -> throw IllegalStateException("Cannot read dds metadata from input stream.", e) }
     }
 

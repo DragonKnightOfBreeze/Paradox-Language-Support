@@ -10,7 +10,7 @@ import com.intellij.psi.util.CachedValuesManager
 import com.intellij.psi.util.elementType
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.text.ColorPatterns
 import icu.windea.pls.lang.codeInsight.color.ParadoxColorFactory
 import icu.windea.pls.script.psi.ParadoxScriptBlock
@@ -45,12 +45,12 @@ class ParadoxScriptStringColorProvider : ParadoxColorProvider {
 
     override fun getColor(element: PsiElement): Color? {
         if (element !is ParadoxScriptString) return null
-        return runCatchingCancelable { doGetColor(element) }.getOrNull()
+        return runCatchingCancellable { doGetColor(element) }.getOrNull()
     }
 
     override fun setColor(element: PsiElement, color: Color): Boolean {
         if (element !is ParadoxScriptString) return false
-        runCatchingCancelable { doSetColor(element, color) }
+        runCatchingCancellable { doSetColor(element, color) }
         return true
     }
 
@@ -115,14 +115,14 @@ class ParadoxScriptBlockColorProvider : ParadoxColorProvider {
         if (element !is ParadoxScriptBlock) return null
         return CachedValuesManager.getCachedValue(element, ParadoxColorProvider.Keys.cachedColor) {
             ProgressManager.checkCanceled()
-            val value = runCatchingCancelable { doGetColor(element) }.getOrNull()
+            val value = runCatchingCancellable { doGetColor(element) }.getOrNull()
             CachedValueProvider.Result.create(value, element)
         }
     }
 
     override fun setColor(element: PsiElement, color: Color): Boolean {
         if (element !is ParadoxScriptBlock) return false
-        runCatchingCancelable { doSetColor(element, color) }
+        runCatchingCancellable { doSetColor(element, color) }
         return true
     }
 
@@ -177,14 +177,14 @@ class ParadoxScriptColorFieldColorProvider : ParadoxColorProvider {
         if (element !is ParadoxScriptColor) return null
         return CachedValuesManager.getCachedValue(element, ParadoxColorProvider.Keys.cachedColor) {
             ProgressManager.checkCanceled()
-            val value = runCatchingCancelable { doGetColor(element) }.getOrNull()
+            val value = runCatchingCancellable { doGetColor(element) }.getOrNull()
             CachedValueProvider.Result.create(value, element)
         }
     }
 
     override fun setColor(element: PsiElement, color: Color): Boolean {
         if (element !is ParadoxScriptColor) return false
-        runCatchingCancelable { doSetColor(element, color) }
+        runCatchingCancellable { doSetColor(element, color) }
         return true
     }
 

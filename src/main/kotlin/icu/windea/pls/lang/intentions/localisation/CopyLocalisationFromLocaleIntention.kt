@@ -13,7 +13,7 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.lang.intentions.ChronicleIntentionBundle
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
@@ -37,7 +37,7 @@ class CopyLocalisationFromLocaleIntention : ManipulateLocalisationIntentionBase.
             val contextsToHandle = contexts.filter { context -> context.needProcess }
             val errorRef = AtomicReference<Throwable>()
 
-            runCatchingCancelable r@{
+            runCatchingCancellable r@{
                 if (contextsToHandle.isEmpty()) return@r
                 reportProgressScope(contextsToHandle.size) { reporter ->
                     contextsToHandle.forEachConcurrent f@{ context ->

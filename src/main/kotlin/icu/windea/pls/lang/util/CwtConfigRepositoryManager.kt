@@ -25,7 +25,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.getCurrentProject
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.toPath
 import icu.windea.pls.lang.listeners.CwtConfigDirectoriesListener
 import icu.windea.pls.model.ParadoxGameType
@@ -88,7 +88,7 @@ object CwtConfigRepositoryManager {
 
     private fun tryCheckRemote(string: String): Result<String> {
         if (string.isEmpty()) return Result.success("")
-        return runCatchingCancelable { ChronicleGitService.getInstance().checkRemote(string) }
+        return runCatchingCancellable { ChronicleGitService.getInstance().checkRemote(string) }
     }
 
     fun isValidToSync(): Boolean {
@@ -114,7 +114,7 @@ object CwtConfigRepositoryManager {
         val notificationTitle = ChronicleBundle.message("config.repo.sync.result.title")
 
         // 创建父目录，如果存在报错，发送通知并直接返回
-        val r = runCatchingCancelable { parentDirectory.toPath().createDirectories() }
+        val r = runCatchingCancellable { parentDirectory.toPath().createDirectories() }
         if (r.isFailure) {
             val warningMessage = ChronicleBundle.message("config.repo.sync.createDirectoryFailed")
             val notification = ChronicleNotificationGroups.global().createNotification(notificationTitle, warningMessage, NotificationType.ERROR)
@@ -171,6 +171,6 @@ object CwtConfigRepositoryManager {
 
     private fun trySyncFromRemote(url: String, parentDirectory: String): Result<String> {
         if (url.isEmpty()) return Result.success("")
-        return runCatchingCancelable { ChronicleGitService.getInstance().syncFromRemote(url, parentDirectory) }
+        return runCatchingCancellable { ChronicleGitService.getInstance().syncFromRemote(url, parentDirectory) }
     }
 }

@@ -12,7 +12,7 @@ import com.intellij.openapi.vfs.encoding.ChangeFileEncodingAction
 import com.intellij.openapi.vfs.encoding.EncodingUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.vfs.VirtualFileBomService
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import java.nio.charset.Charset
@@ -31,11 +31,11 @@ class ChangeFileEncodingFix(
         val changeCharset = virtualFile.charset != charset
         val hasBom = VirtualFileBomService.hasBom(virtualFile, VirtualFileBomService.utf8Bom)
         if (addBom == true && !hasBom) {
-            runCatchingCancelable {
+            runCatchingCancellable {
                 VirtualFileBomService.addBom(virtualFile, VirtualFileBomService.utf8Bom)
             }.onFailure { e -> thisLogger().warn("Unexpected exception occurred on attempt to add BOM from file $this", e) }
         } else if (addBom == false && hasBom) {
-            runCatchingCancelable {
+            runCatchingCancellable {
                 VirtualFileBomService.removeBom(virtualFile, VirtualFileBomService.utf8Bom)
             }.onFailure { e -> thisLogger().warn("Unexpected exception occurred on attempt to remove BOM from file $this", e) }
         }

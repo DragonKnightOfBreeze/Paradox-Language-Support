@@ -658,7 +658,7 @@ com.intellij.diagnostic.Freeze
 
 参考：
 
-- `icu.windea.pls.core.cache.CancelableCache`
+- `icu.windea.pls.core.cache.CancellableCache`
 - `icu.windea.pls.core.cache.TrackingCache`
 - `icu.windea.pls.core.util.MergedModificationTracker`
 - `icu.windea.pls.core.util.io.ProgressCheckingInputStream`

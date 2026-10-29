@@ -8,7 +8,7 @@ import com.intellij.psi.util.CachedValueProvider
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.cache.cancelable
+import icu.windea.pls.core.cache.cancellable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.createCachedValue
@@ -38,7 +38,7 @@ object ParadoxMatchResultService {
             // 3.0.3 use expireAfterAccess to optimize memory
             createCachedValue(project) {
                 val value = createNestedCache<VirtualFile, _, _> {
-                    CacheBuilder("expireAfterAccess=1h").build<String, ParadoxMatchResult>().cancelable()
+                    CacheBuilder("expireAfterAccess=1h").build<String, ParadoxMatchResult>().cancellable()
                 }
                 CachedValueProvider.Result.create(value, *dependencies)
             }

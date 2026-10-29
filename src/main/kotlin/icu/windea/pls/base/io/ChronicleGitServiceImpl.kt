@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.toPath
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -23,7 +23,7 @@ class ChronicleGitServiceImpl : ChronicleGitService {
 
     override fun getRemoteUrls(repositoryRoot: VirtualFile): List<String> {
         val configFile = repositoryRoot.findChild(".git")?.findChild("config") ?: return emptyList()
-        val configText = runCatchingCancelable { VfsUtil.loadText(configFile) }.getOrNull() ?: return emptyList()
+        val configText = runCatchingCancellable { VfsUtil.loadText(configFile) }.getOrNull() ?: return emptyList()
         return Regex("""(?m)^\s*url\s*=\s*([^\r\n]+?)\s*$""")
             .findAll(configText)
             .map { it.groupValues[1].trim() }

@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.concurrency.annotations.RequiresReadLock
 import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.util.io.ProgressCheckingInputStream
 import icu.windea.pls.images.dds.DdsFileType
 import icu.windea.pls.images.dds.DdsMetadataIndex
@@ -41,7 +41,7 @@ class ImageMetadataService : Disposable {
     fun getMetadata(file: VirtualFile, project: Project? = null): ImageMetadata? {
         val key = CacheKey(file.path, file.length, file.modificationStamp)
         cache.getIfPresent(key)?.let { return it }
-        val metadata = runCatchingCancelable { doGetMetadata(file, project) }
+        val metadata = runCatchingCancellable { doGetMetadata(file, project) }
             .onFailure { thisLogger().warn(it) }
             .getOrNull()
         if (metadata != null) cache.put(key, metadata)
@@ -49,11 +49,11 @@ class ImageMetadataService : Disposable {
     }
 
     fun getMetadata(path: Path): ImageMetadata? {
-        val key = runCatchingCancelable {
+        val key = runCatchingCancellable {
             CacheKey(path.toAbsolutePath().normalize().toString(), Files.size(path), Files.getLastModifiedTime(path).toMillis())
         }.getOrNull() ?: return null
         cache.getIfPresent(key)?.let { return it }
-        val metadata = runCatchingCancelable { readMetadata(path.inputStream()) }
+        val metadata = runCatchingCancellable { readMetadata(path.inputStream()) }
             .onFailure { thisLogger().warn(it) }
             .getOrNull()
         if (metadata != null) cache.put(key, metadata)

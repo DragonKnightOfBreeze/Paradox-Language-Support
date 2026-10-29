@@ -14,7 +14,7 @@ import icu.windea.pls.core.math.MathResult
 import icu.windea.pls.core.math.MathToken
 import icu.windea.pls.core.math.TokenBasedMathExpressionEvaluator
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.surroundsWith
 import icu.windea.pls.core.withRecursionGuard
 import icu.windea.pls.lang.psi.resolved
@@ -72,14 +72,14 @@ class ParadoxInlineMathExpressionEvaluator(
      * 评估来自 [element] 的内联数学表达式。如果发生意外，则会直接返回 `null`。
      */
     fun evaluateOrNull(element: ParadoxScriptInlineMath, args: Map<String, String> = emptyMap()): MathResult? {
-        return runCatchingCancelable { evaluateInternal(element.inlineMathExpression, args) }.getOrNull()
+        return runCatchingCancellable { evaluateInternal(element.inlineMathExpression, args) }.getOrNull()
     }
 
     /**
      * 评估来自 [element] 的内联数学表达式。如果发生意外，则会直接返回 `null`。
      */
     fun evaluateOrNull(element: ParadoxScriptInlineMathExpression, args: Map<String, String> = emptyMap()): MathResult? {
-        return runCatchingCancelable { evaluateInternal(element, args) }.getOrNull()
+        return runCatchingCancellable { evaluateInternal(element, args) }.getOrNull()
     }
 
     // region Implementations

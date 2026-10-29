@@ -24,7 +24,7 @@ import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.cache.cancelable
+import icu.windea.pls.core.cache.cancellable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.forEachFast
@@ -83,7 +83,7 @@ object ParadoxConfigService {
         // 3.0.3 use expireAfterAccess + softValues to optimize memory
         createCachedValue(project) {
             val value = createNestedCache<VirtualFile, _, _> {
-                CacheBuilder("expireAfterAccess=1h,softValues").build<String, List<CwtMemberConfig<*>>>().cancelable()
+                CacheBuilder("expireAfterAccess=1h,softValues").build<String, List<CwtMemberConfig<*>>>().cancellable()
             }
             CachedValueProvider.Result.create(value, ChronicleModificationTrackers.ConfigResolution)
         }
@@ -96,7 +96,7 @@ object ParadoxConfigService {
         // cacheKey -> declarationConfig
         // 3.0.3 use expireAfterAccess + softValues to optimize memory
         createCachedValue(project) {
-            val value = CacheBuilder("expireAfterAccess=1h,softValues").build<String, CwtPropertyConfig>().cancelable()
+            val value = CacheBuilder("expireAfterAccess=1h,softValues").build<String, CwtPropertyConfig>().cancellable()
             CachedValueProvider.Result.create(value, ModificationTracker.NEVER_CHANGED)
         }
     }

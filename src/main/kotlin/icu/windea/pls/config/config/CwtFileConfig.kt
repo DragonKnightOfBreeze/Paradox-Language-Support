@@ -12,7 +12,7 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.filterIsInstanceFast
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.optimized
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.psi.CwtFile
@@ -94,7 +94,7 @@ private object CwtFileConfigResolver : CwtConfigResolutionScope {
 
     fun resolve(file: VirtualFile, configGroup: CwtConfigGroup, filePath: String): CwtFileConfig? {
         if (file.fileType !== CwtFileType) return null
-        val psiFile = runCatchingCancelable { file.toPsiFile(configGroup.project) }.onFailure { logger.warn(it) }.getOrNull()
+        val psiFile = runCatchingCancellable { file.toPsiFile(configGroup.project) }.onFailure { logger.warn(it) }.getOrNull()
         if (psiFile !is CwtFile) return null
         return resolve(psiFile, configGroup, filePath)
     }

@@ -4,7 +4,7 @@ package icu.windea.pls.images.tga
 
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.concurrency.annotations.RequiresReadLock
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import java.io.IOException
 import java.io.InputStream
 import javax.imageio.ImageIO.*
@@ -12,23 +12,23 @@ import javax.imageio.ImageIO.*
 object TgaMetadataReader {
     @RequiresReadLock(generateAssertion = false)
     fun readOrNull(file: VirtualFile): TgaMetadata? {
-        return runCatchingCancelable { readInternal(file) }
+        return runCatchingCancellable { readInternal(file) }
             .getOrNull()
     }
 
     fun readOrNull(inputStream: InputStream): TgaMetadata? {
-        return runCatchingCancelable { readInternal(inputStream) }
+        return runCatchingCancellable { readInternal(inputStream) }
             .getOrNull()
     }
 
     @RequiresReadLock(generateAssertion = false)
     fun read(file: VirtualFile): TgaMetadata {
-        return runCatchingCancelable { readInternal(file) }
+        return runCatchingCancellable { readInternal(file) }
             .getOrElse { e -> throw IllegalStateException("Cannot read tga metadata from file ${file.path}.", e) }
     }
 
     fun read(inputStream: InputStream): TgaMetadata {
-        return runCatchingCancelable { readInternal(inputStream) }
+        return runCatchingCancellable { readInternal(inputStream) }
             .getOrElse { e -> throw IllegalStateException("Cannot read tga metadata from input stream.", e) }
     }
 

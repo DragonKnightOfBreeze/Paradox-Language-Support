@@ -101,14 +101,14 @@
 | 生产文件 | 可测试性 | 说明 |
 |---|---|---|
 | `Caches.kt` | 单元测试 | `CacheBuilder` 扩展函数，可用 mock Caffeine 缓存测试 |
-| `CancelableCache.kt` | 单元测试 | `get/getIfPresent` 的 `ProcessCanceledException` 处理可用 mock 缓存测试 |
-| `CancelableLoadingCache.kt` | 单元测试 | 同上 + `get(key)`/`getAll(keys)` |
+| `CancellableCache.kt` | 单元测试 | `get/getIfPresent` 的 `ProcessCanceledException` 处理可用 mock 缓存测试 |
+| `CancellableLoadingCache.kt` | 单元测试 | 同上 + `get(key)`/`getAll(keys)` |
 | `NestedCache.kt` | 单元测试 | 基于 `ConcurrentHashMap` 的二层缓存，纯逻辑，可单元测试 |
 | `NestedLoadingCache.kt` | 单元测试 | 同上 + `LoadingCache` |
 | `TrackingCache.kt` | 需平台测试 | 依赖 `com.intellij.openapi.util.ModificationTracker` |
 | `TrackingLoadingCache.kt` | 需平台测试 | 同上 |
 
-**说明：** `CancelableCache`、`NestedCache`、`NestedLoadingCache` 为薄包装器，非常适合作为高优先级单元测试目标。`TrackingCache`/`TrackingLoadingCache` 需要 mock `ModificationTracker` 或使用平台集成测试。
+**说明：** `CancellableCache`、`NestedCache`、`NestedLoadingCache` 为薄包装器，非常适合作为高优先级单元测试目标。`TrackingCache`/`TrackingLoadingCache` 需要 mock `ModificationTracker` 或使用平台集成测试。
 
 ---
 
@@ -471,7 +471,7 @@
 
 1. **`text/`** — 全部 4 个文件均可纯单元测试，`TextPatterns.kt` 含非平凡逻辑。**立即行动。**
 2. **`util/`** — 10 个未测试文件均纯单元测试。按逻辑复杂度排序：`Processors.kt` → `RecursionGuard.kt` → `RecursionService.kt` → `Markers.kt` → `CallbackLock.kt` → `LazyValue.kt`。
-3. **`cache/`** — `CancelableCache`、`NestedCache`、`NestedLoadingCache` 为薄包装器，测试成本低、价值高。
+3. **`cache/`** — `CancellableCache`、`NestedCache`、`NestedLoadingCache` 为薄包装器，测试成本低、价值高。
 
 #### 第二优先级：部分覆盖需补充的模块
 

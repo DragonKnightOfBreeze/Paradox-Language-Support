@@ -16,7 +16,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.cache.cancelable
+import icu.windea.pls.core.cache.cancellable
 import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.cache.trackedBy
 import icu.windea.pls.core.castOrNull
@@ -65,7 +65,7 @@ object ParadoxParameterManager {
         // rootFile -> cacheKey -> parameterInfo
         // 3.0.3 use expireAfterAccess + softValues to optimize memory
         createNestedCache<VirtualFile, _, _> {
-            CacheBuilder("expireAfterAccess=1h,softValues").build<String, ParadoxParameterInfo>().cancelable().trackedBy { it.modificationTracker }
+            CacheBuilder("expireAfterAccess=1h,softValues").build<String, ParadoxParameterInfo>().cancellable().trackedBy { it.modificationTracker }
         }
     }
 

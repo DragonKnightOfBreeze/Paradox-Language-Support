@@ -8,7 +8,7 @@ import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.integrations.images.ImageToolSettings
 import java.nio.file.Files
@@ -58,7 +58,7 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
     //    magick input.jpg watermark.png -gravity southeast -geometry +10+10 -composite output.jpg
 
     override fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
-        return runCatchingCancelable { doConvertImageFormat(path, targetDirectoryPath, targetFileName, targetFormat) }
+        return runCatchingCancellable { doConvertImageFormat(path, targetDirectoryPath, targetFileName, targetFormat) }
             .onFailure { thisLogger().warn(it) }.getOrThrow()
     }
 

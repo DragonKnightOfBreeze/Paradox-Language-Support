@@ -1,7 +1,7 @@
 package icu.windea.pls.lang.match
 
 import com.intellij.openapi.diagnostic.thisLogger
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 
 /**
  * 匹配结果。
@@ -74,7 +74,7 @@ sealed interface ParadoxMatchResult {
             // - com.intellij.openapi.project.IndexNotReadyException
 
             @Suppress("UNCHECKED_CAST")
-            val computed = runCatchingCancelable { (cache as () -> Boolean)() }
+            val computed = runCatchingCancellable { (cache as () -> Boolean)() }
                 .onFailure { thisLogger().warn(it) } // unexpected to catch an exception here
                 .getOrDefault(false) // by default false
             this.value = computed

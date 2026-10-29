@@ -13,7 +13,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.collections.synced
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.withErrorRef
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
@@ -49,7 +49,7 @@ class ReplaceLocalisationFromLocaleAction : ManipulateLocalisationActionBase.Wit
                     val contextsToHandle = contexts.filter { context -> context.needProcess }
                     allContexts.addAll(contextsToHandle)
 
-                    runCatchingCancelable r@{
+                    runCatchingCancellable r@{
                         if (contextsToHandle.isEmpty()) return@r
                         contextsToHandle.asFlow().flatMapMerge { context ->
                             flow {

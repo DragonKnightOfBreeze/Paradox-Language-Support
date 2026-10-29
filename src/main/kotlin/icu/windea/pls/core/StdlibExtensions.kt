@@ -527,13 +527,13 @@ fun String.toUuidString() = UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.
 fun String.toFile() = File(this)
 
 /** 安全转化为 [File]，失败返回 `null`。 */
-fun String.toFileOrNull() = runCatchingCancelable { File(this) }.getOrNull()
+fun String.toFileOrNull() = runCatchingCancellable { File(this) }.getOrNull()
 
 /** 转化为 [Path]。 */
 fun String.toPath(): Path = Path.of(this)
 
 /** 安全转化为 [Path]，失败返回 `null`。 */
-fun String.toPathOrNull() = runCatchingCancelable { Path.of(this) }.getOrNull()
+fun String.toPathOrNull() = runCatchingCancellable { Path.of(this) }.getOrNull()
 
 /** 转化为文件 URL（file://）。 */
 fun String.toFileUrl(): URL = File(this).toURI().toURL()

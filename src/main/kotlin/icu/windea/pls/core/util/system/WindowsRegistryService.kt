@@ -7,7 +7,7 @@ import com.sun.jna.platform.win32.WinReg
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import java.nio.charset.Charset
 
 object WindowsRegistryService {
@@ -23,8 +23,8 @@ object WindowsRegistryService {
      */
     fun getStringValue(key: String, valueName: String): String? {
         if (!SystemInfo.isWindows) return null
-        runCatchingCancelable { getStringValueFromJna(key, valueName) }.getOrNull()?.orNull()?.let { return it }
-        runCatchingCancelable { getStringValueFromCommandLine(key, valueName) }.getOrNull()?.orNull()?.let { return it }
+        runCatchingCancellable { getStringValueFromJna(key, valueName) }.getOrNull()?.orNull()?.let { return it }
+        runCatchingCancellable { getStringValueFromCommandLine(key, valueName) }.getOrNull()?.orNull()?.let { return it }
         return null
     }
 

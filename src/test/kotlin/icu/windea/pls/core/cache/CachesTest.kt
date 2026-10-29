@@ -29,11 +29,11 @@ class CachesTest {
 
     // endregion
 
-    // region CancelableCache / CancelableLoadingCache
+    // region CancellableCache / CancellableLoadingCache
 
     @Test
-    fun cancelableCache_pceRethrown_test() {
-        val cache = CacheBuilder().build<String, Int>().cancelable()
+    fun cancellableCache_pceRethrown_test() {
+        val cache = CacheBuilder().build<String, Int>().cancellable()
         Assert.assertEquals(1, cache.get("a") { 1 })
         Assert.assertThrows(ProcessCanceledException::class.java) {
             cache.get("b") { throw ProcessCanceledException() }
@@ -41,8 +41,8 @@ class CachesTest {
     }
 
     @Test
-    fun cancelableLoadingCache_pceRethrown_test() {
-        val cache = CacheBuilder().build<String, Int> { k -> k.length }.cancelable()
+    fun cancellableLoadingCache_pceRethrown_test() {
+        val cache = CacheBuilder().build<String, Int> { k -> k.length }.cancellable()
         Assert.assertEquals(3, cache.get("abc"))
         Assert.assertThrows(ProcessCanceledException::class.java) {
             cache.get("bad") { throw ProcessCanceledException() }
