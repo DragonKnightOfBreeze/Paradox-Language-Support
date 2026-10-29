@@ -1,16 +1,21 @@
 package icu.windea.pls.images
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProcessCanceledException
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
+import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.util.concurrency.AppExecutorUtil
+import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 import java.nio.file.Files
@@ -46,6 +51,8 @@ class ImageRenderService : Disposable {
 
     fun newRenderSession(scope: CoroutineScope): ImageRenderSession = ImageRenderSession(scope)
 
+    fun getCurrentRenderSession(): ImageRenderSession? = renderSession.get()
+
     fun <T> withRenderSession(session: ImageRenderSession, action: () -> T): T {
         val oldSession = renderSession.get()
         renderSession.set(session)
@@ -72,32 +79,50 @@ class ImageRenderService : Disposable {
     }
 
     /**
+     * 同步请求渲染图片，并在后台进度中等待完成。相同请求会被合并。
+     *
+     * 注意：不能在 EDT 中调用；如果在 EDT 中调用，只会返回已有缓存或 `null`。
+     */
+    fun requestImageRender(request: ImageRenderRequest, project: Project): Path? {
+        getCachedImage(request)?.let { return it }
+        if (ApplicationManager.getApplication().isDispatchThread) {
+            logger.warn("Skip image rendering in EDT: ${request.sourcePath}")
+            return null
+        }
+        if (project.isDisposed) return null
+
+        return requestImageRenderAsync(request, project).get()
+    }
+
+    /**
      * 在后台请求渲染图片。相同请求会被合并。
      */
-    fun requestImageRender(request: ImageRenderRequest, project: Project): CompletableFuture<Path?> {
-        renderFutures[request]?.let { return it }
+    fun requestImageRenderAsync(request: ImageRenderRequest, project: Project): CompletableFuture<Path?> {
+        getCachedImage(request)?.let { return CompletableFuture.completedFuture(it) }
+        if (project.isDisposed) {
+            return CompletableFuture.completedFuture(null)
+        }
+
         val future = CompletableFuture<Path?>()
         val previous = renderFutures.putIfAbsent(request, future)
         if (previous != null) return previous
-        if (project.isDisposed) {
-            renderFutures.remove(request, future)
-            future.completeExceptionally(IllegalStateException("Project is disposed"))
-            return future
-        }
 
-        future.whenComplete { _, _ -> renderFutures.remove(request, future) }
-        val task = object : Task.Backgroundable(project, "Rendering image", true) {
-            override fun run(indicator: ProgressIndicator) {
-                try {
-                    future.complete(renderImage(request))
-                } catch (e: ProcessCanceledException) {
-                    future.completeExceptionally(e)
-                } catch (e: Exception) {
-                    future.completeExceptionally(e)
+        val scope = ChronicleFacade.getCoroutineScope(project)
+        scope.launch {
+            try {
+                val result = withBackgroundProgress(project, ChronicleBundle.message("image.render.progress.title"), cancellable = true) {
+                    withContext(Dispatchers.IO) { renderImage(request) }
                 }
+                future.complete(result)
+            } catch (e: ProcessCanceledException) {
+                future.completeExceptionally(e)
+                throw e
+            } catch (e: Exception) {
+                future.completeExceptionally(e)
+            } finally {
+                renderFutures.remove(request, future)
             }
         }
-        ProgressManager.getInstance().run(task)
         return future
     }
 

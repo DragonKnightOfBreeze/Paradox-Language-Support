@@ -1,10 +1,15 @@
 package icu.windea.pls.images
 
+import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.coroutineToIndicator
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
 import java.nio.file.Path
 
 /**
@@ -15,11 +20,27 @@ import java.nio.file.Path
 class ImageRenderSession(
     val scope: CoroutineScope
 ) {
+    companion object {
+        private val logger = logger<ImageRenderSession>()
+    }
+
     private val jobs = mutableListOf<Deferred<Path?>>()
 
     fun record(request: ImageRenderRequest): Deferred<Path?> {
-        val job = scope.async(Dispatchers.IO) {
-            ImageRenderService.getInstance().renderImage(request)
+        val job = scope.async {
+            try {
+                withContext(Dispatchers.IO) {
+                    coroutineToIndicator { _: ProgressIndicator ->
+                        ImageRenderService.getInstance().renderImage(request)
+                    }
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                // NOTE 3.0.5 默认失败策略是 `AcceptBroken`：渲染失败时保留原 URL，不影响文档生成
+                logger.warn("Render image for documentation session failed. (source path: ${request.sourcePath})", e)
+                null
+            }
         }
         synchronized(jobs) { jobs += job }
         return job
