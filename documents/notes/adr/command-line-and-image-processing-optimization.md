@@ -291,7 +291,7 @@ com.intellij.diagnostic.Freeze
 - 阶段 5：外围
   - SpecialPath 使用 JNA（回退 `reg query`）；Git 使用非交互参数 + 超时；CwtConfigService 直接读取 `.git/config`。
 - 阶段 6：测试与收尾
-  - 新增 `includeExternalTools`，默认启用；工具下载到 `build/test-tools`。
+  - 新增 `includeExternalTools`，默认启用；工具下载到 `build/external-tools`。
   - 补充单元、平台、回归、冒烟和进阶测试；清理代码；修订 ADR；后续补充 AI note。
 
 关键决策：
@@ -342,6 +342,17 @@ com.intellij.diagnostic.Freeze
 - 暂不增加 `withBackgroundProgress`；后续根据实际 UX 评估。
 - 阶段 5 的外围任务（Git、SpecialPath、CwtConfigService）已在 step 1 完成，无需额外改动。
 
+#### 2026-10-29 - step 6 - test & wrap-up（部分）
+
+- 新增 `ExternalToolDownloadService`：`check` 判断目标为空或不存在；`download` 为 suspend，使用 `reportProgressScope` / `reportRawProgress` 报告状态。
+- 下载使用 JDK `HttpClient`，自动应用 IDE 静态代理、系统环境变量代理、`ProxySelector` 和 JVM 系统属性；带连接/读取超时、最低速度检查和总时长限制。
+- 下载支持直接文件、Zip、TarGz 和 SevenZip；SevenZip 在 Commons Compress 不支持多流编码器时回退到外部 `7z` / `7za` / `7zr`。
+- 新增 `ExternalToolDownloadTestService`：共享 `build/external-tools`，使用 `.downloaded-tool` 标记判断版本；提供 texconv、magick、tiger 的跨 OS 描述和冒烟测试。
+- 新增 `ExternalToolDownloadServiceTest`、`ExternalToolDownloadTest`、`ImageToolProviderExternalTest`。
+- 支持在设置页配置 texconv 路径，默认使用 `{path}/external-tools/texconv.exe`；`TexconvToolProvider` 不再依赖内置资源。
+- 新增 `ChronicleGitServiceTest`（本地临时 Git 仓库）与 `ChronicleSqliteServiceTest`（临时 SQLite 数据库）。
+- `includeExternalTools` 默认启用；Tiger 真实模组验证、issue #396 回归和 ADR 总结仍暂缓。
+
 ## 任务（AI 协助）
 
 ### 主要 & 次要
@@ -362,7 +373,7 @@ com.intellij.diagnostic.Freeze
   - [x] `ProcessExecutor`：超时、取消、stderr、退出码、编码
   - [x] `ImageMetadataService`/`ImageService`：元数据、缓存、渲染、清理
   - [ ] issue #396 回归测试
-  - [ ] 进阶测试：`includeExternalTools` + `build/test-tools`
+  - [x] 进阶测试：`includeExternalTools` + `build/external-tools`
 - [ ] 清理与文档
   - [ ] 清理旧 API、注释、常量
   - [ ] 修订 ADR
@@ -411,24 +422,24 @@ com.intellij.diagnostic.Freeze
 - [x] 将 `ParadoxImageService` `ParadoxImageResolveResult` 移到 `icu.windea.pls.lang.resolve`
 - [x] 将 `icu.windea.pls.images.policies` 中的代码移动到 `icu.windea.pls.model.policies`
 - [ ] 图片处理（渲染/写入）时的取消检查
-- [ ] 需要补充测试，需要验证在各种策略下（TwelveMonkeys/texconv/magick），图片转换操作能够符合预期地成功/失败。这要求在测试时下载外部工具。
+- [x] 需要补充测试，需要验证在各种策略下（TwelveMonkeys/texconv/magick），图片转换操作能够符合预期地成功/失败。这要求在测试时下载外部工具。
 - [ ] 与 `imagePolicy` 相关的优化和测试
 - [ ] 图片处理（渲染/写入）时的取消检查
-- [ ] 与 `ExternalToolDownloadService` 相关的测试
-- [ ] 为 `ChronicleGitService` 与 `ChronicleSqliteService` 补充测试
+- [x] 与 `ExternalToolDownloadService` 相关的测试
+- [x] 为 `ChronicleGitService` 与 `ChronicleSqliteService` 补充测试
 - [ ] issue #396 回归测试
 - [ ] 验证 tiger 的检查逻辑和对应的外部代码检查（`ChronicleTigerLintInspection`）
 
 `ExternalToolDownloadService` 相关：
 
-- [ ] 在测试代码中调用 `ExternalToolDownloadService.download` 时，需要尽可能地确保下载的是最新版本
+- [x] 在测试代码中调用 `ExternalToolDownloadService.download` 时，需要尽可能地确保下载的是最新版本
   - 如果不是，则移除临时目录中内容，并重新下载。
-- [ ] 改为可以在插件页面中更改 texconv 的路径，默认使用 `~/.windea/chronicle/external-tools/texconv.exe`
+- [x] 改为可以在插件页面中更改 texconv 的路径，默认使用 `~/.windea/chronicle/external-tools/texconv.exe`
   - 将 `ChronicleDataPathService.texconvExePath` 更改到此路径。
-- [ ] `ExternalToolDownloadTestService` 和 `ExternalToolDownloadTestService` 中需要适当加上一些日志输出
+- [x] `ExternalToolDownloadTestService` 和 `ExternalToolDownloadTestService` 中需要适当加上一些日志输出
   - 下载地址/文件名/目标目录/下载进度指示/等等。
   - 测试代码中直接使用 `println` 输出日志。
-- [ ] 除了 texconv 之外，外部工具诸如 tiger/magick 也可以在 非 Windows 的 OS（如 Linux）下执行
+- [x] 除了 texconv 之外，外部工具诸如 tiger/magick 也可以在 非 Windows 的 OS（如 Linux）下执行
   - 需要在测试与生产代码中兼容它们。
   - 主要是 `ExternalToolDownloadService` 以及相关的测试。
 
@@ -447,8 +458,8 @@ com.intellij.diagnostic.Freeze
 
 #### 2026-10-28 - step 1
 
-- [ ] 考虑为 `ChronicleGitService` 补充测试。需要考虑如何获取一个可用的 Git 仓库路径。
-- [ ] 考虑为 `ChronicleSqliteService` 补充测试。
+- [x] 考虑为 `ChronicleGitService` 补充测试。需要考虑如何获取一个可用的 Git 仓库路径。
+- [x] 考虑为 `ChronicleSqliteService` 补充测试。
 
 #### 2026-10-29 - step 2
 
@@ -505,17 +516,19 @@ TBD
 - [x] `icu.windea.pls.images.ImageCacheCleaner` - 新增
 - [x] `icu.windea.pls.images.ImageRenderRequest` - 新增
 - [x] `icu.windea.pls.images.ImageRenderSession` - 新增
-- [x] `icu.windea.pls.images.policies.ImageCacheCleanupPolicy` - 新增
-- [x] `icu.windea.pls.images.policies.ImageRenderFailurePolicy` - 新增
-- [x] `icu.windea.pls.images.policies.ImageRenderPolicy` - 新增
+- [x] `icu.windea.pls.model.policies.ImageCacheCleanupPolicy` - 新增
+- [x] `icu.windea.pls.model.policies.ImageRenderFailurePolicy` - 新增
+- [x] `icu.windea.pls.model.policies.ImageRenderPolicy` - 新增
 - [x] `icu.windea.pls.integrations.images.ImageToolService` - 已加入 EDT/RA 保护
 - [x] `icu.windea.pls.integrations.lints.TigerLintToolService` - 已重构为 app-level + `TrackingCache`
 - [x] `icu.windea.pls.integrations.lints.TigerLintRequest` - 新增
 - [x] `icu.windea.pls.lang.util.ParadoxImageManager` - 已重构为门面
-- [x] `icu.windea.pls.lang.util.ParadoxImageService` - 新增
-- [x] `icu.windea.pls.lang.util.ParadoxImageResolveResult` - 新增
+- [x] `icu.windea.pls.lang.resolve.ParadoxImageService` - 新增
+- [x] `icu.windea.pls.lang.resolve.ParadoxImageResolveResult` - 新增
 - [x] `icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget` - 快速文档等待渲染会话
 - [x] `icu.windea.pls.lang.codeInsight.documentation.CwtDocumentationTarget` - 快速文档等待渲染会话
+- [x] `icu.windea.pls.integrations.ExternalToolDownloadService` - 新增
+- [x] `icu.windea.pls.integrations.images.providers.TexconvToolProvider` - 支持自定义路径，默认使用外部工具目录
 - TBD
 
 测试代码：
@@ -526,15 +539,20 @@ TBD
 - [x] `icu.windea.pls.images.ImageServiceTest` - 格式转换/往返转换
 - [x] `icu.windea.pls.images.ImageRenderServiceTest` - 渲染、同步请求、渲染会话
 - [x] `icu.windea.pls.images.ImageCacheCleanerTest`
-- [ ] `icu.windea.pls.integrations.ExternalToolDownloadServiceTest` - 需要下载外部工具并验证
-- [ ] `icu.windea.pls.integrations.lints.RunTigerTest` - 待移除（因为已存在 `ExternalToolDownloadServiceTest`）
+- [x] `icu.windea.pls.integrations.ExternalToolDownloadServiceTest` - `check` 行为
+- [x] `icu.windea.pls.integrations.ExternalToolDownloadTest` - 下载与冒烟测试（Windows/Linux）
+- [x] `icu.windea.pls.integrations.ExternalToolDownloadTestService` - 共享 `build/external-tools`
+- [x] `icu.windea.pls.integrations.images.ImageToolProviderExternalTest` - TwelveMonkeys/texconv/magick 格式转换
+- [x] `icu.windea.pls.base.io.ChronicleGitServiceTest` - 本地仓库冒烟与常见场景
+- [x] `icu.windea.pls.base.io.ChronicleSqliteServiceTest` - 临时 SQLite 数据库
+- [ ] `icu.windea.pls.integrations.lints.RunTigerTest` - 待移除（因为已存在 `ExternalToolDownloadTest`）
 - TBD
 
 参考：
 
 - `icu.windea.pls.core.cache.TrackingCache`
 - `icu.windea.pls.core.util.MergedModificationTracker`
-- `icu.windea.pls.images.policies.*`
+- `icu.windea.pls.model.policies.*`
 - TBD
 
 ### 相关代码位置（平台）
