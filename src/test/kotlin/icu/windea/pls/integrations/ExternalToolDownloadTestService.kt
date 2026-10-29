@@ -4,6 +4,7 @@ import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
+import icu.windea.pls.util.io.ArchiveType
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -43,7 +44,7 @@ object ExternalToolDownloadTestService {
             url = "https://github.com/ImageMagick/ImageMagick/releases/download/7.1.2-34/ImageMagick-7.1.2-34-portable-Q16-x64.7z",
             fileName = "ImageMagick-7.1.2-34-portable-Q16-x64.7z",
             executableName = "magick.exe",
-            archiveType = ExternalToolArchiveType.SevenZip,
+            archiveType = ArchiveType.SevenZip,
             sha256 = "52cc6a441c7884f5ff4274b410c9b90c4b7d54245dcdf4d32988bb4e4df4e5d1",
             version = "7.1.2-34",
         )
@@ -75,7 +76,7 @@ object ExternalToolDownloadTestService {
             url = "https://github.com/amtep/tiger/releases/download/v1.19.0/ck3-tiger-windows-v1.19.0.zip",
             fileName = "ck3-tiger-windows-v1.19.0.zip",
             executableName = "ck3-tiger.exe",
-            archiveType = ExternalToolArchiveType.Zip,
+            archiveType = ArchiveType.Zip,
             sha256 = "ddafd73abcff8e802b82bf3ae622d02c04dfc8a9dd0cad44b2dbf67568a10505",
             version = "v1.19.0",
         )
@@ -84,7 +85,7 @@ object ExternalToolDownloadTestService {
             url = "https://github.com/amtep/tiger/releases/download/v1.19.0/ck3-tiger-linux-v1.19.0.tar.gz",
             fileName = "ck3-tiger-linux-v1.19.0.tar.gz",
             executableName = "ck3-tiger",
-            archiveType = ExternalToolArchiveType.TarGz,
+            archiveType = ArchiveType.TarGz,
             sha256 = "6d72d276c2b2a953f63221ff8050d1276a085b5a2ffe74977675fdf6e17e9ff3",
             version = "v1.19.0",
         )
@@ -118,7 +119,7 @@ object ExternalToolDownloadTestService {
             if (!ExternalToolDownloadService.getInstance().check(targetDirectory)) {
                 targetDirectory.toFile().deleteRecursively()
             }
-            if (descriptor.archiveType == ExternalToolArchiveType.SevenZip && SystemInfo.isWindows) {
+            if (descriptor.archiveType == ArchiveType.SevenZip && SystemInfo.isWindows) {
                 val sevenZip = sevenZipR ?: error("7zr descriptor is missing")
                 val sevenZipPath = ensureToolSuspend(sevenZip)
                 System.setProperty("chronicle.external.tools.sevenZipPath", sevenZipPath.toString())
