@@ -21,6 +21,8 @@ import kotlin.io.path.writeText
  *
  * 所有测试共享同一个 `build/external-tools` 目录；同一种工具只会下载一次。
  * 下载目录中会保留一个 `.downloaded-tool` 标记，用于在描述不一致时自动重新下载。
+ *
+ * @see ExternalToolDownloadService
  */
 object ExternalToolDownloadTestService {
     val root: Path = Path.of("build", "external-tools").toAbsolutePath().normalize()

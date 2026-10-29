@@ -685,7 +685,7 @@
 
 ## 2026-10-08
 
-- [ ] P2 3.0.5 优化插件自身提供的 `CommandLineExecutor` API
+- [x] P2 3.0.5 优化插件自身提供的 `CommandLineExecutor` API
   - 考虑默认委托给平台提供的 `GeneralCommandLine`/`CapturingProcessHandler`。
   - 可以通过传入 `ProgressIndicator` 来进行取消检查（抵达时间间隔阈值时）。
   - 可以指定执行超时。

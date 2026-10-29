@@ -389,8 +389,8 @@ com.intellij.diagnostic.Freeze
 - [ ] 测试
   - [x] `ProcessExecutor`：超时、取消、stderr、退出码、编码
   - [x] `ImageMetadataService`/`ImageService`：元数据、缓存、渲染、清理
-  - [x] issue #396 回归测试
-  - [x] Tiger 检查逻辑与 `ChronicleTigerLintInspection` 进阶测试
+  - [x] issue #396 回归测试 - `Issue396Test`
+  - [x] Tiger 检查逻辑与 `ChronicleTigerLintInspection` 进阶测试 - `Issue396TigerLintTest`
   - [x] 进阶测试：`includeExternalTools` + `build/external-tools`
 - [ ] 清理与文档
   - [ ] 清理旧 API、注释、常量
@@ -449,8 +449,8 @@ com.intellij.diagnostic.Freeze
 - [ ] 图片处理（渲染/读取/写入）时的取消检查
 - [x] 与 `ExternalToolDownloadService` 相关的测试
 - [x] 为 `ChronicleGitService` 与 `ChronicleSqliteService` 补充测试
-- [x] issue #396 回归测试
-- [x] 验证 tiger 的检查逻辑和对应的外部代码检查（`ChronicleTigerLintInspection`）
+- [x] issue #396 回归测试 - `Issue396Test`
+- [x] 验证 tiger 的检查逻辑和对应的外部代码检查（`ChronicleTigerLintInspection`） - `Issue396TigerLintTest`
 
 `ExternalToolDownloadService` 相关：
 
@@ -476,11 +476,6 @@ com.intellij.diagnostic.Freeze
   - 需要允许更加灵活的配置，并提供一个合理的默认配置。例如提供默认参数 `settings: DownloadSettings`（速度检测/超时检测/等等）。
 - [ ] 不能假定：总是存在外部解压工具的可执行文件路径（如 7z），本地环境总是存在系统代理（如 clash） - 需要结合使用 Assume
 
-迁移相关：
-
-- [ ] `XxxSettings()` -> `XxxSettings.DEFAULT`
-- [ ] 从 `XxxService.kt` 中分离出代码到对应的文件（这更符合个人偏好）
-
 #### 2026-10-30 - step 6 - doc
 
 - [ ] 作为总结，补充 ADR（AI 编写，`documents/ai-notes/adr/`）
@@ -492,7 +487,8 @@ com.intellij.diagnostic.Freeze
 
 #### 2026-10-28 - step 0
 
-- [x] ~~考虑将 `icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext` 移到 `icu.windea.pls.lang.codeInsight.hints.InlayHintsContext`（与 `DocumentationContext` 对齐），并且移出属性 `settings`（因为这是语义相关的）~~
+- [x] ~~考虑将 `icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext` 移到 `icu.windea.pls.lang.codeInsight.hints.InlayHintsContext`~~
+  - 与 `DocumentationContext` 对齐 + 移出属性 `settings`（因为这是语义相关的）
   - 结论：目前没有必要
 - [x] ~~由于模块依赖问题，`icu.windea.pls.images.ImageFrameInfo` 可能需要移到 `icu.windea.pls` 中的某个子包下~~
   - 结论：目前没有必要
@@ -527,7 +523,7 @@ com.intellij.diagnostic.Freeze
   - 参见：`ConvertImageFormatAction` 
   - 原因：`DefaultImageSupport` 使用 `ImageReader.getNumImages(false)` 判断帧数；JPEG/DDS 等读取器在无法预知帧数时会返回 `-1`，导致 `repeat(-1)` 不执行任何转换，最终产出空文件。
   - 修复：当帧数不确定（`<= 0`）时至少转换第一帧；同时将图片转换为标准颜色模型，避免 CMYK 等自定义颜色模型导致 `ImageIO.write` 静默失败；`ImageService` 对空产出继续尝试下一个 `ImageSupport`。
-- [ ] 无法正确地从 DDS/PNG 转换图片格式为 TGA（进阶）
+- [x] 无法正确地从 DDS/PNG 转换图片格式为 TGA（进阶）
   - 参见：`ConvertImageFormatAction`
   - 备注：需要验证（且仅验证/单独验证）使用基于外部工具的 imageSupport 时，是否也可以正确工作。
 
@@ -535,7 +531,8 @@ com.intellij.diagnostic.Freeze
 
 #### 人工修订
 
-TBD
+- [ ] `XxxSettings()` -> `XxxSettings.DEFAULT`
+- [ ] 从 `XxxService.kt` 中分离出代码到对应的文件（这更符合个人偏好）
 
 ### 验证
 

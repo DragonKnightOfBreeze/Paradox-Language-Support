@@ -596,6 +596,7 @@
 
 > - 标签：性能优化
 > - 版本：v3.0.5
+> - 状态：已完成（告一段落）
 
 #### 概述
 
@@ -607,8 +608,10 @@
   - 考虑默认委托给平台提供的 `GeneralCommandLine`/`CapturingProcessHandler`。
   - 可以通过传入 `ProgressIndicator` 来进行取消检查（抵达时间间隔阈值时）。
   - 可以指定执行超时。
-- [ ] P3 优化图片处理逻辑 ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
+  - 参见：[adr/command-line-and-image-processing-optimization.md](adr/command-line-and-image-processing-optimization.md)
+- [x] P3 优化图片处理逻辑 ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
   - 进行图片IO（渲染/转换/等等）时，也进行取消检查（抵达字节大小阈值时）。
+  - 参见：[adr/command-line-and-image-processing-optimization.md](adr/command-line-and-image-processing-optimization.md)
 
 ### snippet-match
 

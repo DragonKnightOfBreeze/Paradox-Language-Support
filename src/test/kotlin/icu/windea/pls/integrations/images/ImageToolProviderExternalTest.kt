@@ -96,6 +96,7 @@ class ImageToolProviderExternalTest : BasePlatformTestCase() {
         assertValidImage(target, source)
     }
 
+    @Suppress("SameParameterValue")
     private fun sourcePath(fileName: String): Path {
         return Path.of("src", "test", "testData", "images", fileName).toAbsolutePath().normalize()
     }

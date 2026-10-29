@@ -83,7 +83,7 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
         assertMatrix("magick") { _, _ -> true }
     }
 
-    private fun assertMatrix(strategy: String, expectedSuccess: (String, String) -> Boolean) {
+    private fun assertMatrix(strategy: String, expectedSuccess: (sourceFormat: String, targetFormat: String) -> Boolean) {
         for (sourceFormat in formats) {
             for (targetFormat in formats) {
                 val action = TestConvertImageFormatAction(targetFormat)

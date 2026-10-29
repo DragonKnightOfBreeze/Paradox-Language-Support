@@ -89,6 +89,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         return Path.of("build", "tmp", "image-render-service-test").also { it.createDirectories() }
     }
 
+    @Suppress("SameParameterValue")
     private fun writeImage(path: Path, width: Int, height: Int) {
         val image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
         ImageIO.write(image, "png", path.toFile())
