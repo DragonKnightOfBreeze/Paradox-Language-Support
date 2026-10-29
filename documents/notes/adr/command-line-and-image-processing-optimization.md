@@ -373,21 +373,22 @@ com.intellij.diagnostic.Freeze
 #### 2026-10-29 - step 6 - test & wrap-up
 
 - [x] 将 `ParadoxImageService` `ParadoxImageResolveResult` 移到 `icu.windea.pls.lang.resolve`
+- [ ] 图片处理（渲染/写入）时的取消检查
 - [ ] 需要补充测试，需要验证在各种策略下（TwelveMonkeys/texconv/magick），图片转换操作能够符合预期地成功/失败。这要求在测试时下载外部工具。
 
 ### 评估
 
 #### 2026-10-28 - step 0
 
-- [ ] 考虑将 `icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext` 移到 `icu.windea.pls.lang.codeInsight.hints.InlayHintsContext`（与 `DocumentationContext` 对齐），并且移出属性 `settings`（因为这是语义相关的）
-- [ ] 由于模块依赖问题，`icu.windea.pls.images.ImageFrameInfo` 可能需要移到 `icu.windea.pls` 中的某个子包下
+- [x] ~~考虑将 `icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext` 移到 `icu.windea.pls.lang.codeInsight.hints.InlayHintsContext`（与 `DocumentationContext` 对齐），并且移出属性 `settings`（因为这是语义相关的）~~
+  - 结论：目前没有必要
+- [x] ~~由于模块依赖问题，`icu.windea.pls.images.ImageFrameInfo` 可能需要移到 `icu.windea.pls` 中的某个子包下~~
+  - 结论：目前没有必要
 - [x] 新增 `ParadoxImageService`，将 `ParadoxImageManager` 中的具体解析逻辑移到 `ParadoxImageService`
 - [x] 新增 `ParadoxImageResolveResult`，目前包含来源路径、缓存路径、帧数信息和尺寸限制；实际加载图片的逻辑仍留在渲染/展示层
 - [ ] 考虑将 `ParadoxImageManager.isImageFile` 移动到 `ImageService` 中
-- [ ] 考虑将 `ImageService.requestRender` 和 `ImageService.render` 的其中一些参数封装到 `ImageRenderConstraint` 或 `ImageRenderSettings` 中
-- [ ] `icu.windea.pls.core.execution` 中的代码的后续清理和重构
-- [x] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
-  - 决策：step 4 暂不添加额外包装；调用链上层应当已有 indicator，后续根据实际 UX 再评估。
+- [ ] 考虑 `ParadoxImageManager` 和 `ParadoxImageService` 的进一步的清理和重构
+- [ ] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
 
 #### 2026-10-28 - step 1
 
