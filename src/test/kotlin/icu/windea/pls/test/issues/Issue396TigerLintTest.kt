@@ -2,7 +2,6 @@ package icu.windea.pls.test.issues
 
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
@@ -46,10 +45,14 @@ import kotlin.io.path.isDirectory
  * - 已下载可用的 `ck3-tiger`（由 `ExternalToolDownloadTestService` 管理）。
  * - 本地存在 CK3 游戏目录（Tiger 需要游戏目录来解析基础游戏定义）。
  *
- * 测试流程：
+ * 测试流程 A：
  * 1. 构造真实的 `ParadoxRootInfo.Mod` 并注入根目录和文件信息。
  * 2. 直接调用 `TigerLintToolService.collectRequest` 和 `getTigerLintResult`，验证请求和结果解析。
  * 3. 启用 `ChronicleTigerLintInspection`，通过 `doHighlighting` 验证外部注解器的端到端结果。
+ *
+ * 测试流程 B：
+ * 1. 构造真实的 `ParadoxRootInfo.Mod` 并注入根目录和文件信息。
+ * 2. 直接启用 `ChronicleTigerLintInspection`，通过 `doHighlighting` 验证外部注解器的端到端结果。
  *
  * 如果本地没有游戏目录或未启用外部工具测试，则跳过。
  *
@@ -131,9 +134,10 @@ class Issue396TigerLintTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun tigerLintResultAndInspection_test() {
-        val file = configureTestCase()
-        val service = TigerLintToolService.getInstance()
+        configureTestCase()
 
+        val service = TigerLintToolService.getInstance()
+        val file = myFixture.file
         val request = service.collectRequest(file)
         val fileInfo = file.virtualFile?.fileInfo
         Assert.assertNotNull("Cannot collect Tiger lint request (language=${file.language}, fileInfo=$fileInfo)", request)
@@ -153,7 +157,19 @@ class Issue396TigerLintTest : BasePlatformTestCase(), ChronicleTestScope {
         )
     }
 
-    private fun configureTestCase(): PsiFile {
+    @Test
+    fun tigerLintOnlyInspection_test() {
+        configureTestCase()
+
+        myFixture.enableInspections(ChronicleTigerLintInspection())
+        val highlights = myFixture.doHighlighting()
+        Assert.assertTrue(
+            "Tiger external annotation was not applied: ${highlights.map { it.description }}",
+            highlights.any { it.description?.contains("unknown-field") == true },
+        )
+    }
+
+    private fun configureTestCase() {
         myFixture.configureByFile("issues/396/tiger-mod/common/scripted_triggers/test_triggers.txt")
         val file = myFixture.file
         val path = "common/scripted_triggers/test_triggers.txt"
@@ -163,7 +179,6 @@ class Issue396TigerLintTest : BasePlatformTestCase(), ChronicleTestScope {
         ParadoxAnalysisInjectionManager.injectFileInfo(file.virtualFile, modRootInfo, path)
         ParadoxAnalysisInjectionManager.injectFileInfo(file.originalFile.virtualFile, modRootInfo, path)
         selectFile(file)?.let { ParadoxAnalysisInjectionManager.injectFileInfo(it, modRootInfo, path) }
-        return file
     }
 
     private fun findCk3GameDirectory(): Path? {

@@ -365,7 +365,7 @@ com.intellij.diagnostic.Freeze
 - 新增 `Issue396Test`：使用记录调用的测试 `ImageToolProvider`，验证 `ImageToolService` 在 EDT / readAction 中跳过外部工具，并在受限上下文之外正常调用外部工具。
   - 该测试对应 `DDSImageReaderCodeInjector.read` -> `ImageToolService.read` 的关键路径，避免内嵌提示计算图标宽度时同步执行命令行。
 - 新增 `Issue396TigerLintTest` 和测试数据 `src/test/testData/issues/396/tiger-mod`：
-  - 简单 CK3 模组包含 `descriptor.mod` 和一个无效的 `scripted_trigger` 字段。
+  - 简单 CK3 模组包含 `descriptor.mod` 和一个预期存在报错的 `scripted_trigger`。
   - 使用已下载的 `ck3-tiger` 和本地 CK3 游戏目录；如果本地环境不满足则跳过。
   - 验证 `TigerLintToolService.collectRequest`、`TigerLintResult` 解析，以及 `ChronicleTigerLintInspection` 的端到端高亮。
 - `TigerLintRequest` 增加 `modPath`，Tiger 命令行现在传入模组描述符（`descriptor.mod` 或 `.metadata/metadata.json`），而不是模组目录。
