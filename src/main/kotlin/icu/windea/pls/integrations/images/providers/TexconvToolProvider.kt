@@ -9,6 +9,7 @@ import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
 import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.toPathOrNull
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
@@ -29,13 +30,14 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
     }
 
     override fun isValid(): Boolean {
-        return true
+        return Files.isRegularFile(texconvPath())
     }
 
     override fun isValidExePath(path: String): Boolean {
         // NOTE 3.0.5 出于轻量化的目的，仅检测路径是否是常规文件，而不再通过执行命令行来检测工具是否可用
-        // NOTE 3.0.5 由于目前会在插件包中内置此工具，直接返回 `true` 即可（未来可能会改为不再内置）
-        return true
+        val exePath = path.toPathOrNull() ?: return false
+        if (!exePath.nameWithoutExtension.equals("texconv", ignoreCase = true)) return false
+        return Files.isRegularFile(exePath)
     }
 
     /**
@@ -53,7 +55,7 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
         val outputFileName = path.nameWithoutExtension + "." + targetFormat
         val outputPath = outputDirectoryPath.resolve(outputFileName)
 
-        val exePath = ChronicleDataPathService.getInstance().texconvExePath
+        val exePath = texconvPath()
         val commandLine = GeneralCommandLine(
             exePath.toString(),
             path.toString(),
@@ -95,5 +97,13 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
             Files.move(outputPath, finalOutputPath, StandardCopyOption.REPLACE_EXISTING)
         }
         return finalOutputPath
+    }
+
+    private fun texconvPath(): Path {
+        val configuredPath = ChronicleIntegrationsSettings.getInstance().state.image.texconvPath?.trim()
+        if (!configuredPath.isNullOrEmpty()) {
+            configuredPath.toPathOrNull()?.let { return it }
+        }
+        return ChronicleDataPathService.getInstance().texconvExePath
     }
 }

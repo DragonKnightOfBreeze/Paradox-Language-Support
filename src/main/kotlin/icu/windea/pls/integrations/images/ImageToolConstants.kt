@@ -7,6 +7,11 @@ object ImageToolConstants {
     object Texconv {
         val name get() = ChronicleIntegrationsBundle.message("tool.texconv.name")
         const val url = "https://github.com/microsoft/DirectXTex/wiki/Texconv"
+
+        fun pathTip(): String {
+            val suffix = if (SystemInfo.isWindows) ".exe" else ""
+            return "/path/to/texconv$suffix"
+        }
     }
 
     object Magick {

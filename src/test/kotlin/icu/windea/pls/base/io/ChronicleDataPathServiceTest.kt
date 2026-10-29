@@ -3,7 +3,7 @@ package icu.windea.pls.base.io
 import org.junit.Assert
 import org.junit.Test
 import kotlin.io.path.isDirectory
-import kotlin.io.path.isRegularFile
+import kotlin.io.path.name
 
 /**
  * @see ChronicleDataPathService
@@ -22,6 +22,9 @@ class ChronicleDataPathServiceTest {
 
     @Test
     fun checkFiles() {
-        Assert.assertTrue(service.texconvExePath.isRegularFile())
+        val texconvExePath = service.texconvExePath
+        Assert.assertEquals("texconv.exe", texconvExePath.fileName.toString())
+        Assert.assertEquals("external-tools", texconvExePath.parent?.name)
+        Assert.assertTrue(texconvExePath.parent!!.isDirectory())
     }
 }

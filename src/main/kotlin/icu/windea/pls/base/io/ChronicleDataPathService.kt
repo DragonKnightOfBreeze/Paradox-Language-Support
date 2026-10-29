@@ -19,7 +19,7 @@ interface ChronicleDataPathService {
     /** `{path}/tools` */
     val toolsPath: Path
 
-    /** `{path}/tools/texconv.exe` */
+    /** `{path}/external-tools/texconv.exe` */
     val texconvExePath: Path
 
     companion object {

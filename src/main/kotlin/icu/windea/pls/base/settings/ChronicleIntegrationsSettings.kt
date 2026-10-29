@@ -38,12 +38,14 @@ class ChronicleIntegrationsSettings : SimplePersistentStateComponent<ChronicleIn
 
     /**
      * @property enableTexconv 是否使用 [Texconv](https://github.com/microsoft/DirectXTex/wiki/Texconv) 作为图片处理工具。
+     * @property texconvPath Texconv 的可执行文件的路径。如果不指定，默认使用 `{path}/external-tools/texconv.exe`。
      * @property enableMagick 是否使用 [Image Magick](https://www.imagemagick.org) 作为图片处理工具。
      * @property magickPath Image Magick 的可执行文件的路径。
      */
     @Tag("image")
     class ImageState : BaseState() {
         var enableTexconv by property(false)
+        var texconvPath by string() // e.g., /path/to/texconv.exe
         var enableMagick by property(false)
         var magickPath by string() // e.g., /path/to/magick.exe
     }

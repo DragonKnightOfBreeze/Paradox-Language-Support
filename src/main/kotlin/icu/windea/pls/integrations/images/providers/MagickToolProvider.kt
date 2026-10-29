@@ -3,6 +3,7 @@ package icu.windea.pls.integrations.images.providers
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
 import icu.windea.pls.core.execution.ExecutionTimeouts
@@ -75,6 +76,9 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
             path.toString(),
             outputPath.toString(),
         ).withWorkingDirectory(fullExePath.parent).withCharset(Charsets.UTF_8)
+        if (SystemInfo.isLinux && fullExePath.toString().endsWith(".AppImage", ignoreCase = true)) {
+            commandLine.withEnvironment("APPIMAGE_EXTRACT_AND_RUN", "1")
+        }
 
         ProgressManager.checkCanceled()
         val output = ProcessExecutor(commandLine).withTimeout(ExecutionTimeouts.normal).execute()

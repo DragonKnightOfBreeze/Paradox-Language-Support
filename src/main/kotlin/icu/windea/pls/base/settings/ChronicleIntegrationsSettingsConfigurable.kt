@@ -20,6 +20,7 @@ import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.integrations.images.ImageToolConstants
 import icu.windea.pls.integrations.images.ImageToolProvider
 import icu.windea.pls.integrations.images.providers.MagickToolProvider
+import icu.windea.pls.integrations.images.providers.TexconvToolProvider
 import icu.windea.pls.integrations.lints.LintToolConstants
 import icu.windea.pls.integrations.lints.LintToolProvider
 import icu.windea.pls.integrations.lints.TigerLintToolService
@@ -63,6 +64,17 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBas
                 .comment(ChronicleBaseBundle.message("settings.integrations.image.from.texconv.comment"), MAX_LINE_LENGTH_WORD_WRAP)
                 .bindSelected(settings::enableTexconv)
             browserLink(ChronicleBundle.message("link.website"), ImageToolConstants.Texconv.url)
+        }
+        // texconvPath
+        row {
+            label(ChronicleBaseBundle.message("settings.integrations.image.texconvPath")).widthGroup(groupName)
+            val descriptor = FileChooserDescriptorFactory.singleFile()
+                .withTitle(ChronicleBaseBundle.message("settings.integrations.image.texconvPath.title"))
+            textFieldWithBrowseButton(descriptor, null)
+                .bindText(settings::texconvPath.toNonNullableProperty(""))
+                .applyToComponent { setEmptyState(ImageToolConstants.Texconv.pathTip()) }
+                .align(Align.FILL)
+                .validationOnInput { Manager.validateTexconvPath(this, it) }
         }
         // enableMagick
         row {
@@ -167,6 +179,14 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBas
 
     object Manager {
         // Image Tools
+
+        fun validateTexconvPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
+            val path = button.text.trim()
+            if (path.isEmpty()) return null
+            val tool = ImageToolProvider.EP_NAME.findExtension(TexconvToolProvider::class.java) ?: return null
+            if (tool.isValidExePath(path)) return null
+            return builder.warning(ChronicleBaseBundle.message("settings.integrations.validation.invalidPath"))
+        }
 
         fun validateMagickPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
             val path = button.text.trim()
