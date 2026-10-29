@@ -1,4 +1,4 @@
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.resolve
 
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.images.ImageRenderRequest

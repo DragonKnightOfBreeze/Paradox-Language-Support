@@ -372,6 +372,7 @@ com.intellij.diagnostic.Freeze
 
 #### 2026-10-29 - step 6 - test & wrap-up
 
+- [x] 将 `ParadoxImageService` `ParadoxImageResolveResult` 移到 `icu.windea.pls.lang.resolve`
 - [ ] 需要补充测试，需要验证在各种策略下（TwelveMonkeys/texconv/magick），图片转换操作能够符合预期地成功/失败。这要求在测试时下载外部工具。
 
 ### 评估

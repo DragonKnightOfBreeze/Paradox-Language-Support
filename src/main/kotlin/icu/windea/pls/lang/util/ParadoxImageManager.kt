@@ -15,6 +15,8 @@ import icu.windea.pls.images.dds.DdsFileType
 import icu.windea.pls.images.policies.ImageRenderPolicy
 import icu.windea.pls.images.tga.TgaFileType
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
+import icu.windea.pls.lang.resolve.ParadoxImageResolveResult
+import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.model.constants.ChronicleConstants
 import org.intellij.images.fileTypes.impl.ImageFileType
 import kotlin.contracts.ExperimentalContracts

@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.lang.util
+package icu.windea.pls.lang.resolve
 
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
@@ -18,9 +18,8 @@ import icu.windea.pls.images.ImageService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
-import icu.windea.pls.lang.resolve.ParadoxImageLocationExpressionResolveResult
-import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
+import icu.windea.pls.lang.util.ParadoxSpriteManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import java.nio.file.Files

@@ -2,8 +2,8 @@ package icu.windea.pls.images
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.lang.resolve.ParadoxImageResolveResult
 import icu.windea.pls.lang.util.ParadoxImageManager
-import icu.windea.pls.lang.util.ParadoxImageResolveResult
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
