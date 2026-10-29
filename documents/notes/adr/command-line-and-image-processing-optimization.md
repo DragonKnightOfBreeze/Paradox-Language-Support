@@ -301,7 +301,7 @@ com.intellij.diagnostic.Freeze
 - `ProcessExecutor` 采用可变配置，不是线程安全对象。
 - 图片缓存文件名中的 UUID 即索引，不引入集中索引文件。
 - `ImageCacheCleanupPolicy` 默认 `TtlAndSize`；`ImageRenderFailurePolicy` 默认 `AcceptBroken`；`ImageRenderPolicy` 默认 `Sync`。
-- 策略枚举放在 `icu.windea.pls.images.policies`（不含 `Paradox` 前缀），文案同步补充。
+- 策略枚举放在 `icu.windea.pls.model.policies`（不含 `Paradox` 前缀），文案同步补充。
 - `TigerLintToolService` 为 app-level，使用 `TrackingCache`，不依赖 project/PSI。
 - `ParadoxImageManager` 暂时保留，后续再评估是否拆分/重命名。
 - 测试工具默认启用。
@@ -370,6 +370,30 @@ com.intellij.diagnostic.Freeze
   - 验证 `TigerLintToolService.collectRequest`、`TigerLintResult` 解析，以及 `ChronicleTigerLintInspection` 的端到端高亮。
 - `TigerLintRequest` 增加 `modPath`，Tiger 命令行现在传入模组描述符（`descriptor.mod` 或 `.metadata/metadata.json`），而不是模组目录。
 
+#### 2026-10-30 - step 7 - image policies & io cancellation
+
+- 新增 `ChronicleImageSettings` 与图片设置页 `ChronicleImageSettingsConfigurable`（沿用现有 `Configurable` 命名），提供：
+  - `ImageCacheCleanupPolicy` 及 TTL（天）、最大大小（MB）、最大文件数。
+  - `ImageRenderPolicy`（`Sync`/`Async`）。
+  - `ImageRenderFailurePolicy`（`AcceptBroken`/`RemoveImage`/`Placeholder`）。
+- `ImageCacheCleaner` 支持全部缓存清理策略，并可通过构造参数覆盖 TTL、大小和文件数；`ImageRenderService` 定期清理时读取设置。
+- 图片渲染策略：
+  - `Sync`：缓存未命中时同步等待渲染。
+  - `Async`：在后台渲染，不阻塞调用方；渲染成功后刷新内嵌提示。
+  - 未显式指定策略时使用 `ChronicleImageSettings.state.renderPolicy`。
+- 图片渲染失败策略：
+  - `AcceptBroken`：保留目标 URL（接受损坏图片）。
+  - `RemoveImage`：移除图片（快速文档中会移除对应的 `<img>`）。
+  - `Placeholder`：使用插件生成的占位图。
+  - 快速文档渲染会话会记录失败请求，并在 `awaitAll` 后统一应用失败策略。
+- 图片 IO 取消检查：
+  - `ProgressCheckingInputStream` / `ProgressCheckingOutputStream` 每累计 64 KiB 调用一次 `ProgressManager.checkCanceled()`。
+  - `readImage` / `writeImage` / `copyImageStream` / `copyImageFile` / `ImageMetadataService` / `DefaultImageSupport` 使用上述检查。
+- 新增测试：
+  - `ImageCacheCleanerTest`：`None`、`ByTtl`、`BySize`、`ByTtlAndSize`。
+  - `ImageRenderServiceTest`：同步/异步策略、显式策略覆盖、三种失败策略及渲染会话失败处理。
+  - `ImageIoExtensionsTest`：输入/输出流按字节阈值检查取消，以及复制路径。
+
 ## 任务（AI 协助）
 
 ### 主要 & 次要
@@ -383,12 +407,14 @@ com.intellij.diagnostic.Freeze
   - [x] 迁移 Git、Texconv、Magick、Tiger、SpecialPath、CwtConfigService
   - [x] 新增 `ParadoxImageService`/`ParadoxImageResolveResult`，保留 `ParadoxImageManager` facade
   - [x] 快速文档：`toDocumentation` 移出 RA，等待 `ImageRenderSession`
-  - [x] 内嵌提示：`Sync` 渲染（`Sync` 路径无需 `clearModificationStamp`；`Async` 刷新后续补充）
+  - [x] 内嵌提示：`Sync`/`Async` 渲染；`Async` 完成后刷新内嵌提示
   - [x] 注入器：EDT/RA 跳过外部工具并 warning
   - [x] Tiger：`TigerLintToolService` + `TrackingCache` + `TigerLintResult` 扩展
 - [ ] 测试
   - [x] `ProcessExecutor`：超时、取消、stderr、退出码、编码
   - [x] `ImageMetadataService`/`ImageService`：元数据、缓存、渲染、清理
+  - [x] `ImageCacheCleanupPolicy` / `ImageRenderFailurePolicy` / `ImageRenderPolicy` 的逻辑与设置项
+  - [x] 图片 IO 取消检查（按字节阈值）
   - [x] issue #396 回归测试 - `Issue396Test`
   - [x] Tiger 检查逻辑与 `ChronicleTigerLintInspection` 进阶测试 - `Issue396TigerLintTest`
   - [x] 进阶测试：`includeExternalTools` + `build/external-tools`
@@ -445,8 +471,8 @@ com.intellij.diagnostic.Freeze
   - 需要尽可能全面，覆盖各种组合。
 - [x] `convertImageFormat` 中的 NOP 处理：如果 `sourceFormat` 等同于 `targetFormat`，可能需要直接返回，不执行转换操作
   - 可能需要适用于多个级别（toolProvider/toolService/imageSupport/imageService）
-- [ ] 与 `imagePolicy` 相关的优化和测试
-- [ ] 图片处理（渲染/读取/写入）时的取消检查
+- [x] 与 `imagePolicy` 相关的优化和测试
+- [x] 图片处理（渲染/读取/写入）时的取消检查
 - [x] 与 `ExternalToolDownloadService` 相关的测试
 - [x] 为 `ChronicleGitService` 与 `ChronicleSqliteService` 补充测试
 - [x] issue #396 回归测试 - `Issue396Test`
@@ -571,6 +597,9 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.model.policies.ImageCacheCleanupPolicy` - 新增
 - [x] `icu.windea.pls.model.policies.ImageRenderFailurePolicy` - 新增
 - [x] `icu.windea.pls.model.policies.ImageRenderPolicy` - 新增
+- [x] `icu.windea.pls.base.settings.ChronicleImageSettings` - 新增
+- [x] `icu.windea.pls.base.settings.ChronicleImageSettingsConfigurable` - 新增
+- [x] `icu.windea.pls.core.util.io.ProgressCheckingInputStream` / `ProgressCheckingOutputStream` - 新增
 - [x] `icu.windea.pls.integrations.images.ImageToolService` - 已加入 EDT/RA 保护
 - [x] `icu.windea.pls.integrations.lints.TigerLintToolService` - 已重构为 app-level + `TrackingCache`
 - [x] `icu.windea.pls.integrations.lints.TigerLintRequest` - 新增
@@ -593,8 +622,9 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.config.configGroup.CwtConfigFileServiceTest` - `getGameTypeFromRepoFile` 集成测试（含各游戏规则仓库）
 - [x] `icu.windea.pls.images.ImageMetadataServiceTest`
 - [x] `icu.windea.pls.images.ImageServiceTest` - 格式转换/往返转换
-- [x] `icu.windea.pls.images.ImageRenderServiceTest` - 渲染、同步请求、渲染会话
-- [x] `icu.windea.pls.images.ImageCacheCleanerTest`
+- [x] `icu.windea.pls.images.ImageRenderServiceTest` - 渲染、同步/异步请求、渲染策略、失败策略、渲染会话
+- [x] `icu.windea.pls.images.ImageCacheCleanerTest` - 全部缓存清理策略
+- [x] `icu.windea.pls.core.util.io.ImageIoExtensionsTest` - 图片 IO 取消检查阈值与复制
 - [x] `icu.windea.pls.integrations.ExternalToolDownloadServiceTest` - `check` 行为
 - [x] `icu.windea.pls.integrations.ExternalToolDownloadTest` - 下载与冒烟测试（Windows/Linux）
 - [x] `icu.windea.pls.integrations.ExternalToolDownloadTestService` - 共享 `build/external-tools`
