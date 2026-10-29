@@ -2,11 +2,14 @@
 
 package icu.windea.pls.lang.util
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.util.io.fileSizeSafe
+import icu.windea.pls.base.analysis.ChronicleAnalysisManager
+import icu.windea.pls.base.settings.ChronicleImageSettings
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.images.ImageFrameInfo
@@ -17,6 +20,7 @@ import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.resolve.ParadoxImageResolveResult
 import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.model.constants.ChronicleConstants
+import icu.windea.pls.model.policies.ImageRenderFailurePolicy
 import icu.windea.pls.model.policies.ImageRenderPolicy
 import org.intellij.images.fileTypes.impl.ImageFileType
 import kotlin.contracts.ExperimentalContracts
@@ -130,32 +134,46 @@ object ParadoxImageManager {
      * - 如果不需要渲染，则直接返回源路径。
      * - 如果存在目标路径对应的本地缓存，则直接返回目标路径。
      * - 如果存在渲染会话，则在当前渲染会话中记录渲染请求，并返回目标路径。这适用于渲染快速文档等场景。
-     * - 否则，按照渲染策略（[renderPolicy]）同步渲染或异步请求渲染，并仅在同步渲染时返回目标路径。
+     * - 否则，按照渲染策略（[renderPolicy]，默认使用设置中的策略）同步渲染或异步请求渲染，并仅在同步渲染时返回目标路径。
+     * - 同步渲染失败时，按照设置中的失败策略返回目标路径、`null` 或占位图路径。
      */
     fun resolveUrl(
         result: ParadoxImageResolveResult?,
         project: Project,
-        renderPolicy: ImageRenderPolicy = ImageRenderPolicy.Sync,
+        renderPolicy: ImageRenderPolicy? = null,
     ): String? {
         if (result == null) return null
         if (!result.renderRequired) return result.sourcePath.absolutePathString()
 
         val request = result.toRenderRequest()
+        val policy = renderPolicy ?: ChronicleImageSettings.getInstance().state.renderPolicy
         try {
             val renderService = ImageRenderService.getInstance()
             renderService.getCachedImagePath(request)?.let { return it.absolutePathString() }
             renderService.getRecordedImagePath(request)?.let { return it.absolutePathString() }
-            return when (renderPolicy) {
+            return when (policy) {
                 ImageRenderPolicy.Sync -> renderService.requestImageRender(request, project)?.absolutePathString()
                 ImageRenderPolicy.Async -> {
-                    renderService.requestImageRenderAsync(request, project)
+                    renderService.requestImageRenderAsync(request, project).whenComplete { path, error ->
+                        if (path != null && error == null) {
+                            ApplicationManager.getApplication()?.invokeLater {
+                                ChronicleAnalysisManager.refreshInlayHints()
+                            }
+                        }
+                    }
                     null
                 }
             }
         } catch (e: Exception) {
             checkCancellation(e)
             logger.warn("Render image failed. (source path: ${result.sourcePath})", e)
-            return null
+            return when (ChronicleImageSettings.getInstance().state.renderFailurePolicy) {
+                ImageRenderFailurePolicy.AcceptBroken -> request.targetPath.absolutePathString()
+                ImageRenderFailurePolicy.RemoveImage -> null
+                ImageRenderFailurePolicy.Placeholder -> {
+                    runCatching { ImageRenderService.getInstance().getPlaceholderImagePath().absolutePathString() }.getOrNull()
+                }
+            }
         }
     }
 

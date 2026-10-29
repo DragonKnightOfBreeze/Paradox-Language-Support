@@ -2,26 +2,27 @@ package icu.windea.pls.images
 
 import com.intellij.openapi.diagnostic.logger
 import icu.windea.pls.base.io.ChronicleDataPathService
+import icu.windea.pls.base.settings.ChronicleImageSettings
 import icu.windea.pls.model.policies.ImageCacheCleanupPolicy
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.extension
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
 /**
  * 图片磁盘缓存的清理器。
  *
- * 备注：当前只提供基础策略；更细粒度的策略后续可以通过 [ImageCacheCleanupPolicy] 扩展。
+ * 支持通过 [ImageCacheCleanupPolicy] 选择不清理、按 TTL、按大小或同时按 TTL 和大小清理。
  */
 class ImageCacheCleaner(
-    private val imagesPath: Path = ChronicleDataPathService.getInstance().imagesPath
+    private val imagesPath: Path = ChronicleDataPathService.getInstance().imagesPath,
+    private val ttl: Duration = ChronicleImageSettings.DEFAULT_CACHE_TTL_DAYS.days,
+    private val maxSize: Long = ChronicleImageSettings.DEFAULT_CACHE_MAX_SIZE_MB.toLong() * 1024 * 1024,
+    private val maxFiles: Int = ChronicleImageSettings.DEFAULT_CACHE_MAX_FILES,
 ) {
     companion object {
         private val logger = logger<ImageCacheCleaner>()
-
-        private val ttl = 30.days
-        private const val maxSize = 1L * 1024 * 1024 * 1024
-        private const val maxFiles = 10_000
     }
 
     fun cleanup(policy: ImageCacheCleanupPolicy = ImageCacheCleanupPolicy.ByTtlAndSize): Int {

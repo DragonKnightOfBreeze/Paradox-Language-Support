@@ -15,6 +15,9 @@
     <applicationConfigurable id="chronicle.integrations" parentId="chronicle" groupWeight="80"
                              bundle="messages.ChronicleBaseBundle" key="settings.integrations"
                              instance="icu.windea.pls.base.settings.ChronicleIntegrationsSettingsConfigurable"/>
+    <applicationConfigurable id="chronicle.image" parentId="chronicle" groupWeight="85"
+                             bundle="messages.ChronicleBaseBundle" key="settings.image"
+                             instance="icu.windea.pls.base.settings.ChronicleImageSettingsConfigurable"/>
     <applicationConfigurable id="chronicle.extensions" parentId="chronicle" groupWeight="70"
                              bundle="messages.ChronicleBaseBundle" key="settings"
                              instance="icu.windea.pls.base.settings.ChronicleExtensionsSettingsConfigurable"/>

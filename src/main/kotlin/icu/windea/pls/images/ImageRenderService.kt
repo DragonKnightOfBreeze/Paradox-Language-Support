@@ -12,11 +12,19 @@ import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.io.fileSizeSafe
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.base.io.ChronicleDataPathService
+import icu.windea.pls.base.settings.ChronicleImageSettings
+import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.util.io.readImage
+import icu.windea.pls.core.util.io.writeImage
+import icu.windea.pls.model.policies.ImageRenderFailurePolicy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.withContext
+import java.awt.AlphaComposite
+import java.awt.Color
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 import java.nio.file.Files
@@ -25,10 +33,12 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
-import javax.imageio.ImageIO
+import kotlin.io.path.absolutePathString
+import kotlin.io.path.createDirectories
 import kotlin.io.path.isRegularFile
 import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.days
 
 /**
  * 图片渲染服务。
@@ -46,7 +56,6 @@ class ImageRenderService : Disposable {
 
     private val renderFutures = ConcurrentHashMap<ImageRenderRequest, CompletableFuture<Path?>>()
     private val renderSession = ThreadLocal<ImageRenderSession?>()
-    private val cacheCleaner = ImageCacheCleaner()
 
     @Volatile
     private var cleanupFuture: ScheduledFuture<*>? = null
@@ -121,13 +130,20 @@ class ImageRenderService : Disposable {
         // Note that `runBlockingCancellable` relies on the job/indicator already present on the current thread,
         // and using it directly throws an exception at call sites without a progress context,
         // so we use `CompletableFuture` instead of `Deferred` here.
-        return job.asCompletableFuture() // use `Deferred.asCompletableFuture()` instead of manually construction
+        val future = job.asCompletableFuture().thenApply<Path?> { it } // use `Deferred.asCompletableFuture()` instead of manually construction
+        val existing = renderFutures.putIfAbsent(request, future)
+        if (existing != null) {
+            future.cancel(true)
+            return existing
+        }
+        future.whenComplete { _, _ -> renderFutures.remove(request, future) }
+        return future
     }
 
     /**
      * 同步渲染图片到目标缓存路径；如果目标已存在则直接返回。
      */
-    fun renderImage(request: ImageRenderRequest): Path? {
+    fun renderImage(request: ImageRenderRequest): Path {
         getCachedImagePath(request)?.let { return it }
         val sourcePath = request.sourcePath
         val targetPath = request.targetPath
@@ -137,12 +153,12 @@ class ImageRenderService : Disposable {
 
         try {
             ProgressManager.checkCanceled()
-            val sourceImage = ImageIO.read(sourcePath.toFile()) ?: return null
+            val sourceImage = readImage(sourcePath) ?: throw IllegalStateException("No image reader found for: $sourcePath")
             ProgressManager.checkCanceled()
             val slicedImage = request.frameInfo?.let { sliceImage(sourceImage, it) } ?: sourceImage
             val finalImage = scaleImage(slicedImage, request.maxWidth, request.maxHeight)
             ProgressManager.checkCanceled()
-            val written = ImageIO.write(finalImage, request.targetFormat, targetPath.toFile())
+            val written = writeImage(finalImage, request.targetFormat, targetPath)
             if (!written) throw IllegalStateException("No image writer found for format: ${request.targetFormat}")
             return targetPath
         } catch (e: Throwable) {
@@ -197,9 +213,59 @@ class ImageRenderService : Disposable {
 
     private fun cleanupImageCache() {
         try {
-            cacheCleaner.cleanup()
+            val settings = ChronicleImageSettings.getInstance().state
+            val cleaner = ImageCacheCleaner(
+                ttl = settings.cacheTtlDays.coerceAtLeast(0).days,
+                maxSize = settings.cacheMaxSizeMb.coerceAtLeast(0).toLong() * 1024 * 1024,
+                maxFiles = settings.cacheMaxFiles.coerceAtLeast(0),
+            )
+            cleaner.cleanup(settings.cacheCleanupPolicy)
         } catch (e: Exception) {
             logger.warn("Failed to clean up image cache.", e)
+        }
+    }
+
+    /**
+     * 返回图片渲染失败时使用的占位图路径。占位图会在首次使用时生成。
+     */
+    @Synchronized
+    @Suppress("UseJBColor", "UndesirableClassUsage")
+    fun getPlaceholderImagePath(): Path {
+        val placeholderPath = ChronicleDataPathService.getInstance().imagesPath.resolve("_placeholder.png")
+        if (placeholderPath.isRegularFile() && placeholderPath.fileSizeSafe() > 0L) return placeholderPath
+        placeholderPath.parent?.createDirectories()
+        val image = BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB)
+        val graphics = image.createGraphics()
+        try {
+            graphics.composite = AlphaComposite.Src
+            graphics.color = Color(0x80, 0x80, 0x80, 0x80)
+            graphics.fillRect(0, 0, image.width, image.height)
+            graphics.color = Color(0x40, 0x40, 0x40, 0xFF)
+            graphics.drawLine(0, 0, image.width - 1, image.height - 1)
+            graphics.drawLine(image.width - 1, 0, 0, image.height - 1)
+        } finally {
+            graphics.dispose()
+        }
+        writeImage(image, "png", placeholderPath)
+        return placeholderPath
+    }
+
+    /**
+     * 根据 [ImageRenderFailurePolicy] 处理渲染会话中失败的图片。
+     */
+    fun applyFailurePolicy(builder: DocumentationBuilder, session: ImageRenderSession) {
+        val failedRequests = session.failedRequests()
+        if (failedRequests.isEmpty()) return
+        val policy = ChronicleImageSettings.getInstance().state.renderFailurePolicy
+        for (request in failedRequests) {
+            when (policy) {
+                ImageRenderFailurePolicy.AcceptBroken -> Unit
+                ImageRenderFailurePolicy.RemoveImage -> builder.removeImage(request.targetPath.absolutePathString())
+                ImageRenderFailurePolicy.Placeholder -> {
+                    val placeholderPath = runCatching { getPlaceholderImagePath() }.getOrNull() ?: continue
+                    builder.replaceImage(request.targetPath.absolutePathString(), placeholderPath.absolutePathString())
+                }
+            }
         }
     }
 

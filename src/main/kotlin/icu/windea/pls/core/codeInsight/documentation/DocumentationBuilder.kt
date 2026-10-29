@@ -41,6 +41,10 @@ interface DocumentationBuilder : Appendable {
 
     fun image(url: String, width: Int, height: Int, local: Boolean = true): DocumentationBuilder
 
+    fun removeImage(url: String): DocumentationBuilder
+
+    fun replaceImage(url: String, newUrl: String): DocumentationBuilder
+
     fun definition(block: DocumentationBuilder.() -> Unit): DocumentationBuilder
 
     fun content(block: DocumentationBuilder.() -> Unit): DocumentationBuilder
@@ -110,6 +114,34 @@ private class DocumentationBuilderImpl(
         append(" width=\"").append(width).append("\" height=\"").append(height).append("\" vspace=\"0\" hspace=\"0\"")
         append("/>")
         return this
+    }
+
+    override fun removeImage(url: String): DocumentationBuilder {
+        return replaceImageTag(url, null)
+    }
+
+    override fun replaceImage(url: String, newUrl: String): DocumentationBuilder {
+        return replaceImageTag(url, newUrl)
+    }
+
+    private fun replaceImageTag(url: String, newUrl: String?): DocumentationBuilder {
+        val oldTag = """<img src="${url.toFileUrl()}"/>"""
+        val newTag = newUrl?.let { """<img src="${it.toFileUrl()}"/>""" } ?: ""
+        replaceInContent(oldTag, newTag)
+        for (sections in sectionGroups.values) {
+            for ((key, value) in sections) {
+                if (oldTag in value) sections[key] = value.replace(oldTag, newTag)
+            }
+        }
+        return this
+    }
+
+    private fun replaceInContent(oldTag: String, newTag: String) {
+        var index = content.indexOf(oldTag)
+        while (index >= 0) {
+            content.replace(index, index + oldTag.length, newTag)
+            index = content.indexOf(oldTag, index + newTag.length)
+        }
     }
 
     override fun definition(block: DocumentationBuilder.() -> Unit): DocumentationBuilder {

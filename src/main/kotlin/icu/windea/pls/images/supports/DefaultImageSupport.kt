@@ -2,6 +2,8 @@ package icu.windea.pls.images.supports
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.core.checkCancellation
+import icu.windea.pls.core.util.io.ProgressCheckingInputStream
+import icu.windea.pls.core.util.io.ProgressCheckingOutputStream
 import icu.windea.pls.core.util.io.copyImageFile
 import icu.windea.pls.core.util.io.copyImageStream
 import icu.windea.pls.core.util.io.getCompatibleNumImages
@@ -61,13 +63,13 @@ class DefaultImageSupport : ImageSupport {
 
     @Suppress("NAME_SHADOWING")
     private fun doConvertImageFormat(inputStream: InputStream, outputStream: OutputStream, targetFormat: String): OutputStream {
-        inputStream.buffered().use { inputStream ->
+        ProgressCheckingInputStream(inputStream.buffered()).use { inputStream ->
             ImageIO.createImageInputStream(inputStream)?.use { imageInputStream ->
                 val imageReader = ImageIO.getImageReaders(imageInputStream).next()
                 try {
                     imageReader.input = imageInputStream
                     val numImages = imageReader.getCompatibleNumImages()
-                    outputStream.use { outputStream ->
+                    ProgressCheckingOutputStream(outputStream).use { outputStream ->
                         repeat(numImages) { i ->
                             val image0 = imageReader.read(i)
                             val image = image0.toCompatibleImage(targetFormat)

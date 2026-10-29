@@ -58,8 +58,8 @@ class ParadoxDocumentationTarget(
                         ParadoxDocumentationManager.compute(element, originalElement, hint = false)
                     }
                 } ?: return@coroutineScope null
-                // NOTE 3.0.5 默认失败策略是 `AcceptBroken`，渲染失败的图片保留原 URL
                 session.awaitAll()
+                renderService.applyFailurePolicy(builder, session)
                 builder.toDocumentation()
             }
         }
