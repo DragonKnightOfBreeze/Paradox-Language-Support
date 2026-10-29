@@ -297,6 +297,15 @@ com.intellij.diagnostic.Freeze
   - `runBlockingCancellable` 依赖当前线程已有的 Job/indicator，直接使用会在没有进度上下文的调用点抛异常，因此同步入口改为等待项目协程中的异步任务。
 - 新增 `ImageRenderServiceTest` 的 `requestImageRender` 与 `ImageRenderSession` 场景。
 
+#### 2026-10-29 - step 4 & 5
+
+- 新增 `TigerLintRequest`；`collectInformation` 返回请求，`doAnnotate` 直接基于请求获取结果，不再在 `doAnnotate` 中开启读操作。
+- `TigerLintToolService` 改为 app-level，使用 `TrackingCache<TigerLintRequest, TigerLintResult>`；不依赖 project/PSI。
+- `TigerLintResult` 增加 `request` 与 `modificationTracker`；依赖 `VirtualFile`、脚本/本地化文件追踪器和设置追踪器，通过 `MergedModificationTracker` 合并。
+- `TigerLintToolProvider.validateRootDirectory(request)` 不再接收 `VirtualFile`；命令执行使用 `ProcessExecutor` 和超时。
+- 暂不增加 `withBackgroundProgress`；后续根据实际 UX 评估。
+- 阶段 5 的外围任务（Git、SpecialPath、CwtConfigService）已在 step 1 完成，无需额外改动。
+
 ## 任务（AI 协助）
 
 ### 主要 & 次要
@@ -312,7 +321,7 @@ com.intellij.diagnostic.Freeze
   - [x] 快速文档：`toDocumentation` 移出 RA，等待 `ImageRenderSession`
   - [x] 内嵌提示：`Sync` 渲染（`Sync` 路径无需 `clearModificationStamp`；`Async` 刷新后续补充）
   - [x] 注入器：EDT/RA 跳过外部工具并 warning
-  - [ ] Tiger：`TigerLintToolService` + `TrackingCache` + `TigerLintResult` 扩展
+  - [x] Tiger：`TigerLintToolService` + `TrackingCache` + `TigerLintResult` 扩展
 - [ ] 测试
   - [x] `ProcessExecutor`：超时、取消、stderr、退出码、编码
   - [x] `ImageMetadataService`/`ImageService`：元数据、缓存、渲染、清理
@@ -376,7 +385,8 @@ com.intellij.diagnostic.Freeze
 - [ ] 考虑将 `ParadoxImageManager.isImageFile` 移动到 `ImageService` 中
 - [ ] 考虑将 `ImageService.requestRender` 和 `ImageService.render` 的其中一些参数封装到 `ImageRenderConstraint` 或 `ImageRenderSettings` 中
 - [ ] `icu.windea.pls.core.execution` 中的代码的后续清理和重构
-- [ ] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
+- [x] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
+  - 决策：step 4 暂不添加额外包装；调用链上层应当已有 indicator，后续根据实际 UX 再评估。
 
 #### 2026-10-28 - step 1
 
@@ -440,7 +450,8 @@ TBD
 - [x] `icu.windea.pls.images.policies.ImageRenderFailurePolicy` - 新增
 - [x] `icu.windea.pls.images.policies.ImageRenderPolicy` - 新增
 - [x] `icu.windea.pls.integrations.images.ImageToolService` - 已加入 EDT/RA 保护
-- [ ] `icu.windea.pls.integrations.lints.TigerLintToolService` - 待重构
+- [x] `icu.windea.pls.integrations.lints.TigerLintToolService` - 已重构为 app-level + `TrackingCache`
+- [x] `icu.windea.pls.integrations.lints.TigerLintRequest` - 新增
 - [x] `icu.windea.pls.lang.util.ParadoxImageManager` - 已重构为门面
 - [x] `icu.windea.pls.lang.util.ParadoxImageService` - 新增
 - [x] `icu.windea.pls.lang.util.ParadoxImageResolveResult` - 新增
