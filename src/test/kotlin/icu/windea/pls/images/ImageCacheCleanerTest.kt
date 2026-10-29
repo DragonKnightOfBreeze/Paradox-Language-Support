@@ -1,6 +1,6 @@
 package icu.windea.pls.images
 
-import icu.windea.pls.images.policies.ImageCacheCleanupPolicy
+import icu.windea.pls.model.policies.ImageCacheCleanupPolicy
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

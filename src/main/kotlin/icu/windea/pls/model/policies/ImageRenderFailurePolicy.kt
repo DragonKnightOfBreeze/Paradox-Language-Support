@@ -1,4 +1,4 @@
-package icu.windea.pls.images.policies
+package icu.windea.pls.model.policies
 
 import icu.windea.pls.ChronicleBundle
 

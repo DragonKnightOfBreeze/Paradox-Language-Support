@@ -2,7 +2,7 @@ package icu.windea.pls.images
 
 import com.intellij.openapi.diagnostic.logger
 import icu.windea.pls.base.io.ChronicleDataPathService
-import icu.windea.pls.images.policies.ImageCacheCleanupPolicy
+import icu.windea.pls.model.policies.ImageCacheCleanupPolicy
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.extension

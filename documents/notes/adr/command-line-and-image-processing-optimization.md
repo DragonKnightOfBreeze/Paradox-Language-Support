@@ -230,6 +230,42 @@ com.intellij.diagnostic.Freeze
     - 因此直接发生在 `ParadoxHintsProvider.collectFromElement` 中是可行的，但这本身可能发生在 readAction 中，可能需要另开线程/协程来渲染。
     - 超时设置可以与 `iconHeightLimit` 对齐，参见 `ParadoxHintsSettings`。
 
+## 探讨（修订与收尾）
+
+关于后续优化：
+- 与 `imagePolicy` 相关的优化和测试
+  - 涉及 `ImageCacheCleanupPolicy` `ImageRenderFailurePolicy` `ImageRenderPolicy`
+  - 在 `icu.windea.pls.base.settings` 中新增 `ChronicleImageSettings` 和 `ChronicleImageSettingsConfigure`，提供必要的配置项
+  - 实现每一种 `imagePolicy` 的选项的具体逻辑。
+  - 补充专门的测试，以验证这些具体逻辑的行为是正确的。
+- 图片处理（渲染/写入）时的取消检查
+  - 在理想情况下，进行图片IO/读写时，也需要进行取消检查（例如，抵达字节大小阈值时）。
+  - 也需要补充专门的测试。
+
+关于后续测试：
+- 与 `ExternalToolDownloadService` 相关的测试
+  - 提供 `icu.windea.pls.integrations.ExternalToolDownloadService`
+  - 其中的 check 方法要求指定路径为空或不存在
+  - 其中的 download 方法是 suspend 方法，通过 `reportProgressScope` 提供妥善的状态指示（下载地址/进度/等等），不预先绑定到 `withBackgroundProgress`/`withModalProgress`
+  - 暂时不在生产代码中使用这两个 `toolDownloadService`，先补充测试
+  - 需要补充测试，验证各种外部工具能够正确地下载（在 `build/external-tools` 目录下给定一个临时目录作为下载位置，它们在不同测试用例之间应是统一的）
+    - 测试代码中的外部工具下载逻辑是统一的，因此，可以在测试代码中再封装 `LintToolDownloadTestService` 等
+  - 需要补充测试，验证各种外部工具能通过冒烟测试（例如 `--version` 命令），直接使用 `ProcessExecutor` 验证。
+    - 这要求首先下载对应的外部工具。
+  - 需要补充测试，验证在各种策略下（TwelveMonkeys/texconv/magick），图片转换操作能够符合预期地成功/失败。使用 `ImageToolProvider`。
+    - 这要求在测试时，临时更改 `ChronicleIntegrationsSettings` 中的配置项。
+    - 这要求首先下载对应的外部工具。
+- 为 `ChronicleGitService` 与 `ChronicleSqliteService` 补充测试。
+  - 这要求需要一个测试环境/测试数据。
+  - 一个可能的方案是，在 `build` 目录下给定一个独特的临时目录（如 `build/tmp/base-io-git-test`），在测试时自行创建、构建和更新测试环境/测试数据。
+  - 包括必要的冒烟测试和一些常见场景的测试。
+- issue #396 回归测试
+  - 这涉及内嵌提示中的图片渲染，以及对上下文状态（EDT / readAction）的断言。
+  - 相较于人工验证，基于测试的验证可能存在一定难度。需要研究具体如何达成。
+- 验证 tiger 的检查逻辑和对应的外部代码检查（`ChronicleTigerLintInspection`）
+  - 实际上我们只需要在测试时，提供一个简单的模组，同时预先下载 tiger 工具即可。
+  - 相较于人工验证，基于测试的验证可能存在一定难度。需要研究具体如何达成。
+
 ### 任务计划草案（AI 协助）
 
 > 初版计划；执行过程中在 `任务计划 （修订）` 章节记录调整。
@@ -373,6 +409,7 @@ com.intellij.diagnostic.Freeze
 #### 2026-10-29 - step 6 - test & wrap-up
 
 - [x] 将 `ParadoxImageService` `ParadoxImageResolveResult` 移到 `icu.windea.pls.lang.resolve`
+- [x] 将 `icu.windea.pls.images.policies` 中的代码移动到 `icu.windea.pls.model.policies`
 - [ ] 图片处理（渲染/写入）时的取消检查
 - [ ] 需要补充测试，需要验证在各种策略下（TwelveMonkeys/texconv/magick），图片转换操作能够符合预期地成功/失败。这要求在测试时下载外部工具。
 
@@ -386,7 +423,6 @@ com.intellij.diagnostic.Freeze
   - 结论：目前没有必要
 - [x] 新增 `ParadoxImageService`，将 `ParadoxImageManager` 中的具体解析逻辑移到 `ParadoxImageService`
 - [x] 新增 `ParadoxImageResolveResult`，目前包含来源路径、缓存路径、帧数信息和尺寸限制；实际加载图片的逻辑仍留在渲染/展示层
-- [ ] 考虑将 `ParadoxImageManager.isImageFile` 移动到 `ImageService` 中
 - [ ] 考虑 `ParadoxImageManager` 和 `ParadoxImageService` 的进一步的清理和重构
 - [ ] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
 
@@ -465,12 +501,12 @@ TBD
 
 - [x] `icu.windea.pls.core.execution.ProcessExecutorTest` - 常见命令/区分OS/区分编码/取消行为/超时行为/编码/stderr/退出码
 - [x] `icu.windea.pls.config.configGroup.CwtConfigFileServiceTest` - `getGameTypeFromRepoFile` 集成测试（含各游戏规则仓库）
-- [ ] `icu.windea.pls.core.execution.ProcessExecutorExternalToolBasedTest` - 需要下载外部工具并验证
 - [x] `icu.windea.pls.images.ImageMetadataServiceTest`
 - [x] `icu.windea.pls.images.ImageServiceTest` - 格式转换/往返转换
 - [x] `icu.windea.pls.images.ImageRenderServiceTest` - 渲染、同步请求、渲染会话
 - [x] `icu.windea.pls.images.ImageCacheCleanerTest`
-- [ ] `icu.windea.pls.integrations.lints.RunTigerTest` - 待移除（因为已存在 `ProcessExecutorExternalToolBasedTest`）
+- [ ] `icu.windea.pls.integrations.ExternalToolDownloadServiceTest` - 需要下载外部工具并验证
+- [ ] `icu.windea.pls.integrations.lints.RunTigerTest` - 待移除（因为已存在 `ExternalToolDownloadServiceTest`）
 - TBD
 
 参考：
