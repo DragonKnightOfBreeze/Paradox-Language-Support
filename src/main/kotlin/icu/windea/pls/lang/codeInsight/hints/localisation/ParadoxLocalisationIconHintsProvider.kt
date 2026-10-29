@@ -8,7 +8,6 @@ import com.intellij.psi.util.endOffset
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.toFileUrl
-import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.images.ImageMetadataService
@@ -49,23 +48,22 @@ class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
         val resolved = element.reference?.resolve()
         val iconFrame = ParadoxLocalisationIconManager.getFrame(element)
         val frameInfo = ImageFrameInfo.of(iconFrame)
-        val iconUrl = when {
-            resolved is ParadoxDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)
-            resolved is PsiFile -> ParadoxImageManager.resolveUrlByFile(resolved.virtualFile, context.project, frameInfo)
+        val image = when {
+            resolved is ParadoxDefinitionElement -> ParadoxImageManager.resolveImageByDefinition(resolved, frameInfo)
+            resolved is PsiFile -> ParadoxImageManager.resolveImageByFile(resolved.virtualFile, context.project, frameInfo)
             else -> null
         }
 
         // 如果无法解析（包括对应文件不存在的情况）就直接跳过
-        if (!ParadoxImageManager.canResolve(iconUrl)) return
+        if (!ParadoxImageManager.canResolve(image)) return
 
         // 原始高度是后续缩放和大小限制的依据（无法获取时直接跳过，避免使用可能已被缩放的 icon 高度）
-        val originalIconHeight = iconUrl.toPathOrNull()?.let {
-            ImageMetadataService.getInstance().getMetadata(it)?.height
-        } ?: return
+        val originalIconHeight = ImageMetadataService.getInstance().getMetadata(image.sourcePath)?.height ?: return
+        if (originalIconHeight > context.settings.iconHeightLimit) return
         // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
+        val iconUrl = ParadoxImageManager.resolveUrl(image, context.project) ?: return
         val iconFileUrl = iconUrl.toFileUrl()
         val icon = iconFileUrl.toIconOrNull() ?: return
-        if (originalIconHeight > context.settings.iconHeightLimit) return
 
         sink.addInlinePresentation(element.endOffset, smallInset = true) {
             // 点击可以导航到声明处（定义或图片）

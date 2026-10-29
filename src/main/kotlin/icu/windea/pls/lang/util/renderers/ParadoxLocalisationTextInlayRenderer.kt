@@ -17,7 +17,6 @@ import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.text.EscapePatterns
 import icu.windea.pls.core.toFileUrl
-import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.ui.UiService
 import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.core.unescape
@@ -207,24 +206,23 @@ class ParadoxLocalisationTextInlayRenderContext(
             val resolved = element.reference?.resolve() ?: return@r
             val iconFrame = ParadoxLocalisationIconManager.getFrame(element)
             val frameInfo = ImageFrameInfo.of(iconFrame)
-            val iconUrl = when {
-                resolved is ParadoxDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)
-                resolved is PsiFile -> ParadoxImageManager.resolveUrlByFile(resolved.virtualFile, resolved.project, frameInfo)
+            val image = when {
+                resolved is ParadoxDefinitionElement -> ParadoxImageManager.resolveImageByDefinition(resolved, frameInfo)
+                resolved is PsiFile -> ParadoxImageManager.resolveImageByFile(resolved.virtualFile, resolved.project, frameInfo)
                 else -> null
             }
 
             // 如果无法解析（包括对应文件不存在的情况）就直接跳过
-            if (!ParadoxImageManager.canResolve(iconUrl)) return@r
+            if (!ParadoxImageManager.canResolve(image)) return@r
 
             // 原始高度是后续缩放和大小限制的依据（无法获取时直接跳过，避免使用可能已被缩放的 icon 高度）
-            val originalIconHeight = iconUrl.toPathOrNull()?.let {
-                ImageMetadataService.getInstance().getMetadata(it)?.height
-            } ?: return@r
+            val originalIconHeight = ImageMetadataService.getInstance().getMetadata(image.sourcePath)?.height ?: return@r
+            // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
+            if (originalIconHeight > hintsContext.settings.iconHeightLimit) return@r // 图标过大，不再尝试渲染
+            val iconUrl = ParadoxImageManager.resolveUrl(image, hintsContext.project) ?: return@r
             val iconFileUrl = iconUrl.toFileUrl()
             // 找不到图标的话就直接跳过
             val icon = iconFileUrl.toIconOrNull() ?: return@r
-            // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-            if (originalIconHeight > hintsContext.settings.iconHeightLimit) return@r // 图标过大，不再尝试渲染
             // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             val presentation = factory.psiSingleReference(factory.smallScaledIcon(icon)) { resolved }
             builder.add(presentation)

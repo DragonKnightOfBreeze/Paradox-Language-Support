@@ -10,6 +10,8 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.ep.codeInsight.documentation.ParadoxQuickDocTextProvider
+import icu.windea.pls.images.ImageRenderService
+import kotlinx.coroutines.coroutineScope
 
 // org.jetbrains.kotlin.idea.k2.codeinsight.quickDoc.KotlinDocumentationTarget
 
@@ -45,7 +47,18 @@ class ParadoxDocumentationTarget(
 
     override fun computeDocumentation(): DocumentationResult {
         return DocumentationResult.asyncDocumentation {
-            readAction { ParadoxDocumentationManager.compute(element, originalElement, hint = false)?.toDocumentation() }
+            coroutineScope {
+                val renderService = ImageRenderService.getInstance()
+                val session = renderService.newRenderSession(this)
+                val builder = readAction {
+                    renderService.withRenderSession(session) {
+                        ParadoxDocumentationManager.compute(element, originalElement, hint = false)
+                    }
+                } ?: return@coroutineScope null
+                // NOTE 3.0.5 默认失败策略是 `AcceptBroken`，渲染失败的图片保留原 URL
+                session.awaitAll()
+                builder.toDocumentation()
+            }
         }
     }
 }

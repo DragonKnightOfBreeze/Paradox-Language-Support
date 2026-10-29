@@ -1,7 +1,9 @@
 package icu.windea.pls.integrations.images
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.logger
 import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.io.OutputStream
@@ -18,6 +20,12 @@ class ImageToolService {
 
     /** @see ImageToolProvider.read */
     fun read(imageIndex: Int, param: ImageReadParam?, stream: ImageInputStream, sourceFormat: String, targetFormat: String): BufferedImage? {
+        // NOTE 3.0.5 图片读取器可能被 EDT 或读操作触发；此时跳过外部工具，交回内置实现
+        val application = ApplicationManager.getApplication()
+        if (application.isDispatchThread || application.isReadAccessAllowed) {
+            logger.warn("Skip external image tool in EDT or read action. (source format: $sourceFormat)")
+            return null
+        }
         val tool = findTool() ?: return null
         val image = tool.read(imageIndex, param, stream, sourceFormat, targetFormat)
         return image
@@ -38,6 +46,8 @@ class ImageToolService {
     }
 
     companion object {
+        private val logger = logger<ImageToolService>()
+
         @JvmStatic
         fun getInstance(): ImageToolService = service()
     }

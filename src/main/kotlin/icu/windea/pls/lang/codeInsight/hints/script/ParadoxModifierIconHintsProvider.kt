@@ -57,19 +57,20 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
             val iconSelector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
             ParadoxFilePathSearch.searchModifierIcon(path, iconSelector).find()
         } ?: return
-        val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile, project)
+        val image = ParadoxImageManager.resolveImageByFile(iconFile, project)
 
         // 如果无法解析（包括对应文件不存在的情况）就直接跳过
-        if (!ParadoxImageManager.canResolve(iconUrl)) return
+        if (!ParadoxImageManager.canResolve(image)) return
 
+        // 这里需要使用图标的原始高度；无法获取时直接跳过，避免使用可能已被缩放的 icon 高度
+        val originalIconHeight = runCatchingCancelable {
+            ImageMetadataService.getInstance().getMetadata(image.sourcePath)?.height
+        }.getOrNull() ?: return
+        if (originalIconHeight > context.settings.iconHeightLimit) return
         // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
+        val iconUrl = ParadoxImageManager.resolveUrl(image, context.project) ?: return
         val iconFileUrl = iconUrl.toFileUrl()
         val icon = iconFileUrl.toIconOrNull() ?: return
-        // 这里需要尝试使用图标的原始高度
-        val originalIconHeight = runCatchingCancelable {
-            ImageMetadataService.getInstance().getMetadata(iconFile, context.project)?.height
-        }.getOrNull() ?: icon.iconHeight
-        if (originalIconHeight > context.settings.iconHeightLimit) return
 
         sink.addInlinePresentation(element.endOffset, smallInset = true) {
             // 点击可以导航到声明处（图片）
