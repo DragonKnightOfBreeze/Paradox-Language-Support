@@ -16,6 +16,7 @@ import java.nio.file.Path
  * @property workingDirectory 执行命令时的工作目录。
  * @property rootFile 模组根目录对应的虚拟文件。
  * @property rootPath 模组根目录路径。
+ * @property modPath 模组描述符路径（`.mod` 文件或 `.metadata/metadata.json`），Tiger 的实际输入。
  * @property gamePath 游戏目录路径。
  * @property outputPath 检查结果的输出路径。
  */
@@ -28,6 +29,7 @@ class TigerLintRequest(
     val rootFile: VirtualFile,
     val gamePath: String? = null,
     val rootPath: String,
+    val modPath: String,
     val outputPath: Path,
 ) {
     override fun equals(other: Any?): Boolean {
@@ -39,6 +41,7 @@ class TigerLintRequest(
             && confPath == other.confPath
             && gamePath == other.gamePath
             && rootPath == other.rootPath
+            && modPath == other.modPath
             && outputPath == other.outputPath
     }
 
@@ -49,6 +52,7 @@ class TigerLintRequest(
         result = 31 * result + confPath.hashCode()
         result = 31 * result + gamePath.hashCode()
         result = 31 * result + rootPath.hashCode()
+        result = 31 * result + modPath.hashCode()
         result = 31 * result + outputPath.hashCode()
         return result
     }

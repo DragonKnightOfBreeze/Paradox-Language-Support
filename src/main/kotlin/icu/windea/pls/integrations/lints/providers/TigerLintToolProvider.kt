@@ -69,7 +69,7 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
                 add("--game")
                 add(request.gamePath)
             }
-            add(request.rootPath)
+            add(request.modPath)
         }
         val commandLine = GeneralCommandLine(commands)
             .withWorkingDirectory(request.workingDirectory)

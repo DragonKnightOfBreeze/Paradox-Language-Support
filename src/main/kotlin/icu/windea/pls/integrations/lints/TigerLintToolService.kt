@@ -79,6 +79,9 @@ class TigerLintToolService : Disposable {
         val modSettings = ChronicleProfilesSettings.getInstance().state.modSettings.get(rootFile.path)
         val gamePath = modSettings?.finalGameDirectory?.orNull()
         val rootPath = rootFile.path
+        val modPath = rootFile.findChild("descriptor.mod")?.path
+            ?: rootFile.findChild(".metadata")?.findChild("metadata.json")?.path
+            ?: rootPath
         val outputUuid = rootFile.url.toUuidString()
         val outputPath = ChronicleDataPathService.getInstance().lintResultsPath.resolve("${tool.name}-result@$outputUuid.json")
         return TigerLintRequest(
@@ -90,6 +93,7 @@ class TigerLintToolService : Disposable {
             rootFile = rootFile,
             gamePath = gamePath,
             rootPath = rootPath,
+            modPath = modPath,
             outputPath = outputPath,
         )
     }
