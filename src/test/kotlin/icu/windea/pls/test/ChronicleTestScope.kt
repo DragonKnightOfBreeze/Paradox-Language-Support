@@ -116,7 +116,8 @@ interface ChronicleTestScope {
      *
      * 说明：
      * - 传入的路径相对于测试数据目录（`src/test/testData`）。
-     * - 规则文件应位于这个目录的特定子目录中（而不是直接位于这个目录中）。例如通用的规则文件应位于 `core` 子目录中，Stellaris 的规则文件应位于 `stellaris` 子目录中。
+     * - 规则文件应位于这个目录的特定子目录中（而不是直接位于这个目录中）。
+     * - 例如通用的规则文件应位于 `core` 子目录中，Stellaris 的规则文件应位于 `stellaris` 子目录中。
      *
      * @see ParadoxGameType
      */
@@ -137,8 +138,9 @@ interface ChronicleTestScope {
      * （为后续配置的测试数据文件）注入文件信息。
      *
      * 说明：
-     * - 传入的路径相对于入口目录（其不一定同时是游戏或模组目录）。例如应直接传入 `events/test_events.txt`，而非传入 `game/events/test_events.txt`。
+     * - 传入的路径相对于入口目录（这不一定同时是游戏或模组目录）。
      * - 这里注入的文件路径不需要与实际的文件路径对齐。
+     * - 例如应直接传入 `events/test_events.txt`，而非传入 `game/events/test_events.txt`。
      *
      * @see ParadoxGameType
      * @see ParadoxGameTypeMetadata
@@ -151,8 +153,9 @@ interface ChronicleTestScope {
      * （为后续配置的测试数据文件）注入文件信息。
      *
      * 说明：
-     * - 传入的路径相对于入口目录（其不一定同时是游戏或模组目录）。例如应直接传入 `events/test_events.txt`，而非传入 `game/events/test_events.txt`。
+     * - 传入的路径相对于入口目录（这不一定同时是游戏或模组目录）。
      * - 这里注入的文件路径不需要与实际的文件路径对齐。
+     * - 例如应直接传入 `events/test_events.txt`，而非传入 `game/events/test_events.txt`。
      *
      * @see ParadoxGameType
      * @see ParadoxGameTypeMetadata
@@ -165,8 +168,9 @@ interface ChronicleTestScope {
      * （为当前的测试数据文件）注入文件信息。
      *
      * 说明：
-     * - 传入的路径相对于入口目录（其不一定同时是游戏或模组目录）。例如应直接传入 `events/test_events.txt`，而非传入 `game/events/test_events.txt`。
+     * - 传入的路径相对于入口目录（这不一定同时是游戏或模组目录）。
      * - 这里注入的文件路径不需要与实际的文件路径对齐。
+     * - 例如应直接传入 `events/test_events.txt`，而非传入 `game/events/test_events.txt`。
      *
      * @see ParadoxGameType
      * @see ParadoxGameTypeMetadata
@@ -179,8 +183,9 @@ interface ChronicleTestScope {
      * （为当前的测试数据文件）注入文件信息。
      *
      * 说明：
-     * - 传入的路径相对于入口目录（其不一定同时是游戏或模组目录）。例如应直接传入 `events/test_events.txt`，而非传入 `game/events/test_events.txt`。
+     * - 传入的路径相对于入口目录（这不一定同时是游戏或模组目录）。
      * - 这里注入的文件路径不需要与实际的文件路径对齐。
+     * - 例如应直接传入 `events/test_events.txt`，而非传入 `game/events/test_events.txt`。
      *
      * @see ParadoxGameType
      * @see ParadoxGameTypeMetadata

@@ -571,6 +571,7 @@
   - 参见：[adr/push-stream.md](adr/push-stream.md)
 - [x] P4 重构：将 `CwtLocationResolveResult` 重命名为 `ParadoxLocationExpressionResolveResult`，子类同理
 - [ ] P4 排序：在 `ParadoxScriptExpressionSupport` 等处，将 `annotate` 方法的顺序移到 `complete` 方法之前
+- [ ] P2 修复：`descriptor.mod` 在文件路径导航栏中会错误地显示整个文件文本（应当显示文件名） 
 
 ## 按主题 {#by-topic}
 

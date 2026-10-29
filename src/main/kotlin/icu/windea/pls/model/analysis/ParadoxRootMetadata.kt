@@ -12,7 +12,7 @@ import java.nio.file.Path
  *
  * 用于检测游戏目录模组目录，以及获取包括名称、版本、游戏类型在内的各种信息。
  *
- * 基于类别（游戏/模组）以及游戏类型（[icu.windea.pls.model.ParadoxGameType]），可以有多种不同的来源。
+ * 基于类别（游戏/模组）以及游戏类型（[ParadoxGameType]），可以有多种不同的来源。
  *
  * @property name 名字。
  * @property version 版本。可以为空。
