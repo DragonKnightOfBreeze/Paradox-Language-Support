@@ -74,6 +74,4 @@ class ChronicleImageSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle
     }
 }
 
-typealias ChronicleImageSettingsConfigure = ChronicleImageSettingsConfigurable
-
 

@@ -235,7 +235,7 @@ com.intellij.diagnostic.Freeze
 关于后续优化：
 - 与 `imagePolicy` 相关的优化和测试
   - 涉及 `ImageCacheCleanupPolicy` `ImageRenderFailurePolicy` `ImageRenderPolicy`
-  - 在 `icu.windea.pls.base.settings` 中新增 `ChronicleImageSettings` 和 `ChronicleImageSettingsConfigure`，提供必要的配置项
+  - 在 `icu.windea.pls.base.settings` 中新增 `ChronicleImageSettings` 和 `ChronicleImageSettingsConfigurable`，提供必要的配置项
   - 实现每一种 `imagePolicy` 的选项的具体逻辑。
   - 补充专门的测试，以验证这些具体逻辑的行为是正确的。
 - 图片处理（渲染/读取/写入）时的取消检查
@@ -511,7 +511,6 @@ com.intellij.diagnostic.Freeze
 - [ ] 考虑将 `ParadoxImageManager.isImageFile` 移动到 `ImageService` 中
 - [ ] `icu.windea.pls.integrations.lints.TigerLintToolService.collectRequest` - 获取 `modPath` 时不应硬编码（改为基于 EP）
 - [ ] `LintToolProviderExternalTest` - 暂不确定 - 仅出于对齐的目的，因为 `Issue396TigerLintTest` 中已经覆盖了
-- [ ] `XxxSettingsConfigure` -> `SettingsConfigurable`
 - [ ] 重命名：`ProgressCheckingInputStream` -> `CancellableInputStream` `ProgressCheckingOutputStream` -> `CancellableOutputStream`
 - [ ] 引入扩展方法：`InputStream.cancellable()` `OutputStream.cancellable()`
 
