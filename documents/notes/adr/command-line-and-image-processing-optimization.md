@@ -238,7 +238,7 @@ com.intellij.diagnostic.Freeze
   - 在 `icu.windea.pls.base.settings` 中新增 `ChronicleImageSettings` 和 `ChronicleImageSettingsConfigure`，提供必要的配置项
   - 实现每一种 `imagePolicy` 的选项的具体逻辑。
   - 补充专门的测试，以验证这些具体逻辑的行为是正确的。
-- 图片处理（渲染/写入）时的取消检查
+- 图片处理（渲染/读取/写入）时的取消检查
   - 在理想情况下，进行图片IO/读写时，也需要进行取消检查（例如，抵达字节大小阈值时）。
   - 也需要补充专门的测试。
 
@@ -252,7 +252,8 @@ com.intellij.diagnostic.Freeze
     - 测试代码中的外部工具下载逻辑是统一的，因此，可以在测试代码中再封装 `LintToolDownloadTestService` 等
   - 需要补充测试，验证各种外部工具能通过冒烟测试（例如 `--version` 命令），直接使用 `ProcessExecutor` 验证。
     - 这要求首先下载对应的外部工具。
-  - 需要补充测试，验证在各种策略下（TwelveMonkeys/texconv/magick），图片转换操作能够符合预期地成功/失败。使用 `ImageToolProvider`。
+  - 需要补充测试，验证在各种策略下（TwelveMonkeys/texconv/magick），图片转换操作能够符合预期地成功/失败。
+    - 使用 `ImageToolProvider`。
     - 这要求在测试时，临时更改 `ChronicleIntegrationsSettings` 中的配置项。
     - 这要求首先下载对应的外部工具。
 - 为 `ChronicleGitService` 与 `ChronicleSqliteService` 补充测试。
@@ -417,14 +418,15 @@ com.intellij.diagnostic.Freeze
 - [x] 需要补充测试，以验证图片格式转换的正确性和幂等性（转换/转换+反向转换）。
   - 需要基于 `ImageService`/`ImageRenderService`。
 
-#### 2026-10-29 - step 6 - test & wrap-up
+#### 2026-10-29 - step 6 - optimization & test
 
 - [x] 将 `ParadoxImageService` `ParadoxImageResolveResult` 移到 `icu.windea.pls.lang.resolve`
 - [x] 将 `icu.windea.pls.images.policies` 中的代码移动到 `icu.windea.pls.model.policies`
-- [ ] 图片处理（渲染/写入）时的取消检查
-- [x] 需要补充测试，需要验证在各种策略下（TwelveMonkeys/texconv/magick），图片转换操作能够符合预期地成功/失败。这要求在测试时下载外部工具。
+- [ ] 需要补充测试，验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），`ConvertImageFormatAction` 能够符合预期地成功/失败
+- [ ] 需要补充测试，验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），图片转换操作能够符合预期地成功/失败
+- [ ] `convertImageFormat` 中的 NOP 处理：如果 `sourceFormat` 等同于 `targetFormat`，可能需要直接返回，不执行转换操作
 - [ ] 与 `imagePolicy` 相关的优化和测试
-- [ ] 图片处理（渲染/写入）时的取消检查
+- [ ] 图片处理（渲染/读取/写入）时的取消检查
 - [x] 与 `ExternalToolDownloadService` 相关的测试
 - [x] 为 `ChronicleGitService` 与 `ChronicleSqliteService` 补充测试
 - [ ] issue #396 回归测试
@@ -442,6 +444,23 @@ com.intellij.diagnostic.Freeze
 - [x] 除了 texconv 之外，外部工具诸如 tiger/magick 也可以在 非 Windows 的 OS（如 Linux）下执行
   - 需要在测试与生产代码中兼容它们。
   - 主要是 `ExternalToolDownloadService` 以及相关的测试。
+- [ ] 为了保持整洁的代码架构，便于后续查阅和重构，需要从 `ExternalToolDownloadService` 提取通用代码
+  - `icu.windea.pls.util.io.ArchieveService`
+  - `icu.windea.pls.util.net.ProxyService`
+  - `icu.windea.pls.util.net.DownloadService`
+  - 一些通用的 model/enum/constant，也一并提取到对应位置（同包下/直接作为类成员或内部类）。
+  - 需要允许更加灵活的配置，并提供一个合理的默认配置。例如提供 `DownloadSettings`（速度检测/超时检测/等等）。
+- [ ] 出于对齐目的的次要重构
+  - `icu.windea.pls.core.util.io.PathService` - 移动自 `icu.windea.pls.core.io.PathService`
+- [ ] 重构 `CommandBasedImageToolProvider`
+  - 提取公开方法 `getExecutablePath` `validateExecutablePath`（通常来自插件设置，有些也有固定的默认值）
+
+#### 2026-10-30 - step 6 - doc
+
+- [ ] 作为总结，补充 ADR（AI 编写，`documents/ai-notes/adr/`）
+  - 暂时搁置
+- [ ] 关于网络代理的问题：需要考虑补充解决方案笔记（AI 编写，`documents/ai-notes/solutions/`）
+  - 暂时搁置
 
 ### 评估
 
@@ -467,15 +486,24 @@ com.intellij.diagnostic.Freeze
 - [x] 渲染代码按职责拆分：`ImageService` 保留格式转换/文件类型/SPI 生命周期，`ImageRenderService` 负责缓存、渲染和清理。
 - [x] 原始高度不可获取时直接跳过图标，不使用 `icon.iconHeight` 作为回退。
 
+#### 2026-10-30 - step 6
+
+- [ ] `ExternalToolDownloadTestService` 中的 downloadDescriptor 可能不应该硬编码，理想情况下应可以自动确保是最新的
+  - 现状：不是那么必要，留待后续评估
+- [ ] 外部工具诸如 tiger/magick 可能也适用于 非 Windows/Linux 的 OS，考虑评估，并对应地更新生产和测试代码
+  - 现状：不是那么必要，留待后续评估
+
 ### 分析
 
 #### 2026-10-29
 
 - [x] 无法正确地从 DDS/PNG 转换图片格式为 TGA
+  - 参见：`ConvertImageFormatAction` 
   - 原因：`DefaultImageSupport` 使用 `ImageReader.getNumImages(false)` 判断帧数；JPEG/DDS 等读取器在无法预知帧数时会返回 `-1`，导致 `repeat(-1)` 不执行任何转换，最终产出空文件。
   - 修复：当帧数不确定（`<= 0`）时至少转换第一帧；同时将图片转换为标准颜色模型，避免 CMYK 等自定义颜色模型导致 `ImageIO.write` 静默失败；`ImageService` 对空产出继续尝试下一个 `ImageSupport`。
-- [ ] 无法正确地从 DDS/PNG 转换图片格式为 TGA（进阶，暂时搁置）
-  - 需要验证（且仅验证/单独验证）使用基于外部工具的 imageSupport 时，是否也可以正确工作。
+- [ ] 无法正确地从 DDS/PNG 转换图片格式为 TGA（进阶）
+  - 参见：`ConvertImageFormatAction`
+  - 备注：需要验证（且仅验证/单独验证）使用基于外部工具的 imageSupport 时，是否也可以正确工作。
 
 ### 修订
 
@@ -487,10 +515,10 @@ TBD
 
 #### 人工验证
 
-- [ ] 需要验证在各种策略下（TwelveMonkeys/texconv/magick），是否可以正常在编辑器中渲染图片
-- [ ] 需要验证在各种策略下（TwelveMonkeys/texconv/magick），是否可以正常在快速文档中渲染图片
-- [ ] 需要验证在各种策略下（TwelveMonkeys/texconv/magick），是否可以正常在内嵌提示中渲染图片
-- [ ] 需要基于外部检查工具的代码检查（`ChronicleTigerLintInspection`），是否可以正常工作
+- [ ] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在编辑器中渲染图片
+- [ ] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在快速文档中渲染图片
+- [ ] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在内嵌提示中渲染图片
+- [ ] 需要验证基于外部检查工具的代码检查（`ChronicleTigerLintInspection`），是否可以正常工作
 - [ ] 需要结合调式断点，对于命令行执行以及外部图片工具操作，确保不会发生在不正确的上下文中
 
 ## 参见（AI 协助）
@@ -542,7 +570,7 @@ TBD
 - [x] `icu.windea.pls.integrations.ExternalToolDownloadServiceTest` - `check` 行为
 - [x] `icu.windea.pls.integrations.ExternalToolDownloadTest` - 下载与冒烟测试（Windows/Linux）
 - [x] `icu.windea.pls.integrations.ExternalToolDownloadTestService` - 共享 `build/external-tools`
-- [x] `icu.windea.pls.integrations.images.ImageToolProviderExternalTest` - TwelveMonkeys/texconv/magick 格式转换
+- [ ] `icu.windea.pls.integrations.images.ImageToolProviderExternalTest` - 各种策略和格式下的图片格式转换
 - [x] `icu.windea.pls.base.io.ChronicleGitServiceTest` - 本地仓库冒烟与常见场景
 - [x] `icu.windea.pls.base.io.ChronicleSqliteServiceTest` - 临时 SQLite 数据库
 - [ ] `icu.windea.pls.integrations.lints.RunTigerTest` - 待移除（因为已存在 `ExternalToolDownloadTest`）
@@ -553,27 +581,39 @@ TBD
 - `icu.windea.pls.core.cache.TrackingCache`
 - `icu.windea.pls.core.util.MergedModificationTracker`
 - `icu.windea.pls.model.policies.*`
+- `icu.windea.pls.images.actions.ConvertImageFormatAction`
 - TBD
 
 ### 相关代码位置（平台）
 
-参考（主要）：
+通用：
+
+- `com.intellij.openapi.progress.coroutinesKt.coroutineToIndicator`
+- `com.intellij.codeInsight.daemon.impl.InlayHintsPassFactoryInternal.clearModificationStamp`
+- `com.intellij.platform.ide.progress.withBackgroundProgress`
+
+命令行相关：
 
 - `com.intellij.execution.configurations.GeneralCommandLine`
 - `com.intellij.execution.process.CapturingProcessRunner`
 - `com.intellij.execution.process.CapturingProcessHandler`
+  - `com.intellij.execution.process.CapturingProcessHandler.runProcess(int, boolean)`
   - `com.intellij.execution.process.CapturingProcessHandler.runProcessWithProgressIndicator`
 - `com.intellij.execution.process.OSProcessHandler`
   - `com.intellij.execution.process.OSProcessHandler.checkEdtAndReadAction`
-- `com.intellij.openapi.progress.coroutinesKt.coroutineToIndicator`
-- `com.intellij.codeInsight.daemon.impl.InlayHintsPassFactoryInternal.clearModificationStamp`
-- `com.intellij.platform.ide.progress.withBackgroundProgress`
 - `com.intellij.execution.util.ExecUtil`
+
+图片处理相关：
+
 - `org.intellij.images.index.ImageInfoIndex`
 - `org.intellij.images.util.ImageInfoReader`
-- TBD
 
-参考（次要）：
+网络代理相关：
+
+- `com.intellij.util.net.ProxySettings`
+- `com.intellij.util.net.ProxyConfiguration`
+- `com.intellij.util.net.JdkProxyProvider`
+
+外部检查相关：
 
 - `com.intellij.codeInspection.javaDoc.JavadocHtmlLintAnnotator` - 这里并没有特别地使用取消检查/状态指示
-- TBD
