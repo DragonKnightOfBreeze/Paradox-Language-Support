@@ -12,6 +12,13 @@
 
 ## 长期 {#long-term}
 
+### 持续迁移
+
+- [ ] P4 将生产代码（乃至测试代码）中的 `System.getProperty("chronicle.xxx")` 作为具体的能力项，统一提取到 `ChronicleCapabilities`
+  - 考虑在 `AGENTS.md` 和 `guidelines.md` 中补充相关说明
+- [ ] P4 将诸如 `globToRegex` `antToRegex` 等形式的代码，统一替换为对 `GlobMatcher` `AntMatcher` 等的调用
+  - 考虑在 `AGENTS.md` 和 `guidelines.md` 中补充相关说明
+
 ### 持续完善
 
 - [ ] P2 继续分析与优化构建索引时的性能和内存占用
@@ -752,3 +759,9 @@
   - 尽管这是更理想的选择，但是会带来更多的复杂性，存在无法避免的调研、维护和测试成本
 - [ ] P4 内置所有图片工具（以及检查工具），或者提供便捷入口以在使用插件时一键下载对应的工具
   - 需要另行评估
+
+## 2026-10-30
+
+- [ ] P4 考虑重构和清理 `ConvertImageFormatAction`
+  - 可以改为完全基于 Kotlin 协程实现，但是参考实现（`CopyFilesOrDirectoriesHandler`）目前尚未如此
+  - 低优先级，只要能够正常工作即可

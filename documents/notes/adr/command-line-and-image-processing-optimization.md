@@ -263,9 +263,11 @@ com.intellij.diagnostic.Freeze
 - issue #396 回归测试
   - 这涉及内嵌提示中的图片渲染，以及对上下文状态（EDT / readAction）的断言。
   - 相较于人工验证，基于测试的验证可能存在一定难度。需要研究具体如何达成。
+  - 需要在 ADR/注释/文档注释 中，补充关于测试的实现思路和代码实现的更多细节。
 - 验证 tiger 的检查逻辑和对应的外部代码检查（`ChronicleTigerLintInspection`）
   - 实际上我们只需要在测试时，提供一个简单的模组，同时预先下载 tiger 工具即可。
   - 相较于人工验证，基于测试的验证可能存在一定难度。需要研究具体如何达成。
+  - 需要在 ADR/注释/文档注释 中，补充关于测试的实现思路和代码实现的更多细节。
 
 ### 任务计划草案（AI 协助）
 
@@ -461,6 +463,12 @@ com.intellij.diagnostic.Freeze
   - `icu.windea.pls.util.net.DownloadService` - 也已补充测试（冒烟，简单场景）
   - 一些通用的 model/enum/constant，也一并提取到对应位置（同包下/直接作为类成员或内部类）。
   - 需要允许更加灵活的配置，并提供一个合理的默认配置。例如提供默认参数 `settings: DownloadSettings`（速度检测/超时检测/等等）。
+- [ ] 不能假定：总是存在外部解压工具的可执行文件路径（如 7z），本地环境总是存在系统代理（如 clash） - 需要结合使用 Assume
+
+迁移相关：
+
+- [ ] `XxxSettings()` -> `XxxSettings.DEFAULT`
+- [ ] 从 `XxxService.kt` 中分离出代码到对应的文件（这更符合个人偏好）
 
 #### 2026-10-30 - step 6 - doc
 
@@ -522,6 +530,7 @@ TBD
 
 #### 人工验证
 
+- [ ] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常转换图片格式（`ConvertImageFormatAction`）
 - [ ] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在编辑器中渲染图片
 - [ ] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在快速文档中渲染图片
 - [ ] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在内嵌提示中渲染图片
