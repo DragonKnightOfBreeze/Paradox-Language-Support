@@ -286,6 +286,17 @@ com.intellij.diagnostic.Freeze
 - 新增 `ImageCacheCleanupPolicy`、`ImageRenderFailurePolicy`、`ImageRenderPolicy` 及 bundle 文案。
 - 新增 `ImageMetadataServiceTest`、`ImageServiceTest`、`ImageCacheCleanerTest`。
 
+#### 2026-10-29 - step 3
+
+- 新增 `ParadoxImageService` 与 `ParadoxImageResolveResult`；`ParadoxImageManager` 保留为门面，解析阶段不写文件。
+- 缓存路径的 UUID 基于源文件路径、大小、修改时间、帧数信息和目标格式；不引入集中索引文件。
+- 快速文档在 `DocumentationTarget` 中创建 `ImageRenderSession`，在 RA 内记录渲染请求，在 RA 外等待完成后才 `toDocumentation()`；默认失败策略为 `AcceptBroken`。
+- 内嵌提示使用 `ImageRenderPolicy.Sync`；缓存未命中时同步渲染，原始高度不可获取时直接跳过，不使用 `icon.iconHeight` 回退。
+- `ImageToolService.read` 在 EDT/RA 中跳过外部工具并 warning，交回内置实现。
+- `ImageRenderService.requestImageRender` 不再使用 `Task.Backgroundable`；同步入口委托异步入口，异步入口使用项目协程作用域 + `withBackgroundProgress`。
+  - `runBlockingCancellable` 依赖当前线程已有的 Job/indicator，直接使用会在没有进度上下文的调用点抛异常，因此同步入口改为等待项目协程中的异步任务。
+- 新增 `ImageRenderServiceTest` 的 `requestImageRender` 与 `ImageRenderSession` 场景。
+
 ## 任务（AI 协助）
 
 ### 主要 & 次要
@@ -297,10 +308,10 @@ com.intellij.diagnostic.Freeze
   - [x] 新增 `ImageCacheCleanupPolicy`、`ImageRenderFailurePolicy`、`ImageRenderPolicy` 及文案
 - [ ] 重构
   - [x] 迁移 Git、Texconv、Magick、Tiger、SpecialPath、CwtConfigService
-  - [ ] 新增 `ParadoxImageService`/`ParadoxImageResolveResult`，保留 `ParadoxImageManager` facade
-  - [ ] 快速文档：`toDocumentation` 移出 RA，等待 `ImageRenderSession`
-  - [ ] 内嵌提示：`Sync` 渲染 + `clearModificationStamp`
-  - [ ] 注入器：EDT/RA 跳过外部工具并 warning
+  - [x] 新增 `ParadoxImageService`/`ParadoxImageResolveResult`，保留 `ParadoxImageManager` facade
+  - [x] 快速文档：`toDocumentation` 移出 RA，等待 `ImageRenderSession`
+  - [x] 内嵌提示：`Sync` 渲染（`Sync` 路径无需 `clearModificationStamp`；`Async` 刷新后续补充）
+  - [x] 注入器：EDT/RA 跳过外部工具并 warning
   - [ ] Tiger：`TigerLintToolService` + `TrackingCache` + `TigerLintResult` 扩展
 - [ ] 测试
   - [x] `ProcessExecutor`：超时、取消、stderr、退出码、编码
@@ -359,8 +370,8 @@ com.intellij.diagnostic.Freeze
 
 - [ ] 考虑将 `icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext` 移到 `icu.windea.pls.lang.codeInsight.hints.InlayHintsContext`（与 `DocumentationContext` 对齐），并且移出属性 `settings`（因为这是语义相关的）
 - [ ] 由于模块依赖问题，`icu.windea.pls.images.ImageFrameInfo` 可能需要移到 `icu.windea.pls` 中的某个子包下
-- [ ] 考虑新增 `ParadoxImageService`，将 `ParadoxImageManager` 中的具体解析逻辑移到 `ParadoxImageService`
-- [ ] 考虑新增 `ParadoxImageResolveResult`，其中包括必要的信息，以及实际加载图片的/属性（比如可以直接是 `image: Image`）
+- [x] 新增 `ParadoxImageService`，将 `ParadoxImageManager` 中的具体解析逻辑移到 `ParadoxImageService`
+- [x] 新增 `ParadoxImageResolveResult`，目前包含来源路径、缓存路径、帧数信息和尺寸限制；实际加载图片的逻辑仍留在渲染/展示层
 - [ ] 考虑将 `ParadoxImageManager.isImageFile` 移动到 `ImageService` 中
 - [ ] 考虑将 `ImageService.requestRender` 和 `ImageService.render` 的其中一些参数封装到 `ImageRenderConstraint` 或 `ImageRenderSettings` 中
 - [ ] `icu.windea.pls.core.execution` 中的代码的后续清理和重构
@@ -408,7 +419,7 @@ TBD
 - [x] `icu.windea.pls.integrations.images.providers.MagickToolProvider` - 已迁移
 - [x] `icu.windea.pls.integrations.lints.providers.TigerLintToolProvider` - 已迁移
 - [x] `icu.windea.pls.lang.tools.SpecialPathServiceImpl` - 已迁移
-- [x] `icu.windea.pls.images.ImageService` - 基础设施已扩展，语义层待迁移
+- [x] `icu.windea.pls.images.ImageService` - 基础设施已扩展；保留格式转换与 SPI 生命周期
 - [x] `icu.windea.pls.images.ImageRenderService` - 新增
 - [x] `icu.windea.pls.images.ImageMetadataService` - 新增
 - [x] `icu.windea.pls.images.ImageCacheCleaner` - 新增
@@ -417,10 +428,13 @@ TBD
 - [x] `icu.windea.pls.images.policies.ImageCacheCleanupPolicy` - 新增
 - [x] `icu.windea.pls.images.policies.ImageRenderFailurePolicy` - 新增
 - [x] `icu.windea.pls.images.policies.ImageRenderPolicy` - 新增
-- [ ] `icu.windea.pls.integrations.images.ImageToolService` - 待重构
+- [x] `icu.windea.pls.integrations.images.ImageToolService` - 已加入 EDT/RA 保护
 - [ ] `icu.windea.pls.integrations.lints.TigerLintToolService` - 待重构
-- [ ] `icu.windea.pls.lang.util.ParadoxImageManager` - 待重构
-- [ ] `icu.windea.pls.lang.util.ParadoxImageService` - 新增
+- [x] `icu.windea.pls.lang.util.ParadoxImageManager` - 已重构为门面
+- [x] `icu.windea.pls.lang.util.ParadoxImageService` - 新增
+- [x] `icu.windea.pls.lang.util.ParadoxImageResolveResult` - 新增
+- [x] `icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget` - 快速文档等待渲染会话
+- [x] `icu.windea.pls.lang.codeInsight.documentation.CwtDocumentationTarget` - 快速文档等待渲染会话
 - TBD
 
 测试代码：
@@ -430,7 +444,7 @@ TBD
 - [ ] `icu.windea.pls.core.execution.ProcessExecutorExternalToolBasedTest` - 需要下载外部工具并验证
 - [x] `icu.windea.pls.images.ImageMetadataServiceTest`
 - [x] `icu.windea.pls.images.ImageServiceTest` - 格式转换/往返转换
-- [x] `icu.windea.pls.images.ImageRenderServiceTest`
+- [x] `icu.windea.pls.images.ImageRenderServiceTest` - 渲染、同步请求、渲染会话
 - [x] `icu.windea.pls.images.ImageCacheCleanerTest`
 - [ ] `icu.windea.pls.integrations.lints.RunTigerTest` - 待移除（因为已存在 `ProcessExecutorExternalToolBasedTest`）
 - TBD
