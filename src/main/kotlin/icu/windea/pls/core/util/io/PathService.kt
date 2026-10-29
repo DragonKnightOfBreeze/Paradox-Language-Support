@@ -1,4 +1,4 @@
-package icu.windea.pls.core.io
+package icu.windea.pls.core.util.io
 
 import com.intellij.util.io.createParentDirectories
 import com.intellij.util.io.delete

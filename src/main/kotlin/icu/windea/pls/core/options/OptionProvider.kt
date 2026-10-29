@@ -1,4 +1,4 @@
-package icu.windea.pls.core.util
+package icu.windea.pls.core.options
 
 import icu.windea.pls.core.orNull
 

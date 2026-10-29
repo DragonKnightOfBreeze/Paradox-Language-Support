@@ -1,4 +1,4 @@
-package icu.windea.pls.core.io
+package icu.windea.pls.core.util.io
 
 import org.junit.Assert
 import org.junit.Test

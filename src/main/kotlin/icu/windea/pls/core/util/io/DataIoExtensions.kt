@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package icu.windea.pls.core.io
+package icu.windea.pls.core.util.io
 
 import com.intellij.util.io.DataInputOutputUtil
 import com.intellij.util.io.IOUtil

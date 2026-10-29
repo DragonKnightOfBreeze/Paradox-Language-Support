@@ -1,4 +1,4 @@
-package icu.windea.pls.core.io
+package icu.windea.pls.core.util.io
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap
 import org.junit.Assert

@@ -1,4 +1,4 @@
-package icu.windea.pls.core.io
+package icu.windea.pls.core.util.io
 
 import org.apache.commons.io.file.PathUtils
 import org.junit.After

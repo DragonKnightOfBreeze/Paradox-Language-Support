@@ -444,16 +444,16 @@ com.intellij.diagnostic.Freeze
 - [x] 除了 texconv 之外，外部工具诸如 tiger/magick 也可以在 非 Windows 的 OS（如 Linux）下执行
   - 需要在测试与生产代码中兼容它们。
   - 主要是 `ExternalToolDownloadService` 以及相关的测试。
+- [x] 重构 `CommandBasedImageToolProvider`
+  - 提取公开方法 `getExecutablePath` `validateExecutablePath`（通常来自插件设置，有些也有固定的默认值）
+- [x] 将 `icu.windea.pls.core.io` 中的代码移动到 `icu.windea.pls.core.util.io` - 出于对齐的目的（如 `com.intellij.util.io.DataInputOutputUtil`）
+- [x] 从 `DefaultImageSupport` 提取公共扩展方法到 `DataIoExtensions.kt`
 - [ ] 为了保持整洁的代码架构，便于后续查阅和重构，需要从 `ExternalToolDownloadService` 提取通用代码
-  - `icu.windea.pls.util.io.ArchieveService`
-  - `icu.windea.pls.util.net.ProxyService`
-  - `icu.windea.pls.util.net.DownloadService`
+  - `icu.windea.pls.util.io.ArchieveService` - 也需要补充测试（冒烟，简单场景）
+  - `icu.windea.pls.util.net.ProxyService` - 也需要补充测试（冒烟，简单场景）
+  - `icu.windea.pls.util.net.DownloadService` - 也需要补充测试（冒烟，简单场景）
   - 一些通用的 model/enum/constant，也一并提取到对应位置（同包下/直接作为类成员或内部类）。
   - 需要允许更加灵活的配置，并提供一个合理的默认配置。例如提供 `DownloadSettings`（速度检测/超时检测/等等）。
-- [ ] 出于对齐目的的次要重构
-  - `icu.windea.pls.core.util.io.PathService` - 移动自 `icu.windea.pls.core.io.PathService`
-- [ ] 重构 `CommandBasedImageToolProvider`
-  - 提取公开方法 `getExecutablePath` `validateExecutablePath`（通常来自插件设置，有些也有固定的默认值）
 
 #### 2026-10-30 - step 6 - doc
 

@@ -1,7 +1,7 @@
 package icu.windea.pls.base.io
 
-import icu.windea.pls.core.io.PathService
 import icu.windea.pls.core.toPath
+import icu.windea.pls.core.util.io.PathService
 import java.nio.file.Path
 
 class ChronicleDataPathServiceImpl : ChronicleDataPathService {
