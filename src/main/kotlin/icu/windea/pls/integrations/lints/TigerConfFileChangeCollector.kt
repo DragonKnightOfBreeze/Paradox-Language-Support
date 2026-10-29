@@ -12,9 +12,8 @@ import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.filterIsInstanceTo
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.normalizePath
-import icu.windea.pls.core.orNull
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
+import kotlin.io.path.name
 
 @Optimized
 class TigerConfFileChangeCollector {
@@ -71,7 +70,7 @@ class TigerConfFileChangeCollector {
     }
 
     private fun getConfFileName(provider: TigerLintToolProvider): String {
-        return provider.exePath?.orNull()?.normalizePath()?.substringAfterLast('/') ?: "${provider.name}.conf"
+        return provider.getConfPath()?.name ?: "${provider.name}.conf"
     }
 
     fun isChanged(): Boolean {

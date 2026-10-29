@@ -5,11 +5,12 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.base.io.ChronicleDataPathService
-import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.integrations.images.ImageToolSettings
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
@@ -21,23 +22,26 @@ import kotlin.io.path.notExists
  * 参见：[Texconv · microsoft/DirectXTex Wiki](https://github.com/microsoft/DirectXTex/wiki/Texconv)
  */
 class TexconvToolProvider : CommandBasedImageToolProvider() {
+    override val name = "texconv"
+
     override fun isEnabled(): Boolean {
-        return ChronicleIntegrationsSettings.getInstance().state.image.enableTexconv
+        return ImageToolSettings.getInstance().enableTexconv
     }
 
     override fun isSupported(): Boolean {
-        return SystemInfo.isWindows
+        return SystemInfo.isWindows // Windows only
     }
 
-    override fun isValid(): Boolean {
-        return Files.isRegularFile(texconvPath())
+    override fun getExecutablePath(): Path {
+        val configured = ImageToolSettings.getInstance().texconvPath?.trim()?.orNull()
+        configured?.toPathOrNull()?.let { return it }
+        return ChronicleDataPathService.getInstance().texconvExePath // actual default value
     }
 
-    override fun isValidExePath(path: String): Boolean {
-        // NOTE 3.0.5 出于轻量化的目的，仅检测路径是否是常规文件，而不再通过执行命令行来检测工具是否可用
-        val exePath = path.toPathOrNull() ?: return false
-        if (!exePath.nameWithoutExtension.equals("texconv", ignoreCase = true)) return false
-        return Files.isRegularFile(exePath)
+    override fun validateExecutablePath(path: Path): Boolean {
+        // NOTE 3.0.5 出于轻量化的目的，仅检测路径是否是常规文件，不再通过执行命令行来检测工具是否可用
+        if (!path.nameWithoutExtension.equals(name, ignoreCase = true)) return false
+        return Files.isRegularFile(path)
     }
 
     /**
@@ -49,20 +53,24 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
     }
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
+        val executablePath = getExecutablePath()
+
         val tempParentPath = ChronicleDataPathService.getInstance().imagesTempPath
         val outputDirectoryPath = targetDirectoryPath ?: tempParentPath
         outputDirectoryPath.createDirectories()
         val outputFileName = path.nameWithoutExtension + "." + targetFormat
         val outputPath = outputDirectoryPath.resolve(outputFileName)
 
-        val exePath = texconvPath()
-        val commandLine = GeneralCommandLine(
-            exePath.toString(),
+        val commands = listOf(
+            executablePath.toString(),
             path.toString(),
             "-o", outputDirectoryPath.toString(),
             "-ft", targetFormat,
             "-y", // overwrite existing files
-        ).withWorkingDirectory(exePath.parent).withCharset(Charsets.UTF_8)
+        )
+        val commandLine = GeneralCommandLine(commands)
+            .withWorkingDirectory(executablePath.parent)
+            .withCharset(Charsets.UTF_8)
 
         ProgressManager.checkCanceled()
         val output = ProcessExecutor(commandLine).withTimeout(ExecutionTimeouts.normal).execute()
@@ -97,13 +105,5 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
             Files.move(outputPath, finalOutputPath, StandardCopyOption.REPLACE_EXISTING)
         }
         return finalOutputPath
-    }
-
-    private fun texconvPath(): Path {
-        val configuredPath = ChronicleIntegrationsSettings.getInstance().state.image.texconvPath?.trim()
-        if (!configuredPath.isNullOrEmpty()) {
-            configuredPath.toPathOrNull()?.let { return it }
-        }
-        return ChronicleDataPathService.getInstance().texconvExePath
     }
 }

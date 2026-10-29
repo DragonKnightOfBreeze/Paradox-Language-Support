@@ -43,11 +43,11 @@ class EditExternallyAction : DumbAwareAction() {
             val commandLine = GeneralCommandLine()
             val path = if (executable.exists()) executable.absolutePath else executablePath
             if (SystemInfo.isMac) {
-                commandLine.exePath = ExecUtil.openCommandPath
+                commandLine.withExePath(ExecUtil.openCommandPath)
                 commandLine.addParameter("-a")
                 commandLine.addParameter(path)
             } else {
-                commandLine.exePath = path
+                commandLine.withExePath(path)
             }
 
             val typeManager = ImageFileTypeManager.getInstance()

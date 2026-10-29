@@ -9,7 +9,6 @@ import com.intellij.psi.PsiFile
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
-import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
 import icu.windea.pls.base.settings.ChronicleProfilesSettings
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cache.TrackingCache
@@ -17,7 +16,6 @@ import icu.windea.pls.core.cache.trackedBy
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toUuidString
 import icu.windea.pls.core.util.MergedModificationTracker
 import icu.windea.pls.integrations.ChronicleIntegrationsBundle
@@ -36,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 @Service
 class TigerLintToolService : Disposable {
+    // 带追踪的检查结果缓存
     private val cache = CacheBuilder("maximumSize=128,expireAfterAccess=30m,softValues")
         .build<TigerLintRequest, TigerLintResult>()
         .trackedBy { it.modificationTracker }
@@ -45,7 +44,7 @@ class TigerLintToolService : Disposable {
     private val lintResultLocks = ConcurrentHashMap<TigerLintRequest, Any>()
 
     fun isEnabled(): Boolean {
-        return ChronicleIntegrationsSettings.getInstance().state.lint.enableTiger
+        return LintToolSettings.getInstance().enableTiger
     }
 
     /** @see icu.windea.pls.integrations.lints.providers.TigerLintToolProvider */
@@ -73,24 +72,24 @@ class TigerLintToolService : Disposable {
         if (settings?.options?.disableTiger == true) return null // 检查是否在游戏或模组设置中禁用
         val gameType = rootInfo.gameType
         val tool = findTool(gameType) ?: return null
-        val exePath = tool.exePath?.trim()?.toPathOrNull() ?: return null
-        val workingDirectory = exePath.parent ?: return null
-        val rootFile = rootInfo.rootFile ?: return null
-        val rootPath = rootFile.path
-        val modSettings = ChronicleProfilesSettings.getInstance().state.modSettings.get(rootPath)
+        val executablePath = tool.getExecutablePath() ?: return null
+        val confPath = tool.getConfPath()
+        val workingDirectory = executablePath.parent ?: return null
+        val rootFile = rootInfo.rootFile
+        val modSettings = ChronicleProfilesSettings.getInstance().state.modSettings.get(rootFile.path)
         val gamePath = modSettings?.finalGameDirectory?.orNull()
-        val configPath = tool.confPath?.orNull()
+        val rootPath = rootFile.path
         val outputUuid = rootFile.url.toUuidString()
         val outputPath = ChronicleDataPathService.getInstance().lintResultsPath.resolve("${tool.name}-result@$outputUuid.json")
         return TigerLintRequest(
-            gameType = gameType,
             name = tool.name,
-            exePath = exePath,
+            gameType = gameType,
+            executablePath = executablePath,
+            confPath = confPath,
             workingDirectory = workingDirectory,
-            rootPath = rootPath,
             rootFile = rootFile,
             gamePath = gamePath,
-            configPath = configPath,
+            rootPath = rootPath,
             outputPath = outputPath,
         )
     }
@@ -124,7 +123,7 @@ class TigerLintToolService : Disposable {
             TigerLintResult(request.name, error = error)
         } else {
             try {
-                tool.validateRootDirectory(request) ?: TigerLintResult(request.name)
+                tool.validateRootDirectory(request)
             } catch (e: Exception) {
                 checkCancellation(e)
                 notifyWarningNotification(request, e)

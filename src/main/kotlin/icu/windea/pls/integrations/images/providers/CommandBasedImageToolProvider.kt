@@ -21,17 +21,24 @@ import kotlin.io.path.name
 import kotlin.io.path.outputStream
 
 abstract class CommandBasedImageToolProvider : ImageToolProvider {
-    final override fun isAvailable() = isEnabled() && isSupported() && isValid()
+    final override fun isAvailable(): Boolean {
+        return isEnabled() && isSupported() && isValid()
+    }
 
     abstract fun isEnabled(): Boolean
 
     abstract fun isSupported(): Boolean
 
-    abstract fun isValid(): Boolean
+    open fun isValid(): Boolean {
+        val executablePath = getExecutablePath() ?: return false
+        return validateExecutablePath(executablePath)
+    }
 
-    abstract fun isValidExePath(path: String): Boolean
+    abstract fun getExecutablePath(): Path?
 
-    override fun read(imageIndex: Int, param: ImageReadParam?, stream: ImageInputStream, sourceFormat: String, targetFormat: String): BufferedImage {
+    abstract fun validateExecutablePath(path: Path): Boolean
+
+    final override fun read(imageIndex: Int, param: ImageReadParam?, stream: ImageInputStream, sourceFormat: String, targetFormat: String): BufferedImage {
         val inputStream = ImageInputStreamAdapter(stream)
         val outputStream = ByteArrayOutputStream()
         convertImageFormat(inputStream.buffered(), outputStream, sourceFormat, targetFormat)

@@ -30,7 +30,7 @@ object TigerLintToolUtil {
      * @see ChronicleTigerLintInspection
      */
     fun getConfiguredHighlightSeverity(confidence: Confidence, severity: Severity): KMutableProperty0<LintHighlightSeverity> {
-        val mapping = ChronicleIntegrationsSettings.getInstance().state.lint.tigerHighlight
+        val mapping = LintToolSettings.getInstance().tigerHighlight
         return when (severity) {
             Severity.TIPS -> when (confidence) {
                 Confidence.WEAK -> mapping::tipsWeak

@@ -48,16 +48,20 @@ class ChronicleProfilesSettings : SimplePersistentStateComponent<ChronicleProfil
     }
 
     class State : BaseState() {
+        /** @see com.intellij.openapi.vfs.VirtualFile.getPath */
         @get:Property(surroundWithTag = false)
         @get:MapAnnotation(entryTagName = "gameDescriptorSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
         val gameDescriptorSettings: MutableMap<String, ParadoxGameDescriptorSettingsState> by linkedMap()
+        /** @see com.intellij.openapi.vfs.VirtualFile.getPath */
         @get:Property(surroundWithTag = false)
         @get:MapAnnotation(entryTagName = "modDescriptorSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
         val modDescriptorSettings: MutableMap<String, ParadoxModDescriptorSettingsState> by linkedMap()
 
+        /** @see com.intellij.openapi.vfs.VirtualFile.getPath */
         @get:Property(surroundWithTag = false)
         @get:MapAnnotation(entryTagName = "gameSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
         val gameSettings: MutableMap<String, ParadoxGameSettingsState> by linkedMap()
+        /** @see com.intellij.openapi.vfs.VirtualFile.getPath */
         @get:Property(surroundWithTag = false)
         @get:MapAnnotation(entryTagName = "modSettings", keyAttributeName = "path", surroundWithTag = false, surroundKeyWithTag = false, surroundValueWithTag = false)
         val modSettings: MutableMap<String, ParadoxModSettingsState> by linkedMap()

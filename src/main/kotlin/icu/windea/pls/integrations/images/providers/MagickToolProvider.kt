@@ -5,11 +5,12 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.base.io.ChronicleDataPathService
-import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.integrations.images.ImageToolSettings
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
@@ -20,24 +21,25 @@ import kotlin.io.path.notExists
  * 参见：[Image Magick](https://www.imagemagick.org)
  */
 class MagickToolProvider : CommandBasedImageToolProvider() {
+    override val name = "magick"
+
     override fun isEnabled(): Boolean {
-        return ChronicleIntegrationsSettings.getInstance().state.image.enableMagick
+        return ImageToolSettings.getInstance().enableMagick
     }
 
     override fun isSupported(): Boolean {
         return true
     }
 
-    override fun isValid(): Boolean {
-        val toolPath = ChronicleIntegrationsSettings.getInstance().state.image.magickPath?.trim()
-        if (toolPath.isNullOrEmpty()) return false
-        return isValidExePath(toolPath)
+    override fun getExecutablePath(): Path? {
+        val configured = ImageToolSettings.getInstance().magickPath?.trim()?.orNull()
+        configured?.toPathOrNull()?.let { return it }
+        return null // by default null
     }
 
-    override fun isValidExePath(path: String): Boolean {
-        // NOTE 3.0.5 出于轻量化的目的，仅检测路径是否是常规文件，而不再通过执行命令行来检测工具是否可用
-        val exePath = path.toPathOrNull() ?: return false
-        return Files.isRegularFile(exePath)
+    override fun validateExecutablePath(path: Path): Boolean {
+        // NOTE 3.0.5 出于轻量化的目的，不再通过执行命令行来检测工具是否可用
+        return Files.isRegularFile(path)
     }
 
     // 常用命令示例（ImageMagick）：
@@ -61,9 +63,7 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
     }
 
     private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
-        val toolPath = ChronicleIntegrationsSettings.getInstance().state.image.magickPath?.trim()
-        if (toolPath.isNullOrEmpty()) throw IllegalStateException("ImageMagick path is not configured")
-        val fullExePath = toolPath.toPathOrNull() ?: throw IllegalStateException("Invalid ImageMagick path: $toolPath")
+        val executablePath = getExecutablePath() ?: throw IllegalStateException("ImageMagick path is not configured or invalid")
 
         val tempParentPath = ChronicleDataPathService.getInstance().imagesTempPath
         val outputDirectoryPath = targetDirectoryPath ?: tempParentPath
@@ -71,12 +71,15 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
         val outputFileName = targetFileName ?: (path.nameWithoutExtension + "." + targetFormat)
         val outputPath = outputDirectoryPath.resolve(outputFileName)
 
-        val commandLine = GeneralCommandLine(
-            fullExePath.toString(),
+        val commands = listOf(
+            executablePath.toString(),
             path.toString(),
             outputPath.toString(),
-        ).withWorkingDirectory(fullExePath.parent).withCharset(Charsets.UTF_8)
-        if (SystemInfo.isLinux && fullExePath.toString().endsWith(".AppImage", ignoreCase = true)) {
+        )
+        val commandLine = GeneralCommandLine(commands)
+            .withWorkingDirectory(executablePath.parent)
+            .withCharset(Charsets.UTF_8)
+        if (SystemInfo.isLinux && executablePath.toString().endsWith(".AppImage", ignoreCase = true)) {
             commandLine.withEnvironment("APPIMAGE_EXTRACT_AND_RUN", "1")
         }
 
