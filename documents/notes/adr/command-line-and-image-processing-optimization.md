@@ -352,6 +352,10 @@ com.intellij.diagnostic.Freeze
 - 新增 `ExternalToolDownloadServiceTest`、`ExternalToolDownloadTest`、`ImageToolProviderExternalTest`。
 - 支持在设置页配置 texconv 路径，默认使用 `{path}/external-tools/texconv.exe`；`TexconvToolProvider` 不再依赖内置资源。
 - 新增 `ChronicleGitServiceTest`（本地临时 Git 仓库）与 `ChronicleSqliteServiceTest`（临时 SQLite 数据库）。
+- 从 `ExternalToolDownloadService` 提取 `ArchiveService`、`ProxyService`、`DownloadService` 及 `ArchiveType` / `ArchiveSettings` / `DownloadSettings` / `DownloadResult`。
+- 新增 `ImageFormatConversionTest` 与 `ConvertImageFormatActionTest`，覆盖 TwelveMonkeys/texconv/magick × jpg/png/dds/tga 的成功/失败组合。
+- `convertImageFormat` 在 `ImageService`/`ImageToolService`/`ImageSupport`/`ImageToolProvider` 中加入同格式 NOP 处理（复制而非转换）。
+- `ConvertImageFormatAction` 在 EDT 中执行转换时转到后台线程，避免外部工具被 EDT 保护跳过。
 - `includeExternalTools` 默认启用；Tiger 真实模组验证、issue #396 回归和 ADR 总结仍暂缓。
 
 ## 任务（AI 协助）
@@ -422,11 +426,11 @@ com.intellij.diagnostic.Freeze
 
 - [x] 将 `ParadoxImageService` `ParadoxImageResolveResult` 移到 `icu.windea.pls.lang.resolve`
 - [x] 将 `icu.windea.pls.images.policies` 中的代码移动到 `icu.windea.pls.model.policies`
-- [ ] 需要补充测试，验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），`ConvertImageFormatAction` 能够符合预期地成功/失败
+- [x] 需要补充测试，验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），`ConvertImageFormatAction` 能够符合预期地成功/失败
   - 需要尽可能全面，覆盖各种组合。
-- [ ] 需要补充测试，验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），图片转换操作能够符合预期地成功/失败
+- [x] 需要补充测试，验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），图片转换操作能够符合预期地成功/失败
   - 需要尽可能全面，覆盖各种组合。
-- [ ] `convertImageFormat` 中的 NOP 处理：如果 `sourceFormat` 等同于 `targetFormat`，可能需要直接返回，不执行转换操作
+- [x] `convertImageFormat` 中的 NOP 处理：如果 `sourceFormat` 等同于 `targetFormat`，可能需要直接返回，不执行转换操作
   - 可能需要适用于多个级别（toolProvider/toolService/imageSupport/imageService）
 - [ ] 与 `imagePolicy` 相关的优化和测试
 - [ ] 图片处理（渲染/读取/写入）时的取消检查
@@ -451,10 +455,10 @@ com.intellij.diagnostic.Freeze
   - 提取公开方法 `getExecutablePath` `validateExecutablePath`（通常来自插件设置，有些也有固定的默认值）
 - [x] 将 `icu.windea.pls.core.io` 中的代码移动到 `icu.windea.pls.core.util.io` - 出于对齐的目的（如 `com.intellij.util.io.DataInputOutputUtil`）
 - [x] 从 `DefaultImageSupport` 提取公共扩展方法到 `DataIoExtensions.kt`
-- [ ] 为了保持整洁的代码架构，便于后续查阅和重构，需要从 `ExternalToolDownloadService` 提取通用代码
-  - `icu.windea.pls.util.io.ArchieveService` - 也需要补充测试（冒烟，简单场景）
-  - `icu.windea.pls.util.net.ProxyService` - 也需要补充测试（冒烟，简单场景）
-  - `icu.windea.pls.util.net.DownloadService` - 也需要补充测试（冒烟，简单场景）
+- [x] 为了保持整洁的代码架构，便于后续查阅和重构，需要从 `ExternalToolDownloadService` 提取通用代码
+  - `icu.windea.pls.util.io.ArchiveService` - 也已补充测试（冒烟，简单场景）
+  - `icu.windea.pls.util.net.ProxyService` - 也已补充测试（冒烟，简单场景）
+  - `icu.windea.pls.util.net.DownloadService` - 也已补充测试（冒烟，简单场景）
   - 一些通用的 model/enum/constant，也一并提取到对应位置（同包下/直接作为类成员或内部类）。
   - 需要允许更加灵活的配置，并提供一个合理的默认配置。例如提供默认参数 `settings: DownloadSettings`（速度检测/超时检测/等等）。
 
@@ -559,6 +563,10 @@ TBD
 - [x] `icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget` - 快速文档等待渲染会话
 - [x] `icu.windea.pls.lang.codeInsight.documentation.CwtDocumentationTarget` - 快速文档等待渲染会话
 - [x] `icu.windea.pls.integrations.ExternalToolDownloadService` - 新增
+- [x] `icu.windea.pls.util.io.ArchiveService` - 新增
+- [x] `icu.windea.pls.util.net.ProxyService` - 新增
+- [x] `icu.windea.pls.util.net.DownloadService` - 新增
+- [x] `icu.windea.pls.images.actions.ConvertImageFormatAction` - 提取内部转换方法，支持在后台执行外部工具
 - [x] `icu.windea.pls.integrations.images.providers.TexconvToolProvider` - 支持自定义路径，默认使用外部工具目录
 - TBD
 
@@ -573,7 +581,12 @@ TBD
 - [x] `icu.windea.pls.integrations.ExternalToolDownloadServiceTest` - `check` 行为
 - [x] `icu.windea.pls.integrations.ExternalToolDownloadTest` - 下载与冒烟测试（Windows/Linux）
 - [x] `icu.windea.pls.integrations.ExternalToolDownloadTestService` - 共享 `build/external-tools`
-- [ ] `icu.windea.pls.integrations.images.ImageToolProviderExternalTest` - 各种策略和格式下的图片格式转换
+- [x] `icu.windea.pls.images.ImageFormatConversionTest` - 各种策略和格式下的图片格式转换
+- [x] `icu.windea.pls.images.actions.ConvertImageFormatActionTest` - 动作级别的图片格式转换
+- [x] `icu.windea.pls.util.io.ArchiveServiceTest` - Zip/TarGz/SevenZip 冒烟
+- [x] `icu.windea.pls.util.net.ProxyServiceTest` - 代理配置解析
+- [x] `icu.windea.pls.util.net.DownloadServiceTest` - 本地 HTTP 下载冒烟
+- [x] `icu.windea.pls.integrations.images.ImageToolProviderExternalTest` - 图片工具冒烟
 - [x] `icu.windea.pls.base.io.ChronicleGitServiceTest` - 本地仓库冒烟与常见场景
 - [x] `icu.windea.pls.base.io.ChronicleSqliteServiceTest` - 临时 SQLite 数据库
 - [ ] `icu.windea.pls.integrations.lints.RunTigerTest` - 待移除（因为已存在 `ExternalToolDownloadTest`）
