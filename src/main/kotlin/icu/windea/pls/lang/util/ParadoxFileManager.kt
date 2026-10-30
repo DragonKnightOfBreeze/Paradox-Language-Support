@@ -12,9 +12,9 @@ import com.intellij.util.io.createDirectories
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.checkCancellation
-import icu.windea.pls.core.formatted
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.core.util.io.clean
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.fileInfo
@@ -42,7 +42,7 @@ object ParadoxFileManager {
         val mainEntry = gameType.metadata.gameMainEntries.firstOrNull()
         val mainEntryPath = if (mainEntry != null) gamePath.resolve(mainEntry) else gamePath
         val resultPath = mainEntryPath.resolve(path)
-        return resultPath.formatted()
+        return resultPath.clean()
     }
 
     fun getFileType(fileGroup: ParadoxFileGroup): FileType? {

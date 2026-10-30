@@ -2,7 +2,7 @@ package icu.windea.pls.images
 
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.core.toPath
+import icu.windea.pls.core.util.io.toPath
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.Assert
 import org.junit.Test

@@ -574,7 +574,7 @@
 - [ ] P4 排序：在 `ParadoxScriptExpressionSupport` 等处，将 `annotate` 方法的顺序移到 `complete` 方法之前
 - [x] P3 重命名：`cancelable` -> `cancellable`
 - [x] P3 重命名：`Cache.cancelable` -> `Cache.asCancellable`
-- [ ] P4 移动：将 `StdlibExtensions.kt` 中的部分方法移到 `icu.windea.pls.core.util.io` 中的 `PathExtensions.kt` 和 `FileExtensions.kt`
+- [x] P4 移动：将 `StdlibExtensions.kt` 中的部分方法移到 `icu.windea.pls.core.util.io` 中的 `PathExtensions.kt` 和 `FileExtensions.kt`（并且移除/补充一些方法）
 - [x] P4 移动：`icu.windea.pls.core.cache` -> `icu.windea.pls.core.util.cache`
 
 ## 按主题 {#by-topic}

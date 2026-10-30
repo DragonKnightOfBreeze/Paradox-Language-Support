@@ -67,6 +67,7 @@ import icu.windea.pls.core.psi.PsiFileService
 import icu.windea.pls.core.sequences.filterIsInstance
 import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.io.toPathOrNull
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.util.values.singletonSetOrEmpty
 import icu.windea.pls.core.util.values.to
@@ -229,7 +230,7 @@ inline operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KP
 
 /** 将文件路径转换为 VirtualFile（可选刷新 VFS）。 */
 fun String.toVirtualFile(refreshIfNeed: Boolean = false): VirtualFile? {
-    val path = this.toPathOrNull() ?: return null
+    val path = toPathOrNull() ?: return null
     return VfsUtil.findFile(path, refreshIfNeed)
 }
 

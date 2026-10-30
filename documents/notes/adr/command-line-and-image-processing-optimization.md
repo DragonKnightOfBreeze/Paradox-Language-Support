@@ -503,16 +503,18 @@ com.intellij.diagnostic.Freeze
 
 #### 2026-10-29 - step 7 - revision
 
+- [ ] `ImageMetadataService` - 考虑同时提供 `getMetadata(...): ImageMetadata` 和 `getMetadataOrNull(...): ImageMetadata?`，同时考虑提取 `ImageMetadataReader`
 - [ ] 不能假定：总是存在外部解压工具的可执行文件路径（如 7z），本地环境总是存在系统代理（如 clash） - 需要结合使用 Assume
 - [ ] `ImageRenderServiceTest` - 需要拆分出 `ParadoxImageServiceTest` 和 `ParadoxImageManager`（并且补充更多）
 - [ ] `LintToolProviderExternalTest` - 主要出于对齐的目的，因为 `Issue396TigerLintTest` 中已经覆盖了（这里仅验证 toolProvider，不验证 inspection）
 - [ ] 为 `IoService` 和 `ImageIoService` 补充测试
+- [ ] 为 `FileExtensions.kt` 和 `PathExtensions.kt` 补充测试
 
 #### 2026-10-30 - step 7 - manual revision
 
 - [x] 重命名：`cancelable` -> `cancellable`
 - [x] P3 重命名：`Cache.cancelable` -> `Cache.asCancellable`
-- [ ] 移动：将 `StdlibExtensions.kt` 中的部分方法移到 `icu.windea.pls.core.util.io` 中的 `PathExtensions.kt` 和 `FileExtensions.kt`
+- [x] 移动：将 `StdlibExtensions.kt` 中的部分方法移到 `icu.windea.pls.core.util.io` 中的 `PathExtensions.kt` 和 `FileExtensions.kt`（并且移除/补充一些方法）
 - [x] 移动：`icu.windea.pls.util` -> `icu.windea.pls.core.util`
 - [x] 移动：将 `ArchiveService` 中的方法 `findExecutable` `makeExecutable` 移到 `PathService`
 - [x] 重命名：`ArchiveOptions` -> `ArchiveOptions`，`DownloadOptions` -> `DownloadOptions`（更符合命名约定）
@@ -563,13 +565,11 @@ com.intellij.diagnostic.Freeze
 - [ ] 外部工具诸如 tiger/magick 可能也适用于 非 Windows/Linux 的 OS，考虑评估，并对应地更新生产和测试代码
   - 现状：不是那么必要，留待后续评估
 
-
 #### 2026-10-30 - step 7
 
 - [ ] 考虑 `ParadoxImageManager` 和 `ParadoxImageService` 的进一步的清理和重构
 - [ ] 考虑将 `ParadoxImageManager.isImageFile` 移动到 `ImageService` 中
 - [ ] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
-- [ ] `ImageMetadataService` - 考虑同时提供 `getMetadata(...): ImageMetadata` 和 `getMetadataOrNull(...): ImageMetadata?`，同时考虑提取 `ImageMetadataReader`
 - [ ] `CommandBasedImageToolProvider.read` - 可能需要考虑如何进行有效的缓存
 
 ### 分析

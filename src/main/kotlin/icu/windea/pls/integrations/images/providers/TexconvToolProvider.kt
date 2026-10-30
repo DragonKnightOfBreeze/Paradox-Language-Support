@@ -7,9 +7,8 @@ import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
-import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancellable
-import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.core.util.io.parsePath
 import icu.windea.pls.integrations.images.ImageToolSettings
 import java.nio.file.Files
 import java.nio.file.Path
@@ -33,8 +32,8 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
     }
 
     override fun getExecutablePath(): Path {
-        val configured = ImageToolSettings.getInstance().texconvPath?.trim()?.orNull()
-        configured?.toPathOrNull()?.let { return it }
+        val configured = ImageToolSettings.getInstance().texconvPath.parsePath()
+        configured?.let { return it }
         return ChronicleDataPathService.getInstance().texconvExePath // actual default value
     }
 

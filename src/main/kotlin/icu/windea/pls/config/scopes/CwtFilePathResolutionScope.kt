@@ -15,8 +15,8 @@ interface CwtFilePathResolutionScope {
      *
      * 例如，`game/common/on_actions` 将会被规范化为 `common/on_actions`。
      */
-    fun String.resolvePath(): String? {
-        if (this.isEmpty()) return null
+    fun String?.resolvePath(): String? {
+        if (isNullOrEmpty()) return null
         val prefixes = CwtConfigConstants.pathPrefixes
         val result = prefixes.firstNotNullOfOrNull { removePrefixOrNull(it) } ?: this
         return result.normalizePath().orNull()?.optimized()
@@ -27,8 +27,8 @@ interface CwtFilePathResolutionScope {
      *
      * 例如，`.txt` 将会被规范化为 `txt`。
      */
-    fun String.resolvePathExtension(): String? {
-        if (this.isEmpty()) return null
+    fun String?.resolvePathExtension(): String? {
+        if (isNullOrEmpty()) return null
         val result = removePrefix(".")
         return result.orNull()?.optimized()
     }

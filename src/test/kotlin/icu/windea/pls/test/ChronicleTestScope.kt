@@ -7,8 +7,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.testFramework.fixtures.CodeInsightTestFixture
-import icu.windea.pls.core.toPath
-import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.core.util.io.toPath
+import icu.windea.pls.core.util.io.toPathOrNull
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxGameType

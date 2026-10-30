@@ -11,7 +11,7 @@ import com.intellij.util.io.fileSizeSafe
 import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.base.settings.ChronicleImageSettings
 import icu.windea.pls.core.checkCancellation
-import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.core.util.io.toPathOrNull
 import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.images.ImageRenderService
 import icu.windea.pls.images.dds.DdsFileType

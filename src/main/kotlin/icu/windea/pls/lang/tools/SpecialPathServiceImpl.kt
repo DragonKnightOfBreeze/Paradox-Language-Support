@@ -5,9 +5,9 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.ide.CopyPasteManager
 import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.ChronicleFacade
-import icu.windea.pls.core.formatted
-import icu.windea.pls.core.toPath
-import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.core.util.io.clean
+import icu.windea.pls.core.util.io.parsePath
+import icu.windea.pls.core.util.io.toPath
 import icu.windea.pls.core.util.system.WindowsRegistryService
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.launch
@@ -50,12 +50,12 @@ class SpecialPathServiceImpl : SpecialPathService, Disposable {
         // 64位系统：查找 WOW6432Node 重定向键
         val key64 = "SOFTWARE\\WOW6432Node\\Valve\\Steam"
         val result64 = WindowsRegistryService.getStringValue(key64, "InstallPath")
-        result64?.toPathOrNull()?.formatted()?.let { return it }
+        result64.parsePath()?.let { return it.clean() }
 
         // 32位系统：查找非重定向键
         val key32 = "SOFTWARE\\WOW6432Node\\Valve\\Steam"
         val result32 = WindowsRegistryService.getStringValue(key32, "InstallPath")
-        result32?.toPathOrNull()?.formatted()?.let { return it }
+        result32?.parsePath()?.let { return it.clean() }
 
         return null
     }
@@ -71,7 +71,7 @@ class SpecialPathServiceImpl : SpecialPathService, Disposable {
             home.resolve(Path(".var", "app", "com.valvesoftware.Steam", ".local", "share", "Steam")),
         )
         val result = candidates.firstOrNull { it.isDirectory() } ?: candidates.first()
-        return result.formatted()
+        return result.clean()
     }
 
     override fun getSteamGamePath(steamId: String, gameName: String): Path? {
@@ -90,7 +90,7 @@ class SpecialPathServiceImpl : SpecialPathService, Disposable {
         val steamPath = getSteamPath() ?: return null
         for (library in resolveLibraryFolders(steamPath)) {
             val gamePath = library.resolve("steamapps").resolve("common").resolve(gameName)
-            if (gamePath.isDirectory()) return gamePath.formatted()
+            if (gamePath.isDirectory()) return gamePath.clean()
         }
         return null
     }
@@ -99,12 +99,12 @@ class SpecialPathServiceImpl : SpecialPathService, Disposable {
         // 64位系统：查找 WOW6432Node 重定向键
         val key64 = "SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App $steamId"
         val result64 = WindowsRegistryService.getStringValue(key64, "InstallLocation")
-        result64?.toPathOrNull()?.formatted()?.let { return it }
+        result64.parsePath()?.let { return it.clean() }
 
         // 32位系统：查找非重定向键
         val key32 = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App $steamId"
         val result32 = WindowsRegistryService.getStringValue(key32, "InstallLocation")
-        result32?.toPathOrNull()?.formatted()?.let { return it }
+        result32.parsePath()?.let { return it.clean() }
 
         return null
     }
@@ -123,7 +123,7 @@ class SpecialPathServiceImpl : SpecialPathService, Disposable {
         // 扫描各库目录，Workshop 内容与游戏本体位于同一库目录下
         for (library in resolveLibraryFolders(steamPath)) {
             val workshopPath = library.resolve("steamapps").resolve("workshop").resolve("content").resolve(steamId)
-            if (workshopPath.isDirectory()) return workshopPath.formatted()
+            if (workshopPath.isDirectory()) return workshopPath.clean()
         }
         return null
     }
@@ -141,7 +141,7 @@ class SpecialPathServiceImpl : SpecialPathService, Disposable {
             for (match in regex.findAll(content)) {
                 // VDF 中路径分隔符以 \\ 转义，需要反转义
                 val raw = match.groupValues[1].replace("\\\\", "\\")
-                raw.toPathOrNull()?.formatted()?.let { path ->
+                raw.parsePath()?.clean()?.let { path ->
                     if (path != steamPath) libraries.add(path)
                 }
             }
@@ -165,7 +165,7 @@ class SpecialPathServiceImpl : SpecialPathService, Disposable {
 
     private fun resolveGameDataPathForWindows(gameType: ParadoxGameType): Path {
         val home = System.getProperty("user.home").toPath()
-        return home.resolve(Path("Documents", "Paradox Interactive", gameType.title)).formatted()
+        return home.resolve(Path("Documents", "Paradox Interactive", gameType.title)).clean()
     }
 
     private fun resolveGameDataPathForLinux(gameType: ParadoxGameType): Path {
@@ -177,7 +177,7 @@ class SpecialPathServiceImpl : SpecialPathService, Disposable {
             home.resolve(Path(".paradoxinteractive", gameType.title)),
         )
         val result = candidates.firstOrNull { it.isDirectory() } ?: candidates.first()
-        return result.formatted()
+        return result.clean()
     }
 
     override fun openPath(path: Path) {

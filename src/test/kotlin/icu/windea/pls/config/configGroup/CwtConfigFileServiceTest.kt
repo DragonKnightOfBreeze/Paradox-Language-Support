@@ -3,7 +3,7 @@ package icu.windea.pls.config.configGroup
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.core.util.io.toPathOrNull
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.Assert

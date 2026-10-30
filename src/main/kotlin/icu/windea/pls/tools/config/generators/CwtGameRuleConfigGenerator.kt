@@ -8,9 +8,9 @@ import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.match.CwtTemplateMatchService
 import icu.windea.pls.core.collections.CaseInsensitiveStringSet
-import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.io.toFile
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.cwt.psi.CwtElementFactory

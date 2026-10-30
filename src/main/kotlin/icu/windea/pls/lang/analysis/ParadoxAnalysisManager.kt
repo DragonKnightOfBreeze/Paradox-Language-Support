@@ -21,8 +21,8 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.runSmartReadAction
-import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.core.util.io.toPathOrNull
 import icu.windea.pls.core.util.values.LazyValue
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.analysis.ParadoxAnalysisDataManager.markedFileInfo

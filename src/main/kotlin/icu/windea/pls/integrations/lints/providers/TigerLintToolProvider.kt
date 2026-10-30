@@ -4,8 +4,7 @@ import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
-import icu.windea.pls.core.orNull
-import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.core.util.io.parsePath
 import icu.windea.pls.integrations.lints.LintToolSettings
 import icu.windea.pls.integrations.lints.TigerLintRequest
 import icu.windea.pls.integrations.lints.TigerLintResult
@@ -24,9 +23,8 @@ import kotlin.io.path.nameWithoutExtension
 abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
     abstract val name: String
     abstract val forGameType: ParadoxGameType
-
-    protected abstract val executablePathText: String?
-    protected abstract val confPathText: String?
+    abstract val configuredExecutablePath: Path?
+    abstract val configuredConfPath: Path?
 
     final override fun isEnabled(): Boolean {
         return LintToolSettings.getInstance().enableTiger
@@ -37,7 +35,7 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
     }
 
     final override fun getExecutablePath(): Path? {
-        executablePathText?.toPathOrNull()?.let { return it }
+        configuredExecutablePath?.let { return it }
         return null // by default null
     }
 
@@ -48,7 +46,7 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
     }
 
     fun getConfPath(): Path? {
-        confPathText?.toPathOrNull()?.let { return it }
+        configuredConfPath?.let { return it }
         return null // by default null
     }
 
@@ -106,35 +104,35 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
     class Ck3 : TigerLintToolProvider() {
         override val name = "ck3-tiger"
         override val forGameType = ParadoxGameType.Ck3
-        override val executablePathText get() = LintToolSettings.getInstance().ck3TigerPath?.trim()?.orNull()
-        override val confPathText get() = LintToolSettings.getInstance().ck3TigerConfPath?.trim()?.orNull()
+        override val configuredExecutablePath get() = LintToolSettings.getInstance().ck3TigerPath.parsePath()
+        override val configuredConfPath get() = LintToolSettings.getInstance().ck3TigerConfPath.parsePath()
     }
 
     class Eu5 : TigerLintToolProvider() {
         override val name: String = "eu5-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Eu5
-        override val executablePathText get() = LintToolSettings.getInstance().eu5TigerPath?.trim()?.orNull()
-        override val confPathText get() = LintToolSettings.getInstance().eu5TigerConfPath?.trim()?.orNull()
+        override val configuredExecutablePath get() = LintToolSettings.getInstance().eu5TigerPath.parsePath()
+        override val configuredConfPath get() = LintToolSettings.getInstance().eu5TigerConfPath.parsePath()
     }
 
     class Hoi4 : TigerLintToolProvider() {
         override val name: String = "hoi4-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Hoi4
-        override val executablePathText get() = LintToolSettings.getInstance().hoi4TigerPath?.trim()?.orNull()
-        override val confPathText get() = LintToolSettings.getInstance().hoi4TigerConfPath?.trim()?.orNull()
+        override val configuredExecutablePath get() = LintToolSettings.getInstance().hoi4TigerPath.parsePath()
+        override val configuredConfPath get() = LintToolSettings.getInstance().hoi4TigerConfPath.parsePath()
     }
 
     class Ir : TigerLintToolProvider() {
         override val name: String = "imperator-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Ir
-        override val executablePathText get() = LintToolSettings.getInstance().irTigerPath?.trim()?.orNull()
-        override val confPathText get() = LintToolSettings.getInstance().irTigerConfPath?.trim()?.orNull()
+        override val configuredExecutablePath get() = LintToolSettings.getInstance().irTigerPath.parsePath()
+        override val configuredConfPath get() = LintToolSettings.getInstance().irTigerConfPath.parsePath()
     }
 
     class Vic3 : TigerLintToolProvider() {
         override val name: String = "vic3-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Vic3
-        override val executablePathText get() = LintToolSettings.getInstance().vic3TigerPath?.trim()?.orNull()
-        override val confPathText get() = LintToolSettings.getInstance().vic3TigerConfPath?.trim()?.orNull()
+        override val configuredExecutablePath get() = LintToolSettings.getInstance().vic3TigerPath.parsePath()
+        override val configuredConfPath get() = LintToolSettings.getInstance().vic3TigerConfPath.parsePath()
     }
 }

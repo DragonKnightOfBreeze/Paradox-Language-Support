@@ -2,8 +2,6 @@ package icu.windea.pls.core
 
 import org.junit.Assert
 import org.junit.Test
-import java.io.File
-import java.nio.file.Path
 
 class StdlibExtensionsTest {
     // region isIdentifierChar
@@ -514,35 +512,13 @@ class StdlibExtensionsTest {
 
     // endregion
 
-    // region path / file / url conversions
-
-    @Test
-    fun toFile_toPath_test() {
-        Assert.assertEquals(File("foo/bar.txt"), "foo/bar.txt".toFile())
-        Assert.assertEquals(Path.of("foo/bar.txt"), "foo/bar.txt".toPath())
-        Assert.assertEquals(File("foo/bar.txt"), "foo/bar.txt".toFileOrNull())
-        Assert.assertEquals(Path.of("foo/bar.txt"), "foo/bar.txt".toPathOrNull())
-    }
-
-    @Test
-    fun toPathOrNull_invalid_test() {
-        // NUL 字符无法构成路径
-        Assert.assertNull("\u0000".toPathOrNull())
-    }
+    // region conversions
 
     @Test
     fun toFileUrl_and_urlRoundTrip_test() {
         val url = "foo/bar.png".toFileUrl()
         Assert.assertTrue(url.toString().startsWith("file:"))
         Assert.assertTrue(url.toString().contains("foo/bar.png"))
-        Assert.assertEquals(url.toFile().toPath(), url.toPath())
-    }
-
-    @Test
-    fun path_formatted_test() {
-        val formatted = Path.of("a", "b", "c").formatted()
-        Assert.assertTrue(formatted.isAbsolute)
-        Assert.assertEquals("c", formatted.fileName.toString())
     }
 
     // endregion

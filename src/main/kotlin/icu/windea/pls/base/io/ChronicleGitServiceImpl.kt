@@ -7,7 +7,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
 import icu.windea.pls.core.runCatchingCancellable
-import icu.windea.pls.core.toPath
+import icu.windea.pls.core.util.io.toPath
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.time.Duration

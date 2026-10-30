@@ -26,7 +26,7 @@ import icu.windea.pls.core.getCurrentProject
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.runCatchingCancellable
-import icu.windea.pls.core.toPath
+import icu.windea.pls.core.util.io.toPath
 import icu.windea.pls.lang.listeners.CwtConfigDirectoriesListener
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Deferred

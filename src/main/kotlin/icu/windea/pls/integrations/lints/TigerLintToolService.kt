@@ -13,13 +13,12 @@ import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.base.settings.ChronicleProfilesSettings
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.collections.findIsInstance
-import icu.windea.pls.core.orNull
-import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toUuidString
 import icu.windea.pls.core.util.MergedModificationTracker
 import icu.windea.pls.core.util.cache.CacheBuilder
 import icu.windea.pls.core.util.cache.TrackingCache
 import icu.windea.pls.core.util.cache.trackedBy
+import icu.windea.pls.core.util.io.parsePath
 import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.lints.providers.TigerLintToolProvider
 import icu.windea.pls.lang.ParadoxLanguage
@@ -79,7 +78,7 @@ class TigerLintToolService : Disposable {
         val workingDirectory = executablePath.parent ?: return null
         val rootFile = rootInfo.rootFile
         val modSettings = ChronicleProfilesSettings.getInstance().state.modSettings.get(rootFile.path)
-        val gamePath = modSettings?.finalGameDirectory?.orNull()?.toPathOrNull()
+        val gamePath = modSettings?.finalGameDirectory.parsePath()
         val modDescriptorPath = rootInfo.metadata.infoPath // `descriptor.mod` or `.metadata/metadata.json`
         val modPath = modDescriptorPath ?: rootFile.toNioPathOrNull() ?: return null
         val outputUuid = rootFile.url.toUuidString()

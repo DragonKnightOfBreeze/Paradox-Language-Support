@@ -24,12 +24,10 @@ object IoService {
     ): Long {
         // `.bufferred()` is not necessary and suggested in this implementation
 
-        val source = sourcePath.toAbsolutePath().normalize()
-        val target = targetPath.toAbsolutePath().normalize()
-        if (source == target) return -1
-        target.parent?.createDirectories()
-        return source.inputStream().use { inputStream ->
-            target.outputStream().use { outputStream ->
+        if (sourcePath.clean() == targetPath.clean()) return -1
+        targetPath.parent?.createDirectories()
+        return sourcePath.inputStream().use { inputStream ->
+            targetPath.outputStream().use { outputStream ->
                 copy(inputStream, outputStream, bufferSize, cancellationThreshold)
             }
         }

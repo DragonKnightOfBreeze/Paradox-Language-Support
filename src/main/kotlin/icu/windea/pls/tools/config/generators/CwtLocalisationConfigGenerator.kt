@@ -7,9 +7,9 @@ import icu.windea.pls.config.config.delegated.CwtLocalisationCommandConfig
 import icu.windea.pls.config.config.delegated.CwtLocalisationPromotionConfig
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.CaseInsensitiveStringSet
-import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.io.toFile
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.cwt.psi.CwtBlock

@@ -10,9 +10,9 @@ import icu.windea.pls.config.documentation
 import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.isIdentifier
 import icu.windea.pls.core.removeSurroundingOrNull
-import icu.windea.pls.core.toFile
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.io.toFile
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.cwt.psi.CwtElementFactory

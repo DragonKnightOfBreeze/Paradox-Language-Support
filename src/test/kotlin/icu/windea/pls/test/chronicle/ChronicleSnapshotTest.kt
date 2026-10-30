@@ -3,7 +3,7 @@ package icu.windea.pls.test.chronicle
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.normalizePath
-import icu.windea.pls.core.toPath
+import icu.windea.pls.core.util.io.toPath
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope

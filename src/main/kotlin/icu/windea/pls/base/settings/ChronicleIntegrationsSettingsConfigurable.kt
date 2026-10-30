@@ -15,9 +15,8 @@ import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.base.help.ChronicleHelpTopics
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.options.OptionsService
-import icu.windea.pls.core.orNull
-import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.util.CallbackLock
+import icu.windea.pls.core.util.io.parsePath
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.integrations.images.ImageToolConstants
 import icu.windea.pls.integrations.images.ImageToolProvider
@@ -183,16 +182,14 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBas
         // Image Tools
 
         fun validateTexconvPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
-            val pathText = button.text.trim().orNull() ?: return null
-            val path = pathText.toPathOrNull() ?: return null
+            val path = button.text.parsePath() ?: return null
             val tool = ImageToolProvider.EP_NAME.findExtension(TexconvToolProvider::class.java) ?: return null
             if (tool.validateExecutablePath(path)) return null
             return builder.warning(ChronicleBaseBundle.message("settings.integrations.validation.invalidPath"))
         }
 
         fun validateMagickPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton): ValidationInfo? {
-            val pathText = button.text.trim().orNull() ?: return null
-            val path = pathText.toPathOrNull() ?: return null
+            val path = button.text.parsePath() ?: return null
             val tool = ImageToolProvider.EP_NAME.findExtension(MagickToolProvider::class.java) ?: return null
             if (tool.validateExecutablePath(path)) return null
             return builder.warning(ChronicleBaseBundle.message("settings.integrations.validation.invalidPath"))
@@ -218,8 +215,7 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBas
         }
 
         fun validateTigerPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton, gameType: ParadoxGameType): ValidationInfo? {
-            val pathText = button.text.trim().orNull() ?: return null
-            val path = pathText.toPathOrNull() ?: return null
+            val path = button.text.parsePath() ?: return null
             val tool = LintToolProvider.EP_NAME.extensionList.findIsInstance<TigerLintToolProvider> { it.isAvailable(gameType) } ?: return null
             if (tool.validateExecutablePath(path)) return null
             return builder.warning(ChronicleBaseBundle.message("settings.integrations.lint.tigerPath.invalid"))
@@ -227,8 +223,7 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBas
 
         @Suppress("UNUSED_PARAMETER")
         fun validateTigerConfPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton, gameType: ParadoxGameType): ValidationInfo? {
-            val pathText = button.text.trim().orNull() ?: return null
-            val path = pathText.toPathOrNull() ?: return null
+            val path = button.text.parsePath() ?: return null
             val tool = LintToolProvider.EP_NAME.extensionList.findIsInstance<TigerLintToolProvider> { it.isAvailable(gameType) } ?: return null
             if (tool.validateConfPath(path)) return null
             return builder.warning(ChronicleBaseBundle.message("settings.integrations.lint.tigerConfPath.invalid"))

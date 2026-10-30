@@ -8,7 +8,7 @@ import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
 import icu.windea.pls.base.settings.ChronicleProfilesSettings
 import icu.windea.pls.base.settings.ParadoxModDescriptorSettingsState
 import icu.windea.pls.base.settings.ParadoxModSettingsState
-import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.core.util.io.toPathOrNull
 import icu.windea.pls.ep.analysis.ParadoxDescriptorModBasedModMetadataProvider
 import icu.windea.pls.integrations.ExternalToolDownloadTestService
 import icu.windea.pls.integrations.lints.TigerLintToolService

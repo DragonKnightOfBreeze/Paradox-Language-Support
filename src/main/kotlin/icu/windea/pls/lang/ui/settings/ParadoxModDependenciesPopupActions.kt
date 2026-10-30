@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.toPathOrNull
+import icu.windea.pls.core.util.io.parsePath
 import icu.windea.pls.lang.actions.HandlePathActionBase
 import icu.windea.pls.lang.actions.HandleUrlActionBase
 import icu.windea.pls.lang.tools.SpecialUrlService
@@ -20,7 +20,7 @@ interface ParadoxModDependenciesPopupActions {
 
         override fun getTargetPath(e: AnActionEvent): Path? {
             val selectedItem = table.getSelectedItem() ?: return null
-            return selectedItem.modDirectory?.orNull()?.toPathOrNull()
+            return selectedItem.modDirectory.parsePath()
         }
     }
 
@@ -45,7 +45,7 @@ interface ParadoxModDependenciesPopupActions {
 
         override fun getTargetPath(e: AnActionEvent): Path? {
             val selectedItem = table.getSelectedItem() ?: return null
-            return selectedItem.modDirectory?.orNull()?.toPathOrNull()
+            return selectedItem.modDirectory.parsePath()
         }
     }
 

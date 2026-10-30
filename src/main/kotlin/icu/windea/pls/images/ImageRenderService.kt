@@ -148,7 +148,7 @@ class ImageRenderService : Disposable {
         val targetPath = request.targetPath
         if (sourcePath == targetPath) return targetPath
         val targetParent = targetPath.parent
-        if (targetParent != null) Files.createDirectories(targetParent)
+        if (targetParent != null) targetParent.createDirectories()
 
         try {
             ProgressManager.checkCanceled()

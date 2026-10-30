@@ -2,7 +2,7 @@ package icu.windea.pls.test
 
 import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.core.toDelimitedList
-import icu.windea.pls.core.toPath
+import icu.windea.pls.core.util.io.toPath
 import java.io.File
 import java.nio.file.Path
 

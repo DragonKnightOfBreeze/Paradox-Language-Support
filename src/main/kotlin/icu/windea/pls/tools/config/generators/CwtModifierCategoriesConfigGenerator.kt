@@ -7,10 +7,10 @@ import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.CaseInsensitiveStringSet
 import icu.windea.pls.core.quoteIfNeeded
 import icu.windea.pls.core.text.QuotePatterns
-import icu.windea.pls.core.toFile
 import icu.windea.pls.core.unquote
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getValue
+import icu.windea.pls.core.util.io.toFile
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.cwt.psi.CwtElementFactory

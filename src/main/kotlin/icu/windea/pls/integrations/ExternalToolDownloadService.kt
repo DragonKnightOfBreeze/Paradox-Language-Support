@@ -8,6 +8,7 @@ import icu.windea.pls.core.util.io.ArchiveOptions
 import icu.windea.pls.core.util.io.ArchiveService
 import icu.windea.pls.core.util.io.ArchiveType
 import icu.windea.pls.core.util.io.PathService
+import icu.windea.pls.core.util.io.clean
 import icu.windea.pls.core.util.net.DownloadOptions
 import icu.windea.pls.core.util.net.DownloadService
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +16,7 @@ import kotlinx.coroutines.withContext
 import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
 
 /**
@@ -53,8 +55,8 @@ class ExternalToolDownloadService {
         archiveOptions: ArchiveOptions = ArchiveOptions.DEFAULT,
     ): Path {
         require(check(targetDirectory)) { "Target directory must be empty or nonexistent: $targetDirectory" }
-        val root = targetDirectory.toAbsolutePath().normalize()
-        withContext(Dispatchers.IO) { Files.createDirectories(root) }
+        val root = targetDirectory.clean()
+        withContext(Dispatchers.IO) { root.createDirectories() }
         val downloadPath = root.resolve(descriptor.fileName)
 
         return reportProgressScope(2) { reporter ->
