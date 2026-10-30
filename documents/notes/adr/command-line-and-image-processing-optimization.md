@@ -525,6 +525,8 @@ com.intellij.diagnostic.Freeze
 - [x] 引入扩展方法：`InputStream.asCancellable()` `OutputStream.asCancellable()`
 - [x] 提取 `IoService` 和 `ImageIoService`，其中的 IO 读写方法支持取消检查
 - [x] 清理和优化 IO 读写的相关代码
+- [x] 将 `icu.windea.pls.images.ImageFrameInfo` 移到 `icu.windea.pls.core.util.ImageFrameInfo`（对齐 `RangeInfo` 和 `Template`，以后可能还会新增 `ImageLayerInfo` 等）
+- [x] 将方法 `scaleImage` `sliceImage` 从 `ImageService` 移动到 `ImageIoService`（因为它们不依赖于 imageSession/imageRequest）
 
 #### 2026-10-30 - step 7 - post doc
 
@@ -542,8 +544,8 @@ com.intellij.diagnostic.Freeze
 - [x] ~~考虑将 `icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext` 移到 `icu.windea.pls.lang.codeInsight.hints.InlayHintsContext`~~
   - 与 `DocumentationContext` 对齐 + 移出属性 `settings`（因为这是语义相关的）
   - 结论：目前没有必要
-- [x] ~~由于模块依赖问题，`icu.windea.pls.images.ImageFrameInfo` 可能需要移到 `icu.windea.pls` 中的某个子包下~~
-  - 结论：目前没有必要
+- [x] 由于模块依赖问题，`icu.windea.pls.images.ImageFrameInfo` 可能需要移到 `icu.windea.pls` 中的某个子包下
+  - 结论：移动到 `icu.windea.pls.core.util.ImageFrameInfo`
 - [x] 新增 `ParadoxImageService`，将 `ParadoxImageManager` 中的具体解析逻辑移到 `ParadoxImageService`
 - [x] 新增 `ParadoxImageResolveResult`，目前包含来源路径、缓存路径、帧数信息和尺寸限制；实际加载图片的逻辑仍留在渲染/展示层
 

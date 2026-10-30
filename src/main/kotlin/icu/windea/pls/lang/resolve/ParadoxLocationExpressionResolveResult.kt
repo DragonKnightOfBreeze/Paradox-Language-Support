@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import icu.windea.pls.config.configExpression.CwtImageLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
 import icu.windea.pls.config.configExpression.CwtLocationExpression
-import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.core.util.ImageFrameInfo
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 
 /**

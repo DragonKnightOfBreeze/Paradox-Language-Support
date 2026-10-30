@@ -1,16 +1,17 @@
-package icu.windea.pls.images
+package icu.windea.pls.core.util
 
 import java.util.*
 
 /**
  * 图片的帧数信息，用于切分图片。
  *
- * @property frame 当前帧数。如果小于等于0，或者大于总帧数，则视为未指定。
- * @property frames 总帧数。如果小于等于0，则视为未指定。
+ * @property frame 当前帧数。如果小于等于 0，或者大于总帧数，则视为未指定。
+ * @property frames 总帧数。如果小于等于 0，则视为未指定。
  */
-class ImageFrameInfo private constructor(
+@ConsistentCopyVisibility
+data class ImageFrameInfo private constructor(
     val frame: Int,
-    val frames: Int
+    val frames: Int,
 ) {
     fun canApply(): Boolean {
         return frame > 0 && frames > 1 && frame <= frames

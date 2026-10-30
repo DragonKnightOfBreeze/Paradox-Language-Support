@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.resolve
 
-import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.core.util.ImageFrameInfo
 import icu.windea.pls.images.ImageRenderRequest
 import java.nio.file.Path
 
@@ -29,7 +29,7 @@ class ParadoxImageResolveResult(
         get() = targetPath != sourcePath
 
     /**
-     * 转换为基础设施层的渲染请求。
+     * 转换为渲染请求。
      */
     fun toRenderRequest(): ImageRenderRequest {
         return ImageRenderRequest(sourcePath, targetPath, frameInfo, maxWidth, maxHeight)

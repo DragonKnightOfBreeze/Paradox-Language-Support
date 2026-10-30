@@ -1,5 +1,6 @@
 package icu.windea.pls.images
 
+import icu.windea.pls.core.util.ImageFrameInfo
 import java.nio.file.Path
 
 /**

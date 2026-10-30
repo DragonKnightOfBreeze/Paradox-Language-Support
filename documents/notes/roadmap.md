@@ -576,6 +576,7 @@
 - [x] P3 重命名：`Cache.cancelable` -> `Cache.asCancellable`
 - [x] P4 移动：将 `StdlibExtensions.kt` 中的部分方法移到 `icu.windea.pls.core.util.io` 中的 `PathExtensions.kt` 和 `FileExtensions.kt`（并且移除/补充一些方法）
 - [x] P4 移动：`icu.windea.pls.core.cache` -> `icu.windea.pls.core.util.cache`
+- [x] P4 移动：将 `icu.windea.pls.images.ImageFrameInfo` 移到 `icu.windea.pls.core.util.ImageFrameInfo`（对齐 `RangeInfo` 和 `Template`，以后可能还会新增 `ImageLayerInfo` 等）
 
 ## 按主题 {#by-topic}
 

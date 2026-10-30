@@ -20,7 +20,7 @@ import icu.windea.pls.core.ui.UiService
 import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.core.unescape
 import icu.windea.pls.core.util.DefaultStrings
-import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.core.util.ImageFrameInfo
 import icu.windea.pls.images.ImageMetadataService
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.highlighting.ParadoxSemanticHighlighterColors

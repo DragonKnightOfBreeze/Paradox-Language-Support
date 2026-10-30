@@ -13,7 +13,7 @@ import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toUUID
-import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.core.util.ImageFrameInfo
 import icu.windea.pls.images.ImageService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo

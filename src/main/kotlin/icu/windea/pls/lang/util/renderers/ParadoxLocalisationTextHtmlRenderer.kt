@@ -15,7 +15,7 @@ import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.core.unescape
 import icu.windea.pls.core.util.DefaultStrings
-import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.core.util.ImageFrameInfo
 import icu.windea.pls.images.ImageMetadataService
 import icu.windea.pls.lang.getDocumentationFontSize
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
