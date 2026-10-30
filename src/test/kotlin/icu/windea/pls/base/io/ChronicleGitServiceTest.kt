@@ -28,7 +28,7 @@ class ChronicleGitServiceTest : BasePlatformTestCase() {
     private val root = Path.of("build/tmp/base-io-git-test")
 
     @Before
-    fun setUpRoot() {
+    fun doSetUp() {
         assumeGitAvailable()
         root.toFile().deleteRecursively()
         root.createDirectories()

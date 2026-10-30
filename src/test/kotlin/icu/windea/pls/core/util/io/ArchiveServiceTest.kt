@@ -5,7 +5,6 @@ import org.apache.commons.compress.archivers.sevenz.SevenZOutputFile
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
-import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -23,17 +22,12 @@ import kotlin.io.path.readText
  */
 @RunWith(JUnit4::class)
 class ArchiveServiceTest {
-    private val root: Path = Path.of("build/tmp/archieve-service-test")
+    private val root = Path.of("build/tmp/archieve-service-test")
 
     @Before
     fun setUp() {
         root.toFile().deleteRecursively()
         root.createDirectories()
-    }
-
-    @After
-    fun tearDown() {
-        root.toFile().deleteRecursively()
     }
 
     @Test

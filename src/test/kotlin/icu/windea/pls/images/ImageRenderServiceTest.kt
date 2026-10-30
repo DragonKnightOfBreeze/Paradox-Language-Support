@@ -11,6 +11,7 @@ import icu.windea.pls.model.policies.ImageRenderFailurePolicy
 import icu.windea.pls.model.policies.ImageRenderPolicy
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -27,9 +28,17 @@ import kotlin.io.path.createDirectories
  */
 @RunWith(JUnit4::class)
 class ImageRenderServiceTest : BasePlatformTestCase() {
+    private val root = Path.of("build/tmp/image-render-service-test")
+
+    @Before
+    fun doSetUp() {
+        root.toFile().deleteRecursively()
+        root.createDirectories()
+    }
+
     @Test
     fun renderImage_test() {
-        val dir = testDirectory()
+        val dir = root
         val source = dir.resolve("source.png")
         val target = dir.resolve("target.png")
         Files.deleteIfExists(target)
@@ -50,7 +59,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
 
     @Test
     fun requestImageRender_test() {
-        val dir = testDirectory()
+        val dir = root
         val source = dir.resolve("request-source.png")
         val target = dir.resolve("request-target.png")
         Files.deleteIfExists(target)
@@ -72,7 +81,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
 
     @Test
     fun renderSession_test() = runBlocking {
-        val dir = testDirectory()
+        val dir = root
         val source = dir.resolve("session-source.png")
         val target = dir.resolve("session-target.png")
         Files.deleteIfExists(target)
@@ -129,7 +138,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
 
     @Test
     fun resolveUrl_asyncRenderPolicy_test() {
-        val dir = testDirectory()
+        val dir = root
         val source = dir.resolve("async-source.png")
         val target = dir.resolve("async-target.png")
         Files.deleteIfExists(target)
@@ -148,7 +157,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
 
     @Test
     fun resolveUrl_usesSettingsRenderPolicy_test() {
-        val dir = testDirectory()
+        val dir = root
         val source = dir.resolve("settings-async-source.png")
         val target = dir.resolve("settings-async-target.png")
         Files.deleteIfExists(target)
@@ -172,7 +181,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
 
     @Test
     fun resolveUrl_explicitSyncOverridesSettings_test() {
-        val dir = testDirectory()
+        val dir = root
         val source = dir.resolve("sync-source.png")
         val target = dir.resolve("sync-target.png")
         Files.deleteIfExists(target)
@@ -244,7 +253,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
     }
 
     private fun createBrokenRequest(name: String): ImageRenderRequest {
-        val dir = testDirectory()
+        val dir = root
         val source = dir.resolve("$name-source.png")
         val target = dir.resolve("$name-target.png")
         Files.write(source, "not an image".toByteArray())
@@ -267,10 +276,6 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         } finally {
             settings.renderFailurePolicy = oldPolicy
         }
-    }
-
-    private fun testDirectory(): Path {
-        return Path.of("build", "tmp", "image-render-service-test").also { it.createDirectories() }
     }
 
     @Suppress("SameParameterValue")

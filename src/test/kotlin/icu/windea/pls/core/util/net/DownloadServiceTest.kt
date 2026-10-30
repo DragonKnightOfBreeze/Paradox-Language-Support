@@ -2,7 +2,6 @@ package icu.windea.pls.core.util.net
 
 import com.sun.net.httpserver.HttpServer
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -22,17 +21,12 @@ import kotlin.time.Duration.Companion.seconds
  */
 @RunWith(JUnit4::class)
 class DownloadServiceTest  {
-    private val root: Path = Path.of("build/tmp/download-service-test")
+    private val root = Path.of("build/tmp/download-service-test")
 
     @Before
     fun setUp() {
         root.toFile().deleteRecursively()
         root.createDirectories()
-    }
-
-    @After
-    fun tearDown() {
-        root.toFile().deleteRecursively()
     }
 
     @Test

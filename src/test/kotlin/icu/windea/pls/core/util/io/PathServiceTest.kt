@@ -1,6 +1,5 @@
 package icu.windea.pls.core.util.io
 
-import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -19,17 +18,12 @@ import kotlin.test.assertTrue
  * @see PathService
  */
 class PathServiceTest {
-    private val root: Path = Path.of("build/tmp/path-service-test")
+    private val root = Path.of("build/tmp/path-service-test")
 
     @Before
     fun setUp() {
         root.toFile().deleteRecursively()
         root.createDirectories()
-    }
-
-    @After
-    fun tearDown() {
-        root.toFile().deleteRecursively()
     }
 
     @Test

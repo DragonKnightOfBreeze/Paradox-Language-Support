@@ -1,6 +1,7 @@
 package icu.windea.pls.integrations
 
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -16,9 +17,17 @@ import kotlin.io.path.deleteIfExists
 class ExternalToolDownloadServiceTest {
     private val service = ExternalToolDownloadService()
 
+    private val root = Path.of("build/tmp/external-tool-download-service-test")
+
+    @Before
+    fun setUp() {
+        root.toFile().deleteRecursively()
+        root.createDirectories()
+    }
+
     @Test
     fun check_nullOrMissing_test() {
-        val dir = testDirectory().resolve("missing")
+        val dir = root.resolve("missing")
         Files.deleteIfExists(dir)
         Assert.assertTrue(service.check(null))
         Assert.assertTrue(service.check(dir))
@@ -26,7 +35,7 @@ class ExternalToolDownloadServiceTest {
 
     @Test
     fun check_empty_test() {
-        val dir = testDirectory().resolve("empty").also {
+        val dir = root.resolve("empty").also {
             it.deleteIfExists()
             it.createDirectories()
         }
@@ -38,9 +47,5 @@ class ExternalToolDownloadServiceTest {
         Files.writeString(file, "not empty")
         Assert.assertFalse(service.check(file))
         Assert.assertFalse(service.check(dir))
-    }
-
-    private fun testDirectory(): Path {
-        return Path.of("build", "tmp", "external-tool-download-service-test").also { it.createDirectories() }
     }
 }
