@@ -6,7 +6,11 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Function
 
 /**
- * 追踪缓存。通过 [modificationTrackerProvider] 获取用于追踪值的更改的 [ModificationTracker]。
+ * 追踪缓存。
+ *
+ * 通过 [modificationTrackerProvider] 获取用于追踪值的更改的 [ModificationTracker]。
+ *
+ * 参见：[Cache.trackedBy][trackedBy]
  *
  * @see ModificationTracker
  */

@@ -7,7 +7,7 @@ import com.intellij.util.concurrency.annotations.RequiresReadLock
 import icu.windea.pls.core.runCatchingCancellable
 import java.io.IOException
 import java.io.InputStream
-import javax.imageio.ImageIO.*
+import javax.imageio.ImageIO
 
 object TgaMetadataReader {
     @RequiresReadLock(generateAssertion = false)
@@ -38,9 +38,9 @@ object TgaMetadataReader {
 
     private fun readInternal(inputStream: InputStream): TgaMetadata {
         // org.intellij.images.util.ImageInfoReader.read
-        setUseCache(false)
-        createImageInputStream(inputStream).use { iis ->
-            getImageReaders(iis).forEach { reader ->
+        ImageIO.setUseCache(false)
+        ImageIO.createImageInputStream(inputStream).use { iis ->
+            ImageIO.getImageReaders(iis).forEach { reader ->
                 reader.setInput(iis, true)
                 val width = reader.getWidth(0)
                 val height = reader.getHeight(0)

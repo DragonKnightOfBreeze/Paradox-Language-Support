@@ -18,7 +18,7 @@ import java.nio.file.Path
  * @property version 版本。可以为空。
  * @property info 元数据信息。可以为空。
  * @property infoPath 元数据的路径。可以为空。
- * @property infoPresentablePath 用于显示的元数据的路径。相对于根目录，并使用 `/` 作为路径分隔符。
+ * @property infoPresentablePath 用于展示的元数据的路径。相对于根目录，并使用 `/` 作为路径分隔符。
  *
  * @see ParadoxRootInfo
  * @see ParadoxRootMetadataInfo

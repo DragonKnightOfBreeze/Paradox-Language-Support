@@ -33,7 +33,7 @@ class CachesTest {
 
     @Test
     fun cancellableCache_pceRethrown_test() {
-        val cache = CacheBuilder().build<String, Int>().cancellable()
+        val cache = CacheBuilder().build<String, Int>().asCancellable()
         Assert.assertEquals(1, cache.get("a") { 1 })
         Assert.assertThrows(ProcessCanceledException::class.java) {
             cache.get("b") { throw ProcessCanceledException() }
@@ -42,7 +42,7 @@ class CachesTest {
 
     @Test
     fun cancellableLoadingCache_pceRethrown_test() {
-        val cache = CacheBuilder().build<String, Int> { k -> k.length }.cancellable()
+        val cache = CacheBuilder().build<String, Int> { k -> k.length }.asCancellable()
         Assert.assertEquals(3, cache.get("abc"))
         Assert.assertThrows(ProcessCanceledException::class.java) {
             cache.get("bad") { throw ProcessCanceledException() }

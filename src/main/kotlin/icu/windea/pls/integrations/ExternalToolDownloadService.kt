@@ -4,17 +4,17 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.platform.util.progress.reportRawProgress
-import icu.windea.pls.util.io.ArchiveService
-import icu.windea.pls.util.io.ArchiveSettings
-import icu.windea.pls.util.io.ArchiveType
-import icu.windea.pls.util.net.DownloadService
-import icu.windea.pls.util.net.DownloadSettings
+import icu.windea.pls.core.util.io.ArchiveOptions
+import icu.windea.pls.core.util.io.ArchiveService
+import icu.windea.pls.core.util.io.ArchiveType
+import icu.windea.pls.core.util.io.PathService
+import icu.windea.pls.core.util.net.DownloadOptions
+import icu.windea.pls.core.util.net.DownloadService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
 
 /**
@@ -49,8 +49,8 @@ class ExternalToolDownloadService {
     suspend fun download(
         targetDirectory: Path,
         descriptor: ExternalToolDownloadDescriptor,
-        downloadSettings: DownloadSettings = DownloadSettings(),
-        archiveSettings: ArchiveSettings = ArchiveSettings(),
+        downloadOptions: DownloadOptions = DownloadOptions.DEFAULT,
+        archiveOptions: ArchiveOptions = ArchiveOptions.DEFAULT,
     ): Path {
         require(check(targetDirectory)) { "Target directory must be empty or nonexistent: $targetDirectory" }
         val root = targetDirectory.toAbsolutePath().normalize()
@@ -65,7 +65,7 @@ class ExternalToolDownloadService {
                     DownloadService.download(
                         uri = URI(descriptor.url),
                         targetPath = downloadPath,
-                        settings = downloadSettings,
+                        settings = downloadOptions,
                         sha256 = descriptor.sha256,
                         rawReporter = rawReporter,
                     )
@@ -73,10 +73,10 @@ class ExternalToolDownloadService {
             }
             reporter.indeterminateStep("Extracting ${descriptor.name}") {
                 withContext(Dispatchers.IO) {
-                    ArchiveService.extract(downloadPath, root, descriptor.archiveType, archiveSettings)
-                    val executable = ArchiveService.findExecutable(root, descriptor.executableName)
+                    ArchiveService.extract(downloadPath, root, descriptor.archiveType, archiveOptions)
+                    val executable = PathService.findExecutable(root, descriptor.executableName)
                         ?: throw IllegalStateException("Executable ${descriptor.executableName} is missing after downloading ${descriptor.name}.")
-                    ArchiveService.makeExecutable(executable)
+                    PathService.makeExecutable(executable)
                     executable
                 }
             }

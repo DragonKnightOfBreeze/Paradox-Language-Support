@@ -7,6 +7,8 @@ import icu.windea.pls.model.policies.ImageCacheCleanupPolicy
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.extension
+import kotlin.io.path.isRegularFile
+import kotlin.io.path.walk
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
@@ -64,19 +66,18 @@ class ImageCacheCleaner(
         if (!Files.isDirectory(imagesPath)) return emptyList()
         val tempPath = imagesPath.resolve("_tmp")
         return try {
-            Files.walk(imagesPath).use { stream ->
-                stream.filter { path ->
-                    Files.isRegularFile(path) && path.extension.equals("png", ignoreCase = true) && !path.startsWith(tempPath)
-                }.map { path ->
-                    runCatching {
-                        Entry(path, Files.size(path), Files.getLastModifiedTime(path).toMillis())
-                    }.getOrNull()
-                }.toList().filterNotNull()
-            }
+            imagesPath.walk()
+                .filter { path -> path.isRegularFile() && path.extension.equals("png", ignoreCase = true) && !path.startsWith(tempPath) }
+                .mapNotNull { path -> createEntry(path) }
+                .toList()
         } catch (e: Exception) {
             logger.warn("Failed to collect image cache files.", e)
             null
         }
+    }
+
+    private fun createEntry(path: Path): Entry? {
+        return runCatching { Entry(path, Files.size(path), Files.getLastModifiedTime(path).toMillis()) }.getOrNull()
     }
 
     private fun delete(path: Path): Boolean {

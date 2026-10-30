@@ -6,9 +6,7 @@ import com.intellij.ide.plugins.IdeaPluginDescriptor
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.FileType
-import icu.windea.pls.core.util.io.copyImageFile
-import icu.windea.pls.core.util.io.copyImageStream
-import icu.windea.pls.core.util.io.isSameImageFormat
+import icu.windea.pls.core.util.io.ImageIoService
 import icu.windea.pls.images.dds.DdsFileType
 import icu.windea.pls.images.spi.DdsImageReaderSpi
 import icu.windea.pls.images.spi.TgaImageReaderSpi
@@ -94,10 +92,7 @@ class ImageService : AppLifecycleListener, DynamicPluginListener {
 
     @Throws(UnsupportedOperationException::class)
     fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String) {
-        if (isSameImageFormat(sourceFormat, targetFormat)) {
-            copyImageStream(inputStream, outputStream)
-            return
-        }
+        if (ImageIoService.copyIfSameFormat(inputStream, outputStream, sourceFormat, targetFormat)) return
         // 依次尝试各个实现；外部工具不支持某些格式组合时继续回退到内置实现
         var converted = false
         var lastError: UnsupportedOperationException? = null
@@ -115,10 +110,7 @@ class ImageService : AppLifecycleListener, DynamicPluginListener {
 
     @Throws(UnsupportedOperationException::class)
     fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
-        if (isSameImageFormat(sourceFormat, targetFormat)) {
-            copyImageFile(path, targetPath)
-            return
-        }
+        if (ImageIoService.copyIfSameFormat(path, targetPath, sourceFormat, targetFormat)) return
         // 依次尝试各个实现；如果外部工具失败或产出空文件，则继续回退到内置实现
         var converted = false
         var lastError: UnsupportedOperationException? = null

@@ -4,7 +4,11 @@ import com.github.benmanes.caffeine.cache.Cache
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * 嵌套缓存。通过 [cacheProvider] 获取需要的缓存对象。
+ * 嵌套缓存。
+ *
+ * 通过 [cacheProvider] 获取需要的缓存对象。
+ *
+ * 参见：[createNestedCache]
  */
 class NestedCache<RK : Any, K : Any, V : Any>(
     private val cacheProvider: () -> Cache<K, V>

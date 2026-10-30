@@ -4,7 +4,7 @@ import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
-import icu.windea.pls.util.io.ArchiveType
+import icu.windea.pls.core.util.io.ArchiveType
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -13,7 +13,11 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.exists
+import kotlin.io.path.isDirectory
+import kotlin.io.path.isRegularFile
+import kotlin.io.path.name
 import kotlin.io.path.readText
+import kotlin.io.path.walk
 import kotlin.io.path.writeText
 
 /**
@@ -170,11 +174,7 @@ object ExternalToolDownloadTestService {
 
     private fun findExecutable(targetDirectory: Path, executableName: String): Path? {
         if (!targetDirectory.exists()) return null
-        Files.walk(targetDirectory).use { stream ->
-            return stream
-                .filter { Files.isRegularFile(it) && it.fileName.toString().equals(executableName, ignoreCase = true) }
-                .findFirst()
-                .orElse(null)
-        }
+        if (!targetDirectory.isDirectory()) return null
+        return targetDirectory.walk().find { it.isRegularFile() && it.name.equals(executableName, ignoreCase = true) }
     }
 }

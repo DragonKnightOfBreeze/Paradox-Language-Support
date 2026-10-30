@@ -2,20 +2,14 @@ package icu.windea.pls.integrations.images.providers
 
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.util.io.ImageInputStreamAdapter
-import icu.windea.pls.core.util.io.copyImageFile
-import icu.windea.pls.core.util.io.copyImageStream
-import icu.windea.pls.core.util.io.isSameImageFormat
+import icu.windea.pls.core.util.io.ImageIoService
+import icu.windea.pls.core.util.io.IoService
 import icu.windea.pls.integrations.images.ImageToolProvider
-import org.apache.commons.io.IOUtils
 import java.awt.image.BufferedImage
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
-import java.nio.file.StandardOpenOption
 import java.util.*
-import javax.imageio.ImageIO
 import javax.imageio.ImageReadParam
 import javax.imageio.stream.ImageInputStream
 import kotlin.io.path.deleteIfExists
@@ -43,38 +37,38 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
 
     final override fun read(imageIndex: Int, param: ImageReadParam?, stream: ImageInputStream, sourceFormat: String, targetFormat: String): BufferedImage {
         val inputStream = ImageInputStreamAdapter(stream)
-        val outputStream = ByteArrayOutputStream()
-        convertImageFormat(inputStream.buffered(), outputStream, sourceFormat, targetFormat)
-        val input = ByteArrayInputStream(outputStream.toByteArray())
-        return ImageIO.read(input.buffered())
-    }
-
-    final override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String) {
-        if (isSameImageFormat(sourceFormat, targetFormat)) {
-            copyImageStream(inputStream, outputStream)
-            return
-        }
         val pathsToDelete = mutableSetOf<Path>()
         try {
             val tempParentPath = ChronicleDataPathService.getInstance().imagesTempPath
             val path = tempParentPath.resolve(UUID.randomUUID().toString() + "." + sourceFormat)
             pathsToDelete.add(path)
-            path.outputStream(StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
-                .use { IOUtils.copy(inputStream.buffered(), it) }
+            path.outputStream().use { IoService.copy(inputStream, it) }
             val targetPath = convertImageFormat(path, null, null, sourceFormat, targetFormat)
             pathsToDelete.add(targetPath)
-            targetPath.inputStream(StandardOpenOption.READ)
-                .use { IOUtils.copy(it.buffered(), outputStream) }
+            return targetPath.inputStream().use { ImageIoService.readImage(it) }
+        } finally {
+            pathsToDelete.forEach { it.deleteIfExists() } // 确保删除临时文件
+        }
+    }
+
+    final override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String) {
+        if (ImageIoService.copyIfSameFormat(inputStream, outputStream, sourceFormat, targetFormat)) return
+        val pathsToDelete = mutableSetOf<Path>()
+        try {
+            val tempParentPath = ChronicleDataPathService.getInstance().imagesTempPath
+            val path = tempParentPath.resolve(UUID.randomUUID().toString() + "." + sourceFormat)
+            pathsToDelete.add(path)
+            path.outputStream().use { IoService.copy(inputStream, it) }
+            val targetPath = convertImageFormat(path, null, null, sourceFormat, targetFormat)
+            pathsToDelete.add(targetPath)
+            targetPath.inputStream().use { IoService.copy(it, outputStream) }
         } finally {
             pathsToDelete.forEach { it.deleteIfExists() } // 确保删除临时文件
         }
     }
 
     final override fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
-        if (isSameImageFormat(sourceFormat, targetFormat)) {
-            copyImageFile(path, targetPath)
-            return
-        }
+        if (ImageIoService.copyIfSameFormat(path, targetPath, sourceFormat, targetFormat)) return
         convertImageFormat(path, targetPath.parent, targetPath.name, sourceFormat, targetFormat)
     }
 

@@ -1,4 +1,4 @@
-package icu.windea.pls.util.net
+package icu.windea.pls.core.util.net
 
 import com.intellij.util.net.ProxyConfiguration
 import com.intellij.util.net.ProxySettings

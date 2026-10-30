@@ -15,8 +15,7 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.base.settings.ChronicleImageSettings
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
-import icu.windea.pls.core.util.io.readImage
-import icu.windea.pls.core.util.io.writeImage
+import icu.windea.pls.core.util.io.ImageIoService
 import icu.windea.pls.model.policies.ImageRenderFailurePolicy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -153,12 +152,12 @@ class ImageRenderService : Disposable {
 
         try {
             ProgressManager.checkCanceled()
-            val sourceImage = readImage(sourcePath) ?: throw IllegalStateException("No image reader found for: $sourcePath")
+            val sourceImage = ImageIoService.readImage(sourcePath)
             ProgressManager.checkCanceled()
             val slicedImage = request.frameInfo?.let { sliceImage(sourceImage, it) } ?: sourceImage
             val finalImage = scaleImage(slicedImage, request.maxWidth, request.maxHeight)
             ProgressManager.checkCanceled()
-            val written = writeImage(finalImage, request.targetFormat, targetPath)
+            val written = ImageIoService.writeImage(finalImage, request.targetFormat, targetPath)
             if (!written) throw IllegalStateException("No image writer found for format: ${request.targetFormat}")
             return targetPath
         } catch (e: Throwable) {
@@ -246,7 +245,7 @@ class ImageRenderService : Disposable {
         } finally {
             graphics.dispose()
         }
-        writeImage(image, "png", placeholderPath)
+        ImageIoService.writeImage(image, "png", placeholderPath)
         return placeholderPath
     }
 

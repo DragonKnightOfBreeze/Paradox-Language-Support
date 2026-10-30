@@ -1,4 +1,4 @@
-package icu.windea.pls.util.io
+package icu.windea.pls.core.util.io
 
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.diagnostic.logger
@@ -8,10 +8,10 @@ import icu.windea.pls.core.execution.ProcessExecutor
 import org.apache.commons.compress.archivers.sevenz.SevenZFile
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
+import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.attribute.PosixFilePermission
 import java.util.zip.ZipFile
 import kotlin.io.path.createDirectories
 import kotlin.io.path.deleteIfExists
@@ -24,7 +24,7 @@ import kotlin.io.path.outputStream
 object ArchiveService {
     private val logger = logger<ArchiveService>()
 
-    fun extract(archivePath: Path, targetDirectory: Path, type: ArchiveType, settings: ArchiveSettings = ArchiveSettings()) {
+    fun extract(archivePath: Path, targetDirectory: Path, type: ArchiveType, settings: ArchiveOptions = ArchiveOptions.DEFAULT) {
         try {
             when (type) {
                 ArchiveType.None -> return
@@ -34,28 +34,6 @@ object ArchiveService {
             }
         } finally {
             if (settings.deleteArchiveAfterExtract) archivePath.deleteIfExists()
-        }
-    }
-
-    fun findExecutable(targetDirectory: Path, executableName: String): Path? {
-        if (!Files.isDirectory(targetDirectory)) return null
-        Files.walk(targetDirectory).use { stream ->
-            return stream
-                .filter { Files.isRegularFile(it) && it.fileName.toString().equals(executableName, ignoreCase = true) }
-                .findFirst()
-                .orElse(null)
-        }
-    }
-
-    fun makeExecutable(path: Path) {
-        if (SystemInfo.isWindows) return
-        runCatching {
-            val permissions = Files.getPosixFilePermissions(path) + setOf(
-                PosixFilePermission.OWNER_EXECUTE,
-                PosixFilePermission.GROUP_EXECUTE,
-                PosixFilePermission.OTHERS_EXECUTE,
-            )
-            Files.setPosixFilePermissions(path, permissions)
         }
     }
 
@@ -70,7 +48,7 @@ object ArchiveService {
                 } else {
                     targetPath.parent?.createDirectories()
                     zip.getInputStream(entry).use { input ->
-                        targetPath.outputStream().use { output -> input.copyTo(output) }
+                        targetPath.outputStream().use { output -> IoService.copy(input, output) }
                     }
                 }
             }
@@ -88,7 +66,7 @@ object ArchiveService {
                             targetPath.createDirectories()
                         } else {
                             targetPath.parent?.createDirectories()
-                            targetPath.outputStream().use { output -> tar.copyTo(output) }
+                            targetPath.outputStream().use { output -> IoService.copy(tar, output) }
                         }
                         entry = tar.nextEntry
                     }
@@ -97,7 +75,7 @@ object ArchiveService {
         }
     }
 
-    private fun extractSevenZip(archivePath: Path, targetDirectory: Path, settings: ArchiveSettings) {
+    private fun extractSevenZip(archivePath: Path, targetDirectory: Path, settings: ArchiveOptions) {
         try {
             extractSevenZipWithCommons(archivePath, targetDirectory)
         } catch (e: IOException) {
@@ -143,14 +121,14 @@ object ArchiveService {
         val output = ProcessExecutor(commandLine).withTimeout(ExecutionTimeouts.veryLong).execute()
         if (output.exitCode != 0) {
             throw IOException(
-                "Failed to extract ${archivePath.fileName} with $sevenZip (exitCode=${output.exitCode}): ${output.stderr.trim()}"
+                "Failed to extract ${archivePath.fileName} with $sevenZip (exitCode=${output.exitCode}): ${output.stderr.trim()}",
             )
         }
     }
 
     private fun findSevenZipExecutable(): Path? {
         val names = if (SystemInfo.isWindows) listOf("7z.exe", "7za.exe", "7zr.exe") else listOf("7z", "7za", "7zr")
-        val pathDirs = System.getenv("PATH").orEmpty().split(java.io.File.pathSeparatorChar)
+        val pathDirs = System.getenv("PATH").orEmpty().split(File.pathSeparatorChar)
         for (dir in pathDirs) {
             if (dir.isBlank()) continue
             for (name in names) {
@@ -177,27 +155,3 @@ object ArchiveService {
         return path
     }
 }
-
-/**
- * 压缩包类型。
- */
-enum class ArchiveType {
-    None,
-    Zip,
-    TarGz,
-    SevenZip,
-    ;
-}
-
-/**
- * 压缩包解压配置。
- *
- * @property sevenZipPath 用于解压不支持的 7z 编码器的外部 7z 可执行文件路径。
- * @property allowExternalSevenZip 是否允许自动查找外部 7z 工具。
- * @property deleteArchiveAfterExtract 解压后是否删除压缩包。
- */
-data class ArchiveSettings(
-    val sevenZipPath: Path? = System.getProperty("chronicle.external.tools.sevenZipPath")?.let(Path::of),
-    val allowExternalSevenZip: Boolean = true,
-    val deleteArchiveAfterExtract: Boolean = true,
-)

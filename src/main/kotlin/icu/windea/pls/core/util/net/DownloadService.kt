@@ -1,4 +1,6 @@
-package icu.windea.pls.util.net
+@file:Suppress("UnstableApiUsage")
+
+package icu.windea.pls.core.util.net
 
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProgressManager
@@ -23,8 +25,6 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.outputStream
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 /**
  * 下载服务。
@@ -35,7 +35,7 @@ object DownloadService {
     suspend fun download(
         uri: URI,
         targetPath: Path,
-        settings: DownloadSettings = DownloadSettings(),
+        settings: DownloadOptions = DownloadOptions.DEFAULT,
         sha256: String? = null,
         rawReporter: RawProgressReporter? = null,
     ): DownloadResult {
@@ -109,7 +109,7 @@ object DownloadService {
         return DownloadResult(targetPath, downloaded, actualSha256)
     }
 
-    private fun checkDownloadSpeed(downloadedBytes: Long, startedAtNanos: Long, settings: DownloadSettings) {
+    private fun checkDownloadSpeed(downloadedBytes: Long, startedAtNanos: Long, settings: DownloadOptions) {
         val elapsedMillis = (System.nanoTime() - startedAtNanos) / 1_000_000
         if (elapsedMillis >= settings.maxDuration.inWholeMilliseconds) {
             throw IOException("Download took too long: ${elapsedMillis}ms, downloaded=$downloadedBytes")
@@ -124,7 +124,7 @@ object DownloadService {
         }
     }
 
-    private fun createHttpClient(proxy: Proxy?, settings: DownloadSettings): HttpClient {
+    private fun createHttpClient(proxy: Proxy?, settings: DownloadOptions): HttpClient {
         val builder = HttpClient.newBuilder()
             .connectTimeout(Duration.ofMillis(settings.connectTimeout.inWholeMilliseconds))
             .followRedirects(HttpClient.Redirect.NORMAL)
@@ -142,25 +142,3 @@ object DownloadService {
         }
     }
 }
-
-/**
- * 下载配置。
- */
-data class DownloadSettings(
-    val connectTimeout: kotlin.time.Duration = 15.seconds,
-    val requestTimeout: kotlin.time.Duration = 30.seconds,
-    val minSpeedCheckDelay: kotlin.time.Duration = 10.seconds,
-    val minSpeedBytesPerSecond: Long = 32L * 1024,
-    val stallTimeout: kotlin.time.Duration = 60.seconds,
-    val maxDuration: kotlin.time.Duration = 10.minutes,
-    val userAgent: String = "Paradox-Chronicle",
-)
-
-/**
- * 下载结果。
- */
-data class DownloadResult(
-    val path: Path,
-    val size: Long,
-    val sha256: String,
-)

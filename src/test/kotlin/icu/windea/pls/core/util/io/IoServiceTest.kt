@@ -9,17 +9,14 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
 /**
- * @see ProgressCheckingInputStream
- * @see ProgressCheckingOutputStream
- * @see readImage
- * @see writeImage
+ * @see IoService
  */
 @RunWith(JUnit4::class)
-class ImageIoExtensionsTest {
+class IoServiceTest {
     @Test
     fun inputStream_checksCancellationAfterThreshold_test() {
         var checkedCount = 0
-        val input = ProgressCheckingInputStream(ByteArrayInputStream(ByteArray(10)), threshold = 4) { checkedCount++ }
+        val input = CancellableInputStream(ByteArrayInputStream(ByteArray(10)), threshold = 4) { checkedCount++ }
         val buffer = ByteArray(3)
 
         input.read(buffer)
@@ -35,7 +32,7 @@ class ImageIoExtensionsTest {
 
     @Test
     fun inputStream_cancelAtThreshold_test() {
-        val input = ProgressCheckingInputStream(ByteArrayInputStream(ByteArray(10)), threshold = 4) {
+        val input = CancellableInputStream(ByteArrayInputStream(ByteArray(10)), threshold = 4) {
             throw ProcessCanceledException()
         }
 
@@ -47,7 +44,7 @@ class ImageIoExtensionsTest {
     @Test
     fun outputStream_checksCancellationAfterThreshold_test() {
         var checkedCount = 0
-        val output = ProgressCheckingOutputStream(ByteArrayOutputStream(), threshold = 4) { checkedCount++ }
+        val output = CancellableOutputStream(ByteArrayOutputStream(), threshold = 4) { checkedCount++ }
 
         output.write(ByteArray(3))
         Assert.assertEquals(0, checkedCount) // 3 字节，未达到阈值
@@ -62,7 +59,7 @@ class ImageIoExtensionsTest {
 
     @Test
     fun outputStream_cancelAtThreshold_test() {
-        val output = ProgressCheckingOutputStream(ByteArrayOutputStream(), threshold = 4) {
+        val output = CancellableOutputStream(ByteArrayOutputStream(), threshold = 4) {
             throw ProcessCanceledException()
         }
 
@@ -72,14 +69,14 @@ class ImageIoExtensionsTest {
     }
 
     @Test
-    fun copyImageStream_withProgressChecking_test() {
+    fun copyStream_withProgressChecking_test() {
         // 默认阈值的复制路径仍应正确复制全部字节
-        val size = IMAGE_IO_CANCELLATION_CHECK_THRESHOLD.toInt() * 2
+        val size = IO_CANCELLATION_THRESHOLD.toInt() * 2
         val bytes = ByteArray(size) { it.toByte() }
         val input = ByteArrayInputStream(bytes)
         val output = ByteArrayOutputStream()
 
-        copyImageStream(input, output)
+        IoService.copy(input, output)
 
         Assert.assertEquals(size, output.size())
         Assert.assertArrayEquals(bytes, output.toByteArray())

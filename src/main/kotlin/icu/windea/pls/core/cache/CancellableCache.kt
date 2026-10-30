@@ -2,14 +2,14 @@ package icu.windea.pls.core.cache
 
 import com.github.benmanes.caffeine.cache.Cache
 import icu.windea.pls.core.cancellable
-import icu.windea.pls.core.checkCancellation
 import java.util.function.Function
 
 /**
- * 可取消的缓存。使用 [cancellable] 包装取值方法。
+ * 可取消的缓存。
  *
- * @see cancellable
- * @see checkCancellation
+ * 使用 [cancellable] 包装取值方法。
+ *
+ * 参见：[Cache.asCancellable][cancellable]
  */
 class CancellableCache<K : Any, V : Any>(
     private val delegate: Cache<K, V>

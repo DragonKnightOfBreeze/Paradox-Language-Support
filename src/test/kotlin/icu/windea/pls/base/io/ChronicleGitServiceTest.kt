@@ -25,12 +25,11 @@ import kotlin.io.path.writeText
 @RunWith(JUnit4::class)
 class ChronicleGitServiceTest : BasePlatformTestCase() {
     private val service = ChronicleGitServiceImpl()
-    private lateinit var root: Path
+    private val root = Path.of("build/tmp/base-io-git-test")
 
     @Before
     fun setUpRoot() {
         assumeGitAvailable()
-        root = Path.of("build", "tmp", "base-io-git-test").toAbsolutePath().normalize()
         root.toFile().deleteRecursively()
         root.createDirectories()
     }
@@ -131,7 +130,7 @@ class ChronicleGitServiceTest : BasePlatformTestCase() {
                 "git",
                 "-c", "user.name=Chronicle Test",
                 "-c", "user.email=chronicle-test@example.com",
-            ) + arguments
+            ) + arguments,
         ).withWorkingDirectory(workDirectory).withCharset(Charsets.UTF_8)
         val output = ProcessExecutor(commandLine).withTimeout(ExecutionTimeouts.normal).execute()
         Assert.assertEquals("git ${arguments.joinToString(" ")} failed: ${output.stderr}", 0, output.exitCode)

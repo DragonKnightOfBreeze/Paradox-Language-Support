@@ -9,7 +9,6 @@ import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.nio.file.FileAlreadyExistsException
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.util.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -480,26 +479,6 @@ fun String.convertPath(greedyExtension: Boolean = false, transform: (baseName: S
     return parent + transform(baseName, extension)
 }
 
-/**
- * 返回规范化后的绝对路径（absolute + normalize）。
- */
-fun Path.formatted(): Path = absolute().normalize()
-
-/** 若路径为目录则确保存在；若为文件则确保父目录存在并创建空文件（忽略已存在）。 */
-fun Path.create(): Path {
-    try {
-        if (isDirectory()) {
-            createDirectories()
-        } else {
-            createParentDirectories()
-            createFile()
-        }
-    } catch (e: FileAlreadyExistsException) {
-        // ignored
-    }
-    return this
-}
-
 /** 将布尔值转化为 [Byte]。如果为 `true` 则返回 1，否则返回 0. */
 @Suppress("NOTHING_TO_INLINE")
 inline fun Boolean.toByte() = if (this) 1.toByte() else 0.toByte()
@@ -523,6 +502,26 @@ fun String.toUUID(): UUID = UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.
 /** 生成基于内容的稳定 UUID 字符串。 */
 fun String.toUuidString() = UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.UTF_8)).toString()
 
+/**
+ * 返回规范化后的绝对路径（absolute + normalize）。
+ */
+fun Path.formatted(): Path = absolute().normalize()
+
+/** 若路径为目录则确保存在；若为文件则确保父目录存在并创建空文件（忽略已存在）。 */
+fun Path.create(): Path {
+    try {
+        if (isDirectory()) {
+            createDirectories()
+        } else {
+            createParentDirectories()
+            createFile()
+        }
+    } catch (e: FileAlreadyExistsException) {
+        // ignored
+    }
+    return this
+}
+
 /** 路径与 URL/类加载器相关的便捷转化。 */
 fun String.toFile() = File(this)
 
@@ -545,4 +544,4 @@ fun String.toClasspathUrl(locationClass: Class<*> = ChronicleFacade::class.java)
 fun URL.toFile() = File(this.toURI())
 
 /** 将 URL 转化为 [Path]。 */
-fun URL.toPath(): Path = Paths.get(this.toURI())
+fun URL.toPath(): Path = Path.of(this.toURI())

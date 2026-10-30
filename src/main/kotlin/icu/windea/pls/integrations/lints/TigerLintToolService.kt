@@ -5,6 +5,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.util.SimpleModificationTracker
+import com.intellij.openapi.vfs.toNioPathOrNull
 import com.intellij.psi.PsiFile
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.io.ChronicleDataPathService
@@ -16,6 +17,7 @@ import icu.windea.pls.core.cache.trackedBy
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.collections.findIsInstance
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toUuidString
 import icu.windea.pls.core.util.MergedModificationTracker
 import icu.windea.pls.integrations.ChronicleIntegrationsBundle
@@ -77,11 +79,9 @@ class TigerLintToolService : Disposable {
         val workingDirectory = executablePath.parent ?: return null
         val rootFile = rootInfo.rootFile
         val modSettings = ChronicleProfilesSettings.getInstance().state.modSettings.get(rootFile.path)
-        val gamePath = modSettings?.finalGameDirectory?.orNull()
-        val rootPath = rootFile.path
-        val modPath = rootFile.findChild("descriptor.mod")?.path
-            ?: rootFile.findChild(".metadata")?.findChild("metadata.json")?.path
-            ?: rootPath
+        val gamePath = modSettings?.finalGameDirectory?.orNull()?.toPathOrNull()
+        val modDescriptorPath = rootInfo.metadata.infoPath // `descriptor.mod` or `.metadata/metadata.json`
+        val modPath = modDescriptorPath ?: rootFile.toNioPathOrNull() ?: return null
         val outputUuid = rootFile.url.toUuidString()
         val outputPath = ChronicleDataPathService.getInstance().lintResultsPath.resolve("${tool.name}-result@$outputUuid.json")
         return TigerLintRequest(
@@ -92,7 +92,6 @@ class TigerLintToolService : Disposable {
             workingDirectory = workingDirectory,
             rootFile = rootFile,
             gamePath = gamePath,
-            rootPath = rootPath,
             modPath = modPath,
             outputPath = outputPath,
         )

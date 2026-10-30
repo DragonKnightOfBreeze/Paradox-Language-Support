@@ -2,9 +2,7 @@ package icu.windea.pls.images.supports
 
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.core.checkCancellation
-import icu.windea.pls.core.util.io.copyImageFile
-import icu.windea.pls.core.util.io.copyImageStream
-import icu.windea.pls.core.util.io.isSameImageFormat
+import icu.windea.pls.core.util.io.ImageIoService
 import icu.windea.pls.images.ImageSupport
 import icu.windea.pls.integrations.images.ImageToolProvider
 import icu.windea.pls.integrations.images.ImageToolService
@@ -19,10 +17,7 @@ import java.nio.file.Path
 class ToolBasedImageSupport : ImageSupport {
     /** @see ImageToolService.convertImageFormat */
     override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
-        if (isSameImageFormat(sourceFormat, targetFormat)) {
-            copyImageStream(inputStream, outputStream)
-            return true
-        }
+        if (ImageIoService.copyIfSameFormat(inputStream, outputStream, sourceFormat, targetFormat)) return true
         try {
             return ImageToolService.getInstance().convertImageFormat(inputStream, outputStream, sourceFormat, targetFormat)
         } catch (e: Exception) {
@@ -34,10 +29,7 @@ class ToolBasedImageSupport : ImageSupport {
 
     /** @see ImageToolService.convertImageFormat */
     override fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
-        if (isSameImageFormat(sourceFormat, targetFormat)) {
-            copyImageFile(path, targetPath)
-            return true
-        }
+        if (ImageIoService.copyIfSameFormat(path, targetPath, sourceFormat, targetFormat)) return true
         try {
             return ImageToolService.getInstance().convertImageFormat(path, targetPath, sourceFormat, targetFormat)
         } catch (e: Exception) {

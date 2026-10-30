@@ -3,8 +3,6 @@ package icu.windea.pls.images
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.coroutineToIndicator
-import icu.windea.pls.core.collections.synced
-import icu.windea.pls.model.policies.ImageRenderFailurePolicy
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -13,7 +11,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import java.nio.file.Path
-import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.ConcurrentLinkedQueue
 
 /**
  * 图片渲染会话。
@@ -21,14 +19,11 @@ import java.util.concurrent.CopyOnWriteArrayList
  * 用于记录一组需要等待完成的渲染任务；任务会使用会话的 [scope] 作为父作用域。
  */
 class ImageRenderSession(
-    val scope: CoroutineScope
+    val scope: CoroutineScope,
 ) {
-    companion object {
-        private val logger = logger<ImageRenderSession>()
-    }
-
-    private val jobs = mutableListOf<Deferred<Path?>>().synced()
-    private val failedRequests = CopyOnWriteArrayList<ImageRenderRequest>()
+    // 3.0.5 统一使用 `ConcurrentLinkedQueue`，无锁且并发遍历绝对安全，以省去不必要的心智负担
+    private val jobs = ConcurrentLinkedQueue<Deferred<Path?>>()
+    private val failedRequests = ConcurrentLinkedQueue<ImageRenderRequest>()
 
     fun launch(request: ImageRenderRequest): Deferred<Path?> {
         val job = scope.async {
@@ -51,12 +46,14 @@ class ImageRenderSession(
     }
 
     suspend fun awaitAll(): List<Path?> {
-        val currentJobs = jobs.toList()
-        return currentJobs.awaitAll()
+        return jobs.toList().awaitAll()
     }
 
-    /**
-     * 返回渲染失败的请求，用于应用 [ImageRenderFailurePolicy]。
-     */
-    fun failedRequests(): List<ImageRenderRequest> = failedRequests.toList()
+    fun failedRequests(): List<ImageRenderRequest> {
+        return failedRequests.toList()
+    }
+
+    companion object {
+        private val logger = logger<ImageRenderSession>()
+    }
 }

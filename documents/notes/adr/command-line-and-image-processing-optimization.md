@@ -20,7 +20,7 @@
 
 ### 计划
 
-- [ ] P2 优化命令行执行逻辑和图片处理逻辑
+- [x] P2 优化命令行执行逻辑和图片处理逻辑
   - 适用取消检查和超时限制，以避免可能的 IDE 冻结。
   - 避免在 EDT 中直接执行（预期存在一定耗时的）命令行，以避免可能的 IDE 冻结。
   - 执行命令行时，通常需要考虑进行取消检查（抵达时间间隔阈值时）。
@@ -354,7 +354,7 @@ com.intellij.diagnostic.Freeze
 - 新增 `ExternalToolDownloadServiceTest`、`ExternalToolDownloadTest`、`ImageToolProviderExternalTest`。
 - 支持在设置页配置 texconv 路径，默认使用 `{path}/external-tools/texconv.exe`；`TexconvToolProvider` 不再依赖内置资源。
 - 新增 `ChronicleGitServiceTest`（本地临时 Git 仓库）与 `ChronicleSqliteServiceTest`（临时 SQLite 数据库）。
-- 从 `ExternalToolDownloadService` 提取 `ArchiveService`、`ProxyService`、`DownloadService` 及 `ArchiveType` / `ArchiveSettings` / `DownloadSettings` / `DownloadResult`。
+- 从 `ExternalToolDownloadService` 提取 `ArchiveService`、`ProxyService`、`DownloadService` 及 `ArchiveType` / `ArchiveOptions` / `DownloadOptions` / `DownloadResult`。
 - 新增 `ImageFormatConversionTest` 与 `ConvertImageFormatActionTest`，覆盖 TwelveMonkeys/texconv/magick × jpg/png/dds/tga 的成功/失败组合。
 - `convertImageFormat` 在 `ImageService`/`ImageToolService`/`ImageSupport`/`ImageToolProvider` 中加入同格式 NOP 处理（复制而非转换）。
 - `ConvertImageFormatAction` 在 EDT 中执行转换时转到后台线程，避免外部工具被 EDT 保护跳过。
@@ -403,14 +403,14 @@ com.intellij.diagnostic.Freeze
   - [x] 新增 `ImageMetadataService`
   - [x] 扩展 `ImageService`：缓存、渲染、`ImageRenderSession`、`ImageCacheCleaner`
   - [x] 新增 `ImageCacheCleanupPolicy`、`ImageRenderFailurePolicy`、`ImageRenderPolicy` 及文案
-- [ ] 重构
+- [x] 重构
   - [x] 迁移 Git、Texconv、Magick、Tiger、SpecialPath、CwtConfigService
   - [x] 新增 `ParadoxImageService`/`ParadoxImageResolveResult`，保留 `ParadoxImageManager` facade
   - [x] 快速文档：`toDocumentation` 移出 RA，等待 `ImageRenderSession`
   - [x] 内嵌提示：`Sync`/`Async` 渲染；`Async` 完成后刷新内嵌提示
   - [x] 注入器：EDT/RA 跳过外部工具并 warning
   - [x] Tiger：`TigerLintToolService` + `TrackingCache` + `TigerLintResult` 扩展
-- [ ] 测试
+- [x] 测试
   - [x] `ProcessExecutor`：超时、取消、stderr、退出码、编码
   - [x] `ImageMetadataService`/`ImageService`：元数据、缓存、渲染、清理
   - [x] `ImageCacheCleanupPolicy` / `ImageRenderFailurePolicy` / `ImageRenderPolicy` 的逻辑与设置项
@@ -478,7 +478,7 @@ com.intellij.diagnostic.Freeze
 - [x] issue #396 回归测试 - `Issue396Test`
 - [x] 验证 tiger 的检查逻辑和对应的外部代码检查（`ChronicleTigerLintInspection`） - `Issue396TigerLintTest`
 
-`ExternalToolDownloadService` 相关：
+#### 2026-10-29 - step 6 - external tools
 
 - [x] 在测试代码中调用 `ExternalToolDownloadService.download` 时，需要尽可能地确保下载的是最新版本
   - 如果不是，则移除临时目录中内容，并重新下载。
@@ -495,26 +495,36 @@ com.intellij.diagnostic.Freeze
 - [x] 将 `icu.windea.pls.core.io` 中的代码移动到 `icu.windea.pls.core.util.io` - 出于对齐的目的（如 `com.intellij.util.io.DataInputOutputUtil`）
 - [x] 从 `DefaultImageSupport` 提取公共扩展方法到 `DataIoExtensions.kt`
 - [x] 为了保持整洁的代码架构，便于后续查阅和重构，需要从 `ExternalToolDownloadService` 提取通用代码
-  - `icu.windea.pls.util.io.ArchiveService` - 也已补充测试（冒烟，简单场景）
-  - `icu.windea.pls.util.net.ProxyService` - 也已补充测试（冒烟，简单场景）
-  - `icu.windea.pls.util.net.DownloadService` - 也已补充测试（冒烟，简单场景）
+  - `icu.windea.pls.core.util.io.ArchiveService` - 也已补充测试（冒烟，简单场景）
+  - `icu.windea.pls.core.util.net.ProxyService` - 也已补充测试（冒烟，简单场景）
+  - `icu.windea.pls.core.util.net.DownloadService` - 也已补充测试（冒烟，简单场景）
   - 一些通用的 model/enum/constant，也一并提取到对应位置（同包下/直接作为类成员或内部类）。
   - 需要允许更加灵活的配置，并提供一个合理的默认配置。例如提供默认参数 `settings: DownloadSettings`（速度检测/超时检测/等等）。
 
-#### 2026-10-29 - step 6 - post revision
+#### 2026-10-29 - step 7 - revision
 
 - [ ] 不能假定：总是存在外部解压工具的可执行文件路径（如 7z），本地环境总是存在系统代理（如 clash） - 需要结合使用 Assume
-- [ ] `ImageMetadataService` - 考虑同时提供 `getMetadata(...): ImageMetadata` 和 `getMetadataOrNull(...): ImageMetadata?`，同时考虑提取 `ImageMetadataReader`
-- [ ] `ImageRenderServiceTest` - 需要拆分出 `ParadoxImageServiceTest`
-- [ ] `CommandBasedImageToolProvider.read` - 需要考虑如何进行有效的缓存
-- [ ] `ParadoxImageManager` 的清理和重构
-- [ ] 考虑将 `ParadoxImageManager.isImageFile` 移动到 `ImageService` 中
-- [ ] `icu.windea.pls.integrations.lints.TigerLintToolService.collectRequest` - 获取 `modPath` 时不应硬编码（改为基于 EP）
-- [ ] `LintToolProviderExternalTest` - 暂不确定 - 仅出于对齐的目的，因为 `Issue396TigerLintTest` 中已经覆盖了
-- [ ] 重命名：`ProgressCheckingInputStream` -> `CancellableInputStream` `ProgressCheckingOutputStream` -> `CancellableOutputStream`
-- [ ] 引入扩展方法：`InputStream.cancellable()` `OutputStream.cancellable()`
+- [ ] `ImageRenderServiceTest` - 需要拆分出 `ParadoxImageServiceTest` 和 `ParadoxImageManager`（并且补充更多）
+- [ ] `LintToolProviderExternalTest` - 主要出于对齐的目的，因为 `Issue396TigerLintTest` 中已经覆盖了（这里仅验证 toolProvider，不验证 inspection）
+- [ ] 为 `IoService` 和 `ImageIoService` 补充测试
 
-#### 2026-10-30 - step 6 - post doc
+#### 2026-10-30 - step 7 - manual revision
+
+- [x] 重命名：`cancelable` -> `cancellable`
+- [x] P3 重命名：`Cache.cancelable` -> `Cache.asCancellable`
+- [ ] 移动：将 `StdlibExtensions.kt` 中的部分方法移到 `icu.windea.pls.core.util.io` 中的 `PathExtensions.kt` 和 `FileExtensions.kt`
+- [x] 移动：`icu.windea.pls.util` -> `icu.windea.pls.core.util`
+- [x] 移动：将 `ArchiveService` 中的方法 `findExecutable` `makeExecutable` 移到 `PathService`
+- [x] 重命名：`ArchiveOptions` -> `ArchiveOptions`，`DownloadOptions` -> `DownloadOptions`（更符合命名约定）
+- [x] 从 `XxxService.kt` 中分离出代码到对应的文件（更符合个人偏好）
+- [x] `ImageRenderSession` - 对于属性 `jobs` 和 `failedRequests`，改为使用 `ConcurrentLinkedQueue`，抹平心智负担，统一代码风格
+- [x] 重构 `TigerLintToolService.collectRequest` 和 `TigerLintRequest`（统一属性类型 + 移除不必要的属性）
+- [x] 重命名：`ProgressCheckingInputStream` -> `CancellableInputStream`，`ProgressCheckingOutputStream` -> `CancellableOutputStream`
+- [x] 引入扩展方法：`InputStream.asCancellable()` `OutputStream.asCancellable()`
+- [x] 提取 `IoService` 和 `ImageIoService`，其中的 IO 读写方法支持取消检查
+- [x] 清理和优化 IO 读写的相关代码
+
+#### 2026-10-30 - step 7 - post doc
 
 - [ ] 作为总结，补充 ADR（AI 编写，`documents/ai-notes/adr/`）
   - 暂时搁置
@@ -534,8 +544,6 @@ com.intellij.diagnostic.Freeze
   - 结论：目前没有必要
 - [x] 新增 `ParadoxImageService`，将 `ParadoxImageManager` 中的具体解析逻辑移到 `ParadoxImageService`
 - [x] 新增 `ParadoxImageResolveResult`，目前包含来源路径、缓存路径、帧数信息和尺寸限制；实际加载图片的逻辑仍留在渲染/展示层
-- [ ] 考虑 `ParadoxImageManager` 和 `ParadoxImageService` 的进一步的清理和重构
-- [ ] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
 
 #### 2026-10-28 - step 1
 
@@ -555,6 +563,15 @@ com.intellij.diagnostic.Freeze
 - [ ] 外部工具诸如 tiger/magick 可能也适用于 非 Windows/Linux 的 OS，考虑评估，并对应地更新生产和测试代码
   - 现状：不是那么必要，留待后续评估
 
+
+#### 2026-10-30 - step 7
+
+- [ ] 考虑 `ParadoxImageManager` 和 `ParadoxImageService` 的进一步的清理和重构
+- [ ] 考虑将 `ParadoxImageManager.isImageFile` 移动到 `ImageService` 中
+- [ ] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
+- [ ] `ImageMetadataService` - 考虑同时提供 `getMetadata(...): ImageMetadata` 和 `getMetadataOrNull(...): ImageMetadata?`，同时考虑提取 `ImageMetadataReader`
+- [ ] `CommandBasedImageToolProvider.read` - 可能需要考虑如何进行有效的缓存
+
 ### 分析
 
 #### 2026-10-29
@@ -566,13 +583,6 @@ com.intellij.diagnostic.Freeze
 - [x] 无法正确地从 DDS/PNG 转换图片格式为 TGA（进阶）
   - 参见：`ConvertImageFormatAction`
   - 备注：需要验证（且仅验证/单独验证）使用基于外部工具的 imageSupport 时，是否也可以正确工作。
-
-### 修订
-
-#### 人工修订
-
-- [ ] `XxxSettings()` -> `XxxSettings.DEFAULT`
-- [ ] 从 `XxxService.kt` 中分离出代码到对应的文件（这更符合个人偏好）
 
 ### 验证
 
@@ -613,7 +623,7 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.model.policies.ImageRenderPolicy` - 新增
 - [x] `icu.windea.pls.base.settings.ChronicleImageSettings` - 新增
 - [x] `icu.windea.pls.base.settings.ChronicleImageSettingsConfigurable` - 新增
-- [x] `icu.windea.pls.core.util.io.ProgressCheckingInputStream` / `ProgressCheckingOutputStream` - 新增
+- [x] `icu.windea.pls.core.util.io.ProgressCheckingInputStream` / `CancellableOutputStream` - 新增
 - [x] `icu.windea.pls.integrations.images.ImageToolService` - 已加入 EDT/RA 保护
 - [x] `icu.windea.pls.integrations.lints.TigerLintToolService` - 已重构为 app-level + `TrackingCache`
 - [x] `icu.windea.pls.integrations.lints.TigerLintRequest` - 新增
@@ -623,9 +633,9 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget` - 快速文档等待渲染会话
 - [x] `icu.windea.pls.lang.codeInsight.documentation.CwtDocumentationTarget` - 快速文档等待渲染会话
 - [x] `icu.windea.pls.integrations.ExternalToolDownloadService` - 新增
-- [x] `icu.windea.pls.util.io.ArchiveService` - 新增
-- [x] `icu.windea.pls.util.net.ProxyService` - 新增
-- [x] `icu.windea.pls.util.net.DownloadService` - 新增
+- [x] `icu.windea.pls.core.util.io.ArchiveService` - 新增
+- [x] `icu.windea.pls.core.util.net.ProxyService` - 新增
+- [x] `icu.windea.pls.core.util.net.DownloadService` - 新增
 - [x] `icu.windea.pls.images.actions.ConvertImageFormatAction` - 提取内部转换方法，支持在后台执行外部工具
 - [x] `icu.windea.pls.integrations.images.providers.TexconvToolProvider` - 支持自定义路径，默认使用外部工具目录
 - TBD
@@ -644,9 +654,9 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.integrations.ExternalToolDownloadTestService` - 共享 `build/external-tools`
 - [x] `icu.windea.pls.images.ImageFormatConversionTest` - 各种策略和格式下的图片格式转换
 - [x] `icu.windea.pls.images.actions.ConvertImageFormatActionTest` - 动作级别的图片格式转换
-- [x] `icu.windea.pls.util.io.ArchiveServiceTest` - Zip/TarGz/SevenZip 冒烟
-- [x] `icu.windea.pls.util.net.ProxyServiceTest` - 代理配置解析
-- [x] `icu.windea.pls.util.net.DownloadServiceTest` - 本地 HTTP 下载冒烟
+- [x] `icu.windea.pls.core.util.io.ArchiveServiceTest` - Zip/TarGz/SevenZip 冒烟
+- [x] `icu.windea.pls.core.util.net.ProxyServiceTest` - 代理配置解析
+- [x] `icu.windea.pls.core.util.net.DownloadServiceTest` - 本地 HTTP 下载冒烟
 - [x] `icu.windea.pls.integrations.images.ImageToolProviderExternalTest` - 图片工具冒烟
 - [x] `icu.windea.pls.base.io.ChronicleGitServiceTest` - 本地仓库冒烟与常见场景
 - [x] `icu.windea.pls.base.io.ChronicleSqliteServiceTest` - 临时 SQLite 数据库

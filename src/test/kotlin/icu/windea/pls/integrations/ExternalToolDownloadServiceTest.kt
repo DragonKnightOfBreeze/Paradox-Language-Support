@@ -7,6 +7,7 @@ import org.junit.runners.JUnit4
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
+import kotlin.io.path.deleteIfExists
 
 /**
  * @see ExternalToolDownloadService
@@ -26,7 +27,7 @@ class ExternalToolDownloadServiceTest {
     @Test
     fun check_empty_test() {
         val dir = testDirectory().resolve("empty").also {
-            it.toFile().deleteRecursively()
+            it.deleteIfExists()
             it.createDirectories()
         }
         Assert.assertTrue(service.check(dir))

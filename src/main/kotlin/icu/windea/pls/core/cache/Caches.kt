@@ -22,12 +22,12 @@ fun CacheBuilder(spec: String = ""): Caffeine<Any, Any> {
 }
 
 /** 将缓存包装为可取消的缓存（[CancellableCache]）。 */
-inline fun <K : Any, V : Any> Cache<K, V>.cancellable(): CancellableCache<K, V> {
+inline fun <K : Any, V : Any> Cache<K, V>.asCancellable(): CancellableCache<K, V> {
     return CancellableCache(this)
 }
 
 /** 将载入缓存包装为可取消的缓存（[CancellableLoadingCache]）。 */
-inline fun <K : Any, V : Any> LoadingCache<K, V>.cancellable(): CancellableLoadingCache<K, V> {
+inline fun <K : Any, V : Any> LoadingCache<K, V>.asCancellable(): CancellableLoadingCache<K, V> {
     return CancellableLoadingCache(this)
 }
 

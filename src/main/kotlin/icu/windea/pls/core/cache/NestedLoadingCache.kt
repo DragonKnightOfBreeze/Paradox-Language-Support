@@ -4,7 +4,11 @@ import com.github.benmanes.caffeine.cache.LoadingCache
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * 嵌套载入缓存。通过 [cacheProvider] 获取需要的缓存对象。
+ * 嵌套载入缓存。
+ *
+ * 通过 [cacheProvider] 获取需要的缓存对象。
+ *
+ * 参见：[createNestedLoadingCache]
  */
 class NestedLoadingCache<RK : Any, K : Any, V : Any>(
     private val cacheProvider: () -> LoadingCache<K, V>

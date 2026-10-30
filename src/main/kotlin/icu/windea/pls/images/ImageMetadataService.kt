@@ -9,7 +9,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.concurrency.annotations.RequiresReadLock
 import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.runCatchingCancellable
-import icu.windea.pls.core.util.io.ProgressCheckingInputStream
+import icu.windea.pls.core.util.io.asCancellable
 import icu.windea.pls.images.dds.DdsFileType
 import icu.windea.pls.images.dds.DdsMetadataIndex
 import icu.windea.pls.images.dds.DdsMetadataReader
@@ -85,7 +85,7 @@ class ImageMetadataService : Disposable {
     }
 
     private fun readMetadata(inputStream: InputStream): ImageMetadata? {
-        return ProgressCheckingInputStream(inputStream.buffered()).use { input ->
+        return inputStream.buffered().asCancellable().use { input ->
             ImageIO.createImageInputStream(input)?.use { imageInputStream ->
                 val imageReader = ImageIO.getImageReaders(imageInputStream).asSequence().firstOrNull() ?: return null
                 try {

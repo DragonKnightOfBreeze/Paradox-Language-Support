@@ -1,14 +1,13 @@
 package icu.windea.pls.core.util.io
 
-import org.apache.commons.io.file.PathUtils
 import org.junit.After
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 import kotlin.io.path.createDirectories
 import kotlin.io.path.createFile
-import kotlin.io.path.exists
 import kotlin.io.path.fileSize
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
@@ -20,21 +19,17 @@ import kotlin.test.assertTrue
  * @see PathService
  */
 class PathServiceTest {
-    private val root: Path = Paths.get("build/tmp/test-path")
+    private val root: Path = Path.of("build/tmp/path-service-test")
 
     @Before
     fun setUp() {
-        if (root.exists()) {
-            PathUtils.deleteDirectory(root)
-        }
+        root.toFile().deleteRecursively()
         root.createDirectories()
     }
 
     @After
     fun tearDown() {
-        if (root.exists()) {
-            PathUtils.deleteDirectory(root)
-        }
+        root.toFile().deleteRecursively()
     }
 
     @Test
@@ -95,5 +90,14 @@ class PathServiceTest {
         PathService.ensureFileCreatedFromClasspath(file, "/messages/ChronicleBundle.properties")
         assertTrue(file.isRegularFile())
         assertEquals(5L, file.fileSize()) // Should not be overwritten
+    }
+
+    @Test
+    fun findExecutable_test() {
+        val dir = root.resolve("find-executable")
+        val executable = dir.resolve("bin/tool").also { it.parent.createDirectories() }
+        Files.writeString(executable, "")
+        Assert.assertEquals(executable, PathService.findExecutable(dir, "tool"))
+        Assert.assertNull(PathService.findExecutable(dir, "missing"))
     }
 }

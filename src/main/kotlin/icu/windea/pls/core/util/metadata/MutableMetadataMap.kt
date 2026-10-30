@@ -10,7 +10,7 @@ import com.intellij.openapi.util.Key
  * ## API 笔记
  *
  * 作为一种特殊的数据结构，元数据映射在构建后应是只读的。
- * 构建逻辑应发生在同一线程安全，因此不需要保证底层数据结构的线程安全。
+ * 构建逻辑应发生在同一线程中，因此不需要保证底层数据结构的线程安全。
  * 构建后的修改操作是未定义行为（Undefined behaviour）。
  *
  * @see MetadataMap

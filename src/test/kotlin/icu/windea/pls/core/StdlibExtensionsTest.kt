@@ -5,7 +5,8 @@ import org.junit.Test
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.deleteRecursively
 
 class StdlibExtensionsTest {
     // region isIdentifierChar
@@ -542,11 +543,12 @@ class StdlibExtensionsTest {
 
     @Test
     fun path_formatted_test() {
-        val formatted = Paths.get("a", "b", "c").formatted()
+        val formatted = Path.of("a", "b", "c").formatted()
         Assert.assertTrue(formatted.isAbsolute)
         Assert.assertEquals("c", formatted.fileName.toString())
     }
 
+    @OptIn(ExperimentalPathApi::class)
     @Test
     fun path_create_test() {
         val tmp = Files.createTempDirectory("pls-core-test-")
@@ -559,7 +561,7 @@ class StdlibExtensionsTest {
             file.create()
             Assert.assertTrue(Files.isRegularFile(file))
         } finally {
-            tmp.toFile().deleteRecursively()
+            tmp.deleteRecursively()
         }
     }
 

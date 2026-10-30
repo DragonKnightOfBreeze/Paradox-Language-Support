@@ -6,7 +6,7 @@ import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.model.constants.ChronicleConstants
-import java.nio.file.Paths
+import java.nio.file.Path
 import kotlin.io.path.notExists
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
@@ -50,7 +50,7 @@ class ChronicleSettingsMigrationListener : AppLifecycleListener {
 
         val optionsPath = PathManager.getOptionsPath()
         val settingsFileName = ChronicleConstants.pluginSettingsFileName
-        val settingsFile = Paths.get(optionsPath, settingsFileName)
+        val settingsFile = Path.of(optionsPath, settingsFileName)
         if (settingsFile.notExists()) return
 
         try {

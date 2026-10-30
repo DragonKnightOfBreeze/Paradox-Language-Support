@@ -548,6 +548,7 @@
 - [x] P1 修复 CWT 文件和脚本文件的结构视图无法正常显示的回归BUG（自插件版本 3.0.3）
   - 参见：`icu.windea.pls.cwt.structureView.CwtFileTreeElement`
   - 参见：`icu.windea.pls.script.structureView.ParadoxScriptFileTreeElement`
+- [ ] P2 修复：`descriptor.mod` 在文件路径导航栏中会错误地显示整个文件文本（应当显示文件名）
 
 #### 任务（次要）
 
@@ -571,8 +572,10 @@
   - 参见：[adr/push-stream.md](adr/push-stream.md)
 - [x] P4 重构：将 `CwtLocationResolveResult` 重命名为 `ParadoxLocationExpressionResolveResult`，子类同理
 - [ ] P4 排序：在 `ParadoxScriptExpressionSupport` 等处，将 `annotate` 方法的顺序移到 `complete` 方法之前
-- [ ] P2 修复：`descriptor.mod` 在文件路径导航栏中会错误地显示整个文件文本（应当显示文件名） 
 - [x] P3 重命名：`cancelable` -> `cancellable`
+- [x] P3 重命名：`Cache.cancelable` -> `Cache.asCancellable`
+- [ ] P4 移动：将 `StdlibExtensions.kt` 中的部分方法移到 `icu.windea.pls.core.util.io` 中的 `PathExtensions.kt` 和 `FileExtensions.kt`
+- [ ] P4 移动：`icu.windea.pls.core.cache` -> `icu.windea.pls.core.util.cache`
 
 ## 按主题 {#by-topic}
 
