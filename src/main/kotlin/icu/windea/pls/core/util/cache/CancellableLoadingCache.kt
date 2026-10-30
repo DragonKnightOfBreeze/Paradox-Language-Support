@@ -1,19 +1,19 @@
-package icu.windea.pls.core.cache
+package icu.windea.pls.core.util.cache
 
-import com.github.benmanes.caffeine.cache.Cache
+import com.github.benmanes.caffeine.cache.LoadingCache
 import icu.windea.pls.core.cancellable
 import java.util.function.Function
 
 /**
- * 可取消的缓存。
+ * 可取消的载入缓存。
  *
  * 使用 [cancellable] 包装取值方法。
  *
- * 参见：[Cache.asCancellable][cancellable]
+ * 参见：[LoadingCache.asCancellable][cancellable]
  */
-class CancellableCache<K : Any, V : Any>(
-    private val delegate: Cache<K, V>
-) : Cache<K, V> by delegate {
+class CancellableLoadingCache<K : Any, V : Any>(
+    private val delegate: LoadingCache<K, V>
+) : LoadingCache<K, V> by delegate {
     override fun get(key: K, mappingFunction: Function<in K, out V>): V {
         return cancellable { delegate.get(key, mappingFunction) }
     }
@@ -24,5 +24,13 @@ class CancellableCache<K : Any, V : Any>(
 
     override fun getAllPresent(keys: Iterable<K>): Map<K, V> {
         return cancellable { delegate.getAllPresent(keys) }
+    }
+
+    override fun get(key: K): V {
+        return cancellable { delegate.get(key) }
+    }
+
+    override fun getAll(keys: Iterable<K>): Map<K, V> {
+        return cancellable { delegate.getAll(keys) }
     }
 }

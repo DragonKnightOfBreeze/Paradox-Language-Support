@@ -1,7 +1,7 @@
 package icu.windea.pls.core.match
 
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.util.cache.CacheBuilder
 
 /**
  * 正则的匹配器。

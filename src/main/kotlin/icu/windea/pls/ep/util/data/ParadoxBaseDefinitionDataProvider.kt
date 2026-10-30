@@ -10,9 +10,9 @@ import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.annotations.ChronicleAnnotationService
 import icu.windea.pls.base.annotations.ForDefinitionType
 import icu.windea.pls.base.annotations.ForGameType
-import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.cast
 import icu.windea.pls.core.checkCancellation
+import icu.windea.pls.core.util.cache.CacheBuilder
 import icu.windea.pls.core.util.createKey
 import icu.windea.pls.lang.data.ParadoxScriptData
 import icu.windea.pls.lang.data.ParadoxScriptDataResolver

@@ -4,10 +4,10 @@ import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtTemplateExpression
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.forEachIndexedFast
+import icu.windea.pls.core.util.cache.CacheBuilder
 
 @Optimized
 object CwtTemplateMatchService {

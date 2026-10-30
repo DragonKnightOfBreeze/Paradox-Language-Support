@@ -9,12 +9,12 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.cache.asCancellable
-import icu.windea.pls.core.cache.createNestedCache
-import icu.windea.pls.core.cache.trackedBy
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.cache.CacheBuilder
+import icu.windea.pls.core.util.cache.asCancellable
+import icu.windea.pls.core.util.cache.createNestedCache
+import icu.windea.pls.core.util.cache.trackedBy
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate

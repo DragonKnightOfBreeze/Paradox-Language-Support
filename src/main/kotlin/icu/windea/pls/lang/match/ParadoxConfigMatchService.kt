@@ -22,8 +22,6 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.match.CwtConfigMatchService
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.cache.asCancellable
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.filterFast
@@ -36,6 +34,8 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.sequences.process
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.cache.CacheBuilder
+import icu.windea.pls.core.util.cache.asCancellable
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKeyWithThis

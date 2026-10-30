@@ -6,9 +6,9 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValue
 import icu.windea.pls.config.configGroup.CwtConfigGroup
-import icu.windea.pls.core.cache.NestedCache
 import icu.windea.pls.core.util.KeyProviderWithFactory
 import icu.windea.pls.core.util.KeyWithFactory
+import icu.windea.pls.core.util.cache.NestedCache
 
 typealias ParadoxMatchResultNestedCache = NestedCache<VirtualFile, String, ParadoxMatchResult>
 typealias ParadoxMatchResultNestedCacheKey = KeyWithFactory<CachedValue<ParadoxMatchResultNestedCache>, CwtConfigGroup>

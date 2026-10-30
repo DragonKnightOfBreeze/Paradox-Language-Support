@@ -1,4 +1,4 @@
-package icu.windea.pls.core.cache
+package icu.windea.pls.core.util.cache
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.LoadingCache
@@ -8,6 +8,12 @@ import com.intellij.openapi.util.SimpleModificationTracker
 import org.junit.Assert
 import org.junit.Test
 
+/**
+ * @see CacheBuilder
+ * @see asCancellable
+ * @see trackedBy
+ * @see createNestedCache
+ */
 class CachesTest {
     // region CacheBuilder
 

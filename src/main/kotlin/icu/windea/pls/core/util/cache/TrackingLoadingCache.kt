@@ -1,4 +1,4 @@
-package icu.windea.pls.core.cache
+package icu.windea.pls.core.util.cache
 
 import com.github.benmanes.caffeine.cache.LoadingCache
 import com.intellij.openapi.util.ModificationTracker

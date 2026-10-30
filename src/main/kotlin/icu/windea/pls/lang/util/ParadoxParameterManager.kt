@@ -15,10 +15,6 @@ import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.cache.asCancellable
-import icu.windea.pls.core.cache.createNestedCache
-import icu.windea.pls.core.cache.trackedBy
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.allFast
 import icu.windea.pls.core.collections.anyFast
@@ -28,6 +24,10 @@ import icu.windea.pls.core.isSamePosition
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.ReadWriteAccess
 import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.cache.CacheBuilder
+import icu.windea.pls.core.util.cache.asCancellable
+import icu.windea.pls.core.util.cache.createNestedCache
+import icu.windea.pls.core.util.cache.trackedBy
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate

@@ -7,10 +7,10 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.CachedValueProvider
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.ChronicleModificationTrackers
-import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.cache.asCancellable
-import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.cache.CacheBuilder
+import icu.windea.pls.core.util.cache.asCancellable
+import icu.windea.pls.core.util.cache.createNestedCache
 import icu.windea.pls.core.util.createCachedValue
 import icu.windea.pls.core.util.getOrPutUserData
 import icu.windea.pls.core.util.getValue

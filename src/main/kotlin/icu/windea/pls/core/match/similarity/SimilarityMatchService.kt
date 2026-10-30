@@ -2,10 +2,10 @@ package icu.windea.pls.core.match.similarity
 
 import com.google.common.hash.Hashing
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.cache.CacheBuilder
 import java.util.*
 import kotlin.math.roundToInt
 

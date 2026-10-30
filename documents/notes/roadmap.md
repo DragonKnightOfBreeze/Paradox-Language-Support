@@ -575,7 +575,7 @@
 - [x] P3 重命名：`cancelable` -> `cancellable`
 - [x] P3 重命名：`Cache.cancelable` -> `Cache.asCancellable`
 - [ ] P4 移动：将 `StdlibExtensions.kt` 中的部分方法移到 `icu.windea.pls.core.util.io` 中的 `PathExtensions.kt` 和 `FileExtensions.kt`
-- [ ] P4 移动：`icu.windea.pls.core.cache` -> `icu.windea.pls.core.util.cache`
+- [x] P4 移动：`icu.windea.pls.core.cache` -> `icu.windea.pls.core.util.cache`
 
 ## 按主题 {#by-topic}
 

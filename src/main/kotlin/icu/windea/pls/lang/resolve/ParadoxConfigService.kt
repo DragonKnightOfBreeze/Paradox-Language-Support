@@ -23,9 +23,6 @@ import icu.windea.pls.config.filterValues
 import icu.windea.pls.config.manipulation.CwtConfigInlineService
 import icu.windea.pls.config.sortedByPriority
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.cache.asCancellable
-import icu.windea.pls.core.cache.createNestedCache
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.mapFast
@@ -34,6 +31,9 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.cache.CacheBuilder
+import icu.windea.pls.core.util.cache.asCancellable
+import icu.windea.pls.core.util.cache.createNestedCache
 import icu.windea.pls.core.util.createCachedValue
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate

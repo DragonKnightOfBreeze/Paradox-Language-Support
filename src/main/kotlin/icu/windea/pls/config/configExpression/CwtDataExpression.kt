@@ -5,8 +5,8 @@ package icu.windea.pls.config.configExpression
 import icu.windea.pls.config.CwtDataType
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.cache.CacheBuilder
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
 import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.model.expressions.ParadoxExpression
