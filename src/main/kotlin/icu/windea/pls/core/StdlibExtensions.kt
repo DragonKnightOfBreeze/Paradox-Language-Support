@@ -7,17 +7,12 @@ import icu.windea.pls.ChronicleFacade
 import java.io.File
 import java.net.URL
 import java.nio.charset.StandardCharsets
-import java.nio.file.FileAlreadyExistsException
 import java.nio.file.Path
 import java.util.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.io.path.absolute
-import kotlin.io.path.createDirectories
-import kotlin.io.path.createFile
-import kotlin.io.path.createParentDirectories
-import kotlin.io.path.isDirectory
 
 private data object EmptyObject
 
@@ -506,21 +501,6 @@ fun String.toUuidString() = UUID.nameUUIDFromBytes(toByteArray(StandardCharsets.
  * 返回规范化后的绝对路径（absolute + normalize）。
  */
 fun Path.formatted(): Path = absolute().normalize()
-
-/** 若路径为目录则确保存在；若为文件则确保父目录存在并创建空文件（忽略已存在）。 */
-fun Path.create(): Path {
-    try {
-        if (isDirectory()) {
-            createDirectories()
-        } else {
-            createParentDirectories()
-            createFile()
-        }
-    } catch (e: FileAlreadyExistsException) {
-        // ignored
-    }
-    return this
-}
 
 /** 路径与 URL/类加载器相关的便捷转化。 */
 fun String.toFile() = File(this)
