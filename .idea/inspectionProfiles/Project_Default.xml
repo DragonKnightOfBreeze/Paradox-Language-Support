@@ -78,7 +78,6 @@
     <inspection_tool class="MarkdownUnresolvedHeaderReference" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="MdUnresolvedReference" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="MisorderedAssertEqualsParameters" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="MissingAccessibleContext" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="MissingJavadoc" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="PACKAGE_SETTINGS">
         <Options>
@@ -139,6 +138,7 @@
       <option name="myPreferExplicitReturnTypesForFunctionExpressions" value="true" />
     </inspection_tool>
     <inspection_tool class="UnnecessaryVariable" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
+    <inspection_tool class="UseOptimizedEelFunctions" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="UsePropertyAccessSyntax" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="fqNameStrings">
         <list>
