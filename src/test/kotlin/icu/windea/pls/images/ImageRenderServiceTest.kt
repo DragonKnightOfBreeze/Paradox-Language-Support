@@ -34,6 +34,8 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
     fun doSetUp() {
         root.toFile().deleteRecursively()
         root.createDirectories()
+        // 注册内置的 DDS/TGA ImageIO SPI，确保测试不依赖插件启动生命周期
+        ImageContext.init()
     }
 
     @Test

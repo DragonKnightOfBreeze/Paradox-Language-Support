@@ -5,6 +5,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.util.io.toPath
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -16,6 +17,12 @@ import java.nio.file.Path
 @RunWith(JUnit4::class)
 class ImageMetadataServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     override fun getTestDataPath() = "src/test/testData"
+
+    @Before
+    fun doSetUp() {
+        // 注册内置的 DDS/TGA ImageIO SPI，确保测试不依赖插件启动生命周期
+        ImageContext.init()
+    }
 
     @Test
     fun getMetadata_byFile_png_test() {

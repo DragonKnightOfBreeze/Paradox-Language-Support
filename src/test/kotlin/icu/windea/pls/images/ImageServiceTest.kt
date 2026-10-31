@@ -22,10 +22,6 @@ class ImageServiceTest : BasePlatformTestCase() {
     fun doSetUp() {
         root.toFile().deleteRecursively()
         root.createDirectories()
-    }
-
-    override fun setUp() {
-        super.setUp()
         // 注册内置的 DDS/TGA ImageIO SPI，确保测试不依赖插件启动生命周期
         ImageContext.init()
     }
