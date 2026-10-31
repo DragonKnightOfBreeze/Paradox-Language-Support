@@ -13,7 +13,7 @@ class SetBackgroundImageAction : DumbAwareAction() {
     override fun update(e: AnActionEvent) {
         val project = e.project
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
-        val image = file != null && ImageService.getInstance().isExtendedImageFileType(file.fileType)
+        val image = file != null && ImageService.getInstance().isImageFileType(file.fileType)
         val visible = !e.isFromContextMenu || image
         e.presentation.isEnabled = project != null
         e.presentation.isVisible = visible
@@ -27,7 +27,7 @@ class SetBackgroundImageAction : DumbAwareAction() {
         val project = e.project
         if (project == null) return
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
-        val image = file != null && ImageService.getInstance().isExtendedImageFileType(file.fileType)
+        val image = file != null && ImageService.getInstance().isImageFileType(file.fileType)
         val dialog = BackgroundImageDialog(project, if (image) file.path else null)
         dialog.showAndGet()
     }

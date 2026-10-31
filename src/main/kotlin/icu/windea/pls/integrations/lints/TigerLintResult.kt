@@ -21,17 +21,16 @@ import java.io.IOException
  * 参见：[JSON output format · amtep/tiger Wiki](https://github.com/amtep/tiger/wiki/JSON-output-format)
  */
 data class TigerLintResult(
-    val name: String,
+    override val request: TigerLintRequest,
     val items: Collection<Item> = emptySet(),
     val itemGroup: Map<String, Collection<Item>> = emptyMap(),
-    val error: Throwable? = null,
-    val request: TigerLintRequest? = null,
-    val modificationTracker: ModificationTracker? = null,
+    override val error: Exception? = null,
+    override val modificationTracker: ModificationTracker? = null,
 ) : LintResult {
     fun fromPath(path: String): TigerLintResult? {
         val items = itemGroup[path]
         if (items.isNullOrEmpty()) return null
-        return TigerLintResult(name, items, emptyMap(), error, request, modificationTracker)
+        return TigerLintResult(request, items, emptyMap(), error, modificationTracker)
     }
 
     @Serializable
@@ -149,13 +148,11 @@ data class TigerLintResult(
     }
 
     companion object {
-        @JvmField val EMPTY = TigerLintResult("")
-
         @Throws(SerializationException::class, IllegalArgumentException::class, IOException::class)
         @JvmStatic
-        fun parse(name: String, outputFile: File): TigerLintResult {
+        fun parse(request: TigerLintRequest, outputFile: File): TigerLintResult {
             val items = outputFile.inputStream().use { JsonService.json.decodeFromStream<List<Item>>(it) }
-            if (items.isEmpty()) return EMPTY
+            if (items.isEmpty()) return TigerLintResult(request)
             val itemGroup = mutableMapOf<String, MutableSet<Item>>()
             for (item in items) {
                 val singlePath = item.locations.mapTo(mutableSetOf()) { it.path }.singleOrNull()
@@ -171,7 +168,7 @@ data class TigerLintResult(
                     }
                 }
             }
-            return TigerLintResult(name, items, itemGroup)
+            return TigerLintResult(request, items, itemGroup)
         }
     }
 }

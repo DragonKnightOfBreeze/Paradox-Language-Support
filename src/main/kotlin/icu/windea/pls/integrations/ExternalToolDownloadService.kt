@@ -59,9 +59,10 @@ class ExternalToolDownloadService {
         val downloadPath = root.resolve(descriptor.fileName)
 
         return reportProgressScope(2) { reporter ->
-            reporter.indeterminateStep("Downloading ${descriptor.name}") {
+            val downloadStep = ChronicleIntegrationsBundle.message("externalTool.download.step", descriptor.name)
+            reporter.indeterminateStep(downloadStep) {
                 reportRawProgress { rawReporter ->
-                    rawReporter.text("Downloading ${descriptor.name}")
+                    rawReporter.text(downloadStep)
                     rawReporter.details(descriptor.url)
                     DownloadService.download(
                         uri = URI(descriptor.url),
@@ -72,9 +73,15 @@ class ExternalToolDownloadService {
                     )
                 }
             }
-            reporter.indeterminateStep("Extracting ${descriptor.name}") {
+            val extractStep = ChronicleIntegrationsBundle.message("externalTool.extract.step", descriptor.name)
+            reporter.indeterminateStep(extractStep) {
                 withContext(Dispatchers.IO) {
-                    ArchiveService.extract(downloadPath, root, descriptor.archiveType, archiveOptions)
+                    ArchiveService.extract(
+                        archivePath = downloadPath,
+                        targetDirectory = root,
+                        type = descriptor.archiveType,
+                        settings = archiveOptions,
+                    )
                     val executable = PathService.findExecutable(root, descriptor.executableName)
                         ?: throw IllegalStateException("Executable ${descriptor.executableName} is missing after downloading ${descriptor.name}.")
                     PathService.makeExecutable(executable)

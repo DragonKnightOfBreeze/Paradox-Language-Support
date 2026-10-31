@@ -1,19 +1,26 @@
 package icu.windea.pls.integrations.lints.providers
 
+import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
 import icu.windea.pls.core.util.io.parsePath
+import icu.windea.pls.integrations.lints.LintRequest
 import icu.windea.pls.integrations.lints.LintToolSettings
 import icu.windea.pls.integrations.lints.TigerLintRequest
 import icu.windea.pls.integrations.lints.TigerLintResult
 import icu.windea.pls.model.ParadoxGameType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.concurrent.CancellationException
+import java.util.concurrent.TimeoutException
 import kotlin.io.path.createDirectories
 import kotlin.io.path.extension
 import kotlin.io.path.nameWithoutExtension
+import kotlin.io.path.writeText
 
 /**
  * 参见：[Tiger](https://github.com/amtep/tiger)
@@ -55,7 +62,9 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
         return Files.isRegularFile(path)
     }
 
-    fun validateRootDirectory(request: TigerLintRequest): TigerLintResult {
+    @Throws(UnsupportedOperationException::class, ExecutionException::class, CancellationException::class, TimeoutException::class)
+    override suspend fun validateRootDirectory(request: LintRequest): TigerLintResult {
+        if (request !is TigerLintRequest) throw IllegalArgumentException()
         val commands = buildList {
             add(request.executablePath.toString())
             add("--json")
@@ -82,23 +91,25 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
             ProgressManager.checkCanceled() // 如果的确被取消，则抛出 `ProcessCanceledException`
             val message = "Tiger command was cancelled." +
                 "\nCommand: ${commandLine.commandLineString}"
-            throw IllegalStateException(message)
+            throw CancellationException(message)
         }
         if (output.isTimeout) {
             val message = "Tiger command timed out." +
                 "\nCommand: ${commandLine.commandLineString}"
-            throw IllegalStateException(message)
+            throw TimeoutException(message)
         }
         if (output.exitCode != 0) {
             val message = "Tiger command failed (exitCode=${output.exitCode})." +
                 "\nCommand: ${commandLine.commandLineString}" +
                 "\nError: ${output.stderr.trim()}"
-            throw IllegalStateException(message)
+            throw ExecutionException(message)
         }
 
-        request.outputPath.parent?.createDirectories()
-        Files.writeString(request.outputPath, output.stdout, Charsets.UTF_8)
-        return TigerLintResult.parse(name, request.outputPath.toFile()) // 如果无法解析 json，这里会直接报错
+        withContext(Dispatchers.IO) {
+            request.outputPath.parent?.createDirectories()
+            request.outputPath.writeText(output.stdout)
+        }
+        return TigerLintResult.parse(request, request.outputPath.toFile()) // 如果无法解析 json，这里会直接报错
     }
 
     class Ck3 : TigerLintToolProvider() {

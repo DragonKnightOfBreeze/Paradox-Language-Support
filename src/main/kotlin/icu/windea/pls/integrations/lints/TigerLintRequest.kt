@@ -15,13 +15,13 @@ import java.nio.file.Path
  * @property confPath 检查工具的配置文件路径。
  * @property workingDirectory 执行命令时的工作目录。
  * @property rootFile 模组根目录对应的虚拟文件。用于追踪更改。
- * @property modPath 模组路径（模组描述符路径，或者模组根目录路径）。作为 Tiger 的实际输入。
+ * @property modPath 模组路径（`.mod` 文件的路径，或者模组根目录路径）。作为 Tiger 的实际输入。
  * @property gamePath 游戏目录路径。
  * @property outputPath 检查结果的输出路径。
  */
-class TigerLintRequest(
-    val name: String,
-    val gameType: ParadoxGameType,
+data class TigerLintRequest(
+    override val name: String,
+    override val gameType: ParadoxGameType,
     val executablePath: Path,
     val confPath: Path? = null,
     val workingDirectory: Path,
@@ -29,7 +29,7 @@ class TigerLintRequest(
     val gamePath: Path? = null,
     val modPath: Path,
     val outputPath: Path,
-) {
+): LintRequest {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is TigerLintRequest) return false

@@ -548,7 +548,7 @@
 - [x] P1 修复 CWT 文件和脚本文件的结构视图无法正常显示的回归BUG（自插件版本 3.0.3）
   - 参见：`icu.windea.pls.cwt.structureView.CwtFileTreeElement`
   - 参见：`icu.windea.pls.script.structureView.ParadoxScriptFileTreeElement`
-- [ ] P2 修复：`descriptor.mod` 在文件路径导航栏中会错误地显示整个文件文本（应当显示文件名）
+- [ ] P2 修复：脚本文件在文件路径导航栏中会错误地显示整个文件文本（应当显示文件名）
 
 #### 任务（次要）
 
@@ -577,6 +577,8 @@
 - [x] P4 移动：将 `StdlibExtensions.kt` 中的部分方法移到 `icu.windea.pls.core.util.io` 中的 `PathExtensions.kt` 和 `FileExtensions.kt`（并且移除/补充一些方法）
 - [x] P4 移动：`icu.windea.pls.core.cache` -> `icu.windea.pls.core.util.cache`
 - [x] P4 移动：将 `icu.windea.pls.images.ImageFrameInfo` 移到 `icu.windea.pls.core.util.ImageFrameInfo`（对齐 `RangeInfo` 和 `Template`，以后可能还会新增 `ImageLayerInfo` 等）
+- [x] P4 从 `ImageService` 分理出 `ImageContext` 以及 `ImageLifecycleListener`
+- [x] P4 从 `CodeInjectorService` 分理出 `CodeInjectorLifecycleListener`
 
 ## 按主题 {#by-topic}
 

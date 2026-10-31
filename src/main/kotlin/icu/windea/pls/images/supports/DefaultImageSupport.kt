@@ -1,7 +1,5 @@
 package icu.windea.pls.images.supports
 
-import com.intellij.openapi.diagnostic.thisLogger
-import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.util.io.ImageIoService
 import icu.windea.pls.images.ImageSupport
 import java.io.InputStream
@@ -9,7 +7,6 @@ import java.io.OutputStream
 import java.nio.file.Path
 import javax.imageio.ImageIO
 import kotlin.io.path.deleteIfExists
-import kotlin.io.path.exists
 
 /**
  * 基于 [TwelveMonkeys ImageIO](https://github.com/haraldk/TwelveMonkeys) 实现的图片支持。
@@ -21,27 +18,23 @@ import kotlin.io.path.exists
  */
 class DefaultImageSupport : ImageSupport {
     override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
+        // 3.0.5 fast return if necessary
         if (ImageIoService.copyIfSameFormat(inputStream, outputStream, sourceFormat, targetFormat)) return true
-        try {
-            ImageIoService.convertImageFormat(inputStream, outputStream, targetFormat)
-            return true
-        } catch (e: Exception) {
-            checkCancellation(e)
-            thisLogger().warn(e)
-            throw UnsupportedOperationException(e)
-        }
+        // implementation
+        ImageIoService.convertImageFormat(inputStream, outputStream, targetFormat)
+        return true
     }
 
     override fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
+        // 3.0.5 fast return if necessary
         if (ImageIoService.copyIfSameFormat(path, targetPath, sourceFormat, targetFormat)) return true
+        // implementation
         try {
             ImageIoService.convertImageFormat(path, targetPath, targetFormat)
-            return targetPath.exists()
+            return true
         } catch (e: Exception) {
-            runCatching { targetPath.deleteIfExists() }
-            checkCancellation(e)
-            thisLogger().warn(e)
-            throw UnsupportedOperationException(e)
+            runCatching { targetPath.deleteIfExists() } // ensure file deleted if operation failed
+            throw e
         }
     }
 }

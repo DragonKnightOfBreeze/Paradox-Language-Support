@@ -143,9 +143,11 @@ class Issue396TigerLintTest : BasePlatformTestCase(), ChronicleTestScope {
         val request = service.collectRequest(file)
         val fileInfo = file.virtualFile?.fileInfo
         Assert.assertNotNull("Cannot collect Tiger lint request (language=${file.language}, fileInfo=$fileInfo)", request)
-        val result = service.getTigerLintResult(request!!)
+        request!!
+        val result = service.getTigerLintResult(request, project)
         Assert.assertNotNull("Tiger lint result is null", result)
-        Assert.assertNull("Tiger lint failed: ${result!!.error?.message}", result.error)
+        result!!
+        Assert.assertNull("Tiger lint failed: ${result.error?.message}", result.error)
 
         val fileResult = result.fromPath("common/scripted_triggers/test_triggers.txt")
         Assert.assertNotNull("Tiger did not report the test file. Items: ${result.itemGroup.keys}", fileResult)

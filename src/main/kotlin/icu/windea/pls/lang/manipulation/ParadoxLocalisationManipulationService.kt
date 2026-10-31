@@ -23,11 +23,7 @@ import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.locale
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.localisation.psi.ParadoxLocalisationText
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 @Optimized
 object ParadoxLocalisationManipulationService {
@@ -70,17 +66,7 @@ object ParadoxLocalisationManipulationService {
     }
 
     suspend fun handleTextWithTranslation(context: ParadoxLocalisationManipulationContext, sourceLocale: CwtLocaleConfig, targetLocale: CwtLocaleConfig) {
-        val newText = suspendCancellableCoroutine { continuation ->
-            CoroutineScope(continuation.context).launch {
-                TranslationToolService.getInstance().translate(context.newText, sourceLocale, targetLocale) { translated, e ->
-                    if (e != null) {
-                        continuation.resumeWithException(e)
-                    } else {
-                        continuation.resume(translated)
-                    }
-                }
-            }
-        }
+        val newText = TranslationToolService.getInstance().translate(context.newText, sourceLocale, targetLocale)
         if (newText == null) return
         context.newText = newText
     }

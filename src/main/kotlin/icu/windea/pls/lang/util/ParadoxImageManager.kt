@@ -14,15 +14,13 @@ import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.util.ImageFrameInfo
 import icu.windea.pls.core.util.io.toPathOrNull
 import icu.windea.pls.images.ImageRenderService
-import icu.windea.pls.images.dds.DdsFileType
-import icu.windea.pls.images.tga.TgaFileType
+import icu.windea.pls.images.ImageService
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.resolve.ParadoxImageResolveResult
 import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.model.policies.ImageRenderFailurePolicy
 import icu.windea.pls.model.policies.ImageRenderPolicy
-import org.intellij.images.fileTypes.impl.ImageFileType
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlin.io.path.absolutePathString
@@ -38,7 +36,7 @@ object ParadoxImageManager {
 
     fun isImageFile(file: VirtualFile): Boolean {
         val fileType = file.fileType
-        if (fileType !is ImageFileType && fileType !is DdsFileType && fileType !is TgaFileType) return false
+        if (!ImageService.getInstance().isImageFileType(fileType)) return false
         val extension = file.extension?.lowercase() ?: return false
         if (extension !in ChronicleConstants.imageFileExtensions) return false
         return true

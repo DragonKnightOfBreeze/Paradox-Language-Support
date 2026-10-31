@@ -1,9 +1,13 @@
 package icu.windea.pls.base.io
 
 import com.intellij.execution.ExecutionException
+import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.components.serviceOrNull
 import com.intellij.openapi.vfs.VirtualFile
 import java.nio.file.Path
+import java.util.concurrent.CancellationException
+import java.util.concurrent.TimeoutException
+import kotlin.time.Duration
 
 /**
  * Git 服务。
@@ -24,20 +28,25 @@ interface ChronicleGitService {
      */
     fun getRemoteUrls(repositoryRoot: VirtualFile): List<String>
 
-    @Throws(ExecutionException::class, IllegalStateException::class)
-    fun checkRemote(url: String): String
+    fun createCommandLine(vararg arguments: String): GeneralCommandLine
 
-    @Throws(ExecutionException::class, IllegalStateException::class)
-    fun syncFromRemote(url: String, parentDirectory: String): String
+    @Throws(ExecutionException::class, CancellationException::class, TimeoutException::class)
+    fun execute(commandLine: GeneralCommandLine, timeout: Duration): String
 
-    @Throws(ExecutionException::class, IllegalStateException::class)
+    @Throws(ExecutionException::class, CancellationException::class, TimeoutException::class)
     fun lsRemote(url: String): String
 
-    @Throws(ExecutionException::class, IllegalStateException::class)
+    @Throws(ExecutionException::class, CancellationException::class, TimeoutException::class)
     fun clone(url: String, workDirectory: Path): String
 
-    @Throws(ExecutionException::class, IllegalStateException::class)
+    @Throws(ExecutionException::class, CancellationException::class, TimeoutException::class)
     fun pull(url: String, workDirectory: Path): String
+
+    @Throws(ExecutionException::class, CancellationException::class, TimeoutException::class)
+    fun checkRemote(url: String): String
+
+    @Throws(ExecutionException::class, CancellationException::class, TimeoutException::class)
+    fun syncFromRemote(url: String, parentDirectory: String): String
 
     companion object {
         @JvmStatic

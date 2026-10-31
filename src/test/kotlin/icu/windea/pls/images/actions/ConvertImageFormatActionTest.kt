@@ -94,10 +94,8 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
 
                 val sourceFile = psiFile(sourcePath)
                 val targetDirectory = psiDirectory(targetDirectoryPath)
-                val result = ApplicationManager.getApplication().runWriteAction<Result<PsiFile?>> {
-                    runCatching {
-                        action.convertInternal(sourceFile, targetDirectory, targetFileName)
-                    }
+                val result = runCatching {
+                    action.convertImageFormat(sourceFile, targetDirectory, targetFileName)
                 }
                 val expected = expectedSuccess(sourceFormat, targetFormat)
                 Assert.assertEquals("$strategy: $sourceFormat -> $targetFormat, error=${result.exceptionOrNull()}", expected, result.isSuccess)

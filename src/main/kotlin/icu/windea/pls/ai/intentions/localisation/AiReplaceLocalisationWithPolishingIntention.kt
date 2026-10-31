@@ -53,9 +53,9 @@ class AiReplaceLocalisationWithPolishingIntention : ManipulateLocalisationIntent
                 if (contextsToHandle.isEmpty()) return@run
                 val total = contextsToHandle.size
                 var current = 0
-                reportRawProgress { reporter ->
-                    reporter.text(ChronicleBundle.message("manipulation.localisation.polish.replace.progress.step"))
-                    reporter.fraction(0.0)
+                reportRawProgress { rawReporter ->
+                    rawReporter.text(ChronicleBundle.message("manipulation.localisation.polish.replace.progress.step"))
+                    rawReporter.fraction(0.0)
 
                     val request = PolishLocalisationAiRequest(project, file, contextsToHandle, description)
                     val callback: suspend (LocalisationAiResult) -> Unit = { data ->
@@ -63,8 +63,8 @@ class AiReplaceLocalisationWithPolishingIntention : ManipulateLocalisationIntent
                         withErrorRef(errorRef) { replaceText(context, project) }.getOrNull()
 
                         current++
-                        reporter.text(ChronicleBundle.message("manipulation.localisation.polish.replace.progress.itemStep", data.key))
-                        reporter.fraction(current / total.toDouble())
+                        rawReporter.text(ChronicleBundle.message("manipulation.localisation.polish.replace.progress.itemStep", data.key))
+                        rawReporter.fraction(current / total.toDouble())
                     }
                     withErrorRef(errorRef) { handleText(request, callback) }.getOrNull()
 

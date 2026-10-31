@@ -1,12 +1,23 @@
 package icu.windea.pls.integrations.lints
 
+import com.intellij.execution.ExecutionException
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.progress.runBlockingCancellable
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SimpleModificationTracker
 import com.intellij.openapi.vfs.toNioPathOrNull
+import com.intellij.platform.ide.progress.ModalTaskOwner
+import com.intellij.platform.ide.progress.TaskCancellation
+import com.intellij.platform.ide.progress.runWithModalProgressBlocking
+import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.platform.util.progress.reportRawProgress
 import com.intellij.psi.PsiFile
+import com.intellij.util.ExceptionUtil
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
@@ -26,7 +37,10 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.selectFile
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.model.analysis.ParadoxDescriptorModBasedModMetadata
+import java.util.concurrent.CancellationException
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeoutException
 
 /**
  * Tiger 检查工具服务。
@@ -34,6 +48,7 @@ import java.util.concurrent.ConcurrentHashMap
  * 该服务为应用级别，不依赖项目或 PSI；检查结果通过 [TrackingCache] 按请求缓存。
  */
 @Service
+@Suppress("UnstableApiUsage")
 class TigerLintToolService : Disposable {
     // 带追踪的检查结果缓存
     private val cache = CacheBuilder("maximumSize=128,expireAfterAccess=30m,softValues")
@@ -41,17 +56,61 @@ class TigerLintToolService : Disposable {
         .trackedBy { it.modificationTracker }
     // 追踪相关配置（包括可执行文件路径和 .conf 配置文件）的更改
     private val modificationTrackers = ConcurrentHashMap<ParadoxGameType, SimpleModificationTracker>()
-    // 请求级别的检查结果同步锁
+    // 请求级别的检查结果同步锁（避免重复检查）
     private val lintResultLocks = ConcurrentHashMap<TigerLintRequest, Any>()
+    // 请求级别的检查结果状态标记（直到成功之前，避免多次发送警告通知，目前不绑定到 project）
+    private val lintResultStatuses = ConcurrentHashMap<TigerLintRequest, Boolean>()
 
-    fun isEnabled(): Boolean {
-        return LintToolSettings.getInstance().enableTiger
-    }
-
-    /** @see icu.windea.pls.integrations.lints.providers.TigerLintToolProvider */
+    /** @see TigerLintToolProvider */
     fun findTool(gameType: ParadoxGameType): TigerLintToolProvider? {
         if (!isEnabled()) return null
         return LintToolProvider.EP_NAME.extensionList.findIsInstance<TigerLintToolProvider> { it.isAvailable(gameType) }
+    }
+
+    /** @see TigerLintToolProvider.validateRootDirectory */
+    @Throws(UnsupportedOperationException::class, ExecutionException::class, CancellationException::class, TimeoutException::class)
+    suspend fun validateRootDirectory(request: TigerLintRequest): TigerLintResult {
+        val tool = findTool(request.gameType) ?: throw UnsupportedOperationException("Unsupported: Tiger lint tool is not available (game type: ${request.gameType}).")
+        warnIfIncorrectContext(tool)
+        try {
+            val result = tool.validateRootDirectory(request)
+            logOperation(tool) { "validate (modPath=${request.modPath})" }
+            return result
+        } catch (e: Exception) {
+            checkCancellation(e)
+            logOperation(tool, e) { "validate (modPath=${request.modPath})" }
+            throw e
+        }
+    }
+
+    fun validateRootDirectoryAsync(request: TigerLintRequest, project: Project, cancellable: Boolean): TigerLintResult {
+        // 3.0.5 加上状态指示，因为检查结果的缓存失效时机并不是那么显而易见
+        val name = request.name
+        val fileUrl = request.rootFile.presentableUrl
+        val progressTitle = ChronicleIntegrationsBundle.message("lint.tiger.validate.progress.title", name)
+        val progressText = ChronicleIntegrationsBundle.message("lint.tiger.validate.progress.text", name, fileUrl)
+        val taskCancellation = if (cancellable) TaskCancellation.cancellable() else TaskCancellation.nonCancellable()
+        return if (ApplicationManager.getApplication().isDispatchThread) {
+            runWithModalProgressBlocking(ModalTaskOwner.project(project), progressTitle, taskCancellation) {
+                reportRawProgress { rawReporter ->
+                    rawReporter.text(progressText)
+                    validateRootDirectory(request)
+                }
+            }
+        } else {
+            runBlockingCancellable {
+                withBackgroundProgress(project, progressTitle, taskCancellation) {
+                    reportRawProgress { rawReporter ->
+                        rawReporter.text(progressText)
+                        validateRootDirectory(request)
+                    }
+                }
+            }
+        }
+    }
+
+    fun isEnabled(): Boolean {
+        return LintToolSettings.getInstance().enableTiger
     }
 
     fun getModificationTracker(gameType: ParadoxGameType): SimpleModificationTracker {
@@ -79,8 +138,12 @@ class TigerLintToolService : Disposable {
         val rootFile = rootInfo.rootFile
         val modSettings = ChronicleProfilesSettings.getInstance().state.modSettings.get(rootFile.path)
         val gamePath = modSettings?.finalGameDirectory.parsePath()
-        val modDescriptorPath = rootInfo.metadata.infoPath // `descriptor.mod` or `.metadata/metadata.json`
-        val modPath = modDescriptorPath ?: rootFile.toNioPathOrNull() ?: return null
+        val modPath = when (val modMetadata = rootInfo.metadata) {
+            // `.mod` file (generally `descriptor.mod` under the mod directory)
+            is ParadoxDescriptorModBasedModMetadata -> modMetadata.infoPath
+            // the mod root directory
+            else -> rootInfo.rootFile.toNioPathOrNull() ?: return null
+        }
         val outputUuid = rootFile.url.toUuidString()
         val outputPath = ChronicleDataPathService.getInstance().lintResultsPath.resolve("${tool.name}-result@$outputUuid.json")
         return TigerLintRequest(
@@ -99,48 +162,77 @@ class TigerLintToolService : Disposable {
     /**
      * 获取请求对应的检查结果。相同请求会被合并，并按修改追踪器自动失效。
      */
-    fun getTigerLintResult(request: TigerLintRequest): TigerLintResult? {
+    fun getTigerLintResult(request: TigerLintRequest, project: Project): TigerLintResult? {
         if (!isEnabled()) return null
         val lock = lintResultLocks.getOrPut(request) { Any() }
-        try {
-            return synchronized(lock) { // 这里需要加锁（不要直接对 `VirtualFile` 加锁）
-                cache.get(request) { loadTigerLintResult(it) }
+        val result = try {
+            synchronized(lock) { // 这里需要加锁（不要直接对 `VirtualFile` 加锁）
+                cache.get(request) { computeTigerLintResult(it, project) }
             }
         } finally {
             lintResultLocks.remove(request, lock)
         }
+        return processTigerLintResult(result, project)
     }
 
-    private fun loadTigerLintResult(request: TigerLintRequest): TigerLintResult {
+    private fun computeTigerLintResult(request: TigerLintRequest, project: Project): TigerLintResult {
         val modificationTracker = MergedModificationTracker(
             request.rootFile,
             getModificationTracker(request.gameType),
             ChronicleModificationTrackers.ScriptFile,
             ChronicleModificationTrackers.LocalisationFile,
         )
-        val tool = findTool(request.gameType)
-        val result = if (tool == null) {
-            val error = IllegalStateException("Tiger lint tool is not available. (game type: ${request.gameType})")
-            notifyWarningNotification(request, error)
-            TigerLintResult(request.name, error = error)
-        } else {
-            try {
-                tool.validateRootDirectory(request)
-            } catch (e: Exception) {
-                checkCancellation(e)
-                notifyWarningNotification(request, e)
-                TigerLintResult(request.name, error = e)
-            }
+        val result = try {
+            validateRootDirectoryAsync(request, project, cancellable = false)
+        } catch (e: Exception) {
+            checkCancellation(e)
+            TigerLintResult(request, error = e)
         }
-        return result.copy(name = request.name, request = request, modificationTracker = modificationTracker)
+        return result.copy(modificationTracker = modificationTracker)
     }
 
-    private fun notifyWarningNotification(request: TigerLintRequest, e: Throwable) {
+    private fun processTigerLintResult(result: TigerLintResult, project: Project): TigerLintResult {
+        val request = result.request
+        val error = result.error
+        val status = error != null
+        val oldStatus = lintResultStatuses.put(request, status) ?: true
+        if (error != null && oldStatus) {
+            // 3.0.5 if previous result is failed, do not notify again
+            notifyWarningNotification(request, error, project)
+        }
+        return result
+    }
+
+    private fun notifyWarningNotification(request: TigerLintRequest, error: Exception, project: Project) {
+        val name = request.name
         val fileUrl = request.rootFile.presentableUrl
-        val title = ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.title", request.name)
-        val content = e.message?.let { message -> ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.content", fileUrl, message) }
+        val title = ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.title", name)
+        val content = error.message?.let { message -> ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.content", fileUrl, message) }
             ?: ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.content1", fileUrl)
-        ChronicleNotificationGroups.global().createNotification(title, content, NotificationType.WARNING).notify(null)
+        ChronicleNotificationGroups.global().createNotification(title, content, NotificationType.WARNING).notify(project)
+    }
+
+    private fun warnIfIncorrectContext(tool: TigerLintToolProvider): Boolean {
+        // 3.0.5 warn if current context is incorrect (EDT or readAction), and skip operation
+        val application = ApplicationManager.getApplication()
+        val message = when {
+            application.isDispatchThread -> "on EDT"
+            application.holdsReadLock() -> "under readAction"
+            else -> return false
+        }
+        if (!warnedStacks.add(ExceptionUtil.currentStackTrace())) return true
+        logger.warn("[${tool.name}] Tiger lint tool is used $message.")
+        return true
+    }
+
+    private fun logOperation(tool: TigerLintToolProvider, error: Exception? = null, operation: () -> String) {
+        if (error != null) {
+            if (!warnedStacks.add(ExceptionUtil.currentStackTrace())) return
+            logger.warn("[${tool.name}] Execute tiger lint tool failed. Operation: ${operation()}.")
+        } else {
+            if (!logger.isDebugEnabled) return
+            logger.debug("[${tool.name}] Execute tiger lint tool success. Operation: ${operation()}.")
+        }
     }
 
     override fun dispose() {
@@ -148,9 +240,13 @@ class TigerLintToolService : Disposable {
         cache.cleanUp()
         modificationTrackers.clear()
         lintResultLocks.clear()
+        lintResultStatuses.clear()
     }
 
     companion object {
+        private val logger = logger<TigerLintToolProvider>()
+        private val warnedStacks = ConcurrentHashMap.newKeySet<String>()
+
         @JvmStatic
         fun getInstance(): TigerLintToolService = service()
     }

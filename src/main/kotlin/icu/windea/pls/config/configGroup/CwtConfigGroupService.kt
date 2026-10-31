@@ -81,12 +81,12 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         coroutineScope.launch {
             if (project.isDefault) {
                 // 静默执行
-                processConfigGroupsAsync(configGroups, refresh = false)
+                processConfigGroups(configGroups, refresh = false)
             } else {
                 // 显示不可取消的后台进度条
                 val title = ChronicleBundle.message("configGroup.init.progress.title")
                 withBackgroundProgress(project, title, TaskCancellation.nonCancellable()) {
-                    processConfigGroupsAsync(configGroups, refresh = false)
+                    processConfigGroups(configGroups, refresh = false)
                 }
                 // 规则数据加载完毕后，重新解析已打开的文件
                 // 重新解析已打开的文件
@@ -107,7 +107,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
             // 显示可以取消的后台进度条
             val title = ChronicleBundle.message("configGroup.refresh.progress.title")
             withBackgroundProgress(project, title, TaskCancellation.cancellable()) {
-                processConfigGroupsAsync(configGroups, refresh = true)
+                processConfigGroups(configGroups, refresh = true)
             }
             // 规则数据刷新完毕后，重新解析已打开的文件
             // 重新解析已打开的文件
@@ -140,7 +140,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         application.messageBus.syncPublisher(CwtConfigGroupRefreshStatusListener.TOPIC).onChange(project)
     }
 
-    suspend fun processConfigGroupsAsync(configGroups: Collection<CwtConfigGroup>, refresh: Boolean) {
+    suspend fun processConfigGroups(configGroups: Collection<CwtConfigGroup>, refresh: Boolean) {
         if (configGroups.isEmpty()) return
         if (project.isDisposed) return
         val start = System.currentTimeMillis()
@@ -203,7 +203,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         }
     }
 
-    suspend fun refreshBuiltInConfigFilesAsync() {
+    suspend fun refreshBuiltInConfigFiles() {
         if (project.isDisposed || project.isDefault) return
         val files = CwtConfigGroupFileProvider.EP_NAME.extensionList
             .filter { it.source == CwtConfigGroupFileSource.BuiltIn }

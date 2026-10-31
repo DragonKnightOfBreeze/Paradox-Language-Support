@@ -73,7 +73,7 @@ class EditExternallyAction : DumbAwareAction() {
 
     override fun update(e: AnActionEvent) {
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
-        val enabled = file != null && ImageService.getInstance().isExtendedImageFileType(file.fileType)
+        val enabled = file != null && ImageService.getInstance().isImageFileType(file.fileType)
         if (e.isFromContextMenu) {
             e.presentation.isVisible = enabled
         }

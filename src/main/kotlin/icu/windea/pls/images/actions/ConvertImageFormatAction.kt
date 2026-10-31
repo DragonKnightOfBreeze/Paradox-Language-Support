@@ -48,7 +48,7 @@ abstract class ConvertImageFormatAction(
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     protected open fun isAvailableForFile(file: VirtualFile): Boolean {
-        return ImageService.getInstance().isImageFileType(file.fileType)
+        return ImageService.getInstance().isBasicImageFileType(file.fileType)
     }
 
     protected open fun getNewFileName(fileName: String): String {
@@ -172,7 +172,7 @@ abstract class ConvertImageFormatAction(
             return
         }
 
-        convertInternal(file, targetDirectory, fileName, added, failed)
+        convertImageFormat(file, targetDirectory, fileName, added, failed)
     }
 
     private fun rethrow(throwable: Throwable?) {
@@ -244,7 +244,7 @@ abstract class ConvertImageFormatAction(
                         progressIndicator.text2 = InspectionsBundle.message("processing.progress.text", existing.name)
                     }
                     existing.delete()
-                    convertInternal(replacement, targetDirectory, fileName, added, failed)
+                    convertImageFormat(replacement, targetDirectory, fileName, added, failed)
                 }
                 if (userChoice == SkipOverwriteChoice.OVERWRITE) {
                     executeWriteCommand(project, title) { doCopy.run() }
@@ -256,9 +256,9 @@ abstract class ConvertImageFormatAction(
         return defaultChoice
     }
 
-    private fun convertInternal(file: PsiFile, targetDirectory: PsiDirectory, fileName: String, added: MutableList<PsiFile>, failed: MutableList<PsiFile>) {
+    private fun convertImageFormat(file: PsiFile, targetDirectory: PsiDirectory, fileName: String, added: MutableList<PsiFile>, failed: MutableList<PsiFile>) {
         targetDirectory.cast<PsiDirectoryImpl>().executeWithUpdatingAddedFilesDisabled<Throwable> action@{
-            val savedPsiFile = runCatchingCancellable { convertInternal(file, targetDirectory, fileName) }.getOrNull()
+            val savedPsiFile = runCatchingCancellable { convertImageFormat(file, targetDirectory, fileName) }.getOrNull()
             if (savedPsiFile != null) {
                 added.add(savedPsiFile)
             } else {
@@ -267,7 +267,7 @@ abstract class ConvertImageFormatAction(
         }
     }
 
-    internal fun convertInternal(file: PsiFile, targetDirectory: PsiDirectory, targetFileName: String): PsiFile? {
+    internal fun convertImageFormat(file: PsiFile, targetDirectory: PsiDirectory, targetFileName: String): PsiFile? {
         val s = file.virtualFile ?: return null
         val td = targetDirectory.virtualFile
         val sf = s.extension?.orNull() ?: return null
@@ -275,28 +275,17 @@ abstract class ConvertImageFormatAction(
         val targetPath = td.toNioPath().resolve(targetFileName)
         val sourceFormat = sf.lowercase()
         val targetFormat = targetFormatName.lowercase()
-        val converted = convertInternal(path, targetPath, sourceFormat, targetFormat)
-        if (!converted) return null
+        convertImageFormat(path, targetPath, sourceFormat, targetFormat)
         val t = targetPath.toVirtualFile(refreshIfNeed = true)
         return t?.toPsiFile(file.project)
     }
 
-    private fun convertInternal(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
+    private fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
         // NOTE 3.0.5 外部图片工具不能在 EDT/readAction 中执行；当前动作通常运行在 EDT 中，因此必要时放到后台线程
-        return if (ApplicationManager.getApplication().isDispatchThread) {
-            ApplicationManager.getApplication().executeOnPooledThread<Boolean> {
-                convertImageFormatInternal(path, targetPath, sourceFormat, targetFormat)
-            }.get()
-        } else {
-            convertImageFormatInternal(path, targetPath, sourceFormat, targetFormat)
-        }
-    }
-
-    private fun convertImageFormatInternal(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
-        runCatchingCancellable {
-            ImageService.getInstance().convertImageFormat(path, targetPath, sourceFormat, targetFormat)
-            return true
-        }
-        return false
+        ApplicationManager.getApplication().executeOnPooledThread<Result<Unit>> {
+            runCatching { // catching inner exception first, rethrow later
+                ImageService.getInstance().convertImageFormat(path, targetPath, sourceFormat, targetFormat)
+            }
+        }.get().getOrThrow()
     }
 }

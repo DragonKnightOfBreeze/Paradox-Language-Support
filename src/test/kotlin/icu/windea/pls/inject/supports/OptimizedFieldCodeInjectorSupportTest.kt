@@ -56,8 +56,8 @@ class OptimizedFieldCodeInjectorSupportTest {
         // We defrost it explicitly because we are going to mutate bytecode.
         ctClass.defrost()
 
-        // OptimizedFieldCodeInjectorSupport reads CodeInjectorContext.classPool during transformations.
-        // In production this is set by CodeInjectorService; in tests we set/reset it explicitly.
+        // OptimizedFieldCodeInjectorSupport reads `CodeInjectorContext.classPool` during transformations.
+        // In production this is set by `CodeInjectorLifecycleListener`; in tests we set/reset it explicitly.
         CodeInjectorContext.classPool = pool
         try {
             val injector = Injector()

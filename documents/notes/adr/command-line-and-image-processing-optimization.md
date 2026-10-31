@@ -434,7 +434,6 @@ com.intellij.diagnostic.Freeze
 - [x] 将 `CwtConfigService.getContainingConfigGroupForRepo` 中获取 remoteUrls 的方法提取到 `ChronicleGitService`。
 - [x] 需要为 `CwtConfigService.getContainingConfigGroupForRepo` 补充测试（集成测试）。应当可以从测试数据根目录（`src/test/testData`）向上找到项目的根目录，从而检查 `cwt/` 中的那些子目录。
 - [x] 需要确认 `ChronicleGitService` 中那些需要执行命令行的方法可能会抛出哪些常见异常，并且同步更新这些方法以及 `ProcessExecutor.execute` 等相关方法的注解和文档注释。
-  - 常见异常包括：`ExecutionException` `IlegalStateException` 
 
 #### 2026-10-29 - step 2
 
@@ -518,7 +517,16 @@ com.intellij.diagnostic.Freeze
 - [x] 清理和优化 IO 读写的相关代码
 - [x] 将 `icu.windea.pls.images.ImageFrameInfo` 移到 `icu.windea.pls.core.util.ImageFrameInfo`（对齐 `RangeInfo` 和 `Template`，以后可能还会新增 `ImageLayerInfo` 等）
 - [x] 将方法 `scaleImage` `sliceImage` 从 `ImageService` 移动到 `ImageIoService`（因为它们不依赖于 imageSession/imageRequest）
-
+- [x] 修复：需要补充 `DdsImageWriterSpi` 和 `TgaImageWriterSpi` 并在 `ImageService` 中显式挂载（避免转换图片格式时失败）
+- [x] 在 `TigerLintToolService` 中添加并应用 `lintResultStatuses`（直到成功之前，避免多次发送警告通知）
+- [x] 优化 `TigerLintToolService.getTigerLintResult`，如果结果状态为已取消，需要确保显式抛出 `ProcessCanceledException`
+- [x] 按照以下思路重构 `TranslationToolProvider` `LintToolProvider` `ImageToolProvider`
+  - [x] 其中的操作方法（operation methods）以及服务类中的对应操作方法可能抛出 `UnsupportedOperationException`（例如，找不到工具，工具不支持特定操作）
+  - [x] 其中的操作方法（operation methods）以及服务类中的对应操作方法也可能抛出其他异常（例如，命令行执行失败）
+  - [x] 确保在服务类中的操作方法中记录日志（success/failed + warn/debug）
+- [x] 从 `ImageService` 分理出 `ImageContext` 以及 `ImageLifecycleListener`
+- [x] 重命名：`ImageService.isImageFileType` -> `ImageService.isBasicImageFileType`
+- [x] 重命名：`ImageService.isExtendedImageFileType` -> `ImageService.isImageFileType`
 
 #### 2026-10-29 - step 7 - revision
 
@@ -528,10 +536,10 @@ com.intellij.diagnostic.Freeze
 - [ ] `LintToolProviderExternalTest` - 主要出于对齐的目的，因为 `Issue396TigerLintTest` 中已经覆盖了（这里仅验证 toolProvider，不验证 inspection）
 - [ ] 为 `IoService` `ImageIoService` `PathService` 补充测试
 - [ ] 为 `FileExtensions.kt` `PathExtensions.kt` 补充测试
-- [ ] 需要重新设计图片渲染和解析的流程，避免重复渲染，以及不正确的上下文状态
-  - 避免 `.toFileUrl().toIconOrNull()`，如果确实需要渲染图片，这可能是不必要的
-- [x] 修复：需要补充 `DdsImageWriterSpi` 和 `TgaImageWriterSpi` 并在 `ImageService` 中显式挂载
-  - 避免转换图片格式时失败
+- [ ] 除了 ck3-tiger 之外，也为 vic3-tiger 和 imperator-tiger 补充相关测试
+  - 参见：`icu.windea.pls.integrations.ExternalToolDownloadTest.download_ck3Tiger_test`
+  - 参见：`icu.windea.pls.integrations.ExternalToolDownloadTestService.ck3Tiger`
+  - 参见：`icu.windea.pls.integrations.lints.LintToolProviderExternalTest`
 
 #### 2026-10-30 - step 7 - post doc
 
@@ -569,7 +577,8 @@ com.intellij.diagnostic.Freeze
 
 - [ ] 考虑 `ParadoxImageManager` 和 `ParadoxImageService` 的进一步的清理和重构
 - [ ] 考虑将 `ParadoxImageManager.isImageFile` 移动到 `ImageService` 中
-- [ ] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
+- [x] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
+  - 结论：加上，因为检查结果的缓存失效时机并不是那么显而易见
 - [ ] `CommandBasedImageToolProvider.read` - 可能需要考虑如何进行有效的缓存
 
 #### 2026-10-30 - post
@@ -582,6 +591,15 @@ com.intellij.diagnostic.Freeze
   - 结论：非当前目标，需要另行评估
 - [ ] 考虑将图片处理库改为 [kotlin-graphics/gli](https://github.com/kotlin-graphics/gli)
   - 结论：非当前目标，需要另行评估
+- [ ] 使用 `DefaultImageSupport`（TwelveMonkeys）时，无法写入 DDS 图片（例如，从 PNG 转为 DDS）
+  - 结论：应当是依赖库自身的缺陷
+- [ ] 如果不需要切分图片（PNG/DDS/TGA/等等），解析图片时不会先转换图片格式（DDS/TGA -> PNG）
+  - 这意味着 `~/.windea/chronicleimages/` 中不会生成本地图片缓存
+  - 参见：`icu.windea.pls.lang.resolve.ParadoxImageService.doResolve`
+  - 参见：`icu.windea.pls.lang.resolve.ParadoxImageResolveResult.ParadoxImageResolveResult`
+  - 现状：暂不确定，可能需要更改行为细节
+- [ ] 考虑将 各种 externalToolProvider 中的操作方法（operation methods）全部改为挂起方法（suspend methods），以暗示应当在后台线程中执行
+  - 现状：暂不确定
 
 ### 分析
 
@@ -606,20 +624,25 @@ com.intellij.diagnostic.Freeze
 - [x] 使用 `DefaultImageSupport`（TwelveMonkeys）时，图片格式转换失败 - DDS -> TGA（至少）
   - 堆栈：[stack-trace-202610311808.txt](.assets/stack-trace-202610311808.txt)
   - 解决方案：需要补充 `DdsImageWriterSpi` 和 `TgaImageWriterSpi` 并在 `ImageService` 中显式挂载
-- [ ] 使用 `DefaultImageSupport`（TwelveMonkeys）时，无法写入 DDS 图片（例如，从 PNG 转为 DDS）
-  - 结论：应当是依赖库自身的缺陷
+- [ ] 需要重新设计图片渲染和解析的流程，避免重复渲染，以及不正确的上下文状态
+  - 避免 `.toFileUrl().toIconOrNull()`，如果确实需要渲染图片，这可能是不必要的
 
 ### 验证
 
 #### 人工验证
 
-- [ ] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常转换图片格式（`ConvertImageFormatAction`）
+- [x] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常转换图片格式（`ConvertImageFormatAction`）
   - 限制：使用 `DefaultImageSupport`（TwelveMonkeys）时，无法转换为 DDS
-- [ ] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在编辑器中渲染图片
-- [ ] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在快速文档中渲染图片
+  - 状态：已验证（3 X 4 X 4）
+- [x] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在编辑器中渲染图片
+  - 状态：已验证（3 X 4）
+- [x] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在快速文档中渲染图片
+  - 状态：已简单验证
 - [ ] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在内嵌提示中渲染图片
-- [ ] 需要验证基于外部检查工具的代码检查（`ChronicleTigerLintInspection`），是否可以正常工作
+- [x] 需要验证基于外部检查工具的代码检查（`ChronicleTigerLintInspection`），是否可以正常工作
+  - 状态：已验证
 - [ ] 需要结合调式断点，对于命令行执行以及外部图片工具操作，确保不会发生在不正确的上下文中
+  - 状态：无法通过
 
 ## 参见（AI 协助）
 
@@ -669,8 +692,8 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.lang.codeInsight.documentation.CwtDocumentationTarget` - 快速文档等待渲染会话
 - [ ] `icu.windea.pls.lang.codeInsight.hints.script.ParadoxModifierIconHintsProvider`
 - [ ] `icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider`
-- [ ] `icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer`
-- [ ] `icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextQuickDocRenderer`
+- [x] `icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer`
+- [x] `icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextQuickDocRenderer`
 - [ ] `icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer`
 
 测试代码：

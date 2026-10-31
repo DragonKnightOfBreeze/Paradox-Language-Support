@@ -5,7 +5,8 @@
   </extensionPoints>
 
   <applicationListeners>
-    <listener class="icu.windea.pls.inject.CodeInjectorService$Listener" topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="icu.windea.pls.inject.CodeInjectorLifecycleListener" topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="icu.windea.pls.inject.CodeInjectorLifecycleListener" topic="com.intellij.ide.plugins.DynamicPluginListener"/>
   </applicationListeners>
 
   <extensions defaultExtensionNs="icu.windea.pls.inject">

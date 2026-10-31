@@ -6,6 +6,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbAware
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import icu.windea.pls.core.collections.forEachFast
@@ -28,14 +29,14 @@ import icu.windea.pls.lang.selectFile
  * @see ChronicleTigerLintInspection
  */
 class ChronicleTigerLintAnnotator : ExternalAnnotator<ChronicleTigerLintAnnotator.Info, TigerLintResult>(), DumbAware {
-    data class Info(val request: TigerLintRequest, val filePath: String)
+    data class Info(val request: TigerLintRequest, val filePath: String, val project: Project)
 
     override fun getPairedBatchInspectionShortName() = ChronicleInspections.Lints.Tiger
 
     override fun collectInformation(file: PsiFile): Info? {
         val request = TigerLintToolService.getInstance().collectRequest(file) ?: return null
         val fileInfo = selectFile(file)?.fileInfo ?: return null
-        return Info(request, fileInfo.path.path)
+        return Info(request, fileInfo.path.path, file.project)
     }
 
     override fun collectInformation(file: PsiFile, editor: Editor, hasErrors: Boolean): Info? {
@@ -44,7 +45,7 @@ class ChronicleTigerLintAnnotator : ExternalAnnotator<ChronicleTigerLintAnnotato
 
     override fun doAnnotate(collectedInfo: Info?): TigerLintResult? {
         val info = collectedInfo ?: return null
-        val result = TigerLintToolService.getInstance().getTigerLintResult(info.request) ?: return null
+        val result = TigerLintToolService.getInstance().getTigerLintResult(info.request, info.project) ?: return null
         return result.fromPath(info.filePath)
     }
 
@@ -100,9 +101,9 @@ class ChronicleTigerLintAnnotator : ExternalAnnotator<ChronicleTigerLintAnnotato
     @Suppress("UNUSED_PARAMETER")
     private fun getExtraMessage(result: TigerLintResult, item: TigerLintResult.Item, location: TigerLintResult.Location): String {
         val list = buildList {
-            item.confidence.name.lowercase().let { add("Confidence: $it") }
-            location.tag?.orNull()?.let { add("Tag: $it") }
-            item.info?.orNull()?.let { add("Info: $it") }
+            item.confidence.name.lowercase().let { add("confidence: $it") }
+            location.tag?.orNull()?.let { add("tag: $it") }
+            item.info?.orNull()?.let { add("info: $it") }
         }
         if (list.isEmpty()) return ""
         return list.joinToString(", ", " (", ")")

@@ -9,7 +9,9 @@ import javax.imageio.ImageReadParam
 import javax.imageio.stream.ImageInputStream
 
 /**
- * 提供图片工具。用于处理图片，例如预览、渲染、读写以及转换图片格式。
+ * 提供图片工具。
+ *
+ * 用于处理图片，例如预览、渲染、读写以及转换图片格式。
  */
 interface ImageToolProvider {
     val name: String
@@ -17,10 +19,13 @@ interface ImageToolProvider {
     fun isAvailable(): Boolean
 
     /** @see javax.imageio.ImageReader.read */
+    @Throws(UnsupportedOperationException::class)
     fun read(imageIndex: Int, param: ImageReadParam?, stream: ImageInputStream, sourceFormat: String, targetFormat: String): BufferedImage
 
+    @Throws(UnsupportedOperationException::class)
     fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String)
 
+    @Throws(UnsupportedOperationException::class)
     fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String)
 
     companion object INSTANCE {

@@ -7,6 +7,7 @@ import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.CapturingProcessHandler
 import com.intellij.execution.process.ProcessOutput
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.diagnostic.debug
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressIndicatorProvider
@@ -34,7 +35,7 @@ import kotlin.time.Duration.Companion.milliseconds
  * @see ExecutionTimeouts
  */
 class ProcessExecutor(
-    val commandLine: GeneralCommandLine
+    val commandLine: GeneralCommandLine,
 ) {
     private var indicator: ProgressIndicator? = ProgressIndicatorProvider.getGlobalProgressIndicator()
     private var timeout: Duration = Duration.INFINITE
@@ -75,18 +76,18 @@ class ProcessExecutor(
      * @see CapturingProcessHandler.runProcess
      * @see CapturingProcessHandler.runProcessWithProgressIndicator
      */
-    @Throws(ExecutionException::class)
     @RequiresBackgroundThread(generateAssertion = false)
+    @Throws(ExecutionException::class)
     fun execute(): ProcessOutput {
         warnIfIncorrectContext()
         val commandLineString = commandLine.commandLineString
-        logger.debug("Executing command line: $commandLineString")
+        logger.debug { "Executing command line: $commandLineString" }
         val timeoutMillis = timeout.toTimeoutMillis()
         val processHandler = CapturingProcessHandler(commandLine)
         val output = indicator?.let {
             processHandler.runProcessWithProgressIndicator(it, timeoutMillis, destroyOnTimeout)
         } ?: processHandler.runProcess(timeoutMillis, destroyOnTimeout)
-        logger.debug("Command line finished: exitCode=${output.exitCode}, timeout=${output.isTimeout}, cancelled=${output.isCancelled}")
+        logger.debug { "Command line finished: exitCode=${output.exitCode}, timeout=${output.isTimeout}, cancelled=${output.isCancelled}" }
         return output
     }
 

@@ -27,7 +27,7 @@ class ImageServiceTest : BasePlatformTestCase() {
     override fun setUp() {
         super.setUp()
         // 注册内置的 DDS/TGA ImageIO SPI，确保测试不依赖插件启动生命周期
-        ImageService.getInstance().appFrameCreated(emptyList())
+        ImageContext.init()
     }
 
     @Test

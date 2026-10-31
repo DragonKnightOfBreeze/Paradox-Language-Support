@@ -56,9 +56,8 @@ object CwtConfigRepositoryManager {
         // NOTE 这里需要执行git命令的校验，需要并发进行
 
         val results = runWithModalProgressBlocking(ModalTaskOwner.guess(), ChronicleBundle.message("config.repo.validation.progress.title")) r@{
-            reportRawProgress { reporter ->
-                reporter.text(ChronicleBundle.message("config.repo.validation.progress.text"))
-                reporter.details(ChronicleBundle.message("config.repo.validation.progress.details"))
+            reportRawProgress { rawReporter ->
+                rawReporter.text(ChronicleBundle.message("config.repo.validation.progress.text"))
 
                 val resultFutures = urls.map {
                     async {
@@ -125,9 +124,8 @@ object CwtConfigRepositoryManager {
         val coroutineScope = ChronicleFacade.getCoroutineScope()
         coroutineScope.launch c@{
             val results = withBackgroundProgress(project, ChronicleBundle.message("config.repo.sync.progress.title"), cancellable = true) p@{
-                reportRawProgress { reporter ->
-                    reporter.text(ChronicleBundle.message("config.repo.sync.progress.text"))
-                    reporter.details(ChronicleBundle.message("config.repo.sync.progress.details"))
+                reportRawProgress { rawReporter ->
+                    rawReporter.text(ChronicleBundle.message("config.repo.sync.progress.text"))
 
                     val resultFutures = mutableListOf<Deferred<Result<String>>>()
                     urlMap.forEach { (_, url) ->

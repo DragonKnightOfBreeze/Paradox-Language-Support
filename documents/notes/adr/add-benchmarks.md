@@ -130,6 +130,21 @@ allOpen {
   - [x] `ChronicleBenchmarkLauncher` 自身的文档注释（以列表的形式简要说明相关的能力项）
   - [x] 各个相关的能力项的文档注释
 
+### 修订
+
+#### 2026-10-23
+
+- [x] 需要修订 `buildImmutableList` `buildImmutableSet` `asImmutableList` `equalsFast` 等方法的文档注释（“实现笔记”章节+“弃用声明”章节）
+  - “性能笔记”有时并不是那么准确，因此使用更合适的“实现笔记”。
+  - 使用 `## 实现笔记` 和 `## 弃用声明`。
+- [x] `equalsAnyFast` 也要级联地标为弃用，同时进行相关的重构
+- [x] 出于对齐的考虑，也补充单元测试 `DateMatchersTest` `DateMatchServiceTest`，覆盖常见场景
+
+#### 2026-10-24
+
+- [x] 修订 `ChronicleCapabilities.Benchmark` `ChronicleBenchmarkLauncher` 相关代码
+- [x] 更改输出的 `.txt` 文件的命名方式：使用 `{fqName}.md`
+
 ### 分析
 
 #### 2026-10-23
@@ -174,21 +189,6 @@ allOpen {
 #### 2026-10-25
 
 - [x] 关于 `Array.asImmutableList`：当前数组为空时，改为直接返回 `emptyList()`
-
-### 修订
-
-#### 2026-10-23
-
-- [x] 需要修订 `buildImmutableList` `buildImmutableSet` `asImmutableList` `equalsFast` 等方法的文档注释（“实现笔记”章节+“弃用声明”章节）
-  - “性能笔记”有时并不是那么准确，因此使用更合适的“实现笔记”。
-  - 使用 `## 实现笔记` 和 `## 弃用声明`。
-- [x] `equalsAnyFast` 也要级联地标为弃用，同时进行相关的重构
-- [x] 出于对齐的考虑，也补充单元测试 `DateMatchersTest` `DateMatchServiceTest`，覆盖常见场景
-
-#### 2026-10-24
-
-- [x] 修订 `ChronicleCapabilities.Benchmark` `ChronicleBenchmarkLauncher` 相关代码
-- [x] 更改输出的 `.txt` 文件的命名方式：使用 `{fqName}.md`
 
 ## 参见
 

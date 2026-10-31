@@ -95,7 +95,7 @@ object ChronicleTestManager {
         } else {
             log("Prepare to init config groups for [$gameTypesString]...")
         }
-        runBlocking { CwtConfigGroupService.getInstance(project).processConfigGroupsAsync(configGroups, refresh = false) }
+        runBlocking { CwtConfigGroupService.getInstance(project).processConfigGroups(configGroups, refresh = false) }
     }
 
     private fun log(message: String) = println("[ChronicleTestManager] $message")

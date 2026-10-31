@@ -1,7 +1,6 @@
 package icu.windea.pls.images
 
 import com.intellij.openapi.diagnostic.logger
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.coroutineToIndicator
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -29,7 +28,7 @@ class ImageRenderSession(
         val job = scope.async {
             try {
                 withContext(Dispatchers.IO) {
-                    coroutineToIndicator { _: ProgressIndicator ->
+                    coroutineToIndicator {
                         ImageRenderService.getInstance().renderImage(request)
                     }
                 }

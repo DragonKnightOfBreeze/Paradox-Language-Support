@@ -9,6 +9,8 @@ import icu.windea.pls.model.ParadoxGameType
 interface LintToolProvider {
     fun isAvailable(gameType: ParadoxGameType?): Boolean
 
+    suspend fun validateRootDirectory(request: LintRequest): LintResult
+
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<LintToolProvider>("icu.windea.pls.integrations.lintToolProvider")
     }

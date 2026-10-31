@@ -72,15 +72,15 @@ class AiCopyLocalisationWithTranslationFromLocaleIntention : ManipulateLocalisat
                 val locale = selectLocale(file) ?: return@run
                 val total = contextsToHandle.size
                 var current = 0
-                reportRawProgress { reporter ->
-                    reporter.text(ChronicleBundle.message("manipulation.localisation.translate.progress.step"))
-                    reporter.fraction(0.0)
+                reportRawProgress { rawReporter ->
+                    rawReporter.text(ChronicleBundle.message("manipulation.localisation.translate.progress.step"))
+                    rawReporter.fraction(0.0)
 
                     val request = TranslateLocalisationAiRequest(project, file, contextsToHandle, locale, description)
                     val callback: suspend (LocalisationAiResult) -> Unit = { data ->
                         current++
-                        reporter.text(ChronicleBundle.message("manipulation.localisation.translate.progress.itemStep", data.key))
-                        reporter.fraction(current / total.toDouble())
+                        rawReporter.text(ChronicleBundle.message("manipulation.localisation.translate.progress.itemStep", data.key))
+                        rawReporter.fraction(current / total.toDouble())
                     }
                     withErrorRef(errorRef) { handleText(request, callback) }.getOrNull()
 

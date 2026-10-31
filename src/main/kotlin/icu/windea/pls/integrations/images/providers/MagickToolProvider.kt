@@ -1,17 +1,18 @@
 package icu.windea.pls.integrations.images.providers
 
+import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
-import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
-import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.util.io.parsePath
 import icu.windea.pls.integrations.images.ImageToolSettings
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.concurrent.CancellationException
+import java.util.concurrent.TimeoutException
 import kotlin.io.path.createDirectories
 import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.notExists
@@ -57,11 +58,6 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
     //    magick input.jpg watermark.png -gravity southeast -geometry +10+10 -composite output.jpg
 
     override fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
-        return runCatchingCancellable { doConvertImageFormat(path, targetDirectoryPath, targetFileName, targetFormat) }
-            .onFailure { thisLogger().warn(it) }.getOrThrow()
-    }
-
-    private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
         val executablePath = getExecutablePath() ?: throw IllegalStateException("ImageMagick path is not configured or invalid")
 
         val tempParentPath = ChronicleDataPathService.getInstance().imagesTempPath
@@ -89,18 +85,18 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
             ProgressManager.checkCanceled() // 如果的确被取消，则抛出 `ProcessCanceledException`
             val message = "Failed to convert image: command was cancelled." +
                 "\nCommand: ${commandLine.commandLineString}"
-            throw IllegalStateException(message)
+            throw CancellationException(message)
         }
         if (output.isTimeout) {
             val message = "Failed to convert image: command timed out." +
                 "\nCommand: ${commandLine.commandLineString}"
-            throw IllegalStateException(message)
+            throw TimeoutException(message)
         }
         if (output.exitCode != 0) {
             val message = "Failed to convert image: command failed (exitCode=${output.exitCode})." +
                 "\nCommand: ${commandLine.commandLineString}" +
                 "\nError: ${output.stderr.trim()}"
-            throw IllegalStateException(message)
+            throw ExecutionException(message)
         }
         if (outputPath.notExists()) {
             val message = "Failed to convert image: output file not found." +

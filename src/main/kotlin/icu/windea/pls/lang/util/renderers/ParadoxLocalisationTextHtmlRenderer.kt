@@ -167,7 +167,6 @@ class ParadoxLocalisationTextHtmlRenderContext(
             // 找不到图标的话就直接跳过
             val iconUrl = ParadoxImageManager.resolveUrl(image, element.project) ?: return@run
             val icon = iconUrl.toFileUrl().toIconOrNull() ?: return@run
-            icon.iconHeight // TODO 3.0.5 ensure loading (to refactor)
 
             // 如果图标高度在 `localisationFontSize` 到 `localisationTextIconSizeLimit` 之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
             // 实际上，本地化文本可以嵌入任意大小的图片
