@@ -549,6 +549,9 @@
   - 参见：`icu.windea.pls.cwt.structureView.CwtFileTreeElement`
   - 参见：`icu.windea.pls.script.structureView.ParadoxScriptFileTreeElement`
 - [x] P2 修复脚本文件在导航栏中会错误地使用整个文件文本作为展示文本的BUG（应当显示文件名）
+  - 参见：`com.intellij.platform.navbar.frontend.ui.NavBarItemComponent`
+  - 结论：`com.intellij.ide.navigationToolbar.NavBarModelExtension.getPresentableText(java.lang.Object)` 中也需要检查语言（不会自动检查）
+  - 结论：需要防御性编程，各种 elementPresentationService/elementDescriptionService 中的方法都要检查语言
 
 #### 任务（次要）
 

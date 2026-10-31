@@ -41,9 +41,9 @@ public interface ParadoxLocalisationProperty extends ParadoxLocalisationNamedEle
 
   @NotNull IElementType getIElementType();
 
-  boolean isEquivalentTo(@NotNull PsiElement another);
-
   @NotNull String getPresentableText();
+
+  boolean isEquivalentTo(@NotNull PsiElement another);
 
   @NotNull ParadoxLocalisationElementPresentation getPresentation();
 

@@ -206,6 +206,12 @@ object ParadoxLocalisationPsiImplUtil {
     }
 
     @JvmStatic
+    fun getPresentableText(element: ParadoxLocalisationProperty): String {
+        val name = element.name
+        return ChronicleStrings.localisationPropertyFolder(name.orUnresolved())
+    }
+
+    @JvmStatic
     fun isEquivalentTo(element: ParadoxLocalisationProperty, another: PsiElement): Boolean {
         // name & type & gameType
         if (another !is ParadoxLocalisationProperty) return false
@@ -213,12 +219,6 @@ object ParadoxLocalisationPsiImplUtil {
         if (element.type.let { it == null || it != another.type }) return false
         if (selectGameType(element) != selectGameType(another)) return false
         return true
-    }
-
-    @JvmStatic
-    fun getPresentableText(element: ParadoxLocalisationProperty): String {
-        val name = element.name
-        return ChronicleStrings.localisationPropertyFolder(name.orUnresolved())
     }
 
     // endregion
@@ -726,7 +726,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun toString(element: PsiElement): String {
-        return PsiService.toPresentableString(element)
+        return PsiService.toDefaultPresentableString(element)
     }
 
     @JvmStatic

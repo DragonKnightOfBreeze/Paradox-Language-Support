@@ -23,6 +23,6 @@ class ParadoxLocalisationBreadCrumbsProvider : BreadcrumbsProvider {
     }
 
     override fun getElementInfo(element: PsiElement): String {
-        return ParadoxLocalisationElementPresentationService.getElementInfoInBreadCrumbs(element)
+        return ParadoxLocalisationElementPresentationService.getElementInfoInBreadCrumbs(element).orEmpty()
     }
 }

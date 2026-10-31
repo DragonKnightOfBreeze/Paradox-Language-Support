@@ -16,6 +16,8 @@ class ParadoxScriptFileImpl(
 
     override val members get() = ParadoxScriptPsiImplUtil.getMembers(this)
 
+    override val presentableText get() = ParadoxScriptPsiImplUtil.getPresentableText(this)
+
     override fun isEquivalentTo(another: PsiElement?) = ParadoxScriptPsiImplUtil.isEquivalentTo(this, another)
 
     override fun getPresentation() = ParadoxScriptElementPresentation(this)

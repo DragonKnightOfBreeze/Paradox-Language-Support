@@ -34,7 +34,7 @@ abstract class CwtConfigLightElementBase(parent: PsiElement) : LightElementBase(
     }
 
     override fun toString(): String {
-        return PsiService.toPresentableString(this)
+        return PsiService.toDefaultPresentableString(this)
     }
 
     final override fun getIcon(unused: Boolean): Icon? {

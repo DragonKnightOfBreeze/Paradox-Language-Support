@@ -429,7 +429,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun toString(element: PsiElement): String {
-        return PsiService.toPresentableString(element)
+        return PsiService.toDefaultPresentableString(element)
     }
 
     @JvmStatic

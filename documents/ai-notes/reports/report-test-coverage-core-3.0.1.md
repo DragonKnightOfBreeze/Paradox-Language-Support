@@ -322,7 +322,7 @@
 
 | 已测试方法（29 个测试） | 未测试方法（5 个） |
 |---|---|
-| `getAttachedComments`（6 个用例） | `toPresentableString` |
+| `getAttachedComments`（6 个用例） | `toDefaultPresentableString` |
 | `getAttachingElement`（5 个用例） | `collectBetween` |
 | `findSiblingComments`（8 个用例） | `collectBetweenBounds` |
 | `findAllSiblingCommentsIn`（5 个用例） | `isBeforeLeftBound`/`isBeforeLeftBoundEnd` |

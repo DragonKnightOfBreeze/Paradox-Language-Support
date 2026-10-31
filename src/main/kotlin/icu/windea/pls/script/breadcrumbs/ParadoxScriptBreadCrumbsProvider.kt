@@ -26,6 +26,6 @@ class ParadoxScriptBreadCrumbsProvider : BreadcrumbsProvider {
     }
 
     override fun getElementInfo(element: PsiElement): String {
-        return ParadoxScriptElementPresentationService.getElementInfoInBreadCrumbs(element)
+        return ParadoxScriptElementPresentationService.getElementInfoInBreadCrumbs(element).orEmpty()
     }
 }

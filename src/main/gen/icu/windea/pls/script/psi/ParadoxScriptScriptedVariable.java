@@ -39,9 +39,9 @@ public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement
 
   @NotNull IElementType getIElementType();
 
-  boolean isEquivalentTo(@NotNull PsiElement another);
-
   @NotNull String getPresentableText();
+
+  boolean isEquivalentTo(@NotNull PsiElement another);
 
   @NotNull ParadoxScriptElementPresentation getPresentation();
 
