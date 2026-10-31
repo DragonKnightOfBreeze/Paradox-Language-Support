@@ -91,7 +91,7 @@ object ParadoxImageService {
 
     private fun doResolve(file: VirtualFile, frameInfo: ImageFrameInfo?): ParadoxImageResolveResult? {
         // accept various image file types (normal file types such as png, or extended file aka dds and tga)
-        if (!ImageService.getInstance().isBasicImageFileType(file.fileType)) return null
+        if (!ImageService.getInstance().isImageFileType(file.fileType)) return null
 
         val sourcePath = file.toNioPath()
         val finalFrameInfo = frameInfo?.takeIf { it.canApply() }

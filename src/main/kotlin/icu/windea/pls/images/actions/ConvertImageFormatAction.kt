@@ -48,7 +48,7 @@ abstract class ConvertImageFormatAction(
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     protected open fun isAvailableForFile(file: VirtualFile): Boolean {
-        return ImageService.getInstance().isBasicImageFileType(file.fileType)
+        return ImageService.getInstance().isImageFileType(file.fileType)
     }
 
     protected open fun getNewFileName(fileName: String): String {

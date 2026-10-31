@@ -525,8 +525,7 @@ com.intellij.diagnostic.Freeze
   - [x] 其中的操作方法（operation methods）以及服务类中的对应操作方法也可能抛出其他异常（例如，命令行执行失败）
   - [x] 确保在服务类中的操作方法中记录日志（success/failed + warn/debug）
 - [x] 从 `ImageService` 分理出 `ImageContext` 以及 `ImageLifecycleListener`
-- [x] 重命名：`ImageService.isImageFileType` -> `ImageService.isBasicImageFileType`
-- [x] 重命名：`ImageService.isExtendedImageFileType` -> `ImageService.isImageFileType`
+- [x] 在 `ImageService` 中提取方法 `isImageFileType` `isBasicImageFileType` `isExtendedImageFileType`
 
 #### 2026-10-29 - step 7 - revision
 

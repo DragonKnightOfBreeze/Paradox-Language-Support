@@ -131,7 +131,7 @@ class ImageEditorImpl(
 
         // Change document
         file.refresh(true, false) {
-            if (ImageService.getInstance().isImageFileType(file.fileType)) {
+            if (ImageService.getInstance().isExtendedImageFileType(file.fileType)) {
                 setValue(file)
             } else {
                 setValue(null)

@@ -15,11 +15,15 @@ import java.nio.file.Path
 
 @Service
 class ImageService {
-    fun isBasicImageFileType(fileType: FileType): Boolean {
-        return fileType is ImageFileType || isImageFileType(fileType)
+    fun isImageFileType(fileType: FileType): Boolean {
+        return isBasicImageFileType(fileType) || isExtendedImageFileType(fileType)
     }
 
-    fun isImageFileType(fileType: FileType): Boolean {
+    fun isBasicImageFileType(fileType: FileType): Boolean {
+        return fileType is ImageFileType
+    }
+
+    fun isExtendedImageFileType(fileType: FileType): Boolean {
         return fileType is DdsFileType || fileType is TgaFileType
     }
 
