@@ -8,7 +8,7 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
+import icu.windea.pls.base.settings.ChronicleIntegrationSettings
 import icu.windea.pls.integrations.ExternalToolDownloadTestService
 import icu.windea.pls.test.ChronicleAssume
 import org.junit.After
@@ -30,7 +30,7 @@ import kotlin.io.path.deleteIfExists
 class ConvertImageFormatActionTest : BasePlatformTestCase() {
     private val formats = listOf("jpg", "png", "dds", "tga")
 
-    private val imageState get() = ChronicleIntegrationsSettings.getInstance().state.image
+    private val imageState get() = ChronicleIntegrationSettings.getInstance().state.image
     private var originalEnableTexconv = false
     private var originalTexconvPath: String? = null
     private var originalEnableMagick = false

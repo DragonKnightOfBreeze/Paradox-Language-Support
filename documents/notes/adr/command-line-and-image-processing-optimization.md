@@ -254,7 +254,7 @@ com.intellij.diagnostic.Freeze
     - 这要求首先下载对应的外部工具。
   - 需要补充测试，验证在各种策略下（TwelveMonkeys/texconv/magick），图片转换操作能够符合预期地成功/失败。
     - 使用 `ImageToolProvider`。
-    - 这要求在测试时，临时更改 `ChronicleIntegrationsSettings` 中的配置项。
+    - 这要求在测试时，临时更改 `ChronicleIntegrationSettings` 中的配置项。
     - 这要求首先下载对应的外部工具。
 - 为 `ChronicleGitService` 与 `ChronicleSqliteService` 补充测试。
   - 这要求需要一个测试环境/测试数据。

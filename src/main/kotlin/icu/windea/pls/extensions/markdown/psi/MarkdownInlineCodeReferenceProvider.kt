@@ -6,7 +6,7 @@ import com.intellij.model.psi.PsiSymbolReference
 import com.intellij.model.psi.PsiSymbolService.*
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import icu.windea.pls.base.settings.ChronicleExtensionsSettings
+import icu.windea.pls.base.settings.ChronicleExtensionSettings
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.removePrefixOrNull
 import icu.windea.pls.extensions.markdown.MarkdownExtensionManager
@@ -24,7 +24,7 @@ import icu.windea.pls.lang.util.ParadoxNameValidators
 @Suppress("UnstableApiUsage")
 class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
     override fun getImplicitReference(element: PsiElement, offsetInElement: Int): PsiSymbolReference? {
-        if (!ChronicleExtensionsSettings.getInstance().state.markdown.resolveInlineCodes) return null
+        if (!ChronicleExtensionSettings.getInstance().state.markdown.resolveInlineCodes) return null
 
         val identifier = MarkdownExtensionManager.getIdentifierFromInlineCode(element) ?: return null
         run {

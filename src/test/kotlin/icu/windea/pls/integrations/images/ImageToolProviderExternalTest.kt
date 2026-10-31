@@ -2,7 +2,7 @@ package icu.windea.pls.integrations.images
 
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
+import icu.windea.pls.base.settings.ChronicleIntegrationSettings
 import icu.windea.pls.images.ImageMetadataService
 import icu.windea.pls.images.supports.DefaultImageSupport
 import icu.windea.pls.integrations.ExternalToolDownloadTestService
@@ -29,7 +29,7 @@ import kotlin.io.path.deleteIfExists
  */
 @RunWith(JUnit4::class)
 class ImageToolProviderExternalTest : BasePlatformTestCase() {
-    private val imageState get() = ChronicleIntegrationsSettings.getInstance().state.image
+    private val imageState get() = ChronicleIntegrationSettings.getInstance().state.image
     private var originalEnableTexconv = false
     private var originalTexconvPath: String? = null
     private var originalEnableMagick = false

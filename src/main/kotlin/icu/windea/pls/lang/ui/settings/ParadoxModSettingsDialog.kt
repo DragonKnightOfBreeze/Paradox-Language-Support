@@ -12,7 +12,7 @@ import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.ValidationInfoBuilder
 import com.intellij.util.application
 import icu.windea.pls.ChronicleBundle
-import icu.windea.pls.base.settings.ChronicleIntegrationsSettingsConfigurable
+import icu.windea.pls.base.settings.ChronicleIntegrationSettingsConfigurable
 import icu.windea.pls.base.settings.ChronicleProfilesSettings
 import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.base.settings.ParadoxModDependencySettingsState
@@ -146,7 +146,7 @@ class ParadoxModSettingsDialog(
                 // disableTiger
                 row {
                     checkBox(ChronicleBundle.message("mod.options.disableTiger")).bindSelected(settings.options::disableTiger)
-                        .onApply { ChronicleIntegrationsSettingsConfigurable.Manager.onTigerSettingsChanged(callbackLock) }
+                        .onApply { ChronicleIntegrationSettingsConfigurable.Manager.onTigerSettingsChanged(callbackLock) }
                     browserLink(ChronicleBundle.message("link.website"), LintToolConstants.Tiger.url)
                 }
                 row {

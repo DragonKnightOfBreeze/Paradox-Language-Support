@@ -4,7 +4,7 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
+import icu.windea.pls.base.settings.ChronicleIntegrationSettings
 import icu.windea.pls.base.settings.ChronicleProfilesSettings
 import icu.windea.pls.base.settings.ParadoxModDescriptorSettingsState
 import icu.windea.pls.base.settings.ParadoxModSettingsState
@@ -85,7 +85,7 @@ class Issue396TigerLintTest : BasePlatformTestCase(), ChronicleTestScope {
         markIntegrationTest()
         addAdditionalAllowedRoots(Path.of("src", "test", "testData"))
 
-        val settings = ChronicleIntegrationsSettings.getInstance().state.lint
+        val settings = ChronicleIntegrationSettings.getInstance().state.lint
         originalEnableTiger = settings.enableTiger
         originalTigerPath = settings.ck3TigerPath
         settings.enableTiger = true
@@ -117,7 +117,7 @@ class Issue396TigerLintTest : BasePlatformTestCase(), ChronicleTestScope {
     @After
     fun doTearDown() {
         if (modRootPath.isEmpty()) return
-        val settings = ChronicleIntegrationsSettings.getInstance().state.lint
+        val settings = ChronicleIntegrationSettings.getInstance().state.lint
         settings.enableTiger = originalEnableTiger
         settings.ck3TigerPath = originalTigerPath
         val profilesSettings = ChronicleProfilesSettings.getInstance().state

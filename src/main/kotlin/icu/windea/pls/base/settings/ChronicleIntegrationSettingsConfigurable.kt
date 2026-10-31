@@ -30,7 +30,7 @@ import icu.windea.pls.integrations.translation.TranslationToolConstants
 import icu.windea.pls.model.ParadoxGameType
 
 @Suppress("UnstableApiUsage")
-class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.message("settings.integrations")), SearchableConfigurable {
+class ChronicleIntegrationSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.message("settings.integrations")), SearchableConfigurable {
     private val callbackLock = CallbackLock()
 
     override fun getId() = "chronicle.integrations"
@@ -51,7 +51,7 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBas
 
     private fun Panel.configureGroupForImage() {
         val groupName = "integrations.image"
-        val settings = ChronicleIntegrationsSettings.getInstance().state.image
+        val settings = ChronicleIntegrationSettings.getInstance().state.image
 
         row {
             comment(ChronicleBaseBundle.message("settings.integrations.image.comment"), MAX_LINE_LENGTH_WORD_WRAP)
@@ -116,7 +116,7 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBas
 
     private fun Panel.configureGroupForLint() {
         val groupName = "integrations.lint"
-        val settings = ChronicleIntegrationsSettings.getInstance().state.lint
+        val settings = ChronicleIntegrationSettings.getInstance().state.lint
 
         row {
             comment(ChronicleBaseBundle.message("settings.integrations.lint.comment"), MAX_LINE_LENGTH_WORD_WRAP)
@@ -130,7 +130,7 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBas
             browserLink(ChronicleBundle.message("link.website"), LintToolConstants.Tiger.url)
         }
 
-        val map = Manager.getTigerSettingsMap(ChronicleIntegrationsSettings.getInstance().state)
+        val map = Manager.getTigerSettingsMap(ChronicleIntegrationSettings.getInstance().state)
         map.forEach { (gameType, tuple) ->
             val (name, pathProp, confPathProp) = tuple
 
@@ -208,7 +208,7 @@ class ChronicleIntegrationsSettingsConfigurable : BoundConfigurable(ChronicleBas
 
         // Lint Tools
 
-        fun getTigerSettingsMap(settings: ChronicleIntegrationsSettings.State) = buildMap {
+        fun getTigerSettingsMap(settings: ChronicleIntegrationSettings.State) = buildMap {
             put(ParadoxGameType.Ck3, tupleOf("ck3-tiger", settings.lint::ck3TigerPath, settings.lint::ck3TigerConfPath))
             put(ParadoxGameType.Ir, tupleOf("imperator-tiger", settings.lint::irTigerPath, settings.lint::irTigerConfPath))
             put(ParadoxGameType.Vic3, tupleOf("vic3-tiger", settings.lint::vic3TigerPath, settings.lint::vic3TigerConfPath))

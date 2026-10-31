@@ -12,16 +12,16 @@
     <applicationConfigurable id="chronicle.config" parentId="chronicle" groupWeight="90"
                              bundle="messages.ChronicleBaseBundle" key="settings.config"
                              instance="icu.windea.pls.base.settings.ChronicleConfigSettingsConfigurable"/>
-    <applicationConfigurable id="chronicle.integrations" parentId="chronicle" groupWeight="80"
-                             bundle="messages.ChronicleBaseBundle" key="settings.integrations"
-                             instance="icu.windea.pls.base.settings.ChronicleIntegrationsSettingsConfigurable"/>
-    <applicationConfigurable id="chronicle.image" parentId="chronicle" groupWeight="85"
-                             bundle="messages.ChronicleBaseBundle" key="settings.image"
+    <applicationConfigurable id="chronicle.images" parentId="chronicle" groupWeight="80"
+                             bundle="messages.ChronicleBaseBundle" key="settings.images"
                              instance="icu.windea.pls.base.settings.ChronicleImageSettingsConfigurable"/>
     <applicationConfigurable id="chronicle.extensions" parentId="chronicle" groupWeight="70"
-                             bundle="messages.ChronicleBaseBundle" key="settings"
-                             instance="icu.windea.pls.base.settings.ChronicleExtensionsSettingsConfigurable"/>
-    <applicationConfigurable id="chronicle.ai" parentId="chronicle" groupWeight="60"
+                             bundle="messages.ChronicleBaseBundle" key="settings.extensions"
+                             instance="icu.windea.pls.base.settings.ChronicleExtensionSettingsConfigurable"/>
+    <applicationConfigurable id="chronicle.integrations" parentId="chronicle" groupWeight="60"
+                             bundle="messages.ChronicleBaseBundle" key="settings.integrations"
+                             instance="icu.windea.pls.base.settings.ChronicleIntegrationSettingsConfigurable"/>
+    <applicationConfigurable id="chronicle.ai" parentId="chronicle" groupWeight="40"
                              bundle="messages.ChronicleBaseBundle" key="settings.ai"
                              instance="icu.windea.pls.base.settings.ChronicleAiSettingsConfigurable"/>
 

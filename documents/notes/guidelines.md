@@ -17,8 +17,8 @@
 - `icu.windea.pls.images` - 图片支持的基础设施。包括 SPI、编辑器、动作、元数据以及其他相关代码。
 - `icu.windea.pls.config` - 规则系统的基础设施。包括规则、规则表达式、规则分组以及其他相关代码。
 - `icu.windea.pls.lang` - 语义模块。包括语义匹配、语义解析、语言构造支持、语言功能支持、领域特定逻辑以及其他相关代码。
-- `icu.windea.pls.integrations` - 集成模块。提供对第三方工具的集成。例如图片处理工具和检查工具。
 - `icu.windea.pls.extensions` - 扩展模块。提供对第三方插件的集成和扩展。例如 JSON 和 Markdown。
+- `icu.windea.pls.integrations` - 集成模块。提供对第三方工具的集成。例如图片处理工具和检查工具。
 - `icu.windea.pls.tools` - 工具模块。提供一些附带的实用工具和集成。例如游戏启动器和规则生成器。
 - `icu.windea.pls.ep` - 用于提供语言构造支持、语言功能支持以及部分便捷功能的多种 EP 接口和实现。
 
@@ -276,6 +276,22 @@ TODO：
 - 示例：`src/test/testData/issues/430/README.md`
 
 ## 排序
+
+### 模块相关
+
+- core - `icu.windea.pls.core`
+- base - `icu.windea.pls.base`
+- cwt - `icu.windea.pls.cwt`
+- script - `icu.windea.pls.script`
+- localisation - `icu.windea.pls.localisation`
+- csv - `icu.windea.pls.csv`
+- images - `icu.windea.pls.images`
+- config - `icu.windea.pls.config`
+- lang - `icu.windea.pls.lang`
+- extensions - `icu.windea.pls.extensions`
+- integrations - `icu.windea.pls.integrations`
+- tools - `icu.windea.pls.tools`
+- ai - `icu.windea.pls.ai`
 
 ### 语法相关
 

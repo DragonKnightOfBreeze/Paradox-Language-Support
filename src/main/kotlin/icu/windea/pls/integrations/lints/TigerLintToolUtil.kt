@@ -1,6 +1,6 @@
 package icu.windea.pls.integrations.lints
 
-import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
+import icu.windea.pls.base.settings.ChronicleIntegrationSettings
 import icu.windea.pls.integrations.ChronicleIntegrationsBundle
 import icu.windea.pls.integrations.lints.TigerLintResult.*
 import icu.windea.pls.lang.inspections.lints.ChronicleTigerLintAnnotator
@@ -13,7 +13,7 @@ object TigerLintToolUtil {
      *
      * 优先使用用户在设置中配置的 Tiger 高亮映射（Severity x Confidence），否则回退到默认映射。
      *
-     * @see ChronicleIntegrationsSettings.TigerHighlightState
+     * @see ChronicleIntegrationSettings.TigerHighlightState
      * @see ChronicleTigerLintAnnotator
      * @see ChronicleTigerLintInspection
      */
@@ -25,7 +25,7 @@ object TigerLintToolUtil {
     /**
      * 按严重度（[severity]）和置信度（[confidence]），得到代码检查使用的已配置的高亮级别对应的配置项的 Kotlin 属性。
      *
-     * @see ChronicleIntegrationsSettings.TigerHighlightState
+     * @see ChronicleIntegrationSettings.TigerHighlightState
      * @see ChronicleTigerLintAnnotator
      * @see ChronicleTigerLintInspection
      */

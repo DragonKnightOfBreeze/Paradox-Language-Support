@@ -1,7 +1,7 @@
 package icu.windea.pls.integrations.lints
 
-import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
+import icu.windea.pls.base.settings.ChronicleIntegrationSettings
 
 object LintToolSettings {
-    fun getInstance() = ChronicleIntegrationsSettings.getInstance().state.lint
+    fun getInstance() = ChronicleIntegrationSettings.getInstance().state.lint
 }

@@ -32,9 +32,9 @@
   <xi:include href="/META-INF/chronicle-lang.xml"/>
   <xi:include href="/META-INF/chronicle-intentions.xml"/>
   <xi:include href="/META-INF/chronicle-inspections.xml"/>
-  <xi:include href="/META-INF/chronicle-integrations.xml"/>
   <xi:include href="/META-INF/chronicle-extensions.xml"/>
-  <xi:include href="/META-INF/chronicle-ai.xml"/>
+  <xi:include href="/META-INF/chronicle-integrations.xml"/>
   <xi:include href="/META-INF/chronicle-tools.xml"/>
+  <xi:include href="/META-INF/chronicle-ai.xml"/>
   <xi:include href="/META-INF/chronicle-ep.xml"/>
 </idea-plugin>
