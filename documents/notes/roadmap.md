@@ -548,7 +548,7 @@
 - [x] P1 修复 CWT 文件和脚本文件的结构视图无法正常显示的回归BUG（自插件版本 3.0.3）
   - 参见：`icu.windea.pls.cwt.structureView.CwtFileTreeElement`
   - 参见：`icu.windea.pls.script.structureView.ParadoxScriptFileTreeElement`
-- [ ] P2 修复：脚本文件在文件路径导航栏中会错误地显示整个文件文本（应当显示文件名）
+- [x] P2 修复脚本文件在导航栏中会错误地使用整个文件文本作为展示文本的BUG（应当显示文件名）
 
 #### 任务（次要）
 
