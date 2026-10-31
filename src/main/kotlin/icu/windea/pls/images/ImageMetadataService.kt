@@ -85,16 +85,22 @@ class ImageMetadataService : Disposable {
     }
 
     private fun readMetadata(inputStream: InputStream): ImageMetadata? {
+        // org.intellij.images.util.ImageInfoReader.read
+        ImageIO.setUseCache(false)
         return inputStream.buffered().asCancellable().use { input ->
             ImageIO.createImageInputStream(input)?.use { imageInputStream ->
-                val imageReader = ImageIO.getImageReaders(imageInputStream).asSequence().firstOrNull() ?: return null
-                try {
-                    imageReader.input = imageInputStream
-                    val width = imageReader.getWidth(0)
-                    val height = imageReader.getHeight(0)
-                    ImageMetadata(width, height)
-                } finally {
-                    imageReader.dispose()
+                // NOTE 3.0.5 Returned image readers may be multiple here, and some may be not available
+                ImageIO.getImageReaders(imageInputStream).asSequence().firstNotNullOfOrNull { imageReader ->
+                    try {
+                        imageReader.setInput(imageInputStream, true)
+                        val width = imageReader.getWidth(0)
+                        val height = imageReader.getHeight(0)
+                        ImageMetadata(width, height)
+                    } catch (_: Exception) {
+                        null
+                    } finally {
+                        imageReader.dispose()
+                    }
                 }
             }
         }

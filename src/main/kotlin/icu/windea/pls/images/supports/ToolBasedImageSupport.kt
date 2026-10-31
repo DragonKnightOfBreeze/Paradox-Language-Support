@@ -9,8 +9,13 @@ import icu.windea.pls.integrations.images.ImageToolService
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
+import javax.imageio.ImageIO
 
 /**
+ * 基于外部实现的图片支持。
+ *
+ * @see ImageIO
+ * @see ImageIoService
  * @see ImageToolProvider
  * @see ImageToolService
  */

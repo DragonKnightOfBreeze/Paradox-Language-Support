@@ -62,6 +62,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
         // 找不到图标的话就直接跳过
         val iconUrl = ParadoxImageManager.resolveUrl(image, context.project) ?: return
         val icon = iconUrl.toFileUrl().toIconOrNull() ?: return
+        icon.iconHeight // TODO 3.0.5 ensure loading (to refactor)
 
         sink.addInlinePresentation(element.endOffset, smallInset = true) {
             // 点击可以导航到声明处（定义或图片）

@@ -17,7 +17,7 @@ class ChronicleDataPathServiceTest {
         Assert.assertTrue(service.imagesPath.isDirectory())
         Assert.assertTrue(service.imagesTempPath.isDirectory())
         Assert.assertTrue(service.lintResultsPath.isDirectory())
-        Assert.assertTrue(service.toolsPath.isDirectory())
+        Assert.assertTrue(service.externalToolsPath.isDirectory())
     }
 
     @Test

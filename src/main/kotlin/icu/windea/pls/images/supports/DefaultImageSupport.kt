@@ -8,15 +8,16 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
 import javax.imageio.ImageIO
-import javax.imageio.ImageReader
-import javax.imageio.spi.ImageReaderSpi
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
 
 /**
+ * 基于 [TwelveMonkeys ImageIO](https://github.com/haraldk/TwelveMonkeys) 实现的图片支持。
+ *
+ * 注意：存在一些限制。例如，不支持写入 DDS 图片，不支持转换为 DDS 图片，也不支持部分新版的 DDS 扩展格式（如 BC6H/BC7）。
+ *
  * @see ImageIO
- * @see ImageReader
- * @see ImageReaderSpi
+ * @see ImageIoService
  */
 class DefaultImageSupport : ImageSupport {
     override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {

@@ -8,7 +8,7 @@ updated: 2026-04-28
 | Type                                | Convention                                      | Example                                      |
 |-------------------------------------|-------------------------------------------------|----------------------------------------------|
 | Files (single class/object)         | PascalCase                                      | `ParadoxDefinitionManager.kt`                |
-| Files (package-level helpers)       | `_extensions.kt`, `_accessors.kt`, `_models.kt` | `_extensions.kt`                             |
+| Files (package-level helpers)       | `_types.kt`, `_accessors.kt`, `_models.kt` | `_types.kt`                             |
 | Files (class-level helpers)         | `SomeExtensions.kt`, `SomeAccessors.kt`         | `ParadoxDefinitionExtensions.kt`             |
 | Files (EP implementations, grouped) | `SomeProviders.kt`, `SomeProviders.Category.kt` | `ParadoxHintTextProviders.kt`                |
 | Classes                             | PascalCase, domain prefix where needed          | `ParadoxDefinitionInfo`, `CwtTypeConfig`     |

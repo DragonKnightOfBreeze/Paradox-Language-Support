@@ -766,3 +766,10 @@
 - [ ] P4 考虑重构和清理 `ConvertImageFormatAction`
   - 可以改为完全基于 Kotlin 协程实现，但是参考实现（`CopyFilesOrDirectoriesHandler`）目前尚未如此
   - 低优先级，只要能够正常工作即可
+
+## 2026-10-31
+
+- [ ] P4 modifier 的语义高亮在某些主题下（如 `Dark`）可能无法与普通属性的语法高亮相区分，需要考虑调整
+  - 参见：`icu.windea.pls.script.highlighting.ParadoxScriptHighlighterColors.MODIFIER`
+- [ ] P4 考虑将图片处理库改为 [kotlin-graphics/gli](https://github.com/kotlin-graphics/gli)
+  - 结论：非当前目标，需要另行评估

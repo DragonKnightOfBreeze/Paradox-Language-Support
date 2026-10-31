@@ -32,9 +32,11 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
     }
 
     override fun getExecutablePath(): Path {
+        val dataPathService = ChronicleDataPathService.getInstance()
+        dataPathService.ensureTexconvExePath() // ensure created
         val configured = ImageToolSettings.getInstance().texconvPath.parsePath()
         configured?.let { return it }
-        return ChronicleDataPathService.getInstance().texconvExePath // actual default value
+        return dataPathService.texconvExePath // actual default value
     }
 
     override fun validateExecutablePath(path: Path): Boolean {

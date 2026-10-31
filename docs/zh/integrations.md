@@ -46,16 +46,17 @@
 ![](../assets/integrations/convert_image_format_2.png)<!-- batch -->
 
 > [!warning]
-> 请注意， [TwelveMonkeys ImageIO](https://github.com/haraldk/TwelveMonkeys) 对 DDS 图片的支持存在一些限制，例如，它不支持 DX11 格式。
+> 需要注意的是， [TwelveMonkeys ImageIO](https://github.com/haraldk/TwelveMonkeys) 存在一些限制。
+> 例如，它不支持写入 DDS 图片，不支持转换为 DDS 图片，也不支持部分新版的 DDS 扩展格式（如 BC6H/BC7）。
 > 
-> 如果你遇到插件无法正常渲染 DDS 图片的问题，我们推荐启用插件与 [Image Magick](https://www.imagemagick.org) 的集成。
+> 如果你遇到插件无法正常渲染 DDS 图片的问题，建议启用插件与 [Image Magick](https://www.imagemagick.org) 的集成。
 > 从官网下载程序包到本地，在设置页面中启用集成，正确配置其可执行文件（名为 `magick.exe` 或者 `magick`）的路径，然后保存设置。
 > 重启 IDE 后，问题应当能够得到解决。
 
 > [!tip]
-> 如果你需要可视化地编辑 DDS 和 TGA 图片，我们推荐使用 [Paint.NET](https://www.getpaint.net)。
+> 如果你需要可视化地编辑 DDS 和 TGA 图片，建议使用 [Paint.NET](https://www.getpaint.net)。
 > 
-> 如果你需要批处理 DDS 和 TGA 图片，如批量调整图片尺寸，我们推荐使用 [Image Magick](https://www.imagemagick.org)。
+> 如果你需要批处理 DDS 和 TGA 图片，如批量调整图片尺寸，建议使用 [Image Magick](https://www.imagemagick.org)。
 
 > [!tip]
 > 你可以通过以下几种方式，直接从 IDE 转到外部的图片工具。

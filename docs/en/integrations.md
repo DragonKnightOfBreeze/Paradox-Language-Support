@@ -46,16 +46,17 @@ The plugin also allows selecting multiple images in the project view and perform
 ![](../assets/integrations/convert_image_format_2.png)<!-- batch -->
 
 > [!warning]
-> Note that [TwelveMonkeys ImageIO](https://github.com/haraldk/TwelveMonkeys) has some limitations in supporting DDS images, such as not supporting DX11 formats.
+> It is important to note that [TwelveMonkeys ImageIO](https://github.com/haraldk/TwelveMonkeys) has some limitations.
+> For example, it does not support writing DDS images, does not support converting to DDS images, and also does not support some newer DDS extension formats (such as BC6H/BC7).
 > 
-> If you encounter issues with the plugin rendering DDS images properly, we recommend enabling the integration with [Image Magick](https://www.imagemagick.org).
+> If you encounter issues with the plugin rendering DDS images properly, it's recommended to enable the integration with [Image Magick](https://www.imagemagick.org).
 > Download the package from the official website to your local machine, enable the integration in the settings page, correctly configure the path to its executable (named `magick.exe` or `magick`), and save the settings.
 > After restarting the IDE, the issue should be resolved.
 
 > [!tip]
-> If you need to visually edit DDS and TGA images, we recommend using [Paint.NET](https://www.getpaint.net).
+> If you need to visually edit DDS and TGA images, it's recommended to use [Paint.NET](https://www.getpaint.net).
 > 
-> If you need to batch process DDS and TGA images, such as batch resizing, we recommend using [Image Magick](https://www.imagemagick.org).
+> If you need to batch process DDS and TGA images, such as batch resizing, it's recommend to use [Image Magick](https://www.imagemagick.org).
 
 > [!tip]
 > You can jump directly to external image tools from the IDE in several ways:

@@ -10,7 +10,6 @@ import javax.imageio.ImageReadParam
 import javax.imageio.stream.ImageInputStream
 
 /**
- * @see icu.windea.pls.images.spi.DdsImageReaderSpi
  * @see com.twelvemonkeys.imageio.plugins.dds.DDSImageReader
  * @see com.twelvemonkeys.imageio.plugins.dds.DDSImageReader.read
  */

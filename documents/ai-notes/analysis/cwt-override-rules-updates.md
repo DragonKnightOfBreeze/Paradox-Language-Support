@@ -219,7 +219,7 @@
 - 数据模型：`CwtConfigGroupDataModel.priorities: Map<String, ParadoxOverrideStrategy>` → `overrides: Map<String, CwtOverrideConfig>`（`Base` / `Empty` / `CwtConfigGroup` 委托同步）。
 - 解析：`CwtConfigGroupProcessors.FileBased` 改为识别 `overrides` 块并调用 `CwtOverrideConfig.resolve`。
 - 提供者：`ParadoxFilePathMapBasedOverrideStrategyProvider.getFilePathMap` 返回 `Map<String, CwtOverrideConfig>`；取策略改用 `.strategy`；`ParadoxBaseOverrideStrategyProvider` 读取 `configGroup.overrides`。
-- 重命名：`filePathPatternsForPriority` / `getFilePathPatternsForPriority` → `...ForOverride`（`_extensions.kt`、`CwtConfigManager`、`CwtConfigService`）。
+- 重命名：`filePathPatternsForPriority` / `getFilePathPatternsForPriority` → `...ForOverride`（`_types.kt`、`CwtConfigManager`、`CwtConfigService`）。
 - 文档/链接：`ParadoxOverrideStrategy` KDoc、3 个检查类 KDoc、`ParadoxTypeProvider` 局部变量、`ParadoxOverrideStrategyProvider` `@see`；中英文 `ref-config-format.md` 的标题与锚点 `#config-priority` → `#config-override`；6 个 `inspectionDescriptions/*.html`。
 - 规则文件：`cwt/core/00_overrides.cwt`、`cwt/core/internal/schema.cwt`；配置子仓库将 `config/priorities.cwt` → `config/overrides.cwt`（属性同步改名）。
 - 其他：`CwtDefineNamespaceConfig` 的 `mapNotNull` → `map`；强制策略提供者补充注释；更新 `CHANGELOG.md` 与 `documents/notes/开发路线.md`。

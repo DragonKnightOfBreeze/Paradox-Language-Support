@@ -33,7 +33,6 @@ import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.images.ImageService
 import java.io.IOException
 import java.nio.file.Path
-import java.util.concurrent.ExecutionException
 import java.util.concurrent.atomic.AtomicReference
 import java.util.function.Consumer
 
@@ -118,7 +117,6 @@ abstract class ConvertImageFormatAction(
         } catch (e: Exception) {
             Messages.showErrorDialog(project, e.message, ChronicleBundle.message("error.title"))
         }
-
     }
 
     private fun save(
@@ -128,7 +126,7 @@ abstract class ConvertImageFormatAction(
         choice: IntArray?,
         title: String,
         added: MutableList<PsiFile>,
-        failed: MutableList<PsiFile>
+        failed: MutableList<PsiFile>,
     ) {
         val project = targetDirectory.project
         val existingFiles = MultiMap<PsiDirectory, PsiFile>()
@@ -161,7 +159,7 @@ abstract class ConvertImageFormatAction(
         added: MutableList<PsiFile>,
         failed: MutableList<PsiFile>,
         existingFiles: MultiMap<PsiDirectory, PsiFile>,
-        pi: ProgressIndicator?
+        pi: ProgressIndicator?,
     ) {
         if (pi != null) {
             pi.text2 = InspectionsBundle.message("processing.progress.text", file.name)
@@ -174,7 +172,7 @@ abstract class ConvertImageFormatAction(
             return
         }
 
-        doConvert(file, targetDirectory, fileName, added, failed)
+        convertInternal(file, targetDirectory, fileName, added, failed)
     }
 
     private fun rethrow(throwable: Throwable?) {
@@ -194,7 +192,7 @@ abstract class ConvertImageFormatAction(
         title: String,
         existingFiles: MultiMap<PsiDirectory, PsiFile>,
         added: MutableList<PsiFile>,
-        failed: MutableList<PsiFile>
+        failed: MutableList<PsiFile>,
     ) {
         var defaultChoice = if (choice != null && choice[0] > -1) SkipOverwriteChoice.entries[choice[0]] else null
         try {
@@ -215,7 +213,7 @@ abstract class ConvertImageFormatAction(
         existingFiles: MultiMap<PsiDirectory, PsiFile>,
         added: MutableList<PsiFile>,
         failed: MutableList<PsiFile>,
-        progressIndicator: ProgressIndicator?
+        progressIndicator: ProgressIndicator?,
     ): SkipOverwriteChoice? {
         for (tDirectory in existingFiles.keySet()) {
             val replacementFiles = existingFiles[tDirectory]
@@ -246,7 +244,7 @@ abstract class ConvertImageFormatAction(
                         progressIndicator.text2 = InspectionsBundle.message("processing.progress.text", existing.name)
                     }
                     existing.delete()
-                    doConvert(replacement, targetDirectory, fileName, added, failed)
+                    convertInternal(replacement, targetDirectory, fileName, added, failed)
                 }
                 if (userChoice == SkipOverwriteChoice.OVERWRITE) {
                     executeWriteCommand(project, title) { doCopy.run() }
@@ -258,9 +256,9 @@ abstract class ConvertImageFormatAction(
         return defaultChoice
     }
 
-    private fun doConvert(file: PsiFile, targetDirectory: PsiDirectory, fileName: String, added: MutableList<PsiFile>, failed: MutableList<PsiFile>) {
+    private fun convertInternal(file: PsiFile, targetDirectory: PsiDirectory, fileName: String, added: MutableList<PsiFile>, failed: MutableList<PsiFile>) {
         targetDirectory.cast<PsiDirectoryImpl>().executeWithUpdatingAddedFilesDisabled<Throwable> action@{
-            val savedPsiFile = runCatchingCancellable { doConvertImageFormat(file, targetDirectory, fileName) }.getOrNull()
+            val savedPsiFile = runCatchingCancellable { convertInternal(file, targetDirectory, fileName) }.getOrNull()
             if (savedPsiFile != null) {
                 added.add(savedPsiFile)
             } else {
@@ -269,7 +267,7 @@ abstract class ConvertImageFormatAction(
         }
     }
 
-    internal fun doConvertImageFormat(file: PsiFile, targetDirectory: PsiDirectory, targetFileName: String): PsiFile? {
+    internal fun convertInternal(file: PsiFile, targetDirectory: PsiDirectory, targetFileName: String): PsiFile? {
         val s = file.virtualFile ?: return null
         val td = targetDirectory.virtualFile
         val sf = s.extension?.orNull() ?: return null
@@ -277,22 +275,28 @@ abstract class ConvertImageFormatAction(
         val targetPath = td.toNioPath().resolve(targetFileName)
         val sourceFormat = sf.lowercase()
         val targetFormat = targetFormatName.lowercase()
-        convertImageFormat(path, targetPath, sourceFormat, targetFormat)
+        val converted = convertInternal(path, targetPath, sourceFormat, targetFormat)
+        if (!converted) return null
         val t = targetPath.toVirtualFile(refreshIfNeed = true)
         return t?.toPsiFile(file.project)
     }
 
-    private fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
-        // 外部图片工具不能在 EDT/readAction 中执行；当前动作通常运行在 EDT 中，因此必要时放到后台线程
-        val action = { ImageService.getInstance().convertImageFormat(path, targetPath, sourceFormat, targetFormat) }
-        if (ApplicationManager.getApplication().isDispatchThread) {
-            try {
-                ApplicationManager.getApplication().executeOnPooledThread(action).get()
-            } catch (e: ExecutionException) {
-                throw e.cause ?: e
-            }
+    private fun convertInternal(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
+        // NOTE 3.0.5 外部图片工具不能在 EDT/readAction 中执行；当前动作通常运行在 EDT 中，因此必要时放到后台线程
+        return if (ApplicationManager.getApplication().isDispatchThread) {
+            ApplicationManager.getApplication().executeOnPooledThread<Boolean> {
+                convertImageFormatInternal(path, targetPath, sourceFormat, targetFormat)
+            }.get()
         } else {
-            action()
+            convertImageFormatInternal(path, targetPath, sourceFormat, targetFormat)
         }
+    }
+
+    private fun convertImageFormatInternal(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
+        runCatchingCancellable {
+            ImageService.getInstance().convertImageFormat(path, targetPath, sourceFormat, targetFormat)
+            return true
+        }
+        return false
     }
 }

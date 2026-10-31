@@ -8,9 +8,11 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.FileType
 import icu.windea.pls.core.util.io.ImageIoService
 import icu.windea.pls.images.dds.DdsFileType
-import icu.windea.pls.images.spi.DdsImageReaderSpi
-import icu.windea.pls.images.spi.TgaImageReaderSpi
+import icu.windea.pls.images.dds.DdsImageReaderSpi
+import icu.windea.pls.images.dds.DdsImageWriterSpi
 import icu.windea.pls.images.tga.TgaFileType
+import icu.windea.pls.images.tga.TgaImageReaderSpi
+import icu.windea.pls.images.tga.TgaImageWriterSpi
 import icu.windea.pls.model.constants.ChronicleConstants
 import org.intellij.images.fileTypes.impl.ImageFileType
 import java.io.InputStream
@@ -33,23 +35,30 @@ class ImageService : AppLifecycleListener, DynamicPluginListener {
 
     // NOTE 2.1.7 MUST be lazy loaded here (avoiding eager class loading of ImageReaders and make ImageReaderCodeInjectors work as expected)
     private val ddsImageReaderSpi by lazy { DdsImageReaderSpi() }
+    private val ddsImageWriterSpi by lazy { DdsImageWriterSpi() }
     private val tgaImageReaderSpi by lazy { TgaImageReaderSpi() }
+    private val tgaImageWriterSpi by lazy { TgaImageWriterSpi() }
 
     // NOTE 2.1.7 since IDEA 2026.1, it's necessary to set fileNameMap (or cannot render DDS / TGA images without splitting in quick doc as expected)
     private val originalFileNameMap by lazy { URLConnection.getFileNameMap() }
 
     private fun registerImageIOSpi() {
         IIORegistry.getDefaultInstance().registerServiceProvider(ddsImageReaderSpi)
+        IIORegistry.getDefaultInstance().registerServiceProvider(ddsImageWriterSpi)
         IIORegistry.getDefaultInstance().registerServiceProvider(tgaImageReaderSpi)
+        IIORegistry.getDefaultInstance().registerServiceProvider(tgaImageWriterSpi)
     }
 
     private fun deregisterImageIOSpi() {
         IIORegistry.getDefaultInstance().deregisterServiceProvider(ddsImageReaderSpi)
+        IIORegistry.getDefaultInstance().deregisterServiceProvider(ddsImageWriterSpi)
         IIORegistry.getDefaultInstance().deregisterServiceProvider(tgaImageReaderSpi)
+        IIORegistry.getDefaultInstance().deregisterServiceProvider(tgaImageWriterSpi)
     }
 
     private fun setFileNameMap() {
-        val originalFileNameMap = originalFileNameMap // lift out or will cause SOF
+        // NOTE 2.1.7 lift out or will cause SOF
+        val originalFileNameMap = originalFileNameMap
         URLConnection.setFileNameMap {
             val extension = it.substringAfterLast('.').lowercase()
             when (extension) {

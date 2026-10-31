@@ -25,6 +25,12 @@ object PathService {
         return true
     }
 
+    fun ensureParentDirectoryCreated(path: Path): Boolean {
+        val parent = path.parent ?: return false
+        parent.createDirectories()
+        return true
+    }
+
     fun ensureFileCreatedFromClasspath(path: Path, url: String) {
         if (path.isRegularFile() && path.fileSize() > 0) return
         if (path.exists()) {

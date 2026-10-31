@@ -218,6 +218,7 @@ class ParadoxLocalisationTextInlayRenderContext(
             // 找不到图标的话就直接跳过
             val iconUrl = ParadoxImageManager.resolveUrl(image, hintsContext.project) ?: return@run
             val icon = iconUrl.toFileUrl().toIconOrNull() ?: return@run
+            icon.iconHeight // TODO 3.0.5 ensure loading (to refactor)
 
             // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
             val presentation = factory.psiSingleReference(factory.smallScaledIcon(icon)) { resolved }

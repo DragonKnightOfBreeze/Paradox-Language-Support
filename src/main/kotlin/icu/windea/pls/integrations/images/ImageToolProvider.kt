@@ -9,7 +9,7 @@ import javax.imageio.ImageReadParam
 import javax.imageio.stream.ImageInputStream
 
 /**
- * 提供图片处理工具。用于预览与渲染图片，以及转换图片格式。
+ * 提供图片工具。用于处理图片，例如预览、渲染、读写以及转换图片格式。
  */
 interface ImageToolProvider {
     val name: String

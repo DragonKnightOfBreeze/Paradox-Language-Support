@@ -129,7 +129,7 @@
 - **类型定位与过滤**：`path`、`path_strict`、`path_file`、`path_extension`、`type_key_filter`、`starts_with`、`type_per_file`、`unique`、`severity`。
 - **本地化**：类型级 `localisation` 块（`primary`、`required`）与占位 `$` 规则。
 
-> 在 PLS 中，`toOccurrence(...)` 会结合 `cardinalityMinDefine`/`cardinalityMaxDefine` 的 define 值实时覆盖 UI 展示（参见 `_extensions.kt`）。
+> 在 PLS 中，`toOccurrence(...)` 会结合 `cardinalityMinDefine`/`cardinalityMaxDefine` 的 define 值实时覆盖 UI 展示（参见 `_types.kt`）。
 
 ---
 

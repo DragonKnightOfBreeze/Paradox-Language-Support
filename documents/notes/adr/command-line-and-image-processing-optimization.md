@@ -501,15 +501,6 @@ com.intellij.diagnostic.Freeze
   - 一些通用的 model/enum/constant，也一并提取到对应位置（同包下/直接作为类成员或内部类）。
   - 需要允许更加灵活的配置，并提供一个合理的默认配置。例如提供默认参数 `settings: DownloadSettings`（速度检测/超时检测/等等）。
 
-#### 2026-10-29 - step 7 - revision
-
-- [ ] `ImageMetadataService` - 考虑同时提供 `getMetadata(...): ImageMetadata` 和 `getMetadataOrNull(...): ImageMetadata?`，同时考虑提取 `ImageMetadataReader`
-- [ ] 不能假定：总是存在外部解压工具的可执行文件路径（如 7z），本地环境总是存在系统代理（如 clash） - 需要结合使用 Assume
-- [ ] `ImageRenderServiceTest` - 需要拆分出 `ParadoxImageServiceTest` 和 `ParadoxImageManager`（并且补充更多）
-- [ ] `LintToolProviderExternalTest` - 主要出于对齐的目的，因为 `Issue396TigerLintTest` 中已经覆盖了（这里仅验证 toolProvider，不验证 inspection）
-- [ ] 为 `IoService` 和 `ImageIoService` 补充测试
-- [ ] 为 `FileExtensions.kt` 和 `PathExtensions.kt` 补充测试
-
 #### 2026-10-30 - step 7 - manual revision
 
 - [x] 重命名：`cancelable` -> `cancellable`
@@ -527,6 +518,20 @@ com.intellij.diagnostic.Freeze
 - [x] 清理和优化 IO 读写的相关代码
 - [x] 将 `icu.windea.pls.images.ImageFrameInfo` 移到 `icu.windea.pls.core.util.ImageFrameInfo`（对齐 `RangeInfo` 和 `Template`，以后可能还会新增 `ImageLayerInfo` 等）
 - [x] 将方法 `scaleImage` `sliceImage` 从 `ImageService` 移动到 `ImageIoService`（因为它们不依赖于 imageSession/imageRequest）
+
+
+#### 2026-10-29 - step 7 - revision
+
+- [ ] `ImageMetadataService` - 考虑同时提供 `getMetadata(...): ImageMetadata` 和 `getMetadataOrNull(...): ImageMetadata?`，同时考虑提取 `ImageMetadataReader`
+- [ ] 不能假定：总是存在外部解压工具的可执行文件路径（如 7z），本地环境总是存在系统代理（如 clash） - 需要结合使用 Assume
+- [ ] `ImageRenderServiceTest` - 需要拆分出 `ParadoxImageServiceTest` 和 `ParadoxImageManager`（并且补充更多）
+- [ ] `LintToolProviderExternalTest` - 主要出于对齐的目的，因为 `Issue396TigerLintTest` 中已经覆盖了（这里仅验证 toolProvider，不验证 inspection）
+- [ ] 为 `IoService` `ImageIoService` `PathService` 补充测试
+- [ ] 为 `FileExtensions.kt` `PathExtensions.kt` 补充测试
+- [ ] 需要重新设计图片渲染和解析的流程，避免重复渲染，以及不正确的上下文状态
+  - 避免 `.toFileUrl().toIconOrNull()`，如果确实需要渲染图片，这可能是不必要的
+- [x] 修复：需要补充 `DdsImageWriterSpi` 和 `TgaImageWriterSpi` 并在 `ImageService` 中显式挂载
+  - 避免转换图片格式时失败
 
 #### 2026-10-30 - step 7 - post doc
 
@@ -560,7 +565,14 @@ com.intellij.diagnostic.Freeze
 - [x] 渲染代码按职责拆分：`ImageService` 保留格式转换/文件类型/SPI 生命周期，`ImageRenderService` 负责缓存、渲染和清理。
 - [x] 原始高度不可获取时直接跳过图标，不使用 `icon.iconHeight` 作为回退。
 
-#### 2026-10-30 - step 6
+#### 2026-10-30 - step 7
+
+- [ ] 考虑 `ParadoxImageManager` 和 `ParadoxImageService` 的进一步的清理和重构
+- [ ] 考虑将 `ParadoxImageManager.isImageFile` 移动到 `ImageService` 中
+- [ ] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
+- [ ] `CommandBasedImageToolProvider.read` - 可能需要考虑如何进行有效的缓存
+
+#### 2026-10-30 - post
 
 - [ ] `ExternalToolDownloadTestService` 中的 downloadDescriptor 可能不应该硬编码，理想情况下应可以自动确保是最新的
   - 现状：不是那么必要，留待后续评估
@@ -568,13 +580,8 @@ com.intellij.diagnostic.Freeze
   - 现状：不是那么必要，留待后续评估
 - [ ] 内置所有图片工具（以及检查工具），或者提供便捷入口以在使用插件时一键下载对应的工具
   - 结论：非当前目标，需要另行评估
-
-#### 2026-10-30 - step 7
-
-- [ ] 考虑 `ParadoxImageManager` 和 `ParadoxImageService` 的进一步的清理和重构
-- [ ] 考虑将 `ParadoxImageManager.isImageFile` 移动到 `ImageService` 中
-- [ ] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
-- [ ] `CommandBasedImageToolProvider.read` - 可能需要考虑如何进行有效的缓存
+- [ ] 考虑将图片处理库改为 [kotlin-graphics/gli](https://github.com/kotlin-graphics/gli)
+  - 结论：非当前目标，需要另行评估
 
 ### 分析
 
@@ -588,11 +595,26 @@ com.intellij.diagnostic.Freeze
   - 参见：`ConvertImageFormatAction`
   - 备注：需要验证（且仅验证/单独验证）使用基于外部工具的 imageSupport 时，是否也可以正确工作。
 
+#### 2026-10-31
+
+- [ ] 不正确的上下文状态（EDT / readAction） - 更新内嵌提示时
+  - 堆栈：[stack-trace-202610311612.txt](.assets/stack-trace-202610311612.txt) - EDT
+  - 堆栈：[stack-trace-202610312033.txt](.assets/stack-trace-202610312033.txt) - RA
+  - 断点：`icu.windea.pls.core.execution.ProcessExecutor.warnIfIncorrectContext`
+  - 相关代码位置：`icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider.collectFromElement`
+  - 临时解决方案：~~调用 `icon.iconHeight`，确保图片加载~~ -> 仍然会在 readAction 中
+- [x] 使用 `DefaultImageSupport`（TwelveMonkeys）时，图片格式转换失败 - DDS -> TGA（至少）
+  - 堆栈：[stack-trace-202610311808.txt](.assets/stack-trace-202610311808.txt)
+  - 解决方案：需要补充 `DdsImageWriterSpi` 和 `TgaImageWriterSpi` 并在 `ImageService` 中显式挂载
+- [ ] 使用 `DefaultImageSupport`（TwelveMonkeys）时，无法写入 DDS 图片（例如，从 PNG 转为 DDS）
+  - 结论：应当是依赖库自身的缺陷
+
 ### 验证
 
 #### 人工验证
 
 - [ ] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常转换图片格式（`ConvertImageFormatAction`）
+  - 限制：使用 `DefaultImageSupport`（TwelveMonkeys）时，无法转换为 DDS
 - [ ] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在编辑器中渲染图片
 - [ ] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在快速文档中渲染图片
 - [ ] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在内嵌提示中渲染图片
@@ -634,8 +656,6 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.lang.util.ParadoxImageManager` - 已重构为门面
 - [x] `icu.windea.pls.lang.resolve.ParadoxImageService` - 新增
 - [x] `icu.windea.pls.lang.resolve.ParadoxImageResolveResult` - 新增
-- [x] `icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget` - 快速文档等待渲染会话
-- [x] `icu.windea.pls.lang.codeInsight.documentation.CwtDocumentationTarget` - 快速文档等待渲染会话
 - [x] `icu.windea.pls.integrations.ExternalToolDownloadService` - 新增
 - [x] `icu.windea.pls.core.util.io.ArchiveService` - 新增
 - [x] `icu.windea.pls.core.util.net.ProxyService` - 新增
@@ -643,6 +663,15 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.images.actions.ConvertImageFormatAction` - 提取内部转换方法，支持在后台执行外部工具
 - [x] `icu.windea.pls.integrations.images.providers.TexconvToolProvider` - 支持自定义路径，默认使用外部工具目录
 - TBD
+
+生产代码（快速文档/内嵌提示/渲染器）：
+- [x] `icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget` - 快速文档等待渲染会话
+- [x] `icu.windea.pls.lang.codeInsight.documentation.CwtDocumentationTarget` - 快速文档等待渲染会话
+- [ ] `icu.windea.pls.lang.codeInsight.hints.script.ParadoxModifierIconHintsProvider`
+- [ ] `icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider`
+- [ ] `icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer`
+- [ ] `icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextQuickDocRenderer`
+- [ ] `icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer`
 
 测试代码：
 
@@ -703,6 +732,7 @@ com.intellij.diagnostic.Freeze
 
 - `org.intellij.images.index.ImageInfoIndex`
 - `org.intellij.images.util.ImageInfoReader`
+- `org.intellij.images.util.imageio.CommonsImagingImageReaderSpi`
 
 网络代理相关：
 
