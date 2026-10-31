@@ -66,6 +66,13 @@ class ChronicleIntegrationSettingsConfigurable : BoundConfigurable(ChronicleBase
                 .bindSelected(settings::enableTexconv)
             browserLink(ChronicleBundle.message("link.website"), ImageToolConstants.Texconv.url)
         }
+        // enableMagick
+        row {
+            checkBox(ChronicleBaseBundle.message("settings.integrations.image.from.magick"))
+                .comment(ChronicleBaseBundle.message("settings.integrations.image.from.magick.comment"), MAX_LINE_LENGTH_WORD_WRAP)
+                .bindSelected(settings::enableMagick)
+            browserLink(ChronicleBundle.message("link.website"), ImageToolConstants.Magick.url)
+        }
         // texconvPath
         row {
             label(ChronicleBaseBundle.message("settings.integrations.image.texconvPath")).widthGroup(groupName)
@@ -76,13 +83,6 @@ class ChronicleIntegrationSettingsConfigurable : BoundConfigurable(ChronicleBase
                 .applyToComponent { setEmptyState(ImageToolConstants.Texconv.pathTip()) }
                 .align(Align.FILL)
                 .validationOnInput { Manager.validateTexconvPath(this, it) }
-        }
-        // enableMagick
-        row {
-            checkBox(ChronicleBaseBundle.message("settings.integrations.image.from.magick"))
-                .comment(ChronicleBaseBundle.message("settings.integrations.image.from.magick.comment"), MAX_LINE_LENGTH_WORD_WRAP)
-                .bindSelected(settings::enableMagick)
-            browserLink(ChronicleBundle.message("link.website"), ImageToolConstants.Magick.url)
         }
         // magickPath
         row {
