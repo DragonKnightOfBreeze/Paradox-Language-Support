@@ -622,6 +622,8 @@ com.intellij.diagnostic.Freeze
 
 - [x] 将可 suspend 的 external tool provider 操作迁移为 suspend（图片转换、lint、translation）。
 - [x] service 层统一负责 dispatcher、超时、上下文检查和日志。
+- [x] 新增 `ChronicleCapabilities.Test.strictContext`，测试中可将 EDT/readAction 上下文转为异常。
+- [x] `Issue396Test` 增加严格上下文断言。
 - [x] `ImageToolProvider.read` 保留同步 SPI 语义；EDT/RA 中只允许内置实现/缓存。
 - [ ] 图片转换动作的 EDT 阻塞路径进一步改造为后台转换 + EDT 提交。
 
@@ -830,7 +832,7 @@ ead 保留同步 ImageReader SPI 语义
 - [x] `icu.windea.pls.integrations.lints.LintToolProviderExternalTest` - Tiger toolProvider 可用性和路径校验
 - [x] `icu.windea.pls.base.io.ChronicleGitServiceTest` - 本地仓库冒烟与常见场景
 - [x] `icu.windea.pls.base.io.ChronicleSqliteServiceTest` - 临时 SQLite 数据库
-- [x] `icu.windea.pls.test.issues.Issue396Test` - 外部图片工具上下文回归测试
+- [x] `icu.windea.pls.test.issues.Issue396Test` - 外部图片工具上下文回归测试（含严格上下文断言）
 - [x] `icu.windea.pls.test.issues.Issue396TigerLintTest` - Tiger 服务与 `ChronicleTigerLintInspection` 端到端测试
 - [x] ~~`icu.windea.pls.integrations.lints.RunTigerTest`~~ - 已移除（因为已存在 `ExternalToolDownloadTest`）
 - ...
