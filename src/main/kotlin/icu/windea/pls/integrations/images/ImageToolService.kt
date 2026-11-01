@@ -6,6 +6,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.util.ExceptionUtil
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.util.io.ImageIoService
 import kotlinx.coroutines.Dispatchers
@@ -44,32 +45,25 @@ class ImageToolService : Disposable {
 
     /** @see ImageToolProvider.convertImageFormat */
     fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
-        // 3.0.5 fast return if necessary
-        if (ImageIoService.copyIfSameFormat(inputStream, outputStream, sourceFormat, targetFormat)) return true
-        // implementation
-        val tool = findTool() ?: return false // skip
-        if (warnIfIncorrectContext(tool)) return false // skip
-        warnIfIncorrectContext(tool)
-        try {
-            runBlocking { withContext(Dispatchers.IO) { tool.convertImageFormat(inputStream, outputStream, sourceFormat, targetFormat) } }
-            logOperation(tool) { "convert image format (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
-            return true
-        } catch (e: Exception) {
-            checkCancellation(e)
-            logOperation(tool, e) { "convert image format (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
-            throw e
-        }
+        return runBlocking { convertImageFormatSuspend(inputStream, outputStream, sourceFormat, targetFormat) }
     }
 
     /** @see ImageToolProvider.convertImageFormat */
     fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
-        // 3.0.5 fast return if necessary
-        if (ImageIoService.copyIfSameFormat(path, targetPath, sourceFormat, targetFormat)) return true
-        // implementation
-        val tool = findTool() ?: return false // skip
-        if (warnIfIncorrectContext(tool)) return false // skip
+        return runBlocking { convertImageFormatSuspend(path, targetPath, sourceFormat, targetFormat) }
+    }
+
+    /**
+     * 转换图片格式（suspend 版本）。调用方应确保不在 EDT/readAction 中等待该操作。
+     */
+    suspend fun convertImageFormatSuspend(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
+        if (ImageIoService.copyIfSameFormat(inputStream, outputStream, sourceFormat, targetFormat)) return true
+        val tool = findTool() ?: return false
+        if (warnIfIncorrectContext(tool)) return false
         try {
-            runBlocking { withContext(Dispatchers.IO) { tool.convertImageFormat(path, targetPath, sourceFormat, targetFormat) } }
+            withContext(Dispatchers.IO) {
+                tool.convertImageFormat(inputStream, outputStream, sourceFormat, targetFormat)
+            }
             logOperation(tool) { "convert image format (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
             return true
         } catch (e: Exception) {
@@ -79,6 +73,25 @@ class ImageToolService : Disposable {
         }
     }
 
+    /**
+     * 转换图片格式（suspend 版本）。调用方应确保不在 EDT/readAction 中等待该操作。
+     */
+    suspend fun convertImageFormatSuspend(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
+        if (ImageIoService.copyIfSameFormat(path, targetPath, sourceFormat, targetFormat)) return true
+        val tool = findTool() ?: return false
+        if (warnIfIncorrectContext(tool)) return false
+        try {
+            withContext(Dispatchers.IO) {
+                tool.convertImageFormat(path, targetPath, sourceFormat, targetFormat)
+            }
+            logOperation(tool) { "convert image format (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
+            return true
+        } catch (e: Exception) {
+            checkCancellation(e)
+            logOperation(tool, e) { "convert image format (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
+            throw e
+        }
+    }
     private fun warnIfIncorrectContext(tool: ImageToolProvider): Boolean {
         // 3.0.5 warn if current context is incorrect (EDT or readAction), and skip operation
         val application = ApplicationManager.getApplication()
@@ -87,8 +100,10 @@ class ImageToolService : Disposable {
             application.holdsReadLock() -> "under readAction"
             else -> return false
         }
+        val detail = "[${tool.name}] External image tool is used $message."
+        if (ChronicleCapabilities.Test.strictContext) throw IllegalStateException(detail)
         if (!warnedStacks.add(ExceptionUtil.currentStackTrace())) return true
-        logger.warn("[${tool.name}] External image tool is used $message.")
+        logger.warn(detail)
         return true
     }
 

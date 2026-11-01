@@ -3,6 +3,7 @@ package icu.windea.pls.test.issues
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.testFramework.ExtensionTestUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.inject.injectors.DDSImageReaderCodeInjector
 import icu.windea.pls.integrations.images.ImageToolProvider
 import icu.windea.pls.integrations.images.ImageToolService
@@ -75,6 +76,36 @@ class Issue396Test : BasePlatformTestCase() {
         )
         Assert.assertFalse(converted)
         Assert.assertFalse("External image tool must not be used in EDT", recordingProvider.convertCalled)
+    }
+
+    @Test
+    fun readInEdtWithStrictContext_test() {
+        val old = ChronicleCapabilities.Test.strictContext
+        ChronicleCapabilities.Test.strictContext = true
+        try {
+            Assert.assertThrows(IllegalStateException::class.java) {
+                ImageToolService.getInstance().read(0, null, createImageInputStream(), "dds", "png")
+            }
+        } finally {
+            ChronicleCapabilities.Test.strictContext = old
+        }
+    }
+
+    @Test
+    fun readUnderReadActionWithStrictContext_test() {
+        val old = ChronicleCapabilities.Test.strictContext
+        ChronicleCapabilities.Test.strictContext = true
+        try {
+            ApplicationManager.getApplication().executeOnPooledThread {
+                ApplicationManager.getApplication().runReadAction<Unit> {
+                    Assert.assertThrows(IllegalStateException::class.java) {
+                        ImageToolService.getInstance().read(0, null, createImageInputStream(), "dds", "png")
+                    }
+                }
+            }.get()
+        } finally {
+            ChronicleCapabilities.Test.strictContext = old
+        }
     }
 
     @Test

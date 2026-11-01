@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
-import kotlinx.coroutines.runBlocking
+import com.intellij.openapi.progress.runBlockingCancellable
 import java.util.*
 import java.util.concurrent.CancellationException
 import java.util.concurrent.TimeoutException
@@ -48,7 +48,7 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
             val path = tempParentPath.resolve(UUID.randomUUID().toString() + "." + sourceFormat)
             pathsToDelete.add(path)
             path.outputStream().use { IoService.copy(inputStream, it) }
-            val targetPath = runBlocking { convertImageFormat(path, null, null, sourceFormat, targetFormat) }
+            val targetPath = runBlockingCancellable { convertImageFormat(path, null, null, sourceFormat, targetFormat) }
             pathsToDelete.add(targetPath)
             return targetPath.inputStream().use { ImageIoService.readImage(it) }
         } finally {
