@@ -157,7 +157,7 @@ class TigerLintToolService : Disposable {
             ChronicleModificationTrackers.LocalisationFile,
         )
         val result = try {
-            collectTIgerLintResult(request, project, cancellable = false)
+            collectTigerLintResult(request, project)
         } catch (e: Exception) {
             checkCancellation(e)
             TigerLintResult(request, error = e)
@@ -165,13 +165,13 @@ class TigerLintToolService : Disposable {
         return result.copy(modificationTracker = modificationTracker)
     }
 
-    private fun collectTIgerLintResult(request: TigerLintRequest, project: Project, cancellable: Boolean): TigerLintResult {
+    private fun collectTigerLintResult(request: TigerLintRequest, project: Project): TigerLintResult {
         // 3.0.5 加上状态指示，因为检查结果的缓存失效时机并不是那么显而易见
         val name = request.name
         val fileUrl = request.rootFile.presentableUrl
         val progressTitle = ChronicleIntegrationsBundle.message("lint.tiger.validate.progress.title", name)
         val progressText = ChronicleIntegrationsBundle.message("lint.tiger.validate.progress.text", name, fileUrl)
-        val taskCancellation = if (cancellable) TaskCancellation.cancellable() else TaskCancellation.nonCancellable()
+        val taskCancellation = TaskCancellation.nonCancellable()
         return if (ApplicationManager.getApplication().isDispatchThread) {
             runWithModalProgressBlocking(ModalTaskOwner.project(project), progressTitle, taskCancellation) {
                 reportRawProgress { rawReporter ->
