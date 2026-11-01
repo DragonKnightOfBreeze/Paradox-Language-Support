@@ -652,15 +652,6 @@ com.intellij.diagnostic.Freeze
 - [x] 考虑为 `ChronicleGitService` 补充测试。需要考虑如何获取一个可用的 Git 仓库路径。
 - [x] 考虑为 `ChronicleSqliteService` 补充测试。
 
-#### 2026-11-01 - step 8 & 9
-
-- [x] 使用 core 层通用上下文 + userData 附加图片数据，避免基础模块依赖 images。
-- [x] 内嵌提示不再在 collect/EDT 中读取 metadata、同步渲染或懒加载 Icon；改用后台物化和占位 presentation。
-- [x] 快速文档使用显式 DocumentationContext，图片渲染请求在 RA 中收集、在 RA 外等待。
-- [x] 展示阈值统一到 ChroniclePresentationSettings；图片渲染超时放到 ChronicleImageSettings。
-- [ ] 为 hints/documentation 上下文补充专门的 IO 上下文回归测试。
-- [ ] 人工验证 #396：内嵌提示、快速文档、图片转换动作和 Image read。
-
 #### 2026-10-29 - step 2
 
 - [x] `ImageMetadata` 不直接复用平台图片索引：平台 API 需要 `byte[]` 或只覆盖标准图片文件类型，DDS/TGA 仍需自定义读取器。
@@ -674,6 +665,15 @@ com.intellij.diagnostic.Freeze
 - [x] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
   - 结论：加上，因为检查结果的缓存失效时机并不是那么显而易见
 - [ ] `CommandBasedImageToolProvider.read` - 可能需要考虑如何进行有效的缓存
+
+#### 2026-11-01 - step 8 & 9
+
+- [x] 使用 core 层通用上下文 + userData 附加图片数据，避免基础模块依赖 images。
+- [x] 内嵌提示不再在 collect/EDT 中读取 metadata、同步渲染或懒加载 Icon；改用后台物化和占位 presentation。
+- [x] 快速文档使用显式 DocumentationContext，图片渲染请求在 RA 中收集、在 RA 外等待。
+- [x] 展示阈值统一到 ChroniclePresentationSettings；图片渲染超时放到 ChronicleImageSettings。
+- [ ] 为 hints/documentation 上下文补充专门的 IO 上下文回归测试。
+- [ ] 需要评估渲染快速文档/内嵌提示时，文本图标的缩放策略。可能需要人工验证。
 
 #### 2026-10-30 - post
 
@@ -737,6 +737,7 @@ com.intellij.diagnostic.Freeze
   - 状态：已验证
 - [ ] 需要结合调式断点，对于命令行执行以及外部图片工具操作，确保不会发生在不正确的上下文中
   - 状态：无法通过
+- [ ] 人工验证 #396：内嵌提示、快速文档、图片转换动作和 Image read。
 
 ## 参见（AI 协助）
 
