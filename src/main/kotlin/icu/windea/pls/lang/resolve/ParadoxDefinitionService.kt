@@ -223,8 +223,8 @@ object ParadoxDefinitionService {
         if (primaryLocalisations.isEmpty()) return null // 没有或者规则不完善
         val preferredLocale = ParadoxLocaleManager.getPreferredLocaleConfig()
         primaryLocalisations.forEachFast f@{ primaryLocalisation ->
-            val resolveResult = ParadoxLocationExpressionService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
-            if (resolveResult !is ParadoxLocalisationLocationExpressionResolveResult.Static) return@f
+            val resolveResult = ParadoxLocationService.resolve(primaryLocalisation.locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
+            if (resolveResult !is ParadoxLocationResolveResult.Localisation.Static) return@f
             return resolveResult.name
         }
         return null
@@ -246,7 +246,7 @@ object ParadoxDefinitionService {
         val result = mutableListOf<ParadoxLocalisationProperty>()
         for ((_, locationExpression) in localisationInfos) {
             ProgressManager.checkCanceled()
-            val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
+            val resolveResult = ParadoxLocationService.resolve(locationExpression, element, definitionInfo) { preferLocale(preferredLocale) }
             if (resolveResult != null && resolveResult.elements.isNotEmpty()) {
                 result.addAll(resolveResult.elements)
             }
@@ -269,8 +269,8 @@ object ParadoxDefinitionService {
         val result = mutableListOf<PsiFile>()
         for ((_, locationExpression) in imageInfos) {
             ProgressManager.checkCanceled()
-            val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo, toFile = true)
-            if (resolveResult !is ParadoxImageLocationExpressionResolveResult.Static) continue
+            val resolveResult = ParadoxLocationService.resolve(locationExpression, element, definitionInfo, toFile = true)
+            if (resolveResult !is ParadoxLocationResolveResult.Image.Static) continue
             element.putUserData(Keys.imageFrameInfo, resolveResult.frameInfo)
             result.addAll(resolveResult.elements.filterIsInstance<PsiFile>())
         }

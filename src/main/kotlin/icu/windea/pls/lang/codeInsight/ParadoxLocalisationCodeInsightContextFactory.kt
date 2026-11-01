@@ -22,8 +22,8 @@ import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.ParadoxPsiFileService
 import icu.windea.pls.lang.psi.isDefinitionTypeKeyOrName
-import icu.windea.pls.lang.resolve.ParadoxLocalisationLocationExpressionResolveResult
-import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
+import icu.windea.pls.lang.resolve.ParadoxLocationResolveResult
+import icu.windea.pls.lang.resolve.ParadoxLocationService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.locale
 import icu.windea.pls.lang.search.util.withConstraint
@@ -142,7 +142,7 @@ object ParadoxLocalisationCodeInsightContextFactory {
             val expression = info.locationExpression
             for (locale in locales) {
                 ProgressManager.checkCanceled()
-                val resolveResult = ParadoxLocationExpressionService.resolve(expression, element, definitionInfo) { locale(locale) }
+                val resolveResult = ParadoxLocationService.resolve(expression, element, definitionInfo) { locale(locale) }
                 val type = when {
                     info.required -> ParadoxLocalisationCodeInsightInfo.Type.Required
                     info.isPrimaryKey() -> ParadoxLocalisationCodeInsightInfo.Type.Primary
@@ -155,8 +155,8 @@ object ParadoxLocalisationCodeInsightContextFactory {
                     checkOptionalForDefinitions(inspection) && !info.required -> true
                     else -> false
                 }
-                val missing = resolveResult is ParadoxLocalisationLocationExpressionResolveResult.Static && resolveResult.element == null
-                val dynamic = resolveResult is ParadoxLocalisationLocationExpressionResolveResult.Dynamic
+                val missing = resolveResult is ParadoxLocationResolveResult.Localisation.Static && resolveResult.element == null
+                val dynamic = resolveResult is ParadoxLocationResolveResult.Localisation.Dynamic
                 val codeInsightInfo = ParadoxLocalisationCodeInsightInfo(type, name, info, locale, check, missing, dynamic)
                 codeInsightInfos += codeInsightInfo
             }

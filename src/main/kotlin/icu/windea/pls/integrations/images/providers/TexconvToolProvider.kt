@@ -2,6 +2,7 @@ package icu.windea.pls.integrations.images.providers
 
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.process.ProcessOutput
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.base.io.ChronicleDataPathService
@@ -11,10 +12,10 @@ import icu.windea.pls.core.util.io.parsePath
 import icu.windea.pls.integrations.images.ImageToolSettings
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardCopyOption
 import java.util.concurrent.CancellationException
 import java.util.concurrent.TimeoutException
 import kotlin.io.path.createDirectories
+import kotlin.io.path.moveTo
 import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.notExists
 
@@ -58,6 +59,16 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
         val outputFileName = path.nameWithoutExtension + "." + targetFormat
         val outputPath = outputDirectoryPath.resolve(outputFileName)
 
+        convertImageFormatInternal(executablePath, path, outputDirectoryPath, outputPath, targetFormat)
+
+        val finalOutputPath = outputDirectoryPath.resolve(targetFileName ?: outputFileName)
+        if (finalOutputPath != outputPath) {
+            outputPath.moveTo(finalOutputPath, overwrite = true)
+        }
+        return finalOutputPath
+    }
+
+    private fun convertImageFormatInternal(executablePath: Path, path: Path, outputDirectoryPath: Path, outputPath: Path, targetFormat: String): ProcessOutput {
         val commands = listOf(
             executablePath.toString(),
             path.toString(),
@@ -96,11 +107,6 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
                 "\nError: ${output.stderr.trim()}"
             throw IllegalStateException(message)
         }
-
-        val finalOutputPath = outputDirectoryPath.resolve(targetFileName ?: outputFileName)
-        if (finalOutputPath != outputPath) {
-            Files.move(outputPath, finalOutputPath, StandardCopyOption.REPLACE_EXISTING)
-        }
-        return finalOutputPath
+        return output
     }
 }

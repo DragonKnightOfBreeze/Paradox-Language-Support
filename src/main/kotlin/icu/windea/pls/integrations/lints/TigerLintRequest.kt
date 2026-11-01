@@ -9,6 +9,8 @@ import java.nio.file.Path
  *
  * 该请求不依赖项目或 PSI，而 [rootFile] 仅用于追踪更改。
  *
+ * 参见：[Tiger](https://github.com/amtep/tiger)
+ *
  * @property name 检查工具的名字。
  * @property gameType 游戏类型。
  * @property executablePath 检查工具的可执行文件路径。

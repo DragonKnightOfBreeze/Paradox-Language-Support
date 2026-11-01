@@ -1,7 +1,10 @@
 package icu.windea.pls.lang.resolve
 
+import com.intellij.openapi.project.Project
 import icu.windea.pls.core.util.ImageFrameInfo
 import icu.windea.pls.images.ImageRenderRequest
+import icu.windea.pls.images.ImageRenderSession
+import icu.windea.pls.model.policies.ImageRenderPolicy
 import java.nio.file.Path
 
 /**
@@ -33,5 +36,19 @@ class ParadoxImageResolveResult(
      */
     fun toRenderRequest(): ImageRenderRequest {
         return ImageRenderRequest(sourcePath, targetPath, frameInfo, maxWidth, maxHeight)
+    }
+
+    /**
+     * @see ParadoxImageService.canResolve
+     */
+    fun canResolve(): Boolean {
+        return ParadoxImageService.canResolve(this)
+    }
+
+    /**
+     * @see ParadoxImageService.resolveUrl
+     */
+    fun resolveUrl(project: Project, renderPolicy: ImageRenderPolicy? = null, imageSession: ImageRenderSession? = null): String? {
+        return ParadoxImageService.resolveUrl(this, project, renderPolicy, imageSession)
     }
 }

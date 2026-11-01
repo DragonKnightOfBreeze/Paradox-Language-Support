@@ -15,10 +15,10 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
+import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.util.ParadoxConfigManager
-import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.script.psi.ParadoxScriptStringExpressionElement
 import icu.windea.pls.script.psi.isDataExpression
@@ -53,15 +53,16 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
             val iconSelector = ParadoxFilePathSearch.selector(context.project, element).contextSensitive()
             ParadoxFilePathSearch.searchModifierIcon(path, iconSelector).find()
         } ?: return
-        val image = ParadoxImageManager.resolveImageByFile(iconFile)
+        val iconResolveResult = ParadoxImageService.resolveByFile(iconFile)
+        if (iconResolveResult == null) return
 
         // 如果无法解析（包括对应文件不存在的情况）就直接跳过
-        if (!ParadoxImageManager.canResolve(image)) return
-        val pointer = iconFile.toPsiFile(context.project)?.createPointer()
+        if (!iconResolveResult.canResolve()) return
+        val pointer = iconFile.toPsiFile(context.project)?.createPointer(context.project)
         val maxHeight = ChroniclePresentationSettings.getInstance().state.inlayIconHeightLimit
         sink.addInlinePresentation(element.endOffset, smallInset = true) {
             // 点击可以导航到声明处（图片）
-            add(AsyncIconPresentation(context, image.toRenderRequest(), maxHeight, pointer))
+            add(AsyncIconPresentation(context, iconResolveResult.toRenderRequest(), maxHeight, pointer))
         }
     }
 }

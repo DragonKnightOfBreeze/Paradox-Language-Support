@@ -31,11 +31,11 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
+import javax.swing.Icon
+import javax.swing.ImageIcon
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createDirectories
 import kotlin.io.path.isRegularFile
-import javax.swing.Icon
-import javax.swing.ImageIcon
 import kotlin.time.Duration.Companion.days
 
 /**
@@ -178,14 +178,12 @@ class ImageRenderService : Disposable {
      * 该方法会读取原图 metadata、检查高度限制、按需渲染并解码目标图片。
      * 调用方应确保当前不在 EDT/readAction 中，并按需添加超时。
      */
-    suspend fun renderImageIcon(request: ImageRenderRequest, maxHeight: Int? = null): Icon? {
-        return withContext(Dispatchers.IO) {
-            val metadata = ImageMetadataService.getInstance().getMetadataOrNull(request.sourcePath) ?: return@withContext null
-            if (maxHeight != null && metadata.height > maxHeight) return@withContext null
-            val targetPath = renderImage(request)
-            val image = ImageIoService.readImage(targetPath)
-            ImageIcon(image)
-        }
+    fun renderImageIcon(request: ImageRenderRequest, maxHeight: Int? = null): Icon? {
+        val metadata = ImageMetadataService.getInstance().getMetadataOrNull(request.sourcePath) ?: return null
+        if (maxHeight != null && metadata.height > maxHeight) return null
+        val targetPath = renderImage(request)
+        val image = ImageIoService.readImage(targetPath)
+        return ImageIcon(image)
     }
 
     /**

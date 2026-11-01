@@ -6,8 +6,11 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ex.ApplicationManagerEx
+import com.intellij.openapi.progress.EmptyProgressIndicator
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.runBlockingCancellable
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
@@ -213,7 +216,7 @@ abstract class ConvertImageFormatAction(
         existingFiles: MultiMap<PsiDirectory, PsiFile>,
         added: MutableList<PsiFile>,
         failed: MutableList<PsiFile>,
-        progressIndicator: ProgressIndicator?,
+        pi: ProgressIndicator?,
     ): SkipOverwriteChoice? {
         for (tDirectory in existingFiles.keySet()) {
             val replacementFiles = existingFiles[tDirectory]
@@ -240,8 +243,8 @@ abstract class ConvertImageFormatAction(
                 }
                 iterator.remove()
                 val doCopy = ThrowableRunnable<RuntimeException> {
-                    if (progressIndicator != null) {
-                        progressIndicator.text2 = InspectionsBundle.message("processing.progress.text", existing.name)
+                    if (pi != null) {
+                        pi.text2 = InspectionsBundle.message("processing.progress.text", existing.name)
                     }
                     existing.delete()
                     convertImageFormat(replacement, targetDirectory, fileName, added, failed)
@@ -282,10 +285,12 @@ abstract class ConvertImageFormatAction(
 
     private fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
         // NOTE 3.0.5 外部图片工具不能在 EDT/readAction 中执行；当前动作通常运行在 EDT 中，因此必要时放到后台线程
-        ApplicationManager.getApplication().executeOnPooledThread<Result<Unit>> {
-            runCatching { // catching inner exception first, rethrow later
-                ImageService.getInstance().convertImageFormat(path, targetPath, sourceFormat, targetFormat)
-            }
-        }.get().getOrThrow()
+        ApplicationManager.getApplication().executeOnPooledThread {
+            ProgressManager.getInstance().runProcess({
+                runBlockingCancellable {
+                    ImageService.getInstance().convertImageFormat(path, targetPath, sourceFormat, targetFormat)
+                }
+            }, EmptyProgressIndicator())
+        }.get()
     }
 }

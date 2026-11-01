@@ -7,11 +7,15 @@ import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.util.io.ImageIoService
 import icu.windea.pls.images.dds.DdsFileType
 import icu.windea.pls.images.tga.TgaFileType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.intellij.images.fileTypes.impl.ImageFileType
 import java.io.InputStream
 import java.io.OutputStream
-import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.deleteIfExists
+import kotlin.io.path.fileSize
+import kotlin.io.path.isRegularFile
 
 @Service
 class ImageService {
@@ -28,10 +32,22 @@ class ImageService {
     }
 
     @Throws(UnsupportedOperationException::class)
-    fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String) {
+    suspend fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String) {
         // 3.0.5 fast return if necessary
         if (ImageIoService.copyIfSameFormat(inputStream, outputStream, sourceFormat, targetFormat)) return
         // 3.0.5 try each implementation and apply fallback
+        withContext(Dispatchers.IO) { doConvertImageFormat(inputStream, outputStream, sourceFormat, targetFormat) }
+    }
+
+    @Throws(UnsupportedOperationException::class)
+    suspend fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
+        // 3.0.5 fast return if necessary
+        if (ImageIoService.copyIfSameFormat(path, targetPath, sourceFormat, targetFormat)) return
+        // 3.0.5 try each implementation and apply fallback
+        withContext(Dispatchers.IO) { doConvertImageFormat(path, targetPath, sourceFormat, targetFormat) }
+    }
+
+    private suspend fun doConvertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String) {
         var converted = false
         var lastError: Exception? = null
         for (support in ImageSupport.EP_NAME.extensionList) {
@@ -47,25 +63,27 @@ class ImageService {
         if (!converted) throwException(lastError)
     }
 
-    @Throws(UnsupportedOperationException::class)
-    fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
-        // 3.0.5 fast return if necessary
-        if (ImageIoService.copyIfSameFormat(path, targetPath, sourceFormat, targetFormat)) return
-        // 3.0.5 try each implementation and apply fallback
+    private suspend fun doConvertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
         var converted = false
         var lastError: Exception? = null
         for (support in ImageSupport.EP_NAME.extensionList) {
             converted = try {
                 support.convertImageFormat(path, targetPath, sourceFormat, targetFormat)
             } catch (e: Exception) {
+                checkCancellation(e)
                 lastError = e
                 false
             }
-            if (converted && Files.isRegularFile(targetPath) && Files.size(targetPath) > 0) break
-            runCatching { Files.deleteIfExists(targetPath) }
-            converted = false
+            converted = converted && checkTargetPath(targetPath)
+            if (converted) break
         }
         if (!converted) throwException(lastError)
+    }
+
+    private fun checkTargetPath(targetPath: Path): Boolean {
+        if (targetPath.isRegularFile() && targetPath.fileSize() > 0) return true
+        runCatching { targetPath.deleteIfExists() }
+        return false
     }
 
     private fun throwException(lastError: Exception?): Nothing {

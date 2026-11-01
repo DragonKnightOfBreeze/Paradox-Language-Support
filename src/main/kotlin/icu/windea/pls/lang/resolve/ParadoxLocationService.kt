@@ -25,10 +25,10 @@ import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.ParadoxSearchSelector
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.withConstraint
+import icu.windea.pls.lang.search.util.withTransform
 import icu.windea.pls.lang.select.selectScope
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxExpressionManager
-import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxSpriteManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxDefinitionInfo
@@ -38,13 +38,13 @@ import icu.windea.pls.script.psi.ParadoxScriptString
 import icu.windea.pls.script.psi.ParadoxScriptValue
 import icu.windea.pls.script.psi.stringValue
 
-object ParadoxLocationExpressionService {
+object ParadoxLocationService {
     fun resolve(
         locationExpression: CwtLocalisationLocationExpression,
         definition: ParadoxDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
-        selectorBuilder: ParadoxSearchSelector<ParadoxLocalisationProperty>.() -> Unit = {}
-    ): ParadoxLocalisationLocationExpressionResolveResult? {
+        selectorBuilder: ParadoxSearchSelector<ParadoxLocalisationProperty>.() -> Unit = {},
+    ): ParadoxLocationResolveResult.Localisation? {
         val (location, isPlaceholder, namePaths) = locationExpression
         val project = definitionInfo.project
 
@@ -53,59 +53,49 @@ object ParadoxLocationExpressionService {
             if (nameText.isEmpty()) return null
             val name = CwtConfigExpressionManager.resolvePlaceholder(locationExpression, nameText)
             if (name.isNullOrEmpty()) return null
-            return createLocalisationResolveResult(name, definition, definitionInfo, project, selectorBuilder)
+            return createResolveResultForLocalisation(name, definition, definitionInfo, project, selectorBuilder)
         }
 
         val valueElement = findValueElementByPath(definition, location) ?: return null
         val config = ParadoxConfigManager.getConfigs(valueElement).firstOrNull() as? CwtValueConfig ?: return null
         if (config.configExpression.type !in CwtDataTypeSets.LocalisationLocationAware) {
-            return createLocalisationResolveResult(DefaultStrings.dynamic)
+            return createResolveResultForLocalisation(DefaultStrings.dynamic)
         }
         if (valueElement !is ParadoxScriptString) {
             return null
         }
         if (valueElement.text.isParameterized()) {
-            return createLocalisationResolveResult(DefaultStrings.parameterized)
+            return createResolveResultForLocalisation(DefaultStrings.parameterized)
         }
         if (config.configExpression.type == CwtDataTypes.InlineLocalisation && valueElement.text.isLeftQuoted()) {
-            return createLocalisationResolveResult(DefaultStrings.inlined)
+            return createResolveResultForLocalisation(DefaultStrings.inlined)
         }
         val name = valueElement.stringValue
         if (name.isEmpty()) return null
-        return createLocalisationResolveResult(name, definition, definitionInfo, project, selectorBuilder)
+        return createResolveResultForLocalisation(name, definition, definitionInfo, project, selectorBuilder)
     }
 
-    private fun createLocalisationResolveResult(
+    private fun createResolveResultForLocalisation(
         name: String,
         definition: ParadoxDefinitionElement,
         definitionInfo: ParadoxDefinitionInfo,
         project: Project,
-        selectorBuilder: ParadoxSearchSelector<ParadoxLocalisationProperty>.() -> Unit
-    ): ParadoxLocalisationLocationExpressionResolveResult.Static {
-        return ParadoxLocalisationLocationExpressionResolveResult.Static(name, {
-            val constraint = getLocalisationConstraint(definitionInfo) // use constraint here to optimize search performance
-            val selector = ParadoxLocalisationSearch.selector(project, definition).contextSensitive()
-                .withConstraint(constraint)
-                .apply(selectorBuilder)
-            ParadoxLocalisationSearch.searchNormal(name, selector).find()
-        }, {
-            val constraint = getLocalisationConstraint(definitionInfo) // use constraint here to optimize search performance
-            val selector = ParadoxLocalisationSearch.selector(project, definition).contextSensitive()
-                .withConstraint(constraint)
-                .apply(selectorBuilder)
-            ParadoxLocalisationSearch.searchNormal(name, selector).findAll()
-        })
-    }
-
-    private fun createLocalisationResolveResult(message: String): ParadoxLocalisationLocationExpressionResolveResult.Dynamic {
-        return ParadoxLocalisationLocationExpressionResolveResult.Dynamic(message)
-    }
-
-    private fun getLocalisationConstraint(definitionInfo: ParadoxDefinitionInfo): ParadoxLocalisationIndexConstraint? {
-        return when (definitionInfo.type) {
+        selectorBuilder: ParadoxSearchSelector<ParadoxLocalisationProperty>.() -> Unit,
+    ): ParadoxLocationResolveResult.Localisation.Static {
+        // use constraint here to optimize search performance
+        val constraint = when (definitionInfo.type) {
             ParadoxDefinitionTypes.event -> ParadoxLocalisationIndexConstraint.Event
             else -> null
         }
+        val selector = ParadoxLocalisationSearch.selector(project, definition).contextSensitive()
+            .withConstraint(constraint)
+            .apply(selectorBuilder)
+        val query = ParadoxLocalisationSearch.searchNormal(name, selector)
+        return ParadoxLocationResolveResult.Localisation.Static(name, query)
+    }
+
+    private fun createResolveResultForLocalisation(message: String): ParadoxLocationResolveResult.Localisation.Dynamic {
+        return ParadoxLocationResolveResult.Localisation.Dynamic(message)
     }
 
     fun resolve(
@@ -114,7 +104,7 @@ object ParadoxLocationExpressionService {
         definitionInfo: ParadoxDefinitionInfo,
         frameInfo: ImageFrameInfo? = null,
         toFile: Boolean = false,
-    ): ParadoxImageLocationExpressionResolveResult? {
+    ): ParadoxLocationResolveResult.Image? {
         val (location, isPlaceholder, namePaths, framePaths) = locationExpression
         val project = definitionInfo.project
 
@@ -142,38 +132,38 @@ object ParadoxLocationExpressionService {
                             primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
                                 val primaryLocationExpression = primaryImageConfig.locationExpression
                                 val r = resolve(primaryLocationExpression, resolvedDefinition, resolvedDefinitionInfo, newFrameInfo, true)
-                                r as? ParadoxImageLocationExpressionResolveResult.Static // 仅限静态结果
+                                r as? ParadoxLocationResolveResult.Image.Static // 仅限静态结果
                             }
                         }
                     }
                 }
 
-                return createImageResolveResultBySpriteName(spriteName, newFrameInfo, definition, project)
+                return createResolveResultForImageBySpriteName(spriteName, newFrameInfo, definition, project)
             }
 
             val filePath = CwtConfigExpressionManager.resolvePlaceholder(locationExpression, nameText)
             if (filePath.isNullOrEmpty()) return null
-            return createImageResolveResultByFilePath(filePath, newFrameInfo, definition, project)
+            return createResolveResultForImageByFilePath(filePath, newFrameInfo, definition, project)
         }
 
         val valueElement = findValueElementByPath(definition, location) ?: return null
         val config = ParadoxConfigManager.getConfigs(valueElement).firstOrNull() as? CwtValueConfig ?: return null
         if (config.configExpression.type !in CwtDataTypeSets.ImageLocationAware) {
-            return createImageResolveResult(DefaultStrings.dynamic)
+            return createResolveResultForImage(DefaultStrings.dynamic)
         }
         if (valueElement !is ParadoxScriptString) {
             return null
         }
         if (valueElement.text.isParameterized()) {
-            return createImageResolveResult(DefaultStrings.parameterized)
+            return createResolveResultForImage(DefaultStrings.parameterized)
         }
         val resolved = ParadoxExpressionManager.resolveScriptExpression(valueElement, null, config, ParadoxExpressionRole.Value)
         when {
             // 由filePath解析为图片文件
-            resolved is PsiFile && ParadoxImageManager.isImageFile(resolved) -> {
+            resolved is PsiFile && ParadoxImageService.isImageFile(resolved) -> {
                 val filePath = resolved.fileInfo?.path?.path
                 if (filePath.isNullOrEmpty()) return null
-                return createImageResolveResultByFilePath(filePath, newFrameInfo, definition, project)
+                return createResolveResultForImageByFilePath(filePath, newFrameInfo, definition, project)
             }
             // 由 name 解析为定义（如果不是 sprite，就继续向下解析）
             resolved is ParadoxDefinitionElement -> {
@@ -182,7 +172,7 @@ object ParadoxLocationExpressionService {
                 if (!toFile && resolvedDefinitionInfo.type == ParadoxDefinitionTypes.sprite) {
                     val spriteName = resolvedDefinitionInfo.name
                     if (spriteName.isEmpty()) return null
-                    return createImageResolveResultBySpriteName(spriteName, newFrameInfo, definition, project)
+                    return createResolveResultForImageBySpriteName(spriteName, newFrameInfo, definition, project)
                 }
                 val primaryImageConfigs = resolvedDefinitionInfo.primaryImages
                 if (primaryImageConfigs.isEmpty()) return null // 没有或者规则不完善
@@ -191,7 +181,7 @@ object ParadoxLocationExpressionService {
                         primaryImageConfigs.firstNotNullOfOrNull { primaryImageConfig ->
                             val primaryLocationExpression = primaryImageConfig.locationExpression
                             val r = resolve(primaryLocationExpression, resolvedDefinition, resolvedDefinitionInfo, newFrameInfo, toFile)
-                            r as? ParadoxImageLocationExpressionResolveResult.Static // 仅限静态结果
+                            r as? ParadoxLocationResolveResult.Image.Static // 仅限静态结果
                         }
                     }
                 }
@@ -200,40 +190,31 @@ object ParadoxLocationExpressionService {
         }
     }
 
-    private fun createImageResolveResultBySpriteName(
+    private fun createResolveResultForImageBySpriteName(
         spriteName: String,
         frameInfo: ImageFrameInfo?,
         definition: ParadoxDefinitionElement,
-        project: Project
-    ): ParadoxImageLocationExpressionResolveResult.Static {
-        return ParadoxImageLocationExpressionResolveResult.Static(spriteName, frameInfo, {
-            val selector = ParadoxDefinitionSearch.selector(project, definition).contextSensitive()
-            ParadoxDefinitionSearch.searchElement(spriteName, ParadoxDefinitionTypes.sprite, selector).find()
-        }, {
-            val selector = ParadoxDefinitionSearch.selector(project, definition).contextSensitive()
-            ParadoxDefinitionSearch.searchElement(spriteName, ParadoxDefinitionTypes.sprite, selector).findAll()
-        })
+        project: Project,
+    ): ParadoxLocationResolveResult.Image.Static {
+        val selector = ParadoxDefinitionSearch.selector(project, definition).contextSensitive()
+        val query = ParadoxDefinitionSearch.searchElement(spriteName, ParadoxDefinitionTypes.sprite, selector)
+        return ParadoxLocationResolveResult.Image.Static(spriteName, frameInfo, query)
     }
 
-    private fun createImageResolveResultByFilePath(
+    private fun createResolveResultForImageByFilePath(
         filePath: String,
         frameInfo: ImageFrameInfo?,
         definition: ParadoxDefinitionElement,
-        project: Project
-    ): ParadoxImageLocationExpressionResolveResult.Static {
-        return ParadoxImageLocationExpressionResolveResult.Static(filePath, frameInfo, {
-            val selector = ParadoxFilePathSearch.selector(project, definition).contextSensitive()
-            val query = ParadoxFilePathSearch.searchImage(filePath, null, selector) // 3.0.1 optimize: limit file extensions
-            query.find()?.toPsiFile(project)
-        }, {
-            val selector = ParadoxFilePathSearch.selector(project, definition).contextSensitive()
-            val query = ParadoxFilePathSearch.searchImage(filePath, null, selector) // 3.0.1 optimize: limit file extensions
-            query.findAll().mapNotNullTo(mutableSetOf()) { it.toPsiFile(project) }
-        })
+        project: Project,
+    ): ParadoxLocationResolveResult.Image.Static {
+        // 3.0.1 optimize: limit file extensions
+        val selector = ParadoxFilePathSearch.selector(project, definition).contextSensitive()
+        val query = ParadoxFilePathSearch.searchImage(filePath, null, selector).withTransform { it.toPsiFile(project) }
+        return ParadoxLocationResolveResult.Image.Static(filePath, frameInfo, query)
     }
 
-    private fun createImageResolveResult(message: String): ParadoxImageLocationExpressionResolveResult.Dynamic {
-        return ParadoxImageLocationExpressionResolveResult.Dynamic(message)
+    private fun createResolveResultForImage(message: String): ParadoxLocationResolveResult.Image.Dynamic {
+        return ParadoxLocationResolveResult.Image.Dynamic(message)
     }
 
     private fun findValueElementByPath(definition: ParadoxDefinitionElement, path: String): ParadoxScriptValue? {

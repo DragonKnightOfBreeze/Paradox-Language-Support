@@ -20,6 +20,22 @@ class TranslationToolService : Disposable {
     @Throws(UnsupportedOperationException::class)
     suspend fun translate(text: String, sourceLocale: String?, targetLocale: String): String? {
         val tool = findTool() ?: throw UnsupportedOperationException("Unsupported: No available translation tool found.")
+        return with(tool) {
+            doTranslate(text, sourceLocale, targetLocale)
+        }
+    }
+
+    /** @see TranslationToolProvider.translate */
+    @Throws(UnsupportedOperationException::class)
+    suspend fun translate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig): String? {
+        val tool = findTool() ?: throw UnsupportedOperationException("Unsupported: No available translation tool found.")
+        return with(tool) {
+            doTranslate(text, sourceLocale, targetLocale)
+        }
+    }
+
+    context(tool: TranslationToolProvider)
+    private suspend fun doTranslate(text: String, sourceLocale: String?, targetLocale: String): String? {
         try {
             val result = tool.translate(text, sourceLocale, targetLocale)
             logOperation(tool) { "translate (sourceLocale=$sourceLocale, targetLocale=$targetLocale)" }
@@ -31,17 +47,15 @@ class TranslationToolService : Disposable {
         }
     }
 
-    /** @see TranslationToolProvider.translate */
-    @Throws(UnsupportedOperationException::class)
-    suspend fun translate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig): String? {
-        val tool = findTool() ?: throw UnsupportedOperationException("Unsupported: No available translation tool found.")
+    context(tool: TranslationToolProvider)
+    private suspend fun doTranslate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig): String? {
         try {
             val result = tool.translate(text, sourceLocale, targetLocale)
-            logOperation(tool) { "translate (sourceLocale=$${sourceLocale?.name}, targetLocale=${targetLocale.name})" }
+            logOperation(tool) { "translate (sourceLocale=${sourceLocale?.name}, targetLocale=${targetLocale.name})" }
             return result
         } catch (e: Exception) {
             checkCancellation(e)
-            logOperation(tool, e) { "translate (sourceLocale=$${sourceLocale?.name}, targetLocale=${targetLocale.name})" }
+            logOperation(tool, e) { "translate (sourceLocale=${sourceLocale?.name}, targetLocale=${targetLocale.name})" }
             throw e
         }
     }

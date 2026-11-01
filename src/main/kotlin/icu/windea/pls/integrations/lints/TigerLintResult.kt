@@ -1,36 +1,55 @@
 package icu.windea.pls.integrations.lints
 
 import com.intellij.openapi.util.ModificationTracker
-import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.core.normalizePath
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.json.decodeFromStream
-import java.io.File
-import java.io.IOException
 
 /**
  * Tiger 检查工具的检查结果。
  *
- * @property name 检测工具的名字，如 `vic3-tiger`。
- * @property itemGroup 键是相对于入口目录的路径，值是对应的一组检查结果项。
- * @property request 生成该结果的检查请求。
- * @property modificationTracker 用于追踪结果是否失效的修改追踪器。
+ * 参见：[Tiger](https://github.com/amtep/tiger)
  *
  * 参见：[JSON output format · amtep/tiger Wiki](https://github.com/amtep/tiger/wiki/JSON-output-format)
+ *
+ * @property name 检测工具的名字，如 `vic3-tiger`。
+ * @property items 完整的一组检查结果项。
+ * @property itemGroups 键是相对于入口目录的路径，值是对应的一组检查结果项。
+ * @property request 生成该结果的检查请求。
+ * @property modificationTracker 用于追踪结果是否失效的修改追踪器。
  */
 data class TigerLintResult(
     override val request: TigerLintRequest,
-    val items: Collection<Item> = emptySet(),
-    val itemGroup: Map<String, Collection<Item>> = emptyMap(),
     override val error: Exception? = null,
     override val modificationTracker: ModificationTracker? = null,
+    val items: Collection<Item> = emptySet(),
 ) : LintResult {
+    val itemGroups: Map<String, Collection<Item>> = computeItemGroups()
+
+    private fun computeItemGroups(): Map<String, Set<Item>> {
+        if (items.isEmpty()) return emptyMap()
+        val result = mutableMapOf<String, MutableSet<Item>>()
+        for (item in items) {
+            val singlePath = item.locations.mapTo(mutableSetOf()) { it.path }.singleOrNull()
+            if (singlePath != null) {
+                val p = singlePath.normalizePath()
+                result.getOrPut(p) { mutableSetOf() }.add(item)
+            } else {
+                val locationGroup = item.locations.groupBy { it.path }
+                locationGroup.forEach { (path, locations) ->
+                    val p = path.normalizePath()
+                    val newItem = Item(item.severity, item.confidence, item.key, item.message, item.info, locations)
+                    result.getOrPut(p) { mutableSetOf() }.add(newItem)
+                }
+            }
+        }
+        return result
+    }
+
     fun fromPath(path: String): TigerLintResult? {
-        val items = itemGroup[path]
+        val items = itemGroups[path]
         if (items.isNullOrEmpty()) return null
-        return TigerLintResult(request, items, emptyMap(), error, modificationTracker)
+        return TigerLintResult(request, error, modificationTracker, items)
     }
 
     @Serializable
@@ -145,30 +164,5 @@ data class TigerLintResult(
         @SerialName("strong")
         STRONG,
         ;
-    }
-
-    companion object {
-        @Throws(SerializationException::class, IllegalArgumentException::class, IOException::class)
-        @JvmStatic
-        fun parse(request: TigerLintRequest, outputFile: File): TigerLintResult {
-            val items = outputFile.inputStream().use { JsonService.json.decodeFromStream<List<Item>>(it) }
-            if (items.isEmpty()) return TigerLintResult(request)
-            val itemGroup = mutableMapOf<String, MutableSet<Item>>()
-            for (item in items) {
-                val singlePath = item.locations.mapTo(mutableSetOf()) { it.path }.singleOrNull()
-                if (singlePath != null) {
-                    val p = singlePath.normalizePath()
-                    itemGroup.getOrPut(p) { mutableSetOf() }.add(item)
-                } else {
-                    val locationGroup = item.locations.groupBy { it.path }
-                    locationGroup.forEach { (path, locations) ->
-                        val p = path.normalizePath()
-                        val newItem = Item(item.severity, item.confidence, item.key, item.message, item.info, locations)
-                        itemGroup.getOrPut(p) { mutableSetOf() }.add(newItem)
-                    }
-                }
-            }
-            return TigerLintResult(request, items, itemGroup)
-        }
     }
 }

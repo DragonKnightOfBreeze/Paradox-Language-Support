@@ -10,7 +10,6 @@ import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.util.io.ImageIoService
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.awt.image.BufferedImage
 import java.io.InputStream
@@ -27,43 +26,68 @@ class ImageToolService : Disposable {
         return ImageToolProvider.EP_NAME.extensionList.findLast { it.isAvailable() }
     }
 
-    /** @see ImageToolProvider.read */
+    /**
+     * 备注：调用方应确保不在 EDT/readAction 中等待该操作。否则，如果未启用严格断言，将会直接跳过操作。
+     *
+     * @see ImageToolProvider.read
+     */
     fun read(imageIndex: Int, param: ImageReadParam?, stream: ImageInputStream, sourceFormat: String, targetFormat: String): BufferedImage? {
         // implementation
         val tool = findTool() ?: return null // skip
-        if (warnIfIncorrectContext(tool)) return null // skip
+        if (with(tool) {
+                warnIfIncorrectContext(this)
+            }) return null // skip
         try {
             val result = tool.read(imageIndex, param, stream, sourceFormat, targetFormat)
-            logOperation(tool) { "read (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
+            with(tool) {
+                logOperation(tool = this) { "read (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
+            }
             return result
         } catch (e: Exception) {
             checkCancellation(e)
-            logOperation(tool, e) { "read (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
+            with(tool) {
+                logOperation(this, e) { "read (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
+            }
             throw e
         }
     }
 
-    /** @see ImageToolProvider.convertImageFormat */
-    fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
-        return runBlocking { convertImageFormatSuspend(inputStream, outputStream, sourceFormat, targetFormat) }
-    }
-
-    /** @see ImageToolProvider.convertImageFormat */
-    fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
-        return runBlocking { convertImageFormatSuspend(path, targetPath, sourceFormat, targetFormat) }
-    }
-
     /**
-     * 转换图片格式（suspend 版本）。调用方应确保不在 EDT/readAction 中等待该操作。
+     * 备注：调用方应确保不在 EDT/readAction 中等待该操作。否则，如果未启用严格断言，将会直接跳过操作。
+     *
+     * @see ImageToolProvider.convertImageFormat
      */
-    suspend fun convertImageFormatSuspend(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
+    suspend fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
+        // 3.0.5 fast return if necessary
         if (ImageIoService.copyIfSameFormat(inputStream, outputStream, sourceFormat, targetFormat)) return true
-        val tool = findTool() ?: return false
-        if (warnIfIncorrectContext(tool)) return false
+        // implementation
+        val tool = findTool() ?: return false // skip
+        if (warnIfIncorrectContext(tool)) return false // skip
+        return with(tool) {
+            withContext(Dispatchers.IO) { doConvertImageFormat(inputStream, outputStream, sourceFormat, targetFormat) }
+        }
+    }
+
+    /**
+     * 备注：调用方应确保不在 EDT/readAction 中等待该操作。否则，如果未启用严格断言，将会直接跳过操作。
+     *
+     * @see ImageToolProvider.convertImageFormat
+     */
+    suspend fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
+        // 3.0.5 fast return if necessary
+        if (ImageIoService.copyIfSameFormat(path, targetPath, sourceFormat, targetFormat)) return true
+        // implementation
+        val tool = findTool() ?: return false // skip
+        if (warnIfIncorrectContext(tool)) return false // skip
+        return with(tool) {
+            withContext(Dispatchers.IO) { doConvertImageFormat(path, targetPath, sourceFormat, targetFormat) }
+        }
+    }
+
+    context(tool: ImageToolProvider)
+    private suspend fun doConvertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
         try {
-            withContext(Dispatchers.IO) {
-                tool.convertImageFormat(inputStream, outputStream, sourceFormat, targetFormat)
-            }
+            tool.convertImageFormat(inputStream, outputStream, sourceFormat, targetFormat)
             logOperation(tool) { "convert image format (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
             return true
         } catch (e: Exception) {
@@ -73,17 +97,10 @@ class ImageToolService : Disposable {
         }
     }
 
-    /**
-     * 转换图片格式（suspend 版本）。调用方应确保不在 EDT/readAction 中等待该操作。
-     */
-    suspend fun convertImageFormatSuspend(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
-        if (ImageIoService.copyIfSameFormat(path, targetPath, sourceFormat, targetFormat)) return true
-        val tool = findTool() ?: return false
-        if (warnIfIncorrectContext(tool)) return false
+    context(tool: ImageToolProvider)
+    private suspend fun doConvertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
         try {
-            withContext(Dispatchers.IO) {
-                tool.convertImageFormat(path, targetPath, sourceFormat, targetFormat)
-            }
+            tool.convertImageFormat(path, targetPath, sourceFormat, targetFormat)
             logOperation(tool) { "convert image format (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
             return true
         } catch (e: Exception) {
@@ -92,6 +109,7 @@ class ImageToolService : Disposable {
             throw e
         }
     }
+
     private fun warnIfIncorrectContext(tool: ImageToolProvider): Boolean {
         // 3.0.5 warn if current context is incorrect (EDT or readAction), and skip operation
         val application = ApplicationManager.getApplication()

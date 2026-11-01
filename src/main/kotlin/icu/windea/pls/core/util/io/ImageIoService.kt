@@ -1,6 +1,8 @@
 package icu.windea.pls.core.util.io
 
 import icu.windea.pls.core.util.ImageFrameInfo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.awt.Color
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
@@ -24,18 +26,6 @@ object ImageIoService {
 
     fun normalizeImageFormat(sourceFormat: String): String {
         return sourceFormat.trim().removePrefix(".")
-    }
-
-    fun copyIfSameFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
-        if (!isSameImageFormat(sourceFormat, targetFormat)) return false
-        IoService.copy(path, targetPath)
-        return true
-    }
-
-    fun copyIfSameFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
-        if (!isSameImageFormat(sourceFormat, targetFormat)) return false
-        IoService.copy(inputStream, outputStream)
-        return true
     }
 
     /**
@@ -192,5 +182,17 @@ object ImageIoService {
         val frameWidth = width / finalFrames
         val startX = (finalFrame - 1) * frameWidth
         return image.getSubimage(startX, 0, frameWidth, height)
+    }
+
+    suspend fun copyIfSameFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
+        if (!isSameImageFormat(sourceFormat, targetFormat)) return false
+        withContext(Dispatchers.IO) { IoService.copy(path, targetPath) }
+        return true
+    }
+
+    suspend fun copyIfSameFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
+        if (!isSameImageFormat(sourceFormat, targetFormat)) return false
+        withContext(Dispatchers.IO) { IoService.copy(inputStream, outputStream) }
+        return true
     }
 }

@@ -42,12 +42,12 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
+import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.search.util.withConstraint
-import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -354,8 +354,8 @@ object CwtDocumentationManager {
         val sections = getSections(SECTIONS_IMAGES)
         run {
             if (iconFile == null) return@run
-            val url = ParadoxImageManager.resolveUrlByFile(iconFile, project) ?: return@run
-            sections["icon"] = buildDocumentation { image(url) }.toString()
+            val iconUrl = ParadoxImageService.resolveByFile(iconFile)?.resolveUrl(project) ?: return@run
+            sections["icon"] = buildDocumentation { image(iconUrl) }.toString()
         }
     }
 

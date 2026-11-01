@@ -7,12 +7,15 @@ import kotlinx.serialization.json.JsonElement
 /**
  * 模组描述符信息（`descriptor.mod`）。
  */
+@Serializable
 data class ParadoxDescriptorModInfo(
     val name: String,
     val version: String? = null,
     val picture: String? = null,
     val tags: Set<String> = emptySet(),
+    @SerialName("supported_version")
     val supportedVersion: String? = null,
+    @SerialName("remote_file_id")
     val remoteFileId: String? = null,
     val path: String? = null
 ) : ParadoxRootMetadataInfo

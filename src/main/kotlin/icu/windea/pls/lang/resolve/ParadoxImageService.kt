@@ -2,11 +2,15 @@
 
 package icu.windea.pls.lang.resolve
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
+import com.intellij.util.io.fileSizeSafe
+import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.base.io.ChronicleDataPathService
+import icu.windea.pls.base.settings.ChronicleImageSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.normalizePath
@@ -14,6 +18,9 @@ import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toUUID
 import icu.windea.pls.core.util.ImageFrameInfo
+import icu.windea.pls.core.util.io.toPathOrNull
+import icu.windea.pls.images.ImageRenderService
+import icu.windea.pls.images.ImageRenderSession
 import icu.windea.pls.images.ImageService
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.fileInfo
@@ -21,19 +28,37 @@ import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.util.ParadoxSpriteManager
 import icu.windea.pls.model.ParadoxDefinitionInfo
+import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
+import icu.windea.pls.model.policies.ImageRenderFailurePolicy
+import icu.windea.pls.model.policies.ImageRenderPolicy
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
+import kotlin.io.path.exists
 
-/**
- * 语义层的图片解析服务。
- *
- * 只负责把定义、文件或文件路径解析为 [ParadoxImageResolveResult]，不会直接渲染图片。
- */
 object ParadoxImageService {
     private val logger = logger<ParadoxImageService>()
 
+    fun isImageFile(file: PsiFile): Boolean {
+        val vFile = file.virtualFile ?: return false
+        return isImageFile(vFile)
+    }
+
+    fun isImageFile(file: VirtualFile): Boolean {
+        val fileType = file.fileType
+        if (!ImageService.getInstance().isImageFileType(fileType)) return false
+        val extension = file.extension?.lowercase() ?: return false
+        if (extension !in ChronicleConstants.imageFileExtensions) return false
+        return true
+    }
+
+    /**
+     * 基于指定的定义（[definition]）解析图片。
+     *
+     * 输入的帧数信息（[frameInfo]）用于切分图片，通常来自特定类型的定义的特定属性的值。
+     * 例如，`sprite` 的 `noOfFrames`。
+     */
     fun resolveByDefinition(definition: ParadoxDefinitionElement, frameInfo: ImageFrameInfo? = null): ParadoxImageResolveResult? {
         val definitionInfo = definition.definitionInfo ?: return null
         val newFrameInfo = when {
@@ -50,6 +75,21 @@ object ParadoxImageService {
         }
     }
 
+    /**
+     * 基于指定的文件（[file]）解析图片。
+     *
+     * 输入的帧数信息（[frameInfo]）用于切分图片。
+     */
+    fun resolveByFile(file: PsiFile, frameInfo: ImageFrameInfo? = null): ParadoxImageResolveResult? {
+        val vFile = file.virtualFile ?: return null
+        return resolveByFile(vFile, frameInfo)
+    }
+
+    /**
+     * 基于指定的文件（[file]）解析图片。
+     *
+     * 输入的帧数信息（[frameInfo]）用于切分图片。
+     */
     fun resolveByFile(file: VirtualFile, frameInfo: ImageFrameInfo? = null): ParadoxImageResolveResult? {
         try {
             return doResolve(file, frameInfo)
@@ -60,6 +100,11 @@ object ParadoxImageService {
         }
     }
 
+    /**
+     * 基于指定的文件路径（[filePath]）解析图片。
+     *
+     * 输入的帧数信息（[frameInfo]）用于切分图片。
+     */
     fun resolveByFilePath(filePath: String, project: Project, frameInfo: ImageFrameInfo? = null): ParadoxImageResolveResult? {
         try {
             val selector = ParadoxFilePathSearch.selector(project)
@@ -81,10 +126,10 @@ object ParadoxImageService {
         // 兼容 `definition` 不是 `sprite` 的情况
         val resolved = runSmartReadAction {
             definitionInfo.primaryImages.firstNotNullOfOrNull {
-                ParadoxLocationExpressionService.resolve(it.locationExpression, definition, definitionInfo, frameInfo, toFile = true)
+                ParadoxLocationService.resolve(it.locationExpression, definition, definitionInfo, frameInfo, toFile = true)
             }
         }
-        if (resolved !is ParadoxImageLocationExpressionResolveResult.Static) return null
+        if (resolved !is ParadoxLocationResolveResult.Image.Static) return null
         val resolvedFile = resolved.element?.castOrNull<PsiFile>() ?: return null
         return doResolve(resolvedFile.virtualFile, resolved.frameInfo)
     }
@@ -136,5 +181,67 @@ object ParadoxImageService {
         val modificationStamp = runCatching { Files.getLastModifiedTime(sourcePath).toMillis() }.getOrDefault(0L)
         val key = "$imageAbsPath|$size|$modificationStamp|${frameInfo.frame}|${frameInfo.frames}|png"
         return key.toUUID().toString()
+    }
+
+    fun canResolve(iconUrl: String): Boolean {
+        val iconFilePath = iconUrl.toPathOrNull() ?: return false
+        if (!(iconFilePath.exists() && iconFilePath.fileSizeSafe() > 0)) return false
+        return true
+    }
+
+    fun canResolve(image: ParadoxImageResolveResult): Boolean {
+        val sourcePath = image.sourcePath
+        if (!(sourcePath.exists() && sourcePath.fileSizeSafe() > 0)) return false
+        return true
+    }
+
+    /**
+     * 解析得到图片的最终地址。
+     *
+     * 说明：
+     * - 如果不需要渲染，则直接返回源路径。
+     * - 如果存在目标路径对应的本地缓存，则直接返回目标路径。
+     * - 如果存在渲染会话，则在当前渲染会话中记录渲染请求，并返回目标路径。这适用于渲染快速文档等场景。
+     * - 否则，按照渲染策略（[renderPolicy]，默认使用设置中的策略）同步渲染或异步请求渲染，并仅在同步渲染时返回目标路径。
+     * - 同步渲染失败时，按照设置中的失败策略返回目标路径、`null` 或占位图路径。
+     */
+    fun resolveUrl(result: ParadoxImageResolveResult, project: Project, renderPolicy: ImageRenderPolicy? = null, imageSession: ImageRenderSession? = null): String? {
+        if (!result.renderRequired) return result.sourcePath.absolutePathString()
+
+        val request = result.toRenderRequest()
+        val policy = renderPolicy ?: ChronicleImageSettings.getInstance().state.renderPolicy
+        try {
+            val renderService = ImageRenderService.getInstance()
+            renderService.getCachedImagePath(request)?.let { return it.absolutePathString() }
+            val recordedPath = if (imageSession != null) {
+                renderService.getRecordedImagePath(request, imageSession)
+            } else {
+                renderService.getRecordedImagePath(request)
+            }
+            recordedPath?.let { return it.absolutePathString() }
+            return when (policy) {
+                ImageRenderPolicy.Sync -> renderService.requestImageRender(request, project)?.absolutePathString()
+                ImageRenderPolicy.Async -> {
+                    renderService.requestImageRenderAsync(request, project).whenComplete { path, error ->
+                        if (path != null && error == null) {
+                            ApplicationManager.getApplication()?.invokeLater {
+                                ChronicleAnalysisManager.refreshInlayHints()
+                            }
+                        }
+                    }
+                    null
+                }
+            }
+        } catch (e: Exception) {
+            checkCancellation(e)
+            logger.warn("Render image failed. (source path: ${result.sourcePath})", e)
+            return when (ChronicleImageSettings.getInstance().state.renderFailurePolicy) {
+                ImageRenderFailurePolicy.AcceptBroken -> request.targetPath.absolutePathString()
+                ImageRenderFailurePolicy.RemoveImage -> null
+                ImageRenderFailurePolicy.Placeholder -> {
+                    runCatching { ImageRenderService.getInstance().getPlaceholderImagePath().absolutePathString() }.getOrNull()
+                }
+            }
+        }
     }
 }

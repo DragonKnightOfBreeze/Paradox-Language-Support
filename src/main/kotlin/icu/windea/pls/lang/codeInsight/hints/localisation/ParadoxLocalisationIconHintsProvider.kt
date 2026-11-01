@@ -6,9 +6,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.settings.ChroniclePresentationSettings
 import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.util.ImageFrameInfo
-import icu.windea.pls.base.settings.ChroniclePresentationSettings
 import icu.windea.pls.lang.codeInsight.hints.AsyncIconPresentation
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
@@ -16,7 +16,7 @@ import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
-import icu.windea.pls.lang.util.ParadoxImageManager
+import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.lang.util.ParadoxLocalisationIconManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
@@ -46,19 +46,21 @@ class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
 
         val resolved = element.reference?.resolve()
         val iconFrame = ParadoxLocalisationIconManager.getFrame(element)
-        val frameInfo = ImageFrameInfo.of(iconFrame)
-        val image = when (resolved) {
-            is ParadoxDefinitionElement -> ParadoxImageManager.resolveImageByDefinition(resolved, frameInfo)
-            is PsiFile -> ParadoxImageManager.resolveImageByFile(resolved, frameInfo)
+        val iconFrameInfo = ImageFrameInfo.of(iconFrame)
+        val iconResolveResult = when (resolved) {
+            is ParadoxDefinitionElement -> ParadoxImageService.resolveByDefinition(resolved, iconFrameInfo)
+            is PsiFile -> ParadoxImageService.resolveByFile(resolved, iconFrameInfo)
             else -> null
         }
+        if (iconResolveResult == null) return
 
         // 如果无法解析（包括对应文件不存在的情况）就直接跳过
-        if (!ParadoxImageManager.canResolve(image)) return
+        if (!iconResolveResult.canResolve()) return
         val maxHeight = ChroniclePresentationSettings.getInstance().state.inlayIconHeightLimit
+        val pointer = resolved?.createPointer(context.project)
         sink.addInlinePresentation(element.endOffset, smallInset = true) {
             // 点击可以导航到声明处（定义或图片）
-            add(AsyncIconPresentation(context, image.toRenderRequest(), maxHeight, resolved?.createPointer()))
+            add(AsyncIconPresentation(context, iconResolveResult.toRenderRequest(), maxHeight, pointer))
         }
     }
 }

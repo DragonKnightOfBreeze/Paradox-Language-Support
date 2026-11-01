@@ -150,7 +150,7 @@ class Issue396TigerLintTest : BasePlatformTestCase(), ChronicleTestScope {
         Assert.assertNull("Tiger lint failed: ${result.error?.message}", result.error)
 
         val fileResult = result.fromPath("common/scripted_triggers/test_triggers.txt")
-        Assert.assertNotNull("Tiger did not report the test file. Items: ${result.itemGroup.keys}", fileResult)
+        Assert.assertNotNull("Tiger did not report the test file. Items: ${result.itemGroups.keys}", fileResult)
         Assert.assertTrue("Tiger did not report unknown-field", fileResult!!.items.any { it.key == "unknown-field" })
 
         myFixture.enableInspections(ChronicleTigerLintInspection())

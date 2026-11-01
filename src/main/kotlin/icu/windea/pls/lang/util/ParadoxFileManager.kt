@@ -18,6 +18,7 @@ import icu.windea.pls.core.util.io.clean
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.model.ParadoxFileGroup
@@ -85,7 +86,7 @@ object ParadoxFileManager {
             ParadoxFileGroup.Localisation -> true
             ParadoxFileGroup.Csv -> true
             ParadoxFileGroup.ModDescriptor -> false
-            ParadoxFileGroup.Other -> ParadoxImageManager.isImageFile(file) // currently only accept generic images
+            ParadoxFileGroup.Other -> ParadoxImageService.isImageFile(file) // currently only accept generic images
         }
     }
 

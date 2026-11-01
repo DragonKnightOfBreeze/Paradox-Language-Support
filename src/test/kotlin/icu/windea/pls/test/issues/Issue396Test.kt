@@ -8,6 +8,7 @@ import icu.windea.pls.inject.injectors.DDSImageReaderCodeInjector
 import icu.windea.pls.integrations.images.ImageToolProvider
 import icu.windea.pls.integrations.images.ImageToolService
 import icu.windea.pls.lang.codeInsight.hints.script.ParadoxModifierIconHintsProvider
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -68,12 +69,9 @@ class Issue396Test : BasePlatformTestCase() {
 
     @Test
     fun convertInEdtSkipsExternalTool_test() {
-        val converted = ImageToolService.getInstance().convertImageFormat(
-            ByteArrayInputStream(ByteArray(0)),
-            ByteArrayOutputStream(),
-            "dds",
-            "png",
-        )
+        val converted = runBlocking {
+            ImageToolService.getInstance().convertImageFormat(ByteArrayInputStream(ByteArray(0)), ByteArrayOutputStream(), "dds", "png")
+        }
         Assert.assertFalse(converted)
         Assert.assertFalse("External image tool must not be used in EDT", recordingProvider.convertCalled)
     }

@@ -1,6 +1,7 @@
 package icu.windea.pls.integrations.images
 
 import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.integrations.ExternalToolProvider
 import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.io.OutputStream
@@ -13,11 +14,7 @@ import javax.imageio.stream.ImageInputStream
  *
  * 用于处理图片，例如预览、渲染、读写以及转换图片格式。
  */
-interface ImageToolProvider {
-    val name: String
-
-    fun isAvailable(): Boolean
-
+interface ImageToolProvider : ExternalToolProvider {
     /** @see javax.imageio.ImageReader.read */
     @Throws(UnsupportedOperationException::class)
     fun read(imageIndex: Int, param: ImageReadParam?, stream: ImageInputStream, sourceFormat: String, targetFormat: String): BufferedImage

@@ -66,6 +66,12 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
         val outputFileName = targetFileName ?: (path.nameWithoutExtension + "." + targetFormat)
         val outputPath = outputDirectoryPath.resolve(outputFileName)
 
+        convertImageFormatInternal(executablePath, path, outputPath)
+
+        return outputPath
+    }
+
+    private fun convertImageFormatInternal(executablePath: Path, path: Path, outputPath: Path) {
         val commands = listOf(
             executablePath.toString(),
             path.toString(),
@@ -105,7 +111,5 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
                 "\nError: ${output.stderr.trim()}"
             throw IllegalStateException(message)
         }
-
-        return outputPath
     }
 }

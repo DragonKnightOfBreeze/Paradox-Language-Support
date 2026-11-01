@@ -66,7 +66,7 @@ class ImageFormatConversionTest : BasePlatformTestCase() {
                 val source = sourcePath(sourceFormat)
                 val target = targetPath("default-$sourceFormat-to-$targetFormat.$targetFormat")
                 val expected = isSupportedByDefault(sourceFormat, targetFormat)
-                val result = runCatching { support.convertImageFormat(source, target, sourceFormat, targetFormat) }
+                val result = runCatching { runBlocking { support.convertImageFormat(source, target, sourceFormat, targetFormat) } }
                 Assert.assertEquals("default: $sourceFormat -> $targetFormat", expected, result.isSuccess)
                 if (expected) assertConverted(target) else assertFailure(target)
             }
@@ -104,7 +104,7 @@ class ImageFormatConversionTest : BasePlatformTestCase() {
         for (format in formats) {
             val source = sourcePath(format)
             val target = targetPath("noop-$format.$format")
-            ImageService.getInstance().convertImageFormat(source, target, format, format)
+            runBlocking { ImageService.getInstance().convertImageFormat(source, target, format, format) }
             Assert.assertArrayEquals("no-op $format", Files.readAllBytes(source), Files.readAllBytes(target))
         }
     }
@@ -113,7 +113,7 @@ class ImageFormatConversionTest : BasePlatformTestCase() {
     fun noOpToolServiceInEdt_test() {
         val source = sourcePath("jpg")
         val target = targetPath("noop-service.jpg")
-        val converted = ImageToolService.getInstance().convertImageFormat(source, target, "jpg", "jpg")
+        val converted = runBlocking { ImageToolService.getInstance().convertImageFormat(source, target, "jpg", "jpg") }
         Assert.assertTrue(converted)
         Assert.assertArrayEquals(Files.readAllBytes(source), Files.readAllBytes(target))
     }

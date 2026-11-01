@@ -12,8 +12,8 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressIndicatorProvider
 import com.intellij.util.ExceptionUtil
-import icu.windea.pls.ChronicleCapabilities
 import com.intellij.util.concurrency.annotations.RequiresBackgroundThread
+import icu.windea.pls.ChronicleCapabilities
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -105,10 +105,9 @@ class ProcessExecutor(
             application.holdsReadLock() -> "under readAction"
             else -> return
         }
-        val stack = ExceptionUtil.currentStackTrace()
         val detail = "Command line is executed $message: ${commandLine.commandLineString}. See `OSProcessHandler.checkEdtAndReadAction()` for details."
         if (ChronicleCapabilities.Test.strictContext) throw IllegalStateException(detail)
-        if (!warnedStacks.add(stack)) return
+        if (!warnedStacks.add(ExceptionUtil.currentStackTrace())) return
         logger.warn(detail)
     }
 

@@ -9,26 +9,26 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import icu.windea.pls.base.settings.ChroniclePresentationSettings
 import icu.windea.pls.core.codeInsight.hints.mergePresentations
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.core.text.EscapePatterns
-import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.ui.UiService
 import icu.windea.pls.core.unescape
 import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.core.util.ImageFrameInfo
-import icu.windea.pls.base.settings.ChroniclePresentationSettings
 import icu.windea.pls.lang.codeInsight.hints.AsyncIconPresentation
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.highlighting.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
+import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
-import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocalisationIconManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.highlighting.ParadoxLocalisationHighlighterColors
@@ -61,12 +61,12 @@ class ParadoxLocalisationTextInlayRenderer(
 ) : ParadoxLocalisationTextRenderer<InlayPresentation?, ParadoxLocalisationTextInlayRenderContext, ParadoxLocalisationTextInlayRenderSettings>() {
     override val settings = ParadoxLocalisationTextInlayRenderSettings()
 
-    override fun createContext() = ParadoxLocalisationTextInlayRenderContext(settings, hintsContext)
+    override fun createContext() = ParadoxLocalisationTextInlayRenderContext(hintsContext, settings)
 }
 
 class ParadoxLocalisationTextInlayRenderContext(
-    private val settings: ParadoxLocalisationTextInlayRenderSettings,
     val hintsContext: ParadoxHintsContext,
+    private val settings: ParadoxLocalisationTextInlayRenderSettings,
     var builder: MutableList<InlayPresentation> = mutableListOf(),
 ) : ParadoxLocalisationTextRenderContext<InlayPresentation?>() {
     private val truncateRemain: AtomicInteger = AtomicInteger(ChroniclePresentationSettings.getInstance().state.inlayLocalisationTextLengthLimit) // 记录到需要截断为止所剩余的长度
@@ -203,17 +203,18 @@ class ParadoxLocalisationTextInlayRenderContext(
         run {
             val resolved = element.reference?.resolve() ?: return@run
             val iconFrame = ParadoxLocalisationIconManager.getFrame(element)
-            val frameInfo = ImageFrameInfo.of(iconFrame)
-            val image = when (resolved) {
-                is ParadoxDefinitionElement -> ParadoxImageManager.resolveImageByDefinition(resolved, frameInfo)
-                is PsiFile -> ParadoxImageManager.resolveImageByFile(resolved, frameInfo)
+            val iconFrameInfo = ImageFrameInfo.of(iconFrame)
+            val iconResolveResult = when (resolved) {
+                is ParadoxDefinitionElement -> ParadoxImageService.resolveByDefinition(resolved, iconFrameInfo)
+                is PsiFile -> ParadoxImageService.resolveByFile(resolved, iconFrameInfo)
                 else -> null
             }
+            if (iconResolveResult == null) return@run
 
             // 如果无法解析（包括对应文件不存在的情况）就直接跳过
-            if (!ParadoxImageManager.canResolve(image)) return@run
+            if (!iconResolveResult.canResolve()) return@run
             val maxHeight = ChroniclePresentationSettings.getInstance().state.inlayIconHeightLimit
-            builder.add(AsyncIconPresentation(hintsContext, image.toRenderRequest(), maxHeight, resolved.createPointer()))
+            builder.add(AsyncIconPresentation(hintsContext, iconResolveResult.toRenderRequest(), maxHeight, resolved.createPointer()))
             return
         }
         // 回退：直接显示原始文本（点击其中的相关文本也能跳转到相关声明）

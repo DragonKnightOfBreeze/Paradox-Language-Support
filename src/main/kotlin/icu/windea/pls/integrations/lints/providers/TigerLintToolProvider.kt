@@ -2,6 +2,7 @@ package icu.windea.pls.integrations.lints.providers
 
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.process.ProcessOutput
 import com.intellij.openapi.progress.ProgressManager
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
@@ -13,6 +14,7 @@ import icu.windea.pls.integrations.lints.TigerLintResult
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.CancellationException
@@ -28,7 +30,6 @@ import kotlin.io.path.writeText
  * 目前仅适用于模组目录。
  */
 abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
-    abstract val name: String
     abstract val forGameType: ParadoxGameType
     abstract val configuredExecutablePath: Path?
     abstract val configuredConfPath: Path?
@@ -65,6 +66,20 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
     @Throws(UnsupportedOperationException::class, ExecutionException::class, CancellationException::class, TimeoutException::class)
     override suspend fun validateRootDirectory(request: LintRequest): TigerLintResult {
         if (request !is TigerLintRequest) throw IllegalArgumentException()
+        // 执行命令行
+        val output = validateRootDirectoryInternal(request)
+        val outputText = output.stdout.trim()
+        // 写入文件
+        withContext(Dispatchers.IO) {
+            request.outputPath.parent?.createDirectories()
+            request.outputPath.writeText(outputText)
+        }
+        // 如果无法解析 json，这里会直接报错
+        val items = Json.decodeFromString<List<TigerLintResult.Item>>(outputText)
+        return TigerLintResult(request, items = items)
+    }
+
+    private fun validateRootDirectoryInternal(request: TigerLintRequest): ProcessOutput {
         val commands = buildList {
             add(request.executablePath.toString())
             add("--json")
@@ -104,12 +119,7 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
                 "\nError: ${output.stderr.trim()}"
             throw ExecutionException(message)
         }
-
-        withContext(Dispatchers.IO) {
-            request.outputPath.parent?.createDirectories()
-            request.outputPath.writeText(output.stdout)
-        }
-        return TigerLintResult.parse(request, request.outputPath.toFile()) // 如果无法解析 json，这里会直接报错
+        return output
     }
 
     class Ck3 : TigerLintToolProvider() {

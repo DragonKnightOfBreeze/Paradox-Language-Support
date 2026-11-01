@@ -17,8 +17,8 @@ import icu.windea.pls.lang.inspections.ChronicleInspections
 import icu.windea.pls.lang.inspections.script.common.MissingImageInspection
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
-import icu.windea.pls.lang.resolve.ParadoxImageLocationExpressionResolveResult
-import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
+import icu.windea.pls.lang.resolve.ParadoxLocationResolveResult
+import icu.windea.pls.lang.resolve.ParadoxLocationService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.util.ParadoxConfigManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
@@ -67,7 +67,7 @@ object ParadoxImageCodeInsightContextFactory {
         for (info in definitionInfo.images) {
             ProgressManager.checkCanceled()
             val expression = info.locationExpression
-            val resolveResult = ParadoxLocationExpressionService.resolve(expression, definition, definitionInfo)
+            val resolveResult = ParadoxLocationService.resolve(expression, definition, definitionInfo)
             val type = when {
                 info.required -> ParadoxImageCodeInsightInfo.Type.Required
                 info.isPrimaryKey() -> ParadoxImageCodeInsightInfo.Type.Primary
@@ -81,8 +81,8 @@ object ParadoxImageCodeInsightContextFactory {
                 (inspection == null || inspection.checkOptionalForDefinitions) && !info.required -> true
                 else -> false
             }
-            val missing = resolveResult is ParadoxImageLocationExpressionResolveResult.Static && resolveResult.element == null
-            val dynamic = resolveResult is ParadoxImageLocationExpressionResolveResult.Dynamic
+            val missing = resolveResult is ParadoxLocationResolveResult.Image.Static && resolveResult.element == null
+            val dynamic = resolveResult is ParadoxLocationResolveResult.Image.Dynamic
             val codeInsightInfo = ParadoxImageCodeInsightInfo(type, name, gfxName, info, check, missing, dynamic)
             codeInsightInfos += codeInsightInfo
         }

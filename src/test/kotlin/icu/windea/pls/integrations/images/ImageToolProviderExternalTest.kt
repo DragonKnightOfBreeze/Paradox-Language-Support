@@ -61,7 +61,7 @@ class ImageToolProviderExternalTest : BasePlatformTestCase() {
     fun defaultStrategy_jpgToPng_test() {
         val source = sourcePath("mod_unknown.jpg")
         val target = targetPath("default-from-jpg.png")
-        DefaultImageSupport().convertImageFormat(source, target, "jpg", "png")
+        runBlocking { DefaultImageSupport().convertImageFormat(source, target, "jpg", "png") }
         assertValidImage(target, source)
     }
 

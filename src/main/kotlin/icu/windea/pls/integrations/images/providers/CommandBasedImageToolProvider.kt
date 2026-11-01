@@ -1,6 +1,7 @@
 package icu.windea.pls.integrations.images.providers
 
 import com.intellij.execution.ExecutionException
+import com.intellij.openapi.progress.runBlockingCancellable
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.util.io.ImageInputStreamAdapter
 import icu.windea.pls.core.util.io.ImageIoService
@@ -10,7 +11,6 @@ import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
-import com.intellij.openapi.progress.runBlockingCancellable
 import java.util.*
 import java.util.concurrent.CancellationException
 import java.util.concurrent.TimeoutException
@@ -80,7 +80,12 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
         // 3.0.5 fast return if necessary
         if (ImageIoService.copyIfSameFormat(path, targetPath, sourceFormat, targetFormat)) return
         // implementation
-        convertImageFormat(path, targetPath.parent, targetPath.name, sourceFormat, targetFormat)
+        try {
+            convertImageFormat(path, targetPath.parent, targetPath.name, sourceFormat, targetFormat)
+        } catch (e: Exception) {
+            runCatching { targetPath.deleteIfExists() }
+            throw e
+        }
     }
 
     @Throws(UnsupportedOperationException::class, ExecutionException::class, CancellationException::class, TimeoutException::class)

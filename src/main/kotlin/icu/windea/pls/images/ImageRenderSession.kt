@@ -27,11 +27,7 @@ class ImageRenderSession(
     fun launch(request: ImageRenderRequest): Deferred<Path?> {
         val job = scope.async {
             try {
-                withContext(Dispatchers.IO) {
-                    coroutineToIndicator {
-                        ImageRenderService.getInstance().renderImage(request)
-                    }
-                }
+                renderImage(request)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -42,6 +38,14 @@ class ImageRenderSession(
         }
         jobs += job
         return job
+    }
+
+    private suspend fun renderImage(request: ImageRenderRequest): Path {
+        return withContext(Dispatchers.IO) {
+            coroutineToIndicator {
+                ImageRenderService.getInstance().renderImage(request)
+            }
+        }
     }
 
     suspend fun awaitAll(): List<Path?> {

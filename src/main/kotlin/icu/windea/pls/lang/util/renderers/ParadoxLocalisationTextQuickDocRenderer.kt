@@ -21,9 +21,9 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
+import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.lang.resolve.ReferenceLinkService
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
-import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocalisationIconManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.highlighting.ParadoxLocalisationHighlighterColors
@@ -159,17 +159,18 @@ class ParadoxLocalisationTextQuickDocRenderContext(
         run {
             val resolved = element.reference?.resolve() ?: return@run
             val iconFrame = ParadoxLocalisationIconManager.getFrame(element)
-            val frameInfo = ImageFrameInfo.of(iconFrame)
-            val image = when (resolved) {
-                is ParadoxDefinitionElement -> ParadoxImageManager.resolveImageByDefinition(resolved, frameInfo)
-                is PsiFile -> ParadoxImageManager.resolveImageByFile(resolved, frameInfo)
+            val iconFrameInfo = ImageFrameInfo.of(iconFrame)
+            val iconResolveResult = when (resolved) {
+                is ParadoxDefinitionElement -> ParadoxImageService.resolveByDefinition(resolved, iconFrameInfo)
+                is PsiFile -> ParadoxImageService.resolveByFile(resolved, iconFrameInfo)
                 else -> null
             }
+            if (iconResolveResult == null) return@run
 
             // 如果无法解析（包括对应文件不存在的情况）就直接跳过
-            if (!ParadoxImageManager.canResolve(image)) return@run
+            if (!iconResolveResult.canResolve()) return@run
             // 图片尺寸由渲染/展示层处理；这里只记录 URL，避免在 readAction 中读取图片或 Icon
-            val iconUrl = ParadoxImageManager.resolveUrl(image, element.project) ?: return@run
+            val iconUrl = iconResolveResult.resolveUrl(element.project) ?: return@run
             builder.image(iconUrl)
             return
         }

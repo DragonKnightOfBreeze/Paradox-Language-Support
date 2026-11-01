@@ -11,7 +11,7 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.refactoring.ParadoxRefactoringSettings
-import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
+import icu.windea.pls.lang.resolve.ParadoxLocationService
 
 /**
  * 用于在重命名定义时，自动重命名相关本地化（如果存在且需要）。
@@ -65,7 +65,7 @@ class ParadoxDefinitionRelatedLocalisationsAutomaticRenamer(element: PsiElement,
         val infos = definitionInfo.localisations.orNull() ?: return
         for (info in infos) {
             ProgressManager.checkCanceled()
-            val resolveResult = ParadoxLocationExpressionService.resolve(info.locationExpression, element, definitionInfo) ?: continue
+            val resolveResult = ParadoxLocationService.resolve(info.locationExpression, element, definitionInfo) ?: continue
             val rename = CwtConfigExpressionManager.resolvePlaceholder(info.locationExpression, newName) ?: continue
             for (resolved in resolveResult.elements) {
                 allRenames[resolved] = rename

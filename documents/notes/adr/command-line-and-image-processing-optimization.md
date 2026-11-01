@@ -627,8 +627,17 @@ com.intellij.diagnostic.Freeze
 
 #### 2026-11-01 - post revision
 
-- [ ] 清理 `ChronicleImageSettings` 和 `ChroniclePresentationSettings` 中的配置项：更加准确的命名和描述
-- [ ] 落实渲染快速文档/内嵌提示时，文本图标的缩放策略：需要基于文本高度缩放，以获得更好的 UI 效果
+- [x] 清理 `ImageToolProvider` 和 `ImageSupport`
+- [x] 清理 `ImageToolService` 和 `ImageService`
+- [x] 清理 `ParadoxImageManager` 和 `ParadoxImageService`
+  - 移除 `ParadoxImageManager`，将其中所有方法移到 `ParadoxImageService`。
+  - 为 `ParadoxImageResolveResult` 新增方法 `canResolve` `resolveUrl`，委托给 `ParadoxImageService` 中的对应方法。
+- [ ] 清理 `ChronicleImageSettings` 和 `ChroniclePresentationSettings` 中的配置项
+  - 更加准确的命名和描述（适用对象是快速文档还是内嵌提示，普通图标还是文本图标，等等）
+- [ ] 落实渲染快速文档/内嵌提示时，文本图标的缩放策略
+  - 对于内嵌提示，因为已经使用了 `factory.smallScaledIcon(icon)`，预期不需要进行额外处理。
+  - 对于快速文档，对于视为“文本图标”的图标（本地化文本中实际上也允许渲染大图片），需要基于文本高度缩放，以获得更好的 UI 效果。
+- [ ] 移除已不再用于 hints 的 `ImageRenderPolicy`
 
 #### 2026-10-30 - post doc
 
@@ -664,8 +673,9 @@ com.intellij.diagnostic.Freeze
 
 #### 2026-10-30 - step 7
 
-- [ ] 考虑 `ParadoxImageManager` 和 `ParadoxImageService` 的进一步的清理和重构
-- [ ] 考虑将 `ParadoxImageManager.isImageFile` 移动到 `ImageService` 中
+- [x] 考虑 `ParadoxImageManager` 和 `ParadoxImageService` 的进一步的清理和重构
+- [x] ~~考虑将 `ParadoxImageManager.isImageFile` 移动到 `ImageService` 中~~
+  - 结论：不采用
 - [x] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
   - 结论：加上，因为检查结果的缓存失效时机并不是那么显而易见
 - [ ] `CommandBasedImageToolProvider.read` - 可能需要考虑如何进行有效的缓存
@@ -705,12 +715,11 @@ com.intellij.diagnostic.Freeze
   - 参见：`icu.windea.pls.lang.resolve.ParadoxImageResolveResult.ParadoxImageResolveResult`
   - 现状：暂不确定，可能需要更改行为细节
 - [x] 考虑将各种 externalToolProvider 中的操作方法（operation methods）全部改为挂起方法（suspend methods），以暗示应当在后台线程中执行
-  - 状态：已完成（除了 `ImageToolProvider.read`）。
-- [ ] 评估 `ChronicleSettings` / `ChronicleSettingsConfigurable` 的进一步拆分和迁移。
-  - 结论：应当是依赖库自身的缺陷
-- [ ] 评估并移除已不再用于 hints 的 `ImageRenderPolicy`。
-- [ ] 考虑重构代码以移除 `ParadoxDefinitionPresentationUtil` 中的 `.toFileUrl().toIconOrNull()`
+  - 状态：已完成（除了 `ImageToolProvider.read`）
+- [x] 评估 `ChronicleSettings` / `ChronicleSettingsConfigurable` 的进一步拆分和迁移。
   - 结论：非当前目标，需要另行评估
+- [x] 考虑重构代码以移除 `ParadoxDefinitionPresentationUtil` 中的 `.toFileUrl().toIconOrNull()`
+  - 状态：已完成
 
 ### 分析
 
@@ -830,8 +839,7 @@ ead 保留同步 ImageReader SPI 语义
 - [x] `icu.windea.pls.images.ImageServiceTest` - 格式转换/往返转换
 - [x] `icu.windea.pls.images.ImageRenderServiceTest` - 渲染、同步/异步请求、渲染会话、失败策略、内存 Icon 物化
 - [x] `icu.windea.pls.images.ImageCacheCleanerTest` - 全部缓存清理策略
-- [x] `icu.windea.pls.lang.resolve.ParadoxImageServiceTest` - PNG/DDS/TGA、帧数信息和非图片文件
-- [x] `icu.windea.pls.lang.util.ParadoxImageManagerTest` - 图片判断、缓存命中、渲染策略和失败策略
+- [x] `icu.windea.pls.lang.resolve.ParadoxImageServiceTest` - PNG/DDS/TGA、帧数信息和非图片文件、图片判断、缓存命中、渲染策略
 - [x] `icu.windea.pls.core.util.io.IoServiceTest` - 路径/流复制、同路径跳过、取消检查
 - [x] `icu.windea.pls.core.util.io.ImageIoServiceTest` - 格式判断、读写、缩放、切分、复制和转换
 - [x] `icu.windea.pls.core.util.io.PathServiceTest` - 目录创建、类路径文件、可执行文件查找

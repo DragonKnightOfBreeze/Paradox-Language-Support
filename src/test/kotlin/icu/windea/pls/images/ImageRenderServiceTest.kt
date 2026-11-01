@@ -6,7 +6,6 @@ import icu.windea.pls.base.settings.ChronicleImageSettings
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.lang.resolve.ParadoxImageResolveResult
-import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.model.policies.ImageRenderFailurePolicy
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -80,7 +79,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun renderImageIcon_test() = runBlocking {
+    fun renderImageIcon_test()  {
         val source = root.resolve("icon-source.png")
         val target = root.resolve("icon-target.png")
         writeImage(source, 10, 10)
@@ -93,7 +92,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun renderImageIcon_heightLimit_test() = runBlocking {
+    fun renderImageIcon_heightLimit_test() {
         val source = root.resolve("icon-too-tall.png")
         val target = root.resolve("icon-too-tall-target.png")
         writeImage(source, 10, 10)
@@ -112,7 +111,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         val service = ImageRenderService.getInstance()
         val session = service.newRenderSession(this)
         val result = service.withRenderSession(session) {
-            ParadoxImageManager.resolveUrl(ParadoxImageResolveResult(source, target), project)
+            ParadoxImageResolveResult(source, target).resolveUrl(project)
         }
 
         Assert.assertEquals(target.absolutePathString(), result)

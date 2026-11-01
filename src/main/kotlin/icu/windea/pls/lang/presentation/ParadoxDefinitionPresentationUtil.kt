@@ -8,15 +8,14 @@ import com.intellij.ui.ColorUtil
 import com.intellij.ui.SimpleColoredText
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.ui.JBUI
-import icu.windea.pls.core.toFileUrl
-import icu.windea.pls.core.ui.toIconOrNull
+import icu.windea.pls.images.ImageRenderService
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
-import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
 import icu.windea.pls.lang.util.renderers.ParadoxScriptTextPlainRenderer
@@ -106,24 +105,27 @@ object ParadoxDefinitionPresentationUtil {
 
     fun getIcon(ddsFile: PsiFile): Icon? {
         val iconFile = ddsFile.virtualFile ?: return null
-        val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile, ddsFile.project) ?: return null
-        if (!ParadoxImageManager.canResolve(iconUrl)) return null
-        return iconUrl.toFileUrl().toIconOrNull()
+        val imageResolveResult = ParadoxImageService.resolveByFile(iconFile) ?: return null
+        val imageRenderRequest = imageResolveResult.toRenderRequest()
+        val icon = ImageRenderService.getInstance().renderImageIcon(imageRenderRequest)
+        return icon
     }
 
     fun getIcon(definition: ParadoxDefinitionElement): Icon? {
         val ddsFile = ParadoxDefinitionManager.getRelatedImages(definition, onlyOne = true, onlyPrimary = true).firstOrNull() ?: return null
         val iconFile = ddsFile.virtualFile ?: return null
-        val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile, ddsFile.project) ?: return null
-        if (!ParadoxImageManager.canResolve(iconUrl)) return null
-        return iconUrl.toFileUrl().toIconOrNull()
+        val imageResolveResult = ParadoxImageService.resolveByFile(iconFile) ?: return null
+        val imageRenderRequest = imageResolveResult.toRenderRequest()
+        val icon = ImageRenderService.getInstance().renderImageIcon(imageRenderRequest)
+        return icon
     }
 
     fun getIcon(definition: ParadoxDefinitionElement, ddsFile: PsiFile): Icon? {
         val iconFile = ddsFile.virtualFile ?: return null
         val frameInfo = definition.getUserData(ParadoxDefinitionManager.Keys.imageFrameInfo)
-        val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile, ddsFile.project, frameInfo) ?: return null
-        if (!ParadoxImageManager.canResolve(iconUrl)) return null
-        return iconUrl.toFileUrl().toIconOrNull()
+        val imageResolveResult = ParadoxImageService.resolveByFile(iconFile, frameInfo) ?: return null
+        val imageRenderRequest = imageResolveResult.toRenderRequest()
+        val icon = ImageRenderService.getInstance().renderImageIcon(imageRenderRequest)
+        return icon
     }
 }

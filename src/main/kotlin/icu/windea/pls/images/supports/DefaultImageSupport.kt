@@ -17,7 +17,7 @@ import kotlin.io.path.deleteIfExists
  * @see ImageIoService
  */
 class DefaultImageSupport : ImageSupport {
-    override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
+    override suspend fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
         // 3.0.5 fast return if necessary
         if (ImageIoService.copyIfSameFormat(inputStream, outputStream, sourceFormat, targetFormat)) return true
         // implementation
@@ -25,7 +25,7 @@ class DefaultImageSupport : ImageSupport {
         return true
     }
 
-    override fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
+    override suspend fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
         // 3.0.5 fast return if necessary
         if (ImageIoService.copyIfSameFormat(path, targetPath, sourceFormat, targetFormat)) return true
         // implementation
@@ -33,7 +33,7 @@ class DefaultImageSupport : ImageSupport {
             ImageIoService.convertImageFormat(path, targetPath, targetFormat)
             return true
         } catch (e: Exception) {
-            runCatching { targetPath.deleteIfExists() } // ensure file deleted if operation failed
+            runCatching { targetPath.deleteIfExists() }
             throw e
         }
     }

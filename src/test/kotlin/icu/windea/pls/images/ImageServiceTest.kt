@@ -2,6 +2,7 @@ package icu.windea.pls.images
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.images.supports.DefaultImageSupport
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -27,7 +28,7 @@ class ImageServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun convertImageFormat_pngToTga_test() {
+    fun convertImageFormat_pngToTga_test() = runBlocking {
         val source = Path.of("src/test/testData/images/mod_unknown.png")
         val target = root.resolve("mod_unknown.tga")
         Files.deleteIfExists(target)
@@ -38,7 +39,7 @@ class ImageServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun convertImageFormat_toTga_test() {
+    fun convertImageFormat_toTga_test() = runBlocking {
         val formats = listOf("jpg", "png", "dds", "tga")
         val service = ImageService.getInstance()
         for (format in formats) {
@@ -46,14 +47,14 @@ class ImageServiceTest : BasePlatformTestCase() {
             val target = root.resolve("mod_unknown-from-$format.tga")
             Files.deleteIfExists(target)
 
-            service.convertImageFormat(source, target, format, "tga")
+             service.convertImageFormat(source, target, format, "tga")
 
             assertValidImage(target, source)
         }
     }
 
     @Test
-    fun convertImageFormat_roundTrip_test() {
+    fun convertImageFormat_roundTrip_test()  = runBlocking{
         val source = Path.of("src/test/testData/images/mod_unknown.png")
         val tga = root.resolve("round-trip.tga")
         val png = root.resolve("round-trip.png")
@@ -69,7 +70,7 @@ class ImageServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun defaultConvertImageFormat_jpgToPng_test() {
+    fun defaultConvertImageFormat_jpgToPng_test() = runBlocking {
         val source = Path.of("src/test/testData/images/mod_unknown.jpg")
         val target = root.resolve("default-from-jpg.png")
         Files.deleteIfExists(target)
@@ -80,7 +81,7 @@ class ImageServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun convertImageFormat_standardFormats_test() {
+    fun convertImageFormat_standardFormats_test() = runBlocking {
         val formats = listOf("jpg", "png", "dds", "tga")
         val service = ImageService.getInstance()
         for (format in formats) {

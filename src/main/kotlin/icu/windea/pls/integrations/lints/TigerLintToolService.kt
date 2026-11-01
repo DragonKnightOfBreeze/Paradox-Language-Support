@@ -18,6 +18,7 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.platform.util.progress.reportRawProgress
 import com.intellij.psi.PsiFile
 import com.intellij.util.ExceptionUtil
+import icu.windea.pls.ChronicleCapabilities
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
@@ -46,6 +47,8 @@ import java.util.concurrent.TimeoutException
  * Tiger 检查工具服务。
  *
  * 该服务为应用级别，不依赖项目或 PSI；检查结果通过 [TrackingCache] 按请求缓存。
+ *
+ * 参见：[Tiger](https://github.com/amtep/tiger)
  */
 @Service
 @Suppress("UnstableApiUsage")
@@ -67,11 +70,23 @@ class TigerLintToolService : Disposable {
         return LintToolProvider.EP_NAME.extensionList.findIsInstance<TigerLintToolProvider> { it.isAvailable(gameType) }
     }
 
-    /** @see TigerLintToolProvider.validateRootDirectory */
+    /**
+     * 备注：调用方应确保不在 EDT/readAction 中等待该操作。
+     *
+     * @see TigerLintToolProvider.validateRootDirectory
+     */
     @Throws(UnsupportedOperationException::class, ExecutionException::class, CancellationException::class, TimeoutException::class)
     suspend fun validateRootDirectory(request: TigerLintRequest): TigerLintResult {
-        val tool = findTool(request.gameType) ?: throw UnsupportedOperationException("Unsupported: Tiger lint tool is not available (game type: ${request.gameType}).")
+        val gameType = request.gameType
+        val tool = findTool(gameType) ?: throw UnsupportedOperationException("Unsupported: Tiger lint tool is not available for ${gameType.id}.")
         warnIfIncorrectContext(tool)
+        return with(tool) {
+            doValidateRootDirectory(request)
+        }
+    }
+
+    context(tool: TigerLintToolProvider)
+    private suspend fun doValidateRootDirectory(request: TigerLintRequest): TigerLintResult {
         try {
             val result = tool.validateRootDirectory(request)
             logOperation(tool) { "validate (modPath=${request.modPath})" }
@@ -80,6 +95,31 @@ class TigerLintToolService : Disposable {
             checkCancellation(e)
             logOperation(tool, e) { "validate (modPath=${request.modPath})" }
             throw e
+        }
+    }
+
+    private fun warnIfIncorrectContext(tool: TigerLintToolProvider): Boolean {
+        // 3.0.5 warn if current context is incorrect (EDT or readAction), and skip operation
+        val application = ApplicationManager.getApplication()
+        val message = when {
+            application.isDispatchThread -> "on EDT"
+            application.holdsReadLock() -> "under readAction"
+            else -> return false
+        }
+        val detail = "[${tool.name}] Tiger lint tool is used $message."
+        if (ChronicleCapabilities.Test.strictContext) throw IllegalStateException(detail)
+        if (!warnedStacks.add(ExceptionUtil.currentStackTrace())) return true
+        logger.warn(detail)
+        return true
+    }
+
+    private fun logOperation(tool: TigerLintToolProvider, error: Exception? = null, operation: () -> String) {
+        if (error != null) {
+            if (!warnedStacks.add(ExceptionUtil.currentStackTrace())) return
+            logger.warn("[${tool.name}] Execute tiger lint tool failed. Operation: ${operation()}.")
+        } else {
+            if (!logger.isDebugEnabled) return
+            logger.debug("[${tool.name}] Execute tiger lint tool success. Operation: ${operation()}.")
         }
     }
 
@@ -210,29 +250,6 @@ class TigerLintToolService : Disposable {
         val content = error.message?.let { message -> ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.content", fileUrl, message) }
             ?: ChronicleIntegrationsBundle.message("lint.tiger.notification.warning.content1", fileUrl)
         ChronicleNotificationGroups.global().createNotification(title, content, NotificationType.WARNING).notify(project)
-    }
-
-    private fun warnIfIncorrectContext(tool: TigerLintToolProvider): Boolean {
-        // 3.0.5 warn if current context is incorrect (EDT or readAction), and skip operation
-        val application = ApplicationManager.getApplication()
-        val message = when {
-            application.isDispatchThread -> "on EDT"
-            application.holdsReadLock() -> "under readAction"
-            else -> return false
-        }
-        if (!warnedStacks.add(ExceptionUtil.currentStackTrace())) return true
-        logger.warn("[${tool.name}] Tiger lint tool is used $message.")
-        return true
-    }
-
-    private fun logOperation(tool: TigerLintToolProvider, error: Exception? = null, operation: () -> String) {
-        if (error != null) {
-            if (!warnedStacks.add(ExceptionUtil.currentStackTrace())) return
-            logger.warn("[${tool.name}] Execute tiger lint tool failed. Operation: ${operation()}.")
-        } else {
-            if (!logger.isDebugEnabled) return
-            logger.debug("[${tool.name}] Execute tiger lint tool success. Operation: ${operation()}.")
-        }
     }
 
     override fun dispose() {
