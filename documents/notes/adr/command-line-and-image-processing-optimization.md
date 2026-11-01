@@ -394,6 +394,49 @@ com.intellij.diagnostic.Freeze
   - `ImageRenderServiceTest`：同步/异步策略、显式策略覆盖、三种失败策略及渲染会话失败处理。
   - `IoServiceTest`：输入/输出流按字节阈值检查取消、流/路径复制。
 
+#### 2026-11-01 - step 8 - contexts & image materialization
+
+目标：把“解析”和“图片物化（metadata、渲染、解码、Icon 创建）”分开，彻底避免在 EDT/readAction 中触发图片 IO 或懒加载 Icon。
+
+决策：
+
+- 在 core/base 层引入基础上下文，避免基础上下文反向依赖 images 或 lang 模块：
+  - `HintsContext`：持有 `file`、`editor`、`project`，并提供 `UserDataHolder` 能力。
+  - `DocumentationContext`：持有 `element`、`originalElement`、`hint`，并提供 `UserDataHolder` 能力。
+  - CWT 与 Paradox 的快速文档共用同一个 `DocumentationContext`，不再拆分两套上下文类型。
+  - images 模块通过自定义 `Key` 把图片渲染会话/请求附加到上下文；基础上下文本身不依赖 images。
+- 图片渲染请求仍然由 `ImageRenderService` 管理；但不再依赖 `ThreadLocal` 隐式传递渲染会话。
+  - 上下文只保存请求和 session；实际渲染在后台协程中执行。
+  - 同步渲染的 `ImageRenderPolicy` 不再作为内嵌提示的主路径；后续评估移除。
+- 快速文档：
+  - `computeDocumentation` 中先 `readAction` 收集 `DocumentationContext` 的请求，再在 RA 外等待完成。
+  - 失败策略在等待完成后统一应用。
+- 内嵌提示：
+  - `getCollectorFor` 创建 `HintsContext` 和图片渲染会话。
+  - `collectFromElement` 只记录渲染请求，并添加占位 `StatefulPresentation`。
+  - 后台协程完成物化后，在 EDT 上更新占位 presentation；不再调用 `ImageMetadataService`/同步渲染/URL 懒加载 Icon。
+  - 不引入全局强引用 icon 缓存；初始只使用会话内的 in-flight 去重，icon 生命周期由 presentation 持有。
+- 工具方法：
+  - 优先把可 suspend 的 external tool 操作改为 suspend；service 负责 dispatcher、进度、日志、上下文检查。
+  - `ImageToolProvider.read` 受同步 `ImageReader` SPI 约束，不能简单 suspend；该路径继续只允许内置实现/缓存。
+
+#### 2026-11-01 - step 9 - presentation settings
+
+- 新增展示层设置（暂定 `ChroniclePresentationSettings`），统一快速文档与内嵌提示的文本/图片展示阈值：
+  - `presentableTextLimit`
+  - 快速文档：本地化字体大小、图片显示尺寸、文本图标尺寸限制
+  - 内嵌提示：本地化文本长度限制、图标高度限制
+- `ChronicleImageSettings` 仅保留图片处理相关项，例如渲染失败策略、缓存策略、渲染超时和源文件大小限制。
+- `ParadoxHintsSettings` 只保留 provider 级开关；数字阈值从内嵌提示 provider 设置页移出。
+- `ChronicleInternalSettings` 中的 Registry 阈值项已移除，由持久化设置取代，避免双重 source of truth。
+
+#### 2026-11-01 - step 10 - suspend tool providers
+
+- 将 lint/translation/图片转换等 external tool provider 的操作方法逐步改为 suspend。
+- provider 只实现具体操作，不检查 EDT/readAction；service 负责上下文检查、进度、超时和日志。
+- `TigerLintToolService.collectTigerLintResult` 的 `runWithModalProgressBlocking`/`withBackgroundProgress` 分支作为显式用户操作的参考。
+- `ImageToolProvider.read` 由于同步 `ImageReader` SPI 限制，保留同步语义；在 EDT/RA 中不得调用外部工具。
+
 ## 任务（AI 协助）
 
 ### 主要 & 次要
@@ -406,8 +449,10 @@ com.intellij.diagnostic.Freeze
 - [x] 重构
   - [x] 迁移 Git、Texconv、Magick、Tiger、SpecialPath、CwtConfigService
   - [x] 新增 `ParadoxImageService`/`ParadoxImageResolveResult`，保留 `ParadoxImageManager` facade
-  - [x] 快速文档：`toDocumentation` 移出 RA，等待 `ImageRenderSession`
-  - [x] 内嵌提示：`Sync`/`Async` 渲染；`Async` 完成后刷新内嵌提示
+  - [x] 快速文档：显式 `DocumentationContext` + `ImageRenderSession`，在 RA 外等待渲染
+  - [x] 内嵌提示：`HintsContext` + 后台图片物化 + `StatefulPresentation` 占位更新
+  - [x] 基础上下文使用 userData 附加图片数据，避免 core/base 依赖 images
+  - [x] 展示阈值迁移到 `ChroniclePresentationSettings`；图片渲染超时迁移到 `ChronicleImageSettings`
   - [x] 注入器：EDT/RA 跳过外部工具并 warning
   - [x] Tiger：`TigerLintToolService` + `TrackingCache` + `TigerLintResult` 扩展
 - [x] 测试
@@ -551,6 +596,36 @@ com.intellij.diagnostic.Freeze
   - `ExternalToolDownloadTest` 新增对应下载与冒烟测试。
   - `LintToolProviderExternalTest` 覆盖对应 toolProvider。
 
+#### 2026-11-01 - step 8 - contexts & image materialization
+
+- [x] 新增 core 层 `HintsContext`，`ParadoxHintsContext` 继承它。
+- [x] 新增 core 层 `DocumentationContext`，CWT 与 Paradox 快速文档共用。
+- [x] 新增 images 层 `ImageRenderContext`，通过 userData 附加 `ImageRenderSession`。
+- [x] `DocumentationTarget` 使用显式 `DocumentationContext`，在 RA 外等待渲染。
+- [x] 快速文档的本地化图标不再在 RA 中读取 metadata/Icon；改为记录图片请求和使用渲染后的 URL。
+- [x] 内嵌提示的图标不再在 collect 中读取 metadata、调用同步 `resolveUrl` 或触发懒加载 Icon。
+- [x] 新增 `AsyncIconPresentation`：占位 `StatefulPresentation`，后台物化完成后在 EDT 更新。
+- [x] 新增 `ImageRenderService.renderImageIcon`：在后台读取 metadata、渲染并解码为内存 Icon。
+- [ ] 为 hints/docs 上下文补充专门的回归测试（验证 collect/EDT 不发生图片 IO）。
+- [ ] 评估并移除已不再用于 hints 的 `ImageRenderPolicy`。
+
+#### 2026-11-01 - step 9 - presentation settings
+
+- [x] 新增 `ChroniclePresentationSettings`，统一快速文档/内嵌提示的文本和展示阈值。
+- [x] 将 `presentableTextLimit`、快速文档字体/图片/文本图标限制、内嵌提示文本长度/图标高度限制移入该设置。
+- [x] `ParadoxHintsSettings` 只保留 provider 级开关；provider 设置页移除数字阈值。
+- [x] 从 `ChronicleInternalSettings` 移除对应 Registry 阈值属性，统一使用新设置。
+- [x] 新增 `ChroniclePresentationSettingsConfigurable` 并注册到设置页。
+- [x] `ChronicleImageSettings` 新增 `renderTimeoutSeconds`，用于内嵌提示图片物化超时。
+- [ ] 评估 `ChronicleSettings` / `ChronicleSettingsConfigurable` 的进一步拆分和迁移。
+
+#### 2026-11-01 - step 10 - suspend tool providers
+
+- [ ] 将可 suspend 的 external tool provider 操作迁移为 suspend。
+- [ ] service 层统一负责 dispatcher、进度、超时、上下文检查和日志。
+- [ ] `ImageToolProvider.read` 保留同步 SPI 语义；EDT/RA 中只允许内置实现/缓存。
+- [ ] 图片转换动作的 EDT 阻塞路径进一步改造为后台转换 + EDT 提交。
+
 #### 2026-10-30 - post doc
 
 - [ ] 作为总结，补充 ADR（AI 编写，`documents/ai-notes/adr/`）
@@ -576,6 +651,15 @@ com.intellij.diagnostic.Freeze
 
 - [x] 考虑为 `ChronicleGitService` 补充测试。需要考虑如何获取一个可用的 Git 仓库路径。
 - [x] 考虑为 `ChronicleSqliteService` 补充测试。
+
+#### 2026-11-01 - step 8 & 9
+
+- [x] 使用 core 层通用上下文 + userData 附加图片数据，避免基础模块依赖 images。
+- [x] 内嵌提示不再在 collect/EDT 中读取 metadata、同步渲染或懒加载 Icon；改用后台物化和占位 presentation。
+- [x] 快速文档使用显式 DocumentationContext，图片渲染请求在 RA 中收集、在 RA 外等待。
+- [x] 展示阈值统一到 ChroniclePresentationSettings；图片渲染超时放到 ChronicleImageSettings。
+- [ ] 为 hints/documentation 上下文补充专门的 IO 上下文回归测试。
+- [ ] 人工验证 #396：内嵌提示、快速文档、图片转换动作和 Image read。
 
 #### 2026-10-29 - step 2
 
@@ -682,8 +766,14 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.model.policies.ImageCacheCleanupPolicy` - 新增
 - [x] `icu.windea.pls.model.policies.ImageRenderFailurePolicy` - 新增
 - [x] `icu.windea.pls.model.policies.ImageRenderPolicy` - 新增
-- [x] `icu.windea.pls.base.settings.ChronicleImageSettings` - 新增
+- [x] `icu.windea.pls.base.settings.ChronicleImageSettings` - 新增；包含渲染超时
 - [x] `icu.windea.pls.base.settings.ChronicleImageSettingsConfigurable` - 新增
+- [x] `icu.windea.pls.base.settings.ChroniclePresentationSettings` - 新增
+- [x] `icu.windea.pls.base.settings.ChroniclePresentationSettingsConfigurable` - 新增
+- [x] `icu.windea.pls.core.codeInsight.hints.HintsContext` - 新增
+- [x] `icu.windea.pls.core.codeInsight.documentation.DocumentationContext` - 新增
+- [x] `icu.windea.pls.images.ImageRenderContext` - 新增
+- [x] `icu.windea.pls.lang.codeInsight.hints.AsyncIconPresentation` - 新增
 - [x] `icu.windea.pls.core.util.io.CancellableInputStream` / `CancellableOutputStream` - 新增
 - [x] `icu.windea.pls.integrations.images.ImageToolService` - 已加入 EDT/RA 保护
 - [x] `icu.windea.pls.integrations.lints.TigerLintToolService` - 已重构为 app-level + `TrackingCache`
@@ -702,11 +792,11 @@ com.intellij.diagnostic.Freeze
 生产代码（快速文档/内嵌提示/渲染器）：
 - [x] `icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget` - 快速文档等待渲染会话
 - [x] `icu.windea.pls.lang.codeInsight.documentation.CwtDocumentationTarget` - 快速文档等待渲染会话
-- [ ] `icu.windea.pls.lang.codeInsight.hints.script.ParadoxModifierIconHintsProvider`
-- [ ] `icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider`
+- [x] `icu.windea.pls.lang.codeInsight.hints.script.ParadoxModifierIconHintsProvider` - 使用 `HintsContext` + `AsyncIconPresentation`
+- [x] `icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider` - 使用 `HintsContext` + `AsyncIconPresentation`
 - [x] `icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer`
 - [x] `icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextQuickDocRenderer`
-- [ ] `icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer`
+- [x] `icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextInlayRenderer` - 使用 `AsyncIconPresentation`，collect 中不加载 icon
 
 测试代码：
 
@@ -714,7 +804,7 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.config.configGroup.CwtConfigFileServiceTest` - `getGameTypeFromRepoFile` 集成测试（含各游戏规则仓库）
 - [x] `icu.windea.pls.images.ImageMetadataServiceTest` - 文件/路径元数据、`getMetadata`/`getMetadataOrNull` 和异常场景
 - [x] `icu.windea.pls.images.ImageServiceTest` - 格式转换/往返转换
-- [x] `icu.windea.pls.images.ImageRenderServiceTest` - 渲染、同步/异步请求、渲染会话、失败策略
+- [x] `icu.windea.pls.images.ImageRenderServiceTest` - 渲染、同步/异步请求、渲染会话、失败策略、内存 Icon 物化
 - [x] `icu.windea.pls.images.ImageCacheCleanerTest` - 全部缓存清理策略
 - [x] `icu.windea.pls.lang.resolve.ParadoxImageServiceTest` - PNG/DDS/TGA、帧数信息和非图片文件
 - [x] `icu.windea.pls.lang.util.ParadoxImageManagerTest` - 图片判断、缓存命中、渲染策略和失败策略
