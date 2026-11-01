@@ -433,6 +433,7 @@ com.intellij.diagnostic.Freeze
 #### 2026-11-01 - step 10 - suspend tool providers
 
 - 将 lint/translation/图片转换等 external tool provider 的操作方法逐步改为 suspend。
+- 已迁移：ImageToolProvider.convertImageFormat、TranslationToolProvider.translate、LintToolProvider.validateRootDirectory。
 - provider 只实现具体操作，不检查 EDT/readAction；service 负责上下文检查、进度、超时和日志。
 - `TigerLintToolService.collectTigerLintResult` 的 `runWithModalProgressBlocking`/`withBackgroundProgress` 分支作为显式用户操作的参考。
 - `ImageToolProvider.read` 由于同步 `ImageReader` SPI 限制，保留同步语义；在 EDT/RA 中不得调用外部工具。
@@ -607,7 +608,6 @@ com.intellij.diagnostic.Freeze
 - [x] 新增 `AsyncIconPresentation`：占位 `StatefulPresentation`，后台物化完成后在 EDT 更新。
 - [x] 新增 `ImageRenderService.renderImageIcon`：在后台读取 metadata、渲染并解码为内存 Icon。
 - [ ] 为 hints/docs 上下文补充专门的回归测试（验证 collect/EDT 不发生图片 IO）。
-- [ ] 评估并移除已不再用于 hints 的 `ImageRenderPolicy`。
 
 #### 2026-11-01 - step 9 - presentation settings
 
@@ -617,13 +617,12 @@ com.intellij.diagnostic.Freeze
 - [x] 从 `ChronicleInternalSettings` 移除对应 Registry 阈值属性，统一使用新设置。
 - [x] 新增 `ChroniclePresentationSettingsConfigurable` 并注册到设置页。
 - [x] `ChronicleImageSettings` 新增 `renderTimeoutSeconds`，用于内嵌提示图片物化超时。
-- [ ] 评估 `ChronicleSettings` / `ChronicleSettingsConfigurable` 的进一步拆分和迁移。
 
 #### 2026-11-01 - step 10 - suspend tool providers
 
-- [ ] 将可 suspend 的 external tool provider 操作迁移为 suspend。
-- [ ] service 层统一负责 dispatcher、进度、超时、上下文检查和日志。
-- [ ] `ImageToolProvider.read` 保留同步 SPI 语义；EDT/RA 中只允许内置实现/缓存。
+- [x] 将可 suspend 的 external tool provider 操作迁移为 suspend（图片转换、lint、translation）。
+- [x] service 层统一负责 dispatcher、超时、上下文检查和日志。
+- [x] `ImageToolProvider.read` 保留同步 SPI 语义；EDT/RA 中只允许内置实现/缓存。
 - [ ] 图片转换动作的 EDT 阻塞路径进一步改造为后台转换 + EDT 提交。
 
 #### 2026-10-30 - post doc
@@ -694,6 +693,9 @@ com.intellij.diagnostic.Freeze
   - 现状：暂不确定，可能需要更改行为细节
 - [ ] 考虑将各种 externalToolProvider 中的操作方法（operation methods）全部改为挂起方法（suspend methods），以暗示应当在后台线程中执行
   - 现状：暂不确定
+- [ ] 评估 `ChronicleSettings` / `ChronicleSettingsConfigurable` 的进一步拆分和迁移。
+  - 结论：应当是依赖库自身的缺陷
+- [ ] 评估并移除已不再用于 hints 的 `ImageRenderPolicy`。
 
 ### 分析
 
@@ -776,7 +778,10 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.images.ImageRenderContext` - 新增
 - [x] `icu.windea.pls.lang.codeInsight.hints.AsyncIconPresentation` - 新增
 - [x] `icu.windea.pls.core.util.io.CancellableInputStream` / `CancellableOutputStream` - 新增
-- [x] `icu.windea.pls.integrations.images.ImageToolService` - 已加入 EDT/RA 保护
+- [x] `icu.windea.pls.integrations.images.ImageToolService` - 已加入 EDT/RA 保护；同步转换桥接 suspend provider
+- [x] `icu.windea.pls.integrations.images.ImageToolProvider` - 转换操作改为 suspend；
+ead 保留同步 ImageReader SPI 语义
+- [x] `icu.windea.pls.integrations.images.providers.CommandBasedImageToolProvider` - 转换/read 桥接调整
 - [x] `icu.windea.pls.integrations.lints.TigerLintToolService` - 已重构为 app-level + `TrackingCache`
 - [x] `icu.windea.pls.integrations.lints.TigerLintRequest` - 新增
 - [x] `icu.windea.pls.lang.util.ParadoxImageManager` - 已重构为门面
