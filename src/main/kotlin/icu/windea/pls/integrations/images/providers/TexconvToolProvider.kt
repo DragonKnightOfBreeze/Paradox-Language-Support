@@ -49,7 +49,7 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
     /**
      * @param targetFormat 参见：[File and pixel format options](https://github.com/microsoft/DirectXTex/wiki/Texconv#file-and-pixel-format-options)
      */
-    override fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
+    override suspend fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
         val executablePath = getExecutablePath()
 
         val tempParentPath = ChronicleDataPathService.getInstance().imagesTempPath

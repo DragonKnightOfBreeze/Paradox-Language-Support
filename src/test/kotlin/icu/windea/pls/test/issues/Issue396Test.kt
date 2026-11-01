@@ -106,11 +106,11 @@ class Issue396Test : BasePlatformTestCase() {
             return BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB)
         }
 
-        override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String) {
+        override suspend fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String) {
             convertCalled = true
         }
 
-        override fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
+        override suspend fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
             convertCalled = true
         }
     }

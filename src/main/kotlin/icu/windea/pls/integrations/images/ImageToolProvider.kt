@@ -23,10 +23,10 @@ interface ImageToolProvider {
     fun read(imageIndex: Int, param: ImageReadParam?, stream: ImageInputStream, sourceFormat: String, targetFormat: String): BufferedImage
 
     @Throws(UnsupportedOperationException::class)
-    fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String)
+    suspend fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String)
 
     @Throws(UnsupportedOperationException::class)
-    fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String)
+    suspend fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String)
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ImageToolProvider>("icu.windea.pls.integrations.imageToolProvider")

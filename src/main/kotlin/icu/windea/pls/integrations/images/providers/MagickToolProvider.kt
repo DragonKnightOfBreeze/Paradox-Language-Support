@@ -57,7 +57,7 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
     // 6. 添加水印：
     //    magick input.jpg watermark.png -gravity southeast -geometry +10+10 -composite output.jpg
 
-    override fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
+    override suspend fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
         val executablePath = getExecutablePath() ?: throw IllegalStateException("ImageMagick path is not configured or invalid")
 
         val tempParentPath = ChronicleDataPathService.getInstance().imagesTempPath

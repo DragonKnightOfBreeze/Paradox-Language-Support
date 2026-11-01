@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
+import kotlinx.coroutines.runBlocking
 import java.util.*
 import java.util.concurrent.CancellationException
 import java.util.concurrent.TimeoutException
@@ -47,7 +48,7 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
             val path = tempParentPath.resolve(UUID.randomUUID().toString() + "." + sourceFormat)
             pathsToDelete.add(path)
             path.outputStream().use { IoService.copy(inputStream, it) }
-            val targetPath = convertImageFormat(path, null, null, sourceFormat, targetFormat)
+            val targetPath = runBlocking { convertImageFormat(path, null, null, sourceFormat, targetFormat) }
             pathsToDelete.add(targetPath)
             return targetPath.inputStream().use { ImageIoService.readImage(it) }
         } finally {
@@ -56,7 +57,7 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
     }
 
     @Throws(UnsupportedOperationException::class, ExecutionException::class, CancellationException::class, TimeoutException::class)
-    final override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String) {
+    final override suspend fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String) {
         // 3.0.5 fast return if necessary
         if (ImageIoService.copyIfSameFormat(inputStream, outputStream, sourceFormat, targetFormat)) return
         // implementation
@@ -75,7 +76,7 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
     }
 
     @Throws(UnsupportedOperationException::class, ExecutionException::class, CancellationException::class, TimeoutException::class)
-    final override fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
+    final override suspend fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
         // 3.0.5 fast return if necessary
         if (ImageIoService.copyIfSameFormat(path, targetPath, sourceFormat, targetFormat)) return
         // implementation
@@ -83,5 +84,5 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
     }
 
     @Throws(UnsupportedOperationException::class, ExecutionException::class, CancellationException::class, TimeoutException::class)
-    abstract fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path
+    abstract suspend fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path
 }

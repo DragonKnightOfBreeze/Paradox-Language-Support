@@ -8,6 +8,9 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.util.ExceptionUtil
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.util.io.ImageIoService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.io.OutputStream
@@ -48,7 +51,7 @@ class ImageToolService : Disposable {
         if (warnIfIncorrectContext(tool)) return false // skip
         warnIfIncorrectContext(tool)
         try {
-            tool.convertImageFormat(inputStream, outputStream, sourceFormat, targetFormat)
+            runBlocking { withContext(Dispatchers.IO) { tool.convertImageFormat(inputStream, outputStream, sourceFormat, targetFormat) } }
             logOperation(tool) { "convert image format (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
             return true
         } catch (e: Exception) {
@@ -66,7 +69,7 @@ class ImageToolService : Disposable {
         val tool = findTool() ?: return false // skip
         if (warnIfIncorrectContext(tool)) return false // skip
         try {
-            tool.convertImageFormat(path, targetPath, sourceFormat, targetFormat)
+            runBlocking { withContext(Dispatchers.IO) { tool.convertImageFormat(path, targetPath, sourceFormat, targetFormat) } }
             logOperation(tool) { "convert image format (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
             return true
         } catch (e: Exception) {

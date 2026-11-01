@@ -9,6 +9,7 @@ import icu.windea.pls.integrations.ExternalToolDownloadTestService
 import icu.windea.pls.integrations.images.providers.MagickToolProvider
 import icu.windea.pls.integrations.images.providers.TexconvToolProvider
 import icu.windea.pls.test.ChronicleAssume
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert
 import org.junit.Assume
@@ -76,7 +77,7 @@ class ImageToolProviderExternalTest : BasePlatformTestCase() {
 
         val source = sourcePath("mod_unknown.jpg")
         val target = targetPath("texconv-from-jpg.png")
-        provider.convertImageFormat(source, target, "jpg", "png")
+        runBlocking { provider.convertImageFormat(source, target, "jpg", "png") }
         assertValidImage(target, source)
     }
 
@@ -92,7 +93,7 @@ class ImageToolProviderExternalTest : BasePlatformTestCase() {
 
         val source = sourcePath("mod_unknown.jpg")
         val target = targetPath("magick-from-jpg.png")
-        provider.convertImageFormat(source, target, "jpg", "png")
+        runBlocking { provider.convertImageFormat(source, target, "jpg", "png") }
         assertValidImage(target, source)
     }
 

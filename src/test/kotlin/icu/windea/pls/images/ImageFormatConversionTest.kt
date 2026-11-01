@@ -10,6 +10,7 @@ import icu.windea.pls.integrations.images.ImageToolService
 import icu.windea.pls.integrations.images.providers.MagickToolProvider
 import icu.windea.pls.integrations.images.providers.TexconvToolProvider
 import icu.windea.pls.test.ChronicleAssume
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert
 import org.junit.Assume
@@ -124,7 +125,7 @@ class ImageFormatConversionTest : BasePlatformTestCase() {
         val provider = TexconvToolProvider()
         val source = sourcePath("jpg")
         val target = targetPath("noop-provider.jpg")
-        provider.convertImageFormat(source, target, "jpg", "jpg")
+        runBlocking { provider.convertImageFormat(source, target, "jpg", "jpg") }
         Assert.assertArrayEquals(Files.readAllBytes(source), Files.readAllBytes(target))
     }
 
@@ -133,7 +134,7 @@ class ImageFormatConversionTest : BasePlatformTestCase() {
             for (targetFormat in formats) {
                 val source = sourcePath(sourceFormat)
                 val target = targetPath("$strategy-$sourceFormat-to-$targetFormat.$targetFormat")
-                val result = runCatching { provider.convertImageFormat(source, target, sourceFormat, targetFormat) }
+                val result = runCatching { runBlocking { provider.convertImageFormat(source, target, sourceFormat, targetFormat) } }
                 Assert.assertTrue("$strategy: $sourceFormat -> $targetFormat, error=${result.exceptionOrNull()}", result.isSuccess)
                 assertConverted(target)
             }
