@@ -13,7 +13,7 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.base.settings.ChronicleInternalSettings
+import icu.windea.pls.base.settings.ChroniclePresentationSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.containsLineBreak
@@ -244,7 +244,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptPropertyKey): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         return element.text.transformAndKeepQuotes { it.truncate(limit) }
     }
 
@@ -299,7 +299,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptString): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         return element.text.transformAndKeepQuotes { it.truncate(limit) }
     }
 
@@ -437,7 +437,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptScriptedVariableName): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         return element.text.truncate(limit)
     }
 
@@ -476,7 +476,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptScriptedVariableReference): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         return element.text.truncate(limit)
     }
 
@@ -510,7 +510,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptInlineMathScriptedVariableReference): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         return element.text.truncate(limit)
     }
 
@@ -656,7 +656,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptNormalParameterArgument): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         return element.text.truncate(limit)
     }
 
@@ -735,7 +735,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptInlineMathParameterArgument): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         return element.text.truncate(limit)
     }
 

@@ -17,6 +17,7 @@ import icu.windea.pls.config.documentation
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.codeInsight.documentation.DocumentationContext
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.escapeXml
@@ -66,6 +67,10 @@ object CwtDocumentationManager {
     private const val SECTIONS_LOC = 2
 
     // region Entry Documentation Methods
+
+    fun compute(context: DocumentationContext): DocumentationBuilder? {
+        return compute(context.element, context.originalElement, context.hint)
+    }
 
     fun compute(element: PsiElement, originalElement: PsiElement?, hint: Boolean): DocumentationBuilder? {
         return buildDocumentation(hint) { build(element, originalElement) }.takeUnless { it.isEmpty() }

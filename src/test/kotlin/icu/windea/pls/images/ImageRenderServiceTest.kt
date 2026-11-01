@@ -80,6 +80,28 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun renderImageIcon_test() = runBlocking {
+        val source = root.resolve("icon-source.png")
+        val target = root.resolve("icon-target.png")
+        writeImage(source, 10, 10)
+
+        val icon = ImageRenderService.getInstance().renderImageIcon(ImageRenderRequest(source, target), maxHeight = 36)
+
+        Assert.assertNotNull(icon)
+        Assert.assertEquals(10, icon!!.iconWidth)
+        Assert.assertEquals(10, icon.iconHeight)
+    }
+
+    @Test
+    fun renderImageIcon_heightLimit_test() = runBlocking {
+        val source = root.resolve("icon-too-tall.png")
+        val target = root.resolve("icon-too-tall-target.png")
+        writeImage(source, 10, 10)
+
+        Assert.assertNull(ImageRenderService.getInstance().renderImageIcon(ImageRenderRequest(source, target), maxHeight = 5))
+    }
+
+    @Test
     fun renderSession_test() = runBlocking {
         val dir = root
         val source = dir.resolve("session-source.png")

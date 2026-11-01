@@ -9,6 +9,7 @@ import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.CwtConfigTypeCategories
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.codeInsight.documentation.DocumentationContext
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -82,6 +83,10 @@ object ParadoxDocumentationManager {
     private const val SECTIONS_EXTRA = 3
 
     // region Entry Documentation Methods
+
+    fun compute(context: DocumentationContext): DocumentationBuilder? {
+        return compute(context.element, context.originalElement, context.hint)
+    }
 
     fun compute(element: PsiElement, originalElement: PsiElement?, hint: Boolean): DocumentationBuilder? {
         return buildDocumentation(hint) { build(element, originalElement) }.takeUnless { it.isEmpty() }

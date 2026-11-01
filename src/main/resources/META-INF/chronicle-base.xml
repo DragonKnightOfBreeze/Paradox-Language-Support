@@ -18,6 +18,9 @@
     <applicationConfigurable id="chronicle.extensions" parentId="chronicle" groupWeight="70"
                              bundle="messages.ChronicleBaseBundle" key="settings.extensions"
                              instance="icu.windea.pls.base.settings.ChronicleExtensionSettingsConfigurable"/>
+    <applicationConfigurable id="chronicle.presentation" parentId="chronicle" groupWeight="85"
+                             bundle="messages.ChronicleBaseBundle" key="settings.presentation"
+                             instance="icu.windea.pls.base.settings.ChroniclePresentationSettingsConfigurable"/>
     <applicationConfigurable id="chronicle.integrations" parentId="chronicle" groupWeight="60"
                              bundle="messages.ChronicleBaseBundle" key="settings.integrations"
                              instance="icu.windea.pls.base.settings.ChronicleIntegrationSettingsConfigurable"/>

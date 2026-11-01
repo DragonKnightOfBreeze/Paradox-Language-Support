@@ -8,8 +8,10 @@ import com.intellij.platform.backend.presentation.TargetPresentation
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.codeInsight.documentation.DocumentationContext
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.ep.codeInsight.documentation.ParadoxQuickDocTextProvider
+import icu.windea.pls.images.ImageRenderContext
 import icu.windea.pls.images.ImageRenderService
 import kotlinx.coroutines.coroutineScope
 
@@ -53,9 +55,11 @@ class ParadoxDocumentationTarget(
             coroutineScope {
                 val renderService = ImageRenderService.getInstance()
                 val session = renderService.newRenderSession(this)
+                val context = DocumentationContext(element, originalElement, hint = false)
+                ImageRenderContext.setSession(context, session)
                 val builder = readAction {
                     renderService.withRenderSession(session) {
-                        ParadoxDocumentationManager.compute(element, originalElement, hint = false)
+                        ParadoxDocumentationManager.compute(context)
                     }
                 } ?: return@coroutineScope null
                 session.awaitAll()

@@ -21,6 +21,7 @@ class ChronicleImageSettings : SimplePersistentStateComponent<ChronicleImageSett
         const val DEFAULT_CACHE_TTL_DAYS = 30
         const val DEFAULT_CACHE_MAX_SIZE_MB = 1024
         const val DEFAULT_CACHE_MAX_FILES = 10_000
+        const val DEFAULT_RENDER_TIMEOUT_SECONDS = 10
 
         @JvmStatic
         fun getInstance(): ChronicleImageSettings = service()
@@ -33,6 +34,7 @@ class ChronicleImageSettings : SimplePersistentStateComponent<ChronicleImageSett
      * @property cacheMaxFiles 图片磁盘缓存的最大文件数量。仅当清理策略包含大小限制时生效。
      * @property renderPolicy 没有渲染会话且缓存未命中时默认使用的渲染策略。
      * @property renderFailurePolicy 图片渲染失败时的默认处理策略。
+     * @property renderTimeoutSeconds 单次图片物化（metadata/渲染/解码）的超时时间（秒）。
      */
     class State : BaseState() {
         var cacheCleanupPolicy by enum(ImageCacheCleanupPolicy.ByTtlAndSize)
@@ -41,5 +43,6 @@ class ChronicleImageSettings : SimplePersistentStateComponent<ChronicleImageSett
         var cacheMaxFiles by property(DEFAULT_CACHE_MAX_FILES)
         var renderPolicy by enum(ImageRenderPolicy.Sync)
         var renderFailurePolicy by enum(ImageRenderFailurePolicy.AcceptBroken)
+        var renderTimeoutSeconds by property(DEFAULT_RENDER_TIMEOUT_SECONDS)
     }
 }

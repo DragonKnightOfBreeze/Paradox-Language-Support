@@ -12,7 +12,7 @@ import com.intellij.psi.search.SearchScope
 import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.base.settings.ChronicleInternalSettings
+import icu.windea.pls.base.settings.ChroniclePresentationSettings
 import icu.windea.pls.core.children
 import icu.windea.pls.core.psi.PsiQuoteAwareElement
 import icu.windea.pls.core.psi.PsiService
@@ -117,7 +117,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxCsvColumn): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         return element.text.transformAndKeepQuotes { it.truncate(limit) }
     }
 

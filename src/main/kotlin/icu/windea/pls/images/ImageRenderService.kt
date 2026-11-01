@@ -34,6 +34,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createDirectories
 import kotlin.io.path.isRegularFile
+import javax.swing.Icon
+import javax.swing.ImageIcon
 import kotlin.time.Duration.Companion.days
 
 /**
@@ -85,8 +87,15 @@ class ImageRenderService : Disposable {
      * 如果当前没有渲染会话，则不会自动开始渲染；调用方应使用 [requestImageRender]。
      */
     fun getRecordedImagePath(request: ImageRenderRequest): Path? {
-        val currentSession = currentRenderSession() ?: return null
-        @Suppress("DeferredResultUnused") currentSession.launch(request)
+        return getRecordedImagePath(request, currentRenderSession())
+    }
+
+    /**
+     * 在指定的渲染会话中记录渲染请求，并返回预期的目标路径。
+     */
+    fun getRecordedImagePath(request: ImageRenderRequest, session: ImageRenderSession?): Path? {
+        if (session == null) return null
+        @Suppress("DeferredResultUnused") session.launch(request)
         return request.targetPath
     }
 
@@ -160,6 +169,22 @@ class ImageRenderService : Disposable {
         } catch (e: Throwable) {
             runCatching { Files.deleteIfExists(targetPath) }
             throw e
+        }
+    }
+
+    /**
+     * 在后台物化图片，并返回可直接用于 presentation 的 [Icon]。
+     *
+     * 该方法会读取原图 metadata、检查高度限制、按需渲染并解码目标图片。
+     * 调用方应确保当前不在 EDT/readAction 中，并按需添加超时。
+     */
+    suspend fun renderImageIcon(request: ImageRenderRequest, maxHeight: Int? = null): Icon? {
+        return withContext(Dispatchers.IO) {
+            val metadata = ImageMetadataService.getInstance().getMetadataOrNull(request.sourcePath) ?: return@withContext null
+            if (maxHeight != null && metadata.height > maxHeight) return@withContext null
+            val targetPath = renderImage(request)
+            val image = ImageIoService.readImage(targetPath)
+            ImageIcon(image)
         }
     }
 

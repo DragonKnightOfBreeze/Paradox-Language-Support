@@ -4,20 +4,15 @@ import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.ui.ColorUtil
-import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.escape
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.text.EscapePatterns
 import icu.windea.pls.core.text.HtmlBuilder
 import icu.windea.pls.core.text.buildHtml
-import icu.windea.pls.core.toFileUrl
-import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.core.unescape
 import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.core.util.ImageFrameInfo
-import icu.windea.pls.images.ImageMetadataService
-import icu.windea.pls.lang.getDocumentationFontSize
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
@@ -162,28 +157,9 @@ class ParadoxLocalisationTextHtmlRenderContext(
 
             // 如果无法解析（包括对应文件不存在的情况）就直接跳过
             if (!ParadoxImageManager.canResolve(image)) return@run
-            // 原始高度是后续缩放和大小限制的依据（无法获取时直接跳过，避免使用可能已被缩放的 icon 高度）
-            val iconHeight = ImageMetadataService.getInstance().getMetadataOrNull(image.sourcePath)?.height ?: return@run
-            // 找不到图标的话就直接跳过
+            // 图片尺寸由渲染/展示层处理；这里只记录 URL，避免在 readAction 中读取图片或 Icon
             val iconUrl = ParadoxImageManager.resolveUrl(image, element.project) ?: return@run
-            val icon = iconUrl.toFileUrl().toIconOrNull() ?: return@run
-
-            // 如果图标高度在 `localisationFontSize` 到 `localisationTextIconSizeLimit` 之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
-            // 实际上，本地化文本可以嵌入任意大小的图片
-            val docFontSize = getDocumentationFontSize().size
-            val locFontSize = ChronicleInternalSettings.getInstance().localisationTextFontSizeForQuickDoc
-            val locMaxTextIconSize = ChronicleInternalSettings.getInstance().textIconSizeLimitForQuickDoc
-            val scaleByDocFontSize = when {
-                iconHeight in locFontSize..locMaxTextIconSize -> docFontSize.toFloat() / iconHeight
-                else -> docFontSize.toFloat() / locFontSize
-            }
-            val unscaledIconWidth = icon.iconWidth
-            val unscaledIconHeight = icon.iconHeight
-            val scaleByIcon = iconHeight.toFloat() / unscaledIconHeight
-            val scale = scaleByDocFontSize * scaleByIcon
-            val finalIconWidth = (unscaledIconWidth * scale).toInt()
-            val finalIconHeight = (unscaledIconHeight * scale).toInt()
-            builder.image(iconUrl, finalIconWidth, finalIconHeight)
+            builder.image(iconUrl)
             return
         }
         // 回退：直接显示原始文本

@@ -15,13 +15,13 @@ import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.psi.light.LightElementBase
 import icu.windea.pls.core.text.EscapePatterns
-import icu.windea.pls.core.toFileUrl
+import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.ui.UiService
-import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.core.unescape
 import icu.windea.pls.core.util.DefaultStrings
 import icu.windea.pls.core.util.ImageFrameInfo
-import icu.windea.pls.images.ImageMetadataService
+import icu.windea.pls.base.settings.ChroniclePresentationSettings
+import icu.windea.pls.lang.codeInsight.hints.AsyncIconPresentation
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.highlighting.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
@@ -69,7 +69,7 @@ class ParadoxLocalisationTextInlayRenderContext(
     val hintsContext: ParadoxHintsContext,
     var builder: MutableList<InlayPresentation> = mutableListOf(),
 ) : ParadoxLocalisationTextRenderContext<InlayPresentation?>() {
-    private val truncateRemain: AtomicInteger = AtomicInteger(hintsContext.settings.localisationTextLengthLimit) // 记录到需要截断为止所剩余的长度
+    private val truncateRemain: AtomicInteger = AtomicInteger(ChroniclePresentationSettings.getInstance().state.inlayLocalisationTextLengthLimit) // 记录到需要截断为止所剩余的长度
     private var lineEnd: Boolean = false
     private var truncated: Boolean = false
     private val guardStack: ArrayDeque<String> = ArrayDeque() // 避免 StackOverflow
@@ -212,17 +212,8 @@ class ParadoxLocalisationTextInlayRenderContext(
 
             // 如果无法解析（包括对应文件不存在的情况）就直接跳过
             if (!ParadoxImageManager.canResolve(image)) return@run
-            // 原始高度是后续缩放和大小限制的依据（无法获取时直接跳过，避免使用可能已被缩放的 icon 高度）
-            val iconHeight = ImageMetadataService.getInstance().getMetadataOrNull(image.sourcePath)?.height ?: return@run
-            if (iconHeight > hintsContext.settings.iconHeightLimit) return@run // 图标过大，不再尝试渲染
-            // 找不到图标的话就直接跳过
-            val iconUrl = ParadoxImageManager.resolveUrl(image, hintsContext.project) ?: return@run
-            val icon = iconUrl.toFileUrl().toIconOrNull() ?: return@run
-            icon.iconHeight // TODO 3.0.5 ensure loading (to refactor)
-
-            // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-            val presentation = factory.psiSingleReference(factory.smallScaledIcon(icon)) { resolved }
-            builder.add(presentation)
+            val maxHeight = ChroniclePresentationSettings.getInstance().state.inlayIconHeightLimit
+            builder.add(AsyncIconPresentation(hintsContext, image.toRenderRequest(), maxHeight, resolved.createPointer()))
             return
         }
         // 回退：直接显示原始文本（点击其中的相关文本也能跳转到相关声明）
@@ -329,7 +320,7 @@ class ParadoxLocalisationTextInlayRenderContext(
         // 3.0.4 # 418 trim leading blank of whole localisation text if necessary (specially for rendering inlay hints)
         if (builder.isEmpty()) textTruncated = text.trimStart()
         // truncated by configured limit if necessary
-        val limit = hintsContext.settings.localisationTextLengthLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.inlayLocalisationTextLengthLimit
         if (limit > 0) textTruncated = textTruncated.take(truncateRemain.get())
         // truncated to first line if necessary
         val lineBreakIndex = textTruncated.indexOfFirst { it == '\n' || it == '\r' }
@@ -349,7 +340,7 @@ class ParadoxLocalisationTextInlayRenderContext(
 
     private fun updateTruncationState() {
         if (truncated) return
-        val limit = hintsContext.settings.localisationTextLengthLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.inlayLocalisationTextLengthLimit
         truncated = lineEnd || (limit > 0 && truncateRemain.get() <= 0)
     }
 

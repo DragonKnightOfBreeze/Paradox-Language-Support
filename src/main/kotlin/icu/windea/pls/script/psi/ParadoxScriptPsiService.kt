@@ -5,7 +5,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.base.settings.ChronicleInternalSettings
+import icu.windea.pls.base.settings.ChroniclePresentationSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.forEachChild
@@ -22,7 +22,7 @@ import icu.windea.pls.script.ParadoxScriptLanguage
 
 @Suppress("unused")
 object ParadoxScriptPsiService {
-    private val presentableTextLimit get() = ChronicleInternalSettings.getInstance().presentableTextLimit
+    private val presentableTextLimit get() = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
 
     fun getPresentableText(element: PsiPresentableTextAwareElement): String {
         when (element) {

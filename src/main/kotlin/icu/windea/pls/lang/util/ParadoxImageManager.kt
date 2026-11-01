@@ -14,6 +14,7 @@ import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.util.ImageFrameInfo
 import icu.windea.pls.core.util.io.toPathOrNull
 import icu.windea.pls.images.ImageRenderService
+import icu.windea.pls.images.ImageRenderSession
 import icu.windea.pls.images.ImageService
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.resolve.ParadoxImageResolveResult
@@ -139,6 +140,7 @@ object ParadoxImageManager {
         result: ParadoxImageResolveResult?,
         project: Project,
         renderPolicy: ImageRenderPolicy? = null,
+        imageSession: ImageRenderSession? = null,
     ): String? {
         if (result == null) return null
         if (!result.renderRequired) return result.sourcePath.absolutePathString()
@@ -148,7 +150,12 @@ object ParadoxImageManager {
         try {
             val renderService = ImageRenderService.getInstance()
             renderService.getCachedImagePath(request)?.let { return it.absolutePathString() }
-            renderService.getRecordedImagePath(request)?.let { return it.absolutePathString() }
+            val recordedPath = if (imageSession != null) {
+                renderService.getRecordedImagePath(request, imageSession)
+            } else {
+                renderService.getRecordedImagePath(request)
+            }
+            recordedPath?.let { return it.absolutePathString() }
             return when (policy) {
                 ImageRenderPolicy.Sync -> renderService.requestImageRender(request, project)?.absolutePathString()
                 ImageRenderPolicy.Async -> {

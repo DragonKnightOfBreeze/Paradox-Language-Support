@@ -13,7 +13,7 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.base.settings.ChronicleInternalSettings
+import icu.windea.pls.base.settings.ChroniclePresentationSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.forEachChild
@@ -180,7 +180,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: CwtOptionKey): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         return element.text.transformAndKeepQuotes { it.truncate(limit) }
     }
 
@@ -276,7 +276,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: CwtPropertyKey): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         return element.text.transformAndKeepQuotes { it.truncate(limit) }
     }
 
@@ -340,7 +340,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: CwtString): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         return element.text.transformAndKeepQuotes { it.truncate(limit) }
     }
 

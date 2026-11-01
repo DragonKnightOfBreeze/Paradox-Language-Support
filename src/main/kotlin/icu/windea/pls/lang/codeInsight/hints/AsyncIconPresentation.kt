@@ -1,0 +1,65 @@
+package icu.windea.pls.lang.codeInsight.hints
+
+import com.intellij.codeInsight.hints.presentation.InlayPresentation
+import com.intellij.codeInsight.hints.presentation.StatefulPresentation
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.psi.PsiElement
+import com.intellij.psi.SmartPsiElementPointer
+import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.base.settings.ChronicleImageSettings
+import icu.windea.pls.core.ui.UiService
+import icu.windea.pls.images.ImageRenderContext
+import icu.windea.pls.images.ImageRenderRequest
+import icu.windea.pls.images.ImageRenderService
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
+import javax.swing.Icon
+import kotlin.time.Duration.Companion.seconds
+
+/**
+ * 异步物化图片的内嵌提示 presentation。
+ *
+ * 占位状态只显示文本，物化完成后在 EDT 更新为图标。
+ */
+@Suppress("UnstableApiUsage")
+class AsyncIconPresentation(
+    private val context: ParadoxHintsContext,
+    private val request: ImageRenderRequest,
+    private val maxHeight: Int?,
+    private val pointer: SmartPsiElementPointer<out PsiElement>?,
+) : StatefulPresentation<Icon?>(null, stateMark) {
+    companion object {
+        @Suppress("RedundantQualifierName")
+        private val stateMark = StatefulPresentation.StateMark<Icon?>("chronicle.asyncIcon")
+    }
+
+    init {
+        val session = ImageRenderContext.getOrCreateSession(context, ChronicleFacade.getCoroutineScope(context.project))
+        val timeout = ChronicleImageSettings.getInstance().state.renderTimeoutSeconds.coerceAtLeast(1).seconds
+        session.scope.launch {
+            val icon = withTimeoutOrNull(timeout) {
+                ImageRenderService.getInstance().renderImageIcon(request, maxHeight)
+            } ?: return@launch
+            ApplicationManager.getApplication().invokeLater {
+                if (!context.project.isDisposed) state = icon
+            }
+        }
+    }
+
+    override fun toString(): String {
+        return "AsyncIconPresentation(request=$request, loaded=${state != null})"
+    }
+
+    override fun getPresentation(): InlayPresentation {
+        val icon = state
+        val base = if (icon == null) {
+            context.factory.smallText("…")
+        } else {
+            context.factory.smallScaledIcon(icon)
+        }
+        if (pointer == null) return base
+        return context.factory.psiSingleReference(base) { pointer.element }
+            .let { context.factory.withCursorOnHoverWhenControlDown(it, UiService.getHandCursor()) }
+    }
+}
+

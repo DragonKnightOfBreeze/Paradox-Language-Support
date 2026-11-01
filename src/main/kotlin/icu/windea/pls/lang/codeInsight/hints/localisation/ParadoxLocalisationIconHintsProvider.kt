@@ -7,10 +7,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.createPointer
-import icu.windea.pls.core.toFileUrl
-import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.core.util.ImageFrameInfo
-import icu.windea.pls.images.ImageMetadataService
+import icu.windea.pls.base.settings.ChroniclePresentationSettings
+import icu.windea.pls.lang.codeInsight.hints.AsyncIconPresentation
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
@@ -56,17 +55,10 @@ class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
 
         // 如果无法解析（包括对应文件不存在的情况）就直接跳过
         if (!ParadoxImageManager.canResolve(image)) return
-        // 原始高度是后续缩放和大小限制的依据（无法获取时直接跳过，避免使用可能已被缩放的 icon 高度）
-        val iconHeight = ImageMetadataService.getInstance().getMetadataOrNull(image.sourcePath)?.height ?: return
-        if (iconHeight > context.settings.iconHeightLimit) return
-        // 找不到图标的话就直接跳过
-        val iconUrl = ParadoxImageManager.resolveUrl(image, context.project) ?: return
-        val icon = iconUrl.toFileUrl().toIconOrNull() ?: return
-        icon.iconHeight // TODO 3.0.5 ensure loading (to refactor)
-
+        val maxHeight = ChroniclePresentationSettings.getInstance().state.inlayIconHeightLimit
         sink.addInlinePresentation(element.endOffset, smallInset = true) {
             // 点击可以导航到声明处（定义或图片）
-            icon(icon, resolved?.createPointer())
+            add(AsyncIconPresentation(context, image.toRenderRequest(), maxHeight, resolved?.createPointer()))
         }
     }
 }

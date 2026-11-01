@@ -64,6 +64,12 @@ class ChronicleImageSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle
                 .bindItem(settings::renderPolicy.toNullableProperty())
             contextHelp(ChronicleBaseBundle.message("settings.images.render.policy.tip"))
         }
+        // renderTimeoutSeconds
+        row {
+            label(ChronicleBaseBundle.message("settings.images.render.timeoutSeconds")).widthGroup(group)
+            intTextField(1..Int.MAX_VALUE, 1).bindIntText(settings::renderTimeoutSeconds)
+            contextHelp(ChronicleBaseBundle.message("settings.images.render.timeoutSeconds.tip"))
+        }
         // renderFailurePolicy
         row {
             label(ChronicleBaseBundle.message("settings.images.render.failurePolicy")).widthGroup(group)
@@ -73,5 +79,3 @@ class ChronicleImageSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle
         }
     }
 }
-
-

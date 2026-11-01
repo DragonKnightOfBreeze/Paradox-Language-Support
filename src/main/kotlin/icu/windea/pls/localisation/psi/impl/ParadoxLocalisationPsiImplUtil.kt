@@ -14,7 +14,7 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.base.settings.ChronicleInternalSettings
+import icu.windea.pls.base.settings.ChroniclePresentationSettings
 import icu.windea.pls.core.children
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.orUnresolved
@@ -339,7 +339,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxLocalisationParameterArgument): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         return element.text.truncate(limit)
     }
 
@@ -386,7 +386,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxLocalisationCommand): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         val expression = element.commandText?.presentableText
         return ChronicleStrings.localisationCommandFolder(expression.orEmpty().truncate(limit))
     }
@@ -412,7 +412,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxLocalisationCommandText): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         return element.text.truncate(limit)
     }
 
@@ -432,7 +432,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxLocalisationCommandArgument): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         return element.text.truncate(limit)
     }
 
@@ -460,7 +460,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxLocalisationConceptCommand): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         val expression = element.conceptName?.presentableText
         val withText = element.conceptString != null
         return if (withText) {
@@ -491,7 +491,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxLocalisationConceptName): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         return element.text.truncate(limit)
     }
 
@@ -550,7 +550,7 @@ object ParadoxLocalisationPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxLocalisationIconArgument): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
         return element.text.truncate(limit)
     }
 
