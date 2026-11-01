@@ -387,12 +387,12 @@ com.intellij.diagnostic.Freeze
   - `Placeholder`：使用插件生成的占位图。
   - 快速文档渲染会话会记录失败请求，并在 `awaitAll` 后统一应用失败策略。
 - 图片 IO 取消检查：
-  - `ProgressCheckingInputStream` / `ProgressCheckingOutputStream` 每累计 64 KiB 调用一次 `ProgressManager.checkCanceled()`。
+  - `CancellableInputStream` / `CancellableOutputStream` 每累计 64 KiB 调用一次 `ProgressManager.checkCanceled()`。
   - `readImage` / `writeImage` / `copyImageStream` / `copyImageFile` / `ImageMetadataService` / `DefaultImageSupport` 使用上述检查。
 - 新增测试：
   - `ImageCacheCleanerTest`：`None`、`ByTtl`、`BySize`、`ByTtlAndSize`。
   - `ImageRenderServiceTest`：同步/异步策略、显式策略覆盖、三种失败策略及渲染会话失败处理。
-  - `ImageIoExtensionsTest`：输入/输出流按字节阈值检查取消，以及复制路径。
+  - `IoServiceTest`：输入/输出流按字节阈值检查取消、流/路径复制。
 
 ## 任务（AI 协助）
 
@@ -529,16 +529,27 @@ com.intellij.diagnostic.Freeze
 
 #### 2026-10-29 - step 7 - revision
 
-- [ ] `ImageMetadataService` - 考虑同时提供 `getMetadata(...): ImageMetadata` 和 `getMetadataOrNull(...): ImageMetadata?`，同时考虑提取 `ImageMetadataReader`
-- [ ] 不能假定：总是存在外部解压工具的可执行文件路径（如 7z），本地环境总是存在系统代理（如 clash） - 需要结合使用 Assume
-- [ ] `ImageRenderServiceTest` - 需要拆分出 `ParadoxImageServiceTest` 和 `ParadoxImageManager`（并且补充更多）
-- [ ] `LintToolProviderExternalTest` - 主要出于对齐的目的，因为 `Issue396TigerLintTest` 中已经覆盖了（这里仅验证 toolProvider，不验证 inspection）
-- [ ] 为 `IoService` `ImageIoService` `PathService` 补充测试
-- [ ] 为 `FileExtensions.kt` `PathExtensions.kt` 补充测试
-- [ ] 除了 ck3-tiger 之外，也为 vic3-tiger 和 imperator-tiger 补充相关测试
-  - 参见：`icu.windea.pls.integrations.ExternalToolDownloadTest.download_ck3Tiger_test`
-  - 参见：`icu.windea.pls.integrations.ExternalToolDownloadTestService.ck3Tiger`
-  - 参见：`icu.windea.pls.integrations.lints.LintToolProviderExternalTest`
+- [x] `ImageMetadataService` - 提供 `getMetadata(...): ImageMetadata` 和 `getMetadataOrNull(...): ImageMetadata?`，并提取 `ImageMetadataReader`
+  - `ImageMetadataReader` 负责 DDS/TGA 索引/读取器及通用 `ImageIO` 读取；索引或专用读取器不可用时回退到通用读取。
+- [x] 不能假定：总是存在外部解压工具的可执行文件路径（如 7z），本地环境总是存在系统代理（如 clash） - 需要结合使用 Assume
+  - `ArchiveServiceTest` 的 7z 测试显式禁用外部工具回退。
+  - `DownloadServiceTest` 检测到系统代理时通过 `Assume` 跳过本地下载测试。
+  - `LintToolProviderExternalTest` 通过 `ChronicleAssume.includeExternalTools()` 控制外部工具测试。
+- [x] `ImageRenderServiceTest` - 拆分出 `ParadoxImageServiceTest` 和 `ParadoxImageManagerTest`（并补充更多）
+  - `ParadoxImageServiceTest` 覆盖 PNG/DDS/TGA、帧数信息和非图片文件。
+  - `ParadoxImageManagerTest` 覆盖 `isImageFile`、`canResolve`、缓存命中、`Sync`/`Async` 渲染策略及失败策略。
+- [x] `LintToolProviderExternalTest` - 仅验证 toolProvider，不验证 inspection
+  - 覆盖 ck3-tiger、imperator-tiger、vic3-tiger 的启用状态、可用性、可执行文件和 conf 路径校验。
+- [x] 为 `IoService` `ImageIoService` `PathService` 补充测试
+  - `IoServiceTest` 覆盖路径/流复制、相同路径跳过和取消检查。
+  - `ImageIoServiceTest` 覆盖格式判断、读写、缩放、切分、同格式复制和格式转换。
+  - `PathServiceTest` 覆盖目录/父目录创建、类路径文件创建、可执行文件查找。
+- [x] 为 `FileExtensions.kt` `PathExtensions.kt` 补充测试
+  - 覆盖 `toFile`/`toFileOrNull`、`toPath`/`toPathOrNull`、`parsePath` 和 `clean`。
+- [x] 除了 ck3-tiger 之外，也为 vic3-tiger 和 imperator-tiger 补充相关测试
+  - `ExternalToolDownloadTestService` 新增 `vic3Tiger`、`irTiger` 描述符。
+  - `ExternalToolDownloadTest` 新增对应下载与冒烟测试。
+  - `LintToolProviderExternalTest` 覆盖对应 toolProvider。
 
 #### 2026-10-30 - step 7 - post doc
 
@@ -593,7 +604,7 @@ com.intellij.diagnostic.Freeze
 - [ ] 使用 `DefaultImageSupport`（TwelveMonkeys）时，无法写入 DDS 图片（例如，从 PNG 转为 DDS）
   - 结论：应当是依赖库自身的缺陷
 - [ ] 如果不需要切分图片（PNG/DDS/TGA/等等），解析图片时不会先转换图片格式（DDS/TGA -> PNG）
-  - 这意味着 `~/.windea/chronicleimages/` 中不会生成本地图片缓存
+  - 这意味着 `~/.windea/chronicle/images/` 中不会生成本地图片缓存
   - 参见：`icu.windea.pls.lang.resolve.ParadoxImageService.doResolve`
   - 参见：`icu.windea.pls.lang.resolve.ParadoxImageResolveResult.ParadoxImageResolveResult`
   - 现状：暂不确定，可能需要更改行为细节
@@ -663,6 +674,8 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.images.ImageService` - 基础设施已扩展；保留格式转换与 SPI 生命周期
 - [x] `icu.windea.pls.images.ImageRenderService` - 新增
 - [x] `icu.windea.pls.images.ImageMetadataService` - 新增
+- [x] `icu.windea.pls.images.ImageMetadataReader` - 新增
+- [x] `icu.windea.pls.core.util.io.IoService` / `ImageIoService` / `PathService` - 新增/提取
 - [x] `icu.windea.pls.images.ImageCacheCleaner` - 新增
 - [x] `icu.windea.pls.images.ImageRenderRequest` - 新增
 - [x] `icu.windea.pls.images.ImageRenderSession` - 新增
@@ -671,7 +684,7 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.model.policies.ImageRenderPolicy` - 新增
 - [x] `icu.windea.pls.base.settings.ChronicleImageSettings` - 新增
 - [x] `icu.windea.pls.base.settings.ChronicleImageSettingsConfigurable` - 新增
-- [x] `icu.windea.pls.core.util.io.ProgressCheckingInputStream` / `CancellableOutputStream` - 新增
+- [x] `icu.windea.pls.core.util.io.CancellableInputStream` / `CancellableOutputStream` - 新增
 - [x] `icu.windea.pls.integrations.images.ImageToolService` - 已加入 EDT/RA 保护
 - [x] `icu.windea.pls.integrations.lints.TigerLintToolService` - 已重构为 app-level + `TrackingCache`
 - [x] `icu.windea.pls.integrations.lints.TigerLintRequest` - 新增
@@ -699,13 +712,18 @@ com.intellij.diagnostic.Freeze
 
 - [x] `icu.windea.pls.core.execution.ProcessExecutorTest` - 常见命令/区分OS/区分编码/取消行为/超时行为/编码/stderr/退出码
 - [x] `icu.windea.pls.config.configGroup.CwtConfigFileServiceTest` - `getGameTypeFromRepoFile` 集成测试（含各游戏规则仓库）
-- [x] `icu.windea.pls.images.ImageMetadataServiceTest`
+- [x] `icu.windea.pls.images.ImageMetadataServiceTest` - 文件/路径元数据、`getMetadata`/`getMetadataOrNull` 和异常场景
 - [x] `icu.windea.pls.images.ImageServiceTest` - 格式转换/往返转换
-- [x] `icu.windea.pls.images.ImageRenderServiceTest` - 渲染、同步/异步请求、渲染策略、失败策略、渲染会话
+- [x] `icu.windea.pls.images.ImageRenderServiceTest` - 渲染、同步/异步请求、渲染会话、失败策略
 - [x] `icu.windea.pls.images.ImageCacheCleanerTest` - 全部缓存清理策略
-- [x] `icu.windea.pls.core.util.io.ImageIoExtensionsTest` - 图片 IO 取消检查阈值与复制
+- [x] `icu.windea.pls.lang.resolve.ParadoxImageServiceTest` - PNG/DDS/TGA、帧数信息和非图片文件
+- [x] `icu.windea.pls.lang.util.ParadoxImageManagerTest` - 图片判断、缓存命中、渲染策略和失败策略
+- [x] `icu.windea.pls.core.util.io.IoServiceTest` - 路径/流复制、同路径跳过、取消检查
+- [x] `icu.windea.pls.core.util.io.ImageIoServiceTest` - 格式判断、读写、缩放、切分、复制和转换
+- [x] `icu.windea.pls.core.util.io.PathServiceTest` - 目录创建、类路径文件、可执行文件查找
+- [x] `icu.windea.pls.core.util.io.FileExtensionsTest` / `PathExtensionsTest`
 - [x] `icu.windea.pls.integrations.ExternalToolDownloadServiceTest` - `check` 行为
-- [x] `icu.windea.pls.integrations.ExternalToolDownloadTest` - 下载与冒烟测试（Windows/Linux）
+- [x] `icu.windea.pls.integrations.ExternalToolDownloadTest` - texconv/magick/ck3-tiger/vic3-tiger/imperator-tiger 下载与冒烟测试（Windows/Linux）
 - [x] `icu.windea.pls.integrations.ExternalToolDownloadTestService` - 共享 `build/external-tools`
 - [x] `icu.windea.pls.images.ImageFormatConversionTest` - 各种策略和格式下的图片格式转换
 - [x] `icu.windea.pls.images.actions.ConvertImageFormatActionTest` - 动作级别的图片格式转换
@@ -713,6 +731,7 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.core.util.net.ProxyServiceTest` - 代理配置解析
 - [x] `icu.windea.pls.core.util.net.DownloadServiceTest` - 本地 HTTP 下载冒烟
 - [x] `icu.windea.pls.integrations.images.ImageToolProviderExternalTest` - 图片工具冒烟
+- [x] `icu.windea.pls.integrations.lints.LintToolProviderExternalTest` - Tiger toolProvider 可用性和路径校验
 - [x] `icu.windea.pls.base.io.ChronicleGitServiceTest` - 本地仓库冒烟与常见场景
 - [x] `icu.windea.pls.base.io.ChronicleSqliteServiceTest` - 临时 SQLite 数据库
 - [x] `icu.windea.pls.test.issues.Issue396Test` - 外部图片工具上下文回归测试
@@ -725,8 +744,8 @@ com.intellij.diagnostic.Freeze
 - `icu.windea.pls.core.cache.CancellableCache`
 - `icu.windea.pls.core.cache.TrackingCache`
 - `icu.windea.pls.core.util.MergedModificationTracker`
-- `icu.windea.pls.core.util.io.ProgressCheckingInputStream`
-- `icu.windea.pls.core.util.io.ProgressCheckingOutputStream`
+- `icu.windea.pls.core.util.io.CancellableInputStream`
+- `icu.windea.pls.core.util.io.CancellableOutputStream`
 - `icu.windea.pls.model.policies.*`
 - `icu.windea.pls.images.actions.ConvertImageFormatAction`
 - ...
