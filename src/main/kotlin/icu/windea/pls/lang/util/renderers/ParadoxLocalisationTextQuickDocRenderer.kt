@@ -174,7 +174,7 @@ class ParadoxLocalisationTextQuickDocRenderContext(
             // 如果无法解析（包括对应文件不存在的情况）就直接跳过
             if (!ParadoxImageManager.canResolve(image)) return@run
             // 原始高度是后续缩放和大小限制的依据（无法获取时直接跳过，避免使用可能已被缩放的 icon 高度）
-            val iconHeight = ImageMetadataService.getInstance().getMetadata(image.sourcePath)?.height ?: return@run
+            val iconHeight = ImageMetadataService.getInstance().getMetadataOrNull(image.sourcePath)?.height ?: return@run
             // 找不到图标的话就直接跳过
             val iconUrl = ParadoxImageManager.resolveUrl(image, element.project) ?: return@run
             val icon = iconUrl.toFileUrl().toIconOrNull() ?: return@run

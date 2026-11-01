@@ -9,18 +9,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.concurrency.annotations.RequiresReadLock
 import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.util.cache.CacheBuilder
-import icu.windea.pls.core.util.io.asCancellable
-import icu.windea.pls.images.dds.DdsFileType
-import icu.windea.pls.images.dds.DdsMetadataIndex
-import icu.windea.pls.images.dds.DdsMetadataReader
-import icu.windea.pls.images.tga.TgaFileType
-import icu.windea.pls.images.tga.TgaMetadataIndex
-import icu.windea.pls.images.tga.TgaMetadataReader
-import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
-import javax.imageio.ImageIO
-import kotlin.io.path.inputStream
 
 /**
  * 统一获取图片的原始元数据。
@@ -37,73 +27,48 @@ class ImageMetadataService : Disposable {
     private val cache = CacheBuilder("maximumSize=4096,expireAfterAccess=10m")
         .build<CacheKey, ImageMetadata>()
 
+    /**
+     * 获取图片的原始元数据。无法读取时抛出异常。
+     */
     @RequiresReadLock(generateAssertion = false)
-    fun getMetadata(file: VirtualFile, project: Project? = null): ImageMetadata? {
+    fun getMetadata(file: VirtualFile, project: Project? = null): ImageMetadata {
+        return getMetadataOrNull(file, project) ?: error("Cannot read image metadata: ${file.path}")
+    }
+
+    /**
+     * 获取图片的原始元数据。无法读取时返回 `null`。
+     */
+    @RequiresReadLock(generateAssertion = false)
+    fun getMetadataOrNull(file: VirtualFile, project: Project? = null): ImageMetadata? {
         val key = CacheKey(file.path, file.length, file.modificationStamp)
         cache.getIfPresent(key)?.let { return it }
-        val metadata = runCatchingCancellable { doGetMetadata(file, project) }
+        val metadata = runCatchingCancellable { ImageMetadataReader.read(file, project) }
             .onFailure { thisLogger().warn(it) }
             .getOrNull()
         if (metadata != null) cache.put(key, metadata)
         return metadata
     }
 
-    fun getMetadata(path: Path): ImageMetadata? {
+    /**
+     * 获取图片的原始元数据。无法读取时抛出异常。
+     */
+    fun getMetadata(path: Path): ImageMetadata {
+        return getMetadataOrNull(path) ?: error("Cannot read image metadata: $path")
+    }
+
+    /**
+     * 获取图片的原始元数据。无法读取时返回 `null`。
+     */
+    fun getMetadataOrNull(path: Path): ImageMetadata? {
         val key = runCatchingCancellable {
             CacheKey(path.toAbsolutePath().normalize().toString(), Files.size(path), Files.getLastModifiedTime(path).toMillis())
         }.getOrNull() ?: return null
         cache.getIfPresent(key)?.let { return it }
-        val metadata = runCatchingCancellable { readMetadata(path.inputStream()) }
+        val metadata = runCatchingCancellable { ImageMetadataReader.read(path) }
             .onFailure { thisLogger().warn(it) }
             .getOrNull()
         if (metadata != null) cache.put(key, metadata)
         return metadata
-    }
-
-    private fun doGetMetadata(file: VirtualFile, project: Project?): ImageMetadata? {
-        return when (file.fileType) {
-            DdsFileType -> {
-                val metadata = if (project != null && !project.isDisposed) {
-                    DdsMetadataIndex.getInstance().getMetadata(file, project)
-                } else {
-                    DdsMetadataReader.readOrNull(file)
-                }
-                metadata?.let { ImageMetadata(it.width, it.height) }
-            }
-            TgaFileType -> {
-                val metadata = if (project != null && !project.isDisposed) {
-                    TgaMetadataIndex.getInstance().getMetadata(file, project)
-                } else {
-                    TgaMetadataReader.readOrNull(file)
-                }
-                metadata?.let { ImageMetadata(it.width, it.height) }
-            }
-            else -> {
-                readMetadata(file.inputStream)
-            }
-        }
-    }
-
-    private fun readMetadata(inputStream: InputStream): ImageMetadata? {
-        // org.intellij.images.util.ImageInfoReader.read
-        ImageIO.setUseCache(false)
-        return inputStream.buffered().asCancellable().use { input ->
-            ImageIO.createImageInputStream(input)?.use { imageInputStream ->
-                // NOTE 3.0.5 Returned image readers may be multiple here, and some may be not available
-                ImageIO.getImageReaders(imageInputStream).asSequence().firstNotNullOfOrNull { imageReader ->
-                    try {
-                        imageReader.setInput(imageInputStream, true)
-                        val width = imageReader.getWidth(0)
-                        val height = imageReader.getHeight(0)
-                        ImageMetadata(width, height)
-                    } catch (_: Exception) {
-                        null
-                    } finally {
-                        imageReader.dispose()
-                    }
-                }
-            }
-        }
     }
 
     override fun dispose() {
