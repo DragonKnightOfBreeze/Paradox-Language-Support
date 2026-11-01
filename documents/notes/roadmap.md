@@ -483,7 +483,6 @@
 - [x] P4 修复意外行为：Markdown 文件中的部分内联代码（如 `ArrayList()`）可以通过查找用法指向到意外位置（如 `effects.cwt` 中的部分 effect） ([P22](issues/p22-markdown-find-usages-unexpected-behavior.md))
   - 结论：在 `icu.windea.pls.lang.navigation.CwtConfigSymbolChooseByNameContributor.processElementsWithName` 中，未按参数 `name` 过滤查询结果。
 - [x] P2 优化模板表达式的匹配与解析逻辑，以更好地支持不完整模式（incomplete-mode） ([#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/430))
-- [x] P2 优化 `ParadoxFileChangeCollector` 中与 rootInfo/fileInfo 失效相关的缓存失效逻辑
 
 #### 任务（次要）
 
@@ -553,6 +552,7 @@
   - 参见：`com.intellij.platform.navbar.frontend.ui.NavBarItemComponent`
   - 结论：`com.intellij.ide.navigationToolbar.NavBarModelExtension.getPresentableText(java.lang.Object)` 中也需要检查语言（不会自动检查）
   - 结论：需要防御性编程，各种 elementPresentationService/elementDescriptionService 中的方法都要检查语言
+- [x] P2 优化 `ParadoxFileChangeCollector` 中与 rootInfo/fileInfo 失效相关的缓存失效逻辑
 
 #### 任务（次要）
 
@@ -583,6 +583,10 @@
 - [x] P4 移动：将 `icu.windea.pls.images.ImageFrameInfo` 移到 `icu.windea.pls.core.util.ImageFrameInfo`（对齐 `RangeInfo` 和 `Template`，以后可能还会新增 `ImageLayerInfo` 等）
 - [x] P4 从 `ImageService` 分理出 `ImageContext` 以及 `ImageLifecycleListener`
 - [x] P4 从 `CodeInjectorService` 分理出 `CodeInjectorLifecycleListener`
+- [x] P4 引入 `CancellableInputStream` 和 `CancellableOutputStream`
+  - 可通过 `checker` 进行取消检查
+- [ ] P4 引入 `MonitorableInputStream` 和 `MonitorableOutputStream`
+  - 可监控总长度和已处理长度，可能需要调整命名，可能需要与 `CancellableInputStream` / `CancellableOutputStream` 合并
 
 ## 按主题 {#by-topic}
 

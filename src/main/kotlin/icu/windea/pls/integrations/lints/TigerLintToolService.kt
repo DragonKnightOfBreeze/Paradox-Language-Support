@@ -83,32 +83,6 @@ class TigerLintToolService : Disposable {
         }
     }
 
-    fun validateRootDirectoryAsync(request: TigerLintRequest, project: Project, cancellable: Boolean): TigerLintResult {
-        // 3.0.5 加上状态指示，因为检查结果的缓存失效时机并不是那么显而易见
-        val name = request.name
-        val fileUrl = request.rootFile.presentableUrl
-        val progressTitle = ChronicleIntegrationsBundle.message("lint.tiger.validate.progress.title", name)
-        val progressText = ChronicleIntegrationsBundle.message("lint.tiger.validate.progress.text", name, fileUrl)
-        val taskCancellation = if (cancellable) TaskCancellation.cancellable() else TaskCancellation.nonCancellable()
-        return if (ApplicationManager.getApplication().isDispatchThread) {
-            runWithModalProgressBlocking(ModalTaskOwner.project(project), progressTitle, taskCancellation) {
-                reportRawProgress { rawReporter ->
-                    rawReporter.text(progressText)
-                    validateRootDirectory(request)
-                }
-            }
-        } else {
-            runBlockingCancellable {
-                withBackgroundProgress(project, progressTitle, taskCancellation) {
-                    reportRawProgress { rawReporter ->
-                        rawReporter.text(progressText)
-                        validateRootDirectory(request)
-                    }
-                }
-            }
-        }
-    }
-
     fun isEnabled(): Boolean {
         return LintToolSettings.getInstance().enableTiger
     }
@@ -183,12 +157,38 @@ class TigerLintToolService : Disposable {
             ChronicleModificationTrackers.LocalisationFile,
         )
         val result = try {
-            validateRootDirectoryAsync(request, project, cancellable = false)
+            collectTIgerLintResult(request, project, cancellable = false)
         } catch (e: Exception) {
             checkCancellation(e)
             TigerLintResult(request, error = e)
         }
         return result.copy(modificationTracker = modificationTracker)
+    }
+
+    private fun collectTIgerLintResult(request: TigerLintRequest, project: Project, cancellable: Boolean): TigerLintResult {
+        // 3.0.5 加上状态指示，因为检查结果的缓存失效时机并不是那么显而易见
+        val name = request.name
+        val fileUrl = request.rootFile.presentableUrl
+        val progressTitle = ChronicleIntegrationsBundle.message("lint.tiger.validate.progress.title", name)
+        val progressText = ChronicleIntegrationsBundle.message("lint.tiger.validate.progress.text", name, fileUrl)
+        val taskCancellation = if (cancellable) TaskCancellation.cancellable() else TaskCancellation.nonCancellable()
+        return if (ApplicationManager.getApplication().isDispatchThread) {
+            runWithModalProgressBlocking(ModalTaskOwner.project(project), progressTitle, taskCancellation) {
+                reportRawProgress { rawReporter ->
+                    rawReporter.text(progressText)
+                    validateRootDirectory(request)
+                }
+            }
+        } else {
+            runBlockingCancellable {
+                withBackgroundProgress(project, progressTitle, taskCancellation) {
+                    reportRawProgress { rawReporter ->
+                        rawReporter.text(progressText)
+                        validateRootDirectory(request)
+                    }
+                }
+            }
+        }
     }
 
     private fun processTigerLintResult(result: TigerLintResult, project: Project): TigerLintResult {

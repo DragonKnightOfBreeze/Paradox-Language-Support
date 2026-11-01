@@ -551,7 +551,7 @@ com.intellij.diagnostic.Freeze
   - `ExternalToolDownloadTest` 新增对应下载与冒烟测试。
   - `LintToolProviderExternalTest` 覆盖对应 toolProvider。
 
-#### 2026-10-30 - step 7 - post doc
+#### 2026-10-30 - post doc
 
 - [ ] 作为总结，补充 ADR（AI 编写，`documents/ai-notes/adr/`）
   - 暂时搁置
@@ -608,7 +608,7 @@ com.intellij.diagnostic.Freeze
   - 参见：`icu.windea.pls.lang.resolve.ParadoxImageService.doResolve`
   - 参见：`icu.windea.pls.lang.resolve.ParadoxImageResolveResult.ParadoxImageResolveResult`
   - 现状：暂不确定，可能需要更改行为细节
-- [ ] 考虑将 各种 externalToolProvider 中的操作方法（operation methods）全部改为挂起方法（suspend methods），以暗示应当在后台线程中执行
+- [ ] 考虑将各种 externalToolProvider 中的操作方法（operation methods）全部改为挂起方法（suspend methods），以暗示应当在后台线程中执行
   - 现状：暂不确定
 
 ### 分析
