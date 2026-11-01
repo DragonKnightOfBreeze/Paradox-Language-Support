@@ -80,7 +80,7 @@ class ArchiveServiceTest {
             sevenZ.closeArchiveEntry()
         }
         val target = dir.resolve("out").also { it.createDirectories() }
-        ArchiveService.extract(archive, target, ArchiveType.SevenZip)
+        ArchiveService.extract(archive, target, ArchiveType.SevenZip, ArchiveOptions(allowExternalSevenZip = false))
         Assert.assertEquals("hello", target.resolve("file.txt").readText())
     }
 }

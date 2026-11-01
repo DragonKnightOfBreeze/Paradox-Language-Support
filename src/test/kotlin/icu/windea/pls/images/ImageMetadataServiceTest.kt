@@ -60,6 +60,28 @@ class ImageMetadataServiceTest : BasePlatformTestCase(), ChronicleTestScope {
         assert_getMetadata_byPath(path)
     }
 
+    @Test
+    fun getMetadataOrNull_missingPath_test() {
+        val path = Path.of("build", "tmp", "image-metadata-missing.png")
+        Assert.assertNull(ImageMetadataService.getInstance().getMetadataOrNull(path))
+    }
+
+    @Test
+    fun getMetadata_missingPath_test() {
+        val path = Path.of("build", "tmp", "image-metadata-missing.png")
+        Assert.assertThrows(IllegalStateException::class.java) {
+            ImageMetadataService.getInstance().getMetadata(path)
+        }
+    }
+
+    @Test
+    fun getMetadataOrNull_invalidImage_test() {
+        val path = Path.of("build", "tmp", "image-metadata-invalid.png")
+        path.toFile().parentFile.mkdirs()
+        path.toFile().writeText("not an image")
+        Assert.assertNull(ImageMetadataService.getInstance().getMetadataOrNull(path))
+    }
+
     // region Helpers
 
     private fun assert_getMetadata_byFile(path: Path) {
@@ -67,18 +89,12 @@ class ImageMetadataServiceTest : BasePlatformTestCase(), ChronicleTestScope {
         val file = VfsUtil.findFileByIoFile(path.toFile(), true) ?: error("Cannot find file: $path")
 
         val metadata = ImageMetadataService.getInstance().getMetadata(file, project)
-
-        Assert.assertNotNull(metadata)
-        metadata!!
         Assert.assertTrue(metadata.width > 0)
         Assert.assertTrue(metadata.height > 0)
     }
 
     private fun assert_getMetadata_byPath(path: Path) {
         val metadata = ImageMetadataService.getInstance().getMetadata(path)
-
-        Assert.assertNotNull(metadata)
-        metadata!!
         Assert.assertTrue(metadata.width > 0)
         Assert.assertTrue(metadata.height > 0)
     }

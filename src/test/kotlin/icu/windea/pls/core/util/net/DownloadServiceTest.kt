@@ -3,6 +3,7 @@ package icu.windea.pls.core.util.net
 import com.sun.net.httpserver.HttpServer
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
+import org.junit.Assume
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -80,7 +81,10 @@ class DownloadServiceTest  {
         server.start()
         try {
             val port = server.address.port
-            action(URI("http://127.0.0.1:$port/file"))
+            val uri = URI("http://127.0.0.1:$port/file")
+            // 本地测试不假定系统代理一定存在，也不假定其不存在；如果存在代理则跳过
+            Assume.assumeTrue("System proxy is configured; skip local download test", ProxyService.resolve(uri) == null)
+            action(uri)
         } finally {
             server.stop(0)
         }

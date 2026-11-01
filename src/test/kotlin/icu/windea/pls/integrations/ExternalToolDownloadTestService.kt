@@ -76,26 +76,55 @@ object ExternalToolDownloadTestService {
         null
     }
 
-    val ck3Tiger: ExternalToolDownloadDescriptor? = when {
-        SystemInfo.isWindows -> ExternalToolDownloadDescriptor(
-            name = "ck3-tiger",
-            url = "https://github.com/amtep/tiger/releases/download/v1.19.0/ck3-tiger-windows-v1.19.0.zip",
-            fileName = "ck3-tiger-windows-v1.19.0.zip",
-            executableName = "ck3-tiger.exe",
-            archiveType = ArchiveType.Zip,
-            sha256 = "ddafd73abcff8e802b82bf3ae622d02c04dfc8a9dd0cad44b2dbf67568a10505",
-            version = "v1.19.0",
-        )
-        SystemInfo.isLinux -> ExternalToolDownloadDescriptor(
-            name = "ck3-tiger",
-            url = "https://github.com/amtep/tiger/releases/download/v1.19.0/ck3-tiger-linux-v1.19.0.tar.gz",
-            fileName = "ck3-tiger-linux-v1.19.0.tar.gz",
-            executableName = "ck3-tiger",
-            archiveType = ArchiveType.TarGz,
-            sha256 = "6d72d276c2b2a953f63221ff8050d1276a085b5a2ffe74977675fdf6e17e9ff3",
-            version = "v1.19.0",
-        )
-        else -> null
+    val ck3Tiger: ExternalToolDownloadDescriptor? = tigerDescriptor(
+        name = "ck3-tiger",
+        executableName = "ck3-tiger",
+        windowsSha256 = "ddafd73abcff8e802b82bf3ae622d02c04dfc8a9dd0cad44b2dbf67568a10505",
+        linuxSha256 = "6d72d276c2b2a953f63221ff8050d1276a085b5a2ffe74977675fdf6e17e9ff3",
+    )
+
+    val vic3Tiger: ExternalToolDownloadDescriptor? = tigerDescriptor(
+        name = "vic3-tiger",
+        executableName = "vic3-tiger",
+        windowsSha256 = "45022a8fd91ed817f49712f35626d05c142715c8d0dc715c7b5bb7ac926ef8d7",
+        linuxSha256 = "eff63a3f74646634f81d0f2fc4e7f631c2b9276055ce3cd0e0cace0866c64ec4",
+    )
+
+    val irTiger: ExternalToolDownloadDescriptor? = tigerDescriptor(
+        name = "imperator-tiger",
+        executableName = "imperator-tiger",
+        windowsSha256 = "f5d3537ab05fc590b09997700bddcac80bbcf41986713d2bf9e2a2643e5b9444",
+        linuxSha256 = "591a88df9a58f9788cae5b9e47715fa7835949622a6b2a876f85a7b5ac06ddeb",
+    )
+
+    private fun tigerDescriptor(
+        name: String,
+        executableName: String,
+        windowsSha256: String,
+        linuxSha256: String,
+        version: String = "v1.19.0",
+    ): ExternalToolDownloadDescriptor? {
+        return when {
+            SystemInfo.isWindows -> ExternalToolDownloadDescriptor(
+                name = name,
+                url = "https://github.com/amtep/tiger/releases/download/$version/$name-windows-$version.zip",
+                fileName = "$name-windows-$version.zip",
+                executableName = "$executableName.exe",
+                archiveType = ArchiveType.Zip,
+                sha256 = windowsSha256,
+                version = version,
+            )
+            SystemInfo.isLinux -> ExternalToolDownloadDescriptor(
+                name = name,
+                url = "https://github.com/amtep/tiger/releases/download/$version/$name-linux-$version.tar.gz",
+                fileName = "$name-linux-$version.tar.gz",
+                executableName = executableName,
+                archiveType = ArchiveType.TarGz,
+                sha256 = linuxSha256,
+                version = version,
+            )
+            else -> null
+        }
     }
 
     private val locks = ConcurrentHashMap<String, Mutex>()

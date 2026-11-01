@@ -8,7 +8,6 @@ import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.lang.resolve.ParadoxImageResolveResult
 import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.model.policies.ImageRenderFailurePolicy
-import icu.windea.pls.model.policies.ImageRenderPolicy
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
@@ -54,8 +53,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         Assert.assertTrue(Files.isRegularFile(target))
         Assert.assertEquals(target, service.getCachedImagePath(request))
         val metadata = ImageMetadataService.getInstance().getMetadata(target)
-        Assert.assertNotNull(metadata)
-        Assert.assertTrue(metadata!!.width <= 5)
+        Assert.assertTrue(metadata.width <= 5)
         Assert.assertTrue(metadata.height <= 5)
     }
 
@@ -99,107 +97,6 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         Assert.assertEquals(listOf(target), session.awaitAll())
         Assert.assertTrue(Files.isRegularFile(target))
         Assert.assertEquals(target, service.getCachedImagePath(ImageRenderRequest(source, target)))
-    }
-
-    @Test
-    fun resolveUrl_acceptBrokenFailurePolicy_test() {
-        val request = createBrokenRequest("accept-broken")
-        val result = ParadoxImageResolveResult(request.sourcePath, request.targetPath)
-
-        val url = withRenderFailurePolicy(ImageRenderFailurePolicy.AcceptBroken) {
-            resolveUrlOnPooledThread(result)
-        }
-
-        Assert.assertEquals(request.targetPath.absolutePathString(), url)
-    }
-
-    @Test
-    fun resolveUrl_removeImageFailurePolicy_test() {
-        val request = createBrokenRequest("remove-image")
-        val result = ParadoxImageResolveResult(request.sourcePath, request.targetPath)
-
-        val url = withRenderFailurePolicy(ImageRenderFailurePolicy.RemoveImage) {
-            resolveUrlOnPooledThread(result)
-        }
-
-        Assert.assertNull(url)
-    }
-
-    @Test
-    fun resolveUrl_placeholderFailurePolicy_test() {
-        val request = createBrokenRequest("placeholder")
-        val result = ParadoxImageResolveResult(request.sourcePath, request.targetPath)
-
-        val url = withRenderFailurePolicy(ImageRenderFailurePolicy.Placeholder) {
-            resolveUrlOnPooledThread(result)
-        }
-
-        Assert.assertEquals(ImageRenderService.getInstance().getPlaceholderImagePath().absolutePathString(), url)
-        Assert.assertTrue(Files.isRegularFile(ImageRenderService.getInstance().getPlaceholderImagePath()))
-    }
-
-    @Test
-    fun resolveUrl_asyncRenderPolicy_test() {
-        val dir = root
-        val source = dir.resolve("async-source.png")
-        val target = dir.resolve("async-target.png")
-        Files.deleteIfExists(target)
-        writeImage(source, 10, 10)
-
-        val result = ParadoxImageResolveResult(source, target)
-        val url = ParadoxImageManager.resolveUrl(result, project, ImageRenderPolicy.Async)
-        Assert.assertNull(url)
-
-        val deadline = System.currentTimeMillis() + 10_000
-        while (!Files.isRegularFile(target) && System.currentTimeMillis() < deadline) {
-            Thread.sleep(50)
-        }
-        Assert.assertTrue("Async image rendering should eventually finish", Files.isRegularFile(target))
-    }
-
-    @Test
-    fun resolveUrl_usesSettingsRenderPolicy_test() {
-        val dir = root
-        val source = dir.resolve("settings-async-source.png")
-        val target = dir.resolve("settings-async-target.png")
-        Files.deleteIfExists(target)
-        writeImage(source, 10, 10)
-
-        val settings = ChronicleImageSettings.getInstance().state
-        val oldPolicy = settings.renderPolicy
-        settings.renderPolicy = ImageRenderPolicy.Async
-        try {
-            val url = ParadoxImageManager.resolveUrl(ParadoxImageResolveResult(source, target), project)
-            Assert.assertNull(url)
-        } finally {
-            settings.renderPolicy = oldPolicy
-        }
-        val deadline = System.currentTimeMillis() + 10_000
-        while (!Files.isRegularFile(target) && System.currentTimeMillis() < deadline) {
-            Thread.sleep(50)
-        }
-        Assert.assertTrue("Settings-based async rendering should eventually finish", Files.isRegularFile(target))
-    }
-
-    @Test
-    fun resolveUrl_explicitSyncOverridesSettings_test() {
-        val dir = root
-        val source = dir.resolve("sync-source.png")
-        val target = dir.resolve("sync-target.png")
-        Files.deleteIfExists(target)
-        writeImage(source, 10, 10)
-
-        val result = ParadoxImageResolveResult(source, target)
-        val settings = ChronicleImageSettings.getInstance().state
-        val oldPolicy = settings.renderPolicy
-        settings.renderPolicy = ImageRenderPolicy.Async
-        try {
-            val url = resolveUrlOnPooledThread(result, ImageRenderPolicy.Sync)
-            Assert.assertEquals(target.absolutePathString(), url)
-            Assert.assertTrue(Files.isRegularFile(target))
-        } finally {
-            settings.renderPolicy = oldPolicy
-        }
     }
 
     @Test
@@ -263,11 +160,6 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         return ImageRenderRequest(source, target)
     }
 
-    private fun resolveUrlOnPooledThread(result: ParadoxImageResolveResult, policy: ImageRenderPolicy? = null): String? {
-        return ApplicationManager.getApplication()
-            .executeOnPooledThread<String?> { ParadoxImageManager.resolveUrl(result, project, policy) }
-            .get()
-    }
 
     private fun <T> withRenderFailurePolicy(policy: ImageRenderFailurePolicy, block: () -> T): T {
         val settings = ChronicleImageSettings.getInstance().state

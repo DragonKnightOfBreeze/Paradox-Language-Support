@@ -99,9 +99,7 @@ class ImageServiceTest : BasePlatformTestCase() {
         Assert.assertTrue("Empty converted image: $target", Files.size(target) > 0)
         val targetMetadata = ImageMetadataService.getInstance().getMetadata(target)
         val sourceMetadata = ImageMetadataService.getInstance().getMetadata(source)
-        Assert.assertNotNull("Cannot read metadata: $target", targetMetadata)
-        Assert.assertNotNull("Cannot read metadata: $source", sourceMetadata)
-        Assert.assertEquals("Unexpected width: $target", sourceMetadata!!.width, targetMetadata!!.width)
+        Assert.assertEquals("Unexpected width: $target", sourceMetadata.width, targetMetadata.width)
         Assert.assertEquals("Unexpected height: $target", sourceMetadata.height, targetMetadata.height)
     }
 }

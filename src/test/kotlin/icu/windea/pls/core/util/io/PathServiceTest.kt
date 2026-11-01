@@ -87,11 +87,20 @@ class PathServiceTest {
     }
 
     @Test
+    fun ensureParentDirectoryCreated_test() {
+        val file = root.resolve("nested/parent/file.txt")
+        Assert.assertTrue(PathService.ensureParentDirectoryCreated(file))
+        assertTrue(file.parent.isDirectory())
+    }
+
+    @Test
     fun findExecutable_test() {
         val dir = root.resolve("find-executable")
         val executable = dir.resolve("bin/tool").also { it.parent.createDirectories() }
         Files.writeString(executable, "")
         Assert.assertEquals(executable, PathService.findExecutable(dir, "tool"))
+        Assert.assertEquals(executable, PathService.findExecutable(dir, "TOOL"))
         Assert.assertNull(PathService.findExecutable(dir, "missing"))
+        Assert.assertNull(PathService.findExecutable(root.resolve("missing-dir"), "tool"))
     }
 }

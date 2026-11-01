@@ -7,6 +7,8 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.nio.file.Files
+import java.nio.file.Path
 
 /**
  * @see IoService
@@ -66,6 +68,33 @@ class IoServiceTest {
         Assert.assertThrows(ProcessCanceledException::class.java) {
             output.write(ByteArray(4))
         }
+    }
+
+    @Test
+    fun copyPath_test() {
+        val dir = Path.of("build", "tmp", "io-service-test")
+        dir.toFile().deleteRecursively()
+        val source = dir.resolve("source.txt")
+        val target = dir.resolve("nested/target.txt")
+        Files.createDirectories(source.parent)
+        Files.writeString(source, "hello")
+
+        val bytesCopied = IoService.copy(source, target)
+
+        Assert.assertEquals(5L, bytesCopied)
+        Assert.assertEquals("hello", Files.readString(target))
+    }
+
+    @Test
+    fun copyPath_samePath_test() {
+        val source = Path.of("build", "tmp", "io-service-test", "same.txt")
+        Files.createDirectories(source.parent)
+        Files.writeString(source, "hello")
+
+        val bytesCopied = IoService.copy(source, source)
+
+        Assert.assertEquals(-1L, bytesCopied)
+        Assert.assertEquals("hello", Files.readString(source))
     }
 
     @Test
