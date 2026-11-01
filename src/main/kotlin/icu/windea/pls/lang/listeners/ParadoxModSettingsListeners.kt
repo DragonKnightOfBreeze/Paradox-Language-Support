@@ -14,6 +14,21 @@ import icu.windea.pls.lang.roots.ParadoxLibrary
 import icu.windea.pls.lang.roots.ParadoxLibraryService
 
 /**
+ * 当添加或更改模组设置后，更新编辑器通知。
+ *
+ * @see ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
+ */
+class ParadoxUpdateEditorNotificationsOnModSettingsChangedListener : ParadoxModSettingsListener {
+    override fun onAdd(modSettings: ParadoxModSettingsState) {
+        EditorNotifications.updateAll()
+    }
+
+    override fun onChange(modSettings: ParadoxModSettingsState) {
+        EditorNotifications.updateAll()
+    }
+}
+
+/**
  * 当添加或更改模组设置后，刷新库信息。
  *
  * @see ParadoxLibrary
@@ -41,20 +56,5 @@ class ParadoxUpdateLibraryOnModSettingsChangedListener : ParadoxModSettingsListe
         // 重新解析根目录下已打开的文件
         val allOpenFiles = ChronicleAnalysisManager.findAllOpenFiles().filter { VfsUtil.isAncestor(root, it, true) }
         ChronicleAnalysisManager.reparseFiles(allOpenFiles)
-    }
-}
-
-/**
- * 当更改模组设置后，更新编辑器通知。
- *
- * @see ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
- */
-class ParadoxUpdateEditorNotificationsOnModSettingsChangedListener : ParadoxModSettingsListener {
-    override fun onAdd(modSettings: ParadoxModSettingsState) {
-        EditorNotifications.updateAll()
-    }
-
-    override fun onChange(modSettings: ParadoxModSettingsState) {
-        EditorNotifications.updateAll()
     }
 }

@@ -1,7 +1,9 @@
 package icu.windea.pls.lang
 
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileVisitor
 import com.intellij.openapi.vfs.newvfs.events.VFileContentChangeEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileCopyEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileCreateEvent
@@ -9,22 +11,23 @@ import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
+import com.intellij.util.application
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.base.analysis.ChronicleAnalysisManager
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.lang.analysis.ParadoxAnalysisDataManager
+import icu.windea.pls.lang.analysis.ParadoxAnalysisManager
 import icu.windea.pls.lang.analysis.ParadoxAnalysisScope
+import icu.windea.pls.lang.listeners.ParadoxRootInfoListener
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.model.constants.ChronicleConstants
 
 @Optimized
 class ParadoxFileChangeCollector : ParadoxAnalysisScope {
-    private val rootInfoContextFiles: MutableSet<VirtualFile> = mutableSetOf()
-    private val rootFilesToClearRootInfo: MutableSet<VirtualFile> = mutableSetOf()
-
-    private val filesToClearFileInfo: MutableSet<VirtualFile> = mutableSetOf()
-    private val filesToClearLocaleConfig: MutableSet<VirtualFile> = mutableSetOf()
-    private val filesToClearSliceInfos: MutableSet<VirtualFile> = mutableSetOf()
+    private val filesToGetRootInfo: MutableSet<VirtualFile> = hashSetOf()
+    private val filesToClearRootInfo: MutableSet<VirtualFile> = hashSetOf()
+    private val filesToClearFileInfo: MutableSet<VirtualFile> = hashSetOf()
+    private val filesToClearLocaleConfig: MutableSet<VirtualFile> = hashSetOf()
 
     private var reparseAllOpenFiles: Boolean = false
     private var refreshFilePaths: Boolean = false
@@ -39,8 +42,7 @@ class ParadoxFileChangeCollector : ParadoxAnalysisScope {
                     val parent = event.parent
 
                     if (shouldRestartAnalysis(fileName)) {
-                        rootInfoContextFiles += parent
-                        reparseAllOpenFiles = true
+                        filesToGetRootInfo += parent
                     }
                     if (shouldRefreshForFilePaths(parent)) {
                         refreshFilePaths = true
@@ -52,11 +54,9 @@ class ParadoxFileChangeCollector : ParadoxAnalysisScope {
 
                     filesToClearFileInfo += file
                     filesToClearLocaleConfig += file
-                    filesToClearSliceInfos += file
 
                     if (shouldRestartAnalysis(fileName)) {
-                        selectRootFile(file.parent)?.let { rootFilesToClearRootInfo += it }
-                        reparseAllOpenFiles = true
+                        file.parent?.let { filesToGetRootInfo += it }
                     }
                     if (shouldRefreshForFilePaths(file.parent)) {
                         refreshFilePaths = true
@@ -66,8 +66,7 @@ class ParadoxFileChangeCollector : ParadoxAnalysisScope {
                     val fileName = event.newChildName
 
                     if (shouldRestartAnalysis(fileName)) {
-                        rootInfoContextFiles += event.newParent
-                        reparseAllOpenFiles = true
+                        event.newParent.let { filesToGetRootInfo += it }
                     }
                     if (shouldRefreshForFilePaths(event.newParent)) {
                         refreshFilePaths = true
@@ -79,12 +78,10 @@ class ParadoxFileChangeCollector : ParadoxAnalysisScope {
 
                     filesToClearFileInfo += file
                     filesToClearLocaleConfig += file
-                    filesToClearSliceInfos += file
 
                     if (shouldRestartAnalysis(fileName)) {
-                        selectRootFile(event.oldParent)?.let { rootFilesToClearRootInfo += it }
-                        rootInfoContextFiles += event.newParent
-                        reparseAllOpenFiles = true
+                        event.newParent.let { filesToGetRootInfo += it }
+                        event.oldParent?.let { filesToGetRootInfo += it }
                     }
                     if (shouldRefreshForFilePaths(file)) {
                         refreshFilePaths = true
@@ -102,12 +99,9 @@ class ParadoxFileChangeCollector : ParadoxAnalysisScope {
 
                     filesToClearFileInfo += file
                     filesToClearLocaleConfig += file
-                    filesToClearSliceInfos += file
 
                     if (shouldRestartAnalysis(newFileName) || shouldRestartAnalysis(oldFileName)) {
-                        selectRootFile(file)?.let { rootFilesToClearRootInfo += it }
-                        rootInfoContextFiles += file
-                        reparseAllOpenFiles = true
+                        file.parent?.let { filesToGetRootInfo += it }
                     }
                     if (shouldRefreshForFilePaths(file)) {
                         refreshFilePaths = true
@@ -121,11 +115,9 @@ class ParadoxFileChangeCollector : ParadoxAnalysisScope {
                     val fileName = file.name
 
                     filesToClearLocaleConfig += file
-                    filesToClearSliceInfos += file
 
                     if (shouldRestartAnalysis(fileName)) {
-                        rootInfoContextFiles += file
-                        reparseAllOpenFiles = true
+                        file.parent?.let { filesToGetRootInfo += it }
                     }
                 }
             }
@@ -145,45 +137,52 @@ class ParadoxFileChangeCollector : ParadoxAnalysisScope {
     }
 
     fun isChanged(): Boolean {
-        return rootInfoContextFiles.isNotEmpty()
-            || rootFilesToClearRootInfo.isNotEmpty()
+        return filesToGetRootInfo.isNotEmpty()
             || filesToClearFileInfo.isNotEmpty()
+            || filesToClearRootInfo.isNotEmpty()
             || filesToClearLocaleConfig.isNotEmpty()
-            || filesToClearSliceInfos.isNotEmpty()
             || reparseAllOpenFiles
             || refreshFilePaths
             || refreshInlineScripts
     }
 
     fun afterVfsChange() {
-        // NOTE 2.1.2 分析数据缓存需要在 VFS 更改之后再清空，否则可能会被再次加载
-
         // 清空分析数据缓存
-        if (rootInfoContextFiles.isNotEmpty()) {
-            rootInfoContextFiles.forEach { contextFile ->
-                selectRootFile(contextFile)?.let { rootFile -> rootFilesToClearRootInfo += rootFile }
+        // NOTE 2.1.2 分析数据缓存需要在 VFS 更改之后再清空，否则可能会被再次加载
+        if (filesToGetRootInfo.isNotEmpty()) {
+            filesToGetRootInfo.forEach { file ->
+                // NOTE 3.0.5 需要同时检查已缓存和未缓存的数据（仅当 rootFile/metadata 发生变化时才会重置）
+                val oldRootInfo = ParadoxAnalysisManager.getFileInfo(file, cached = true)?.rootInfo
+                val newRootInfo = ParadoxAnalysisManager.getFileInfo(file, cached = false)?.rootInfo
+                val changed = !ParadoxAnalysisManager.isEquivalent(oldRootInfo, newRootInfo)
+                if (changed) {
+                    application.messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onChange(oldRootInfo, newRootInfo)
+                    oldRootInfo?.rootFile?.let { filesToClearRootInfo.add(it) }
+                    newRootInfo?.rootFile?.let { filesToClearRootInfo.add(it) }
+                }
             }
         }
-        if (rootFilesToClearRootInfo.isNotEmpty()) {
-            rootFilesToClearRootInfo.forEach { rootFile ->
-                ParadoxAnalysisDataManager.clearData(rootFile, ParadoxAnalysisDataManager.Keys.cachedRootInfo)
+        if (filesToClearRootInfo.isNotEmpty()) {
+            filesToClearRootInfo.forEach { file ->
+                ParadoxAnalysisDataManager.clearData(file, ParadoxAnalysisDataManager.Keys.cachedRootInfo)
+                // NOTE 3.0.5 这是有必要的，但可能有一定的时间成本（例如，旧的 rootInfo 可能已被缓存为 null，此时其中的 fileInfo 需要全部重置）
+                VfsUtil.visitChildrenRecursively(file, object : VirtualFileVisitor<Void>() {
+                    override fun visitFile(child: VirtualFile): Boolean {
+                        ParadoxAnalysisDataManager.clearData(child, ParadoxAnalysisDataManager.Keys.cachedFileInfo)
+                        return true
+                    }
+                })
             }
+            reparseAllOpenFiles = true
         }
         if (filesToClearFileInfo.isNotEmpty()) {
             filesToClearFileInfo.forEach { file ->
                 ParadoxAnalysisDataManager.clearData(file, ParadoxAnalysisDataManager.Keys.cachedFileInfo)
             }
-
         }
         if (filesToClearLocaleConfig.isNotEmpty()) {
             filesToClearLocaleConfig.forEach { file ->
                 ParadoxAnalysisDataManager.clearData(file, ParadoxAnalysisDataManager.Keys.cachedLocaleConfig)
-            }
-
-        }
-        if (filesToClearSliceInfos.isNotEmpty()) {
-            filesToClearSliceInfos.forEach { file ->
-                ParadoxAnalysisDataManager.clearData(file, ParadoxAnalysisDataManager.Keys.sliceInfos)
             }
         }
 

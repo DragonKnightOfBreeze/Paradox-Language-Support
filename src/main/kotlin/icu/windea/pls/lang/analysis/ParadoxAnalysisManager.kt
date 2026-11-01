@@ -18,7 +18,6 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.castOrNull
-import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toVirtualFile
@@ -49,7 +48,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
 
     // region Get Methods
 
-    fun getRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
+    fun getRootInfo(rootFile: VirtualFile, cached: Boolean = true): ParadoxRootInfo? {
         if (!rootFile.isDirectory) return null
 
         // skip for `StubVirtualFile` (unsupported)
@@ -61,22 +60,19 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         doGetForcedRootInfo(rootFile)?.let { return it }
 
         // get root info from cache (load if necessary)
-        return doGetCachedRootInfo(rootFile)
+        return doGetRootInfo(rootFile, cached)
     }
 
     private fun doGetForcedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
         return rootFile.injectedRootInfo ?: markedRootInfo?.also { rootFile.injectedRootInfo = it }
     }
 
-    private fun doGetCachedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
+    private fun doGetRootInfo(rootFile: VirtualFile, cached: Boolean): ParadoxRootInfo? {
+        if (!cached) return doResolveRootInfo(rootFile)
+        ParadoxAnalysisLifecycleService.ensureLoaded()
         val cachedRootInfo = ParadoxAnalysisDataManager.getOrPutData(rootFile, ParadoxAnalysisDataManager.Keys.cachedRootInfo) { LazyValue() }
-        cachedRootInfo.check { rootInfo ->
-            doCheckRootInfo(rootInfo)
-        }
-        return cachedRootInfo.initialize {
-            ParadoxAnalysisLifecycleService.ensureLoaded()
-            runCatchingCancellable { doResolveRootInfo(rootFile) }.onFailure { e -> logger.warn(e) }.getOrNull()
-        }
+        cachedRootInfo.check { rootInfo -> doCheckRootInfo(rootInfo) }
+        return cachedRootInfo.initialize { doResolveRootInfo(rootFile) }
     }
 
     private fun doCheckRootInfo(rootInfo: ParadoxRootInfo): Boolean {
@@ -86,19 +82,22 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
     }
 
     private fun doResolveRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        val rootInfo = ParadoxAnalysisService.resolveRootInfo(rootFile)
-        if (rootInfo != null && !VirtualFileService.isLightFile(rootFile)) {
-            application.messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
-        }
-        return rootInfo
+        runCatchingCancellable {
+            val rootInfo = ParadoxAnalysisService.resolveRootInfo(rootFile)
+            if (rootInfo != null && !VirtualFileService.isLightFile(rootFile)) {
+                application.messageBus.syncPublisher(ParadoxRootInfoListener.TOPIC).onAdd(rootInfo)
+            }
+            return rootInfo
+        }.onFailure { e -> logger.warn(e) }
+        return null
     }
 
-    fun getFileInfo(element: PsiElement): ParadoxFileInfo? {
+    fun getFileInfo(element: PsiElement, cached: Boolean = true): ParadoxFileInfo? {
         val file = selectFile(element) ?: return null
-        return getFileInfo(file)
+        return getFileInfo(file, cached)
     }
 
-    fun getFileInfo(file: VirtualFile): ParadoxFileInfo? {
+    fun getFileInfo(file: VirtualFile, cached: Boolean = true): ParadoxFileInfo? {
         // no file info for `VirtualFileWindow` (injected PSI)
         if (VirtualFileService.isInjectedFile(file)) return null
         // skip for `StubVirtualFile` (unsupported)
@@ -110,7 +109,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         doGetForcedFileInfo(file)?.let { return it }
 
         // get file info from cache (load if necessary)
-        return doGetCachedFileInfo(file)
+        return doGetFileInfo(file, cached)
     }
 
     fun getFileInfo(filePath: FilePath): ParadoxFileInfo? {
@@ -121,15 +120,13 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         return file.injectedFileInfo ?: markedFileInfo?.takeIf { it.isPossible(file) }?.also { file.injectedFileInfo = it }
     }
 
-    private fun doGetCachedFileInfo(file: VirtualFile): ParadoxFileInfo? {
+    @Suppress("KotlinConstantConditions")
+    private fun doGetFileInfo(file: VirtualFile, cached: Boolean): ParadoxFileInfo? {
+        if (!cached) return doResolveFileInfo(file, cached)
+        ParadoxAnalysisLifecycleService.ensureLoaded()
         val cachedFileInfo = ParadoxAnalysisDataManager.getOrPutData(file, ParadoxAnalysisDataManager.Keys.cachedFileInfo) { LazyValue() }
-        cachedFileInfo.check { fileInfo ->
-            doCheckFileInfo(fileInfo)
-        }
-        return cachedFileInfo.initialize {
-            ParadoxAnalysisLifecycleService.ensureLoaded()
-            runCatchingCancellable { doResolveFileInfo(file) }.onFailure { e -> logger.warn(e) }.getOrNull()
-        }
+        cachedFileInfo.check { fileInfo -> doCheckFileInfo(fileInfo) }
+        return cachedFileInfo.initialize { doResolveFileInfo(file, cached) }
     }
 
     private fun doCheckFileInfo(fileInfo: ParadoxFileInfo): Boolean {
@@ -143,25 +140,27 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         // return true
     }
 
-    private fun doResolveFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        val filePath = file.path
-        var currentFilePath = filePath.toPathOrNull() ?: return null
-        var currentFile = doGetFile(file, currentFilePath)
-        while (true) {
-            val rootInfo = if (currentFile == null) null else getRootInfo(currentFile)
-            if (rootInfo != null) {
-                val fileInfo = ParadoxAnalysisService.resolveFileInfo(file, rootInfo)
-                return fileInfo
+    private fun doResolveFileInfo(file: VirtualFile, cached: Boolean): ParadoxFileInfo? {
+        runCatchingCancellable {
+            val filePath = file.path
+            var currentFilePath = filePath.toPathOrNull() ?: return null
+            var currentFile = doGetFile(file, currentFilePath)
+            while (true) {
+                val rootInfo = if (currentFile == null) null else getRootInfo(currentFile, cached)
+                if (rootInfo != null) {
+                    val fileInfo = ParadoxAnalysisService.resolveFileInfo(file, rootInfo)
+                    return fileInfo
+                }
+                currentFilePath = currentFilePath.parent ?: break
+                currentFile = doGetFile(currentFile?.parent, currentFilePath)
             }
-            currentFilePath = currentFilePath.parent ?: break
-            currentFile = doGetFile(currentFile?.parent, currentFilePath)
-        }
+        }.onFailure { e -> logger.warn(e) }
         return null
     }
 
     private fun doGetFileInfo(filePath: FilePath): ParadoxFileInfo? {
-        try {
-            // 直接尝试通过filePath获取fileInfo
+        runCatchingCancellable {
+            // 直接尝试通过 filePath 获取 fileInfo
             var currentFilePath = filePath.path.toPathOrNull() ?: return null
             var currentFile = currentFilePath.toVirtualFile()
             while (true) {
@@ -173,28 +172,21 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
                 currentFilePath = currentFilePath.parent ?: break
                 currentFile = currentFilePath.toVirtualFile()
             }
-            return null
-        } catch (e: Exception) {
-            checkCancellation(e)
-            logger.warn(e)
-            return null
-        }
+        }.onFailure { e -> logger.warn(e) }
+        return null
     }
 
     private fun doGetFile(file: VirtualFile?, filePath: Path): VirtualFile? {
-        // 尝试兼容某些file是LightVirtualFile的情况（例如，file位于VCS DIFF视图中）
-        try {
+        // 尝试兼容某些 file 是 LightVirtualFile 的情况（例如，file 位于 VCS DIFF 视图中）
+        runCatchingCancellable {
             if (file is LightVirtualFile) {
                 file.originalFile?.let { return it }
                 filePath.toVirtualFile()?.let { return it }
                 return null
             }
             return file
-        } catch (e: Exception) {
-            checkCancellation(e)
-            logger.warn(e)
-            return null
-        }
+        }.onFailure { e -> logger.warn(e) }
+        return null
     }
 
     fun getLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
@@ -209,31 +201,28 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         doGetForcedLocaleConfig(file)?.let { return it }
 
         // get locale config from cache (load if necessary)
-        return doGetCachedLocaleConfig(file, project)
+        return doGetLocaleConfig(file, project)
     }
 
     private fun doGetForcedLocaleConfig(file: VirtualFile): CwtLocaleConfig? {
         return file.injectedLocaleConfig
     }
 
-    private fun doGetCachedLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
+    private fun doGetLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
         if (DumbService.isDumb(project)) return null // NOTE 2.1.2 incase index not ready
+        ParadoxAnalysisLifecycleService.ensureLoaded()
         val cachedLocaleConfig = ParadoxAnalysisDataManager.getOrPutData(file, ParadoxAnalysisDataManager.Keys.cachedLocaleConfig) { LazyValue() }
-        return cachedLocaleConfig.initialize {
-            ParadoxAnalysisLifecycleService.ensureLoaded()
-            runCatchingCancellable { doResolveLocaleConfig(file, project) }.onFailure { e -> logger.warn(e) }.getOrNull()
-        }
+        return cachedLocaleConfig.initialize { doResolveLocaleConfig(file, project) }
     }
 
     private fun doResolveLocaleConfig(file: VirtualFile, project: Project): CwtLocaleConfig? {
-        val localeId = ParadoxAnalysisService.resolveLocaleId(file, project) ?: return null
-        val gameType = selectGameType(file)
-        val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
-        return configGroup.locales.get(localeId)
-    }
-
-    fun getSliceInfos(file: VirtualFile): MutableSet<String> {
-        return ParadoxAnalysisDataManager.getOrPutData(file, ParadoxAnalysisDataManager.Keys.sliceInfos) { mutableSetOf() }
+        runCatchingCancellable {
+            val localeId = ParadoxAnalysisService.resolveLocaleId(file, project) ?: return null
+            val gameType = selectGameType(file)
+            val configGroup = ChronicleFacade.getConfigGroup(project, gameType)
+            return configGroup.locales.get(localeId)
+        }.onFailure { e -> logger.warn(e) }
+        return null
     }
 
     // endregion
@@ -340,7 +329,16 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
 
     // endregion
 
-    // region Get Selected Methods
+    // region Other Methods
+
+    fun isEquivalent(rootInfo: ParadoxRootInfo?, otherRootInfo: ParadoxRootInfo?): Boolean {
+        if (rootInfo == null && otherRootInfo == null) return true
+        if (rootInfo == null || otherRootInfo == null) return false
+        if (rootInfo !is ParadoxRootInfo.MetadataBased || otherRootInfo !is ParadoxRootInfo.MetadataBased) return false
+        if (rootInfo.rootFile != otherRootInfo.rootFile) return false
+        if (rootInfo.metadata != otherRootInfo.metadata) return false
+        return true
+    }
 
     fun getSelectedGameType(project: Project): ParadoxGameType? {
         val fileEditorManager = FileEditorManager.getInstance(project)

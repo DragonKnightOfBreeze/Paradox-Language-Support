@@ -499,12 +499,16 @@
               topic="icu.windea.pls.lang.listeners.ParadoxPreferredLocaleListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxRefreshOnModGameTypeChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxModGameTypeListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateEditorNotificationsOnGameSettingsChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxGameSettingsListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnGameSettingsChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxGameSettingsListener"/>
-    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnModSettingsChangedListener"
-              topic="icu.windea.pls.lang.listeners.ParadoxModSettingsListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateEditorNotificationsOnModSettingsChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxModSettingsListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateLibraryOnModSettingsChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxModSettingsListener"/>
+    <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateEditorNotificationsOnRootInfoChangedListener"
+              topic="icu.windea.pls.lang.listeners.ParadoxRootInfoListener"/>
     <listener class="icu.windea.pls.lang.listeners.ParadoxUpdateSettingsOnRootInfoChangedListener"
               topic="icu.windea.pls.lang.listeners.ParadoxRootInfoListener"/>
   </applicationListeners>

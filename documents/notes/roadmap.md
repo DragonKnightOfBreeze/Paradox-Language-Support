@@ -483,6 +483,7 @@
 - [x] P4 修复意外行为：Markdown 文件中的部分内联代码（如 `ArrayList()`）可以通过查找用法指向到意外位置（如 `effects.cwt` 中的部分 effect） ([P22](issues/p22-markdown-find-usages-unexpected-behavior.md))
   - 结论：在 `icu.windea.pls.lang.navigation.CwtConfigSymbolChooseByNameContributor.processElementsWithName` 中，未按参数 `name` 过滤查询结果。
 - [x] P2 优化模板表达式的匹配与解析逻辑，以更好地支持不完整模式（incomplete-mode） ([#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/430))
+- [x] P2 优化 `ParadoxFileChangeCollector` 中与 rootInfo/fileInfo 失效相关的缓存失效逻辑
 
 #### 任务（次要）
 

@@ -28,8 +28,6 @@ object ParadoxAnalysisDataManager {
         val cachedFileInfo by registerKey<LazyValue<ParadoxFileInfo>>(this)
         /** 用于在文件级别保存语言环境规则（[CwtLocaleConfig]）。 */
         val cachedLocaleConfig by registerKey<LazyValue<CwtLocaleConfig>>(this)
-        /** 用于切分图片文件。 */
-        val sliceInfos by registerKey<MutableSet<String>>(this)
 
         /** 用于为文件注入根信息（[ParadoxRootInfo]）。 */
         val injectedRootInfo by registerKey<ParadoxRootInfo>(this)
