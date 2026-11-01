@@ -2,8 +2,8 @@
 
 > - 模块：后端 > 通用
 > - 版本：v3.0.5
-> - 日期：2026-10-27
-> - 状态：WIP
+> - 日期：2026-10-27 ~ 2026-11-01
+> - 状态：基本完成（告一段落）
 
 ## 说明
 
@@ -607,7 +607,6 @@ com.intellij.diagnostic.Freeze
 - [x] 内嵌提示的图标不再在 collect 中读取 metadata、调用同步 `resolveUrl` 或触发懒加载 Icon。
 - [x] 新增 `AsyncIconPresentation`：占位 `StatefulPresentation`，后台物化完成后在 EDT 更新。
 - [x] 新增 `ImageRenderService.renderImageIcon`：在后台读取 metadata、渲染并解码为内存 Icon。
-- [ ] 为 hints/docs 上下文补充专门的回归测试（验证 collect/EDT 不发生图片 IO）。
 
 #### 2026-11-01 - step 9 - presentation settings
 
@@ -625,7 +624,11 @@ com.intellij.diagnostic.Freeze
 - [x] 新增 `ChronicleCapabilities.Test.strictContext`，测试中可将 EDT/readAction 上下文转为异常。
 - [x] `Issue396Test` 增加严格上下文断言。
 - [x] `ImageToolProvider.read` 保留同步 SPI 语义；EDT/RA 中只允许内置实现/缓存。
-- [ ] 图片转换动作的 EDT 阻塞路径进一步改造为后台转换 + EDT 提交。
+
+#### 2026-11-01 - post revision
+
+- [ ] 清理 `ChronicleImageSettings` 和 `ChroniclePresentationSettings` 中的配置项：更加准确的命名和描述
+- [ ] 落实渲染快速文档/内嵌提示时，文本图标的缩放策略：需要基于文本高度缩放，以获得更好的 UI 效果
 
 #### 2026-10-30 - post doc
 
@@ -673,8 +676,16 @@ com.intellij.diagnostic.Freeze
 - [x] 内嵌提示不再在 collect/EDT 中读取 metadata、同步渲染或懒加载 Icon；改用后台物化和占位 presentation。
 - [x] 快速文档使用显式 DocumentationContext，图片渲染请求在 RA 中收集、在 RA 外等待。
 - [x] 展示阈值统一到 ChroniclePresentationSettings；图片渲染超时放到 ChronicleImageSettings。
-- [ ] 为 hints/documentation 上下文补充专门的 IO 上下文回归测试。
+
+#### 2026-11-01 - step 10
+
+- [ ] 为 hints/docs 上下文补充专门的回归测试（验证 collect/EDT 不发生图片 IO）。
+  - 现在：已人工验证，可评估如何编写测试
+- [ ] 图片转换动作的 EDT 阻塞路径进一步改造为后台转换 + EDT 提交。
+  - 现状：不是那么必要，留待后续评估
 - [ ] 需要评估渲染快速文档/内嵌提示时，文本图标的缩放策略。可能需要人工验证。
+  - 备注：需要区分“普通图标”和“文本图标”：对于内嵌提示和渲染器中渲染的图标，应全部视为“文本图标”，并基于文本高度进行缩放
+  - 结论：必须处理快速文档中的，否则 UI 效果会不理想
 
 #### 2026-10-30 - post
 
@@ -693,11 +704,13 @@ com.intellij.diagnostic.Freeze
   - 参见：`icu.windea.pls.lang.resolve.ParadoxImageService.doResolve`
   - 参见：`icu.windea.pls.lang.resolve.ParadoxImageResolveResult.ParadoxImageResolveResult`
   - 现状：暂不确定，可能需要更改行为细节
-- [ ] 考虑将各种 externalToolProvider 中的操作方法（operation methods）全部改为挂起方法（suspend methods），以暗示应当在后台线程中执行
-  - 现状：暂不确定
+- [x] 考虑将各种 externalToolProvider 中的操作方法（operation methods）全部改为挂起方法（suspend methods），以暗示应当在后台线程中执行
+  - 状态：已完成（除了 `ImageToolProvider.read`）。
 - [ ] 评估 `ChronicleSettings` / `ChronicleSettingsConfigurable` 的进一步拆分和迁移。
   - 结论：应当是依赖库自身的缺陷
 - [ ] 评估并移除已不再用于 hints 的 `ImageRenderPolicy`。
+- [ ] 考虑重构代码以移除 `ParadoxDefinitionPresentationUtil` 中的 `.toFileUrl().toIconOrNull()`
+  - 结论：非当前目标，需要另行评估
 
 ### 分析
 
@@ -713,17 +726,20 @@ com.intellij.diagnostic.Freeze
 
 #### 2026-10-31
 
-- [ ] 不正确的上下文状态（EDT / readAction） - 更新内嵌提示时
+- [x] 不正确的上下文状态（EDT / readAction） - 更新内嵌提示时
   - 堆栈：[stack-trace-202610311612.txt](.assets/stack-trace-202610311612.txt) - EDT
   - 堆栈：[stack-trace-202610312033.txt](.assets/stack-trace-202610312033.txt) - RA
   - 断点：`icu.windea.pls.core.execution.ProcessExecutor.warnIfIncorrectContext`
   - 相关代码位置：`icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider.collectFromElement`
   - 临时解决方案：~~调用 `icon.iconHeight`，确保图片加载~~ -> 仍然会在 readAction 中
+  - 状态：已解决
 - [x] 使用 `DefaultImageSupport`（TwelveMonkeys）时，图片格式转换失败 - DDS -> TGA（至少）
   - 堆栈：[stack-trace-202610311808.txt](.assets/stack-trace-202610311808.txt)
   - 解决方案：需要补充 `DdsImageWriterSpi` 和 `TgaImageWriterSpi` 并在 `ImageService` 中显式挂载
-- [ ] 需要重新设计图片渲染和解析的流程，避免重复渲染，以及不正确的上下文状态
+  - 状态：已解决
+- [x] 需要重新设计图片渲染和解析的流程，避免重复渲染，以及不正确的上下文状态
   - 避免 `.toFileUrl().toIconOrNull()`，如果确实需要渲染图片，这可能是不必要的
+  - 状态：已解决
 
 ### 验证
 
@@ -736,12 +752,12 @@ com.intellij.diagnostic.Freeze
   - 状态：已验证（3 X 4）
 - [x] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在快速文档中渲染图片
   - 状态：已简单验证
-- [ ] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在内嵌提示中渲染图片
+- [x] 需要验证在各种策略和格式下（TwelveMonkeys/texconv/magick X jpg/png/dds/tga），是否可以正常在内嵌提示中渲染图片
+  - 状态：已简单验证
 - [x] 需要验证基于外部检查工具的代码检查（`ChronicleTigerLintInspection`），是否可以正常工作
-  - 状态：已验证
-- [ ] 需要结合调式断点，对于命令行执行以及外部图片工具操作，确保不会发生在不正确的上下文中
-  - 状态：无法通过
-- [ ] 人工验证 #396：内嵌提示、快速文档、图片转换动作和 Image read。
+  - 状态：已简单验证
+- [x] 需要结合调式断点，对于命令行执行以及外部图片工具操作，确保不会发生在不正确的上下文中 - #396
+  - 状态：已简单验证
 
 ## 参见（AI 协助）
 
