@@ -112,7 +112,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun renderImageIcon_test()  {
+    fun createImageIcon_test()  {
         val source = root.resolve("icon-source.png")
         val target = root.resolve("icon-target.png")
         writeImage(source, 10, 10)
@@ -125,7 +125,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun renderImageIcon_heightLimit_test() {
+    fun createImageIcon_heightLimit_test() {
         val source = root.resolve("icon-too-tall.png")
         val target = root.resolve("icon-too-tall-target.png")
         writeImage(source, 10, 10)
