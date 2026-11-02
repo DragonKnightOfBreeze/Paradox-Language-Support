@@ -13,7 +13,7 @@
 
 可以在这里配置要启用的工具集成，以及具体的工具集成选项。
 
-![](../assets/integrations/integrations_settings_1.png)
+![](../assets/settings/settings_integrations.png)
 
 ## 图片工具 {#image-tools}
 

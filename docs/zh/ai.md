@@ -15,7 +15,7 @@
 
 可以在这里配置是否启用 AI 集成，相关功能的一些具体的配置项（如本地化条目的分块大小和记忆大小），以及 AI 服务的提供商（支持 OpenAI 兼容接口、Anthropic 兼容接口以及本地模型如 Ollama）。
 
-![](../assets/ai/ai_settings_1.png)
+![](../assets/settings/settings_ai.png)
 
 ## 相关功能 {#features}
 

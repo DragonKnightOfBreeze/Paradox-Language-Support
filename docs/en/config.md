@@ -6,7 +6,7 @@ In the IDE settings page, go to `Languages & Frameworks > Paradox Chronicle > Co
 
 Here you can configure the sources of the config groups to enable, as well as the related urls and directories.
 
-![](../assets/config/config_settings_1.png)
+![](../assets/settings/settings_config.png)
 
 ## Config Group {#config-group}
 

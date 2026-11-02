@@ -13,7 +13,7 @@ In the IDE settings page, go to `Languages & Frameworks > Paradox Chronicle > In
 
 Here you can configure which tool integrations to enable and specify their options.
 
-![](../assets/integrations/integrations_settings_1.png)
+![](../assets/settings/settings_integrations.png)
 
 ## Image Tools {#image-tools}
 

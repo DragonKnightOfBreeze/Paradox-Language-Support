@@ -780,3 +780,4 @@
   - 可通过 `checker` 进行取消检查
 - [ ] P4 3.0.x 引入 `MonitorableInputStream` 和 `MonitorableOutputStream`
   - 可监控总长度和已处理长度，可能需要调整命名，可能需要与 `CancellableInputStream` / `CancellableOutputStream` 合并
+- [ ] P4 3.0.x 在快速文档中提示图片文件的尺寸（tailText，` (widthxheight)`）

@@ -15,7 +15,7 @@ In the IDE settings, navigate to `Languages & Frameworks > Paradox Chronicle > A
 
 Here you can configure whether to enable AI integration, specific settings for relevant features (such as chunk size and memory size for localisation entries), and the AI service provider (supporting OpenAI-compatible interfaces, Anthropic-compatible interfaces, and local models like Ollama).
 
-![](../assets/ai/ai_settings_1.png)
+![](../assets/settings/settings_ai.png)
 
 ## Features {#features}
 
