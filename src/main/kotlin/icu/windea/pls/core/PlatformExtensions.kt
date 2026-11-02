@@ -2,6 +2,7 @@
 
 package icu.windea.pls.core
 
+import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.lang.ASTNode
@@ -11,6 +12,8 @@ import com.intellij.lang.LighterASTTokenNode
 import com.intellij.lang.PsiBuilder
 import com.intellij.lang.parser.GeneratedParserUtilBase
 import com.intellij.lang.tree.util.siblings
+import com.intellij.modcommand.ModCommandAction
+import com.intellij.modcommand.ModCommandService
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -771,6 +774,7 @@ fun executeWriteCommand(
 // endregion
 
 // region EP Extensions
+
 // NOTE 3.0.0 [compatibility] `addExtensionPointListener(listener: ExtensionPointListener<T>)` is deprecated since IDEA-262
 //  - Pass CoroutineScope to addExtensionPointListener.
 inline fun <T : Any> ExtensionPointName<T>.addExtensionPointListener(crossinline action: (extension: T) -> Unit) {
@@ -783,6 +787,14 @@ inline fun <T : Any> ExtensionPointName<T>.addExtensionPointListener(crossinline
             action(extension)
         }
     })
+}
+
+// endregion
+
+// region Code Insight Extensions
+
+fun ModCommandAction.asQuickFix(): LocalQuickFix {
+    return ModCommandService.getInstance().wrapToQuickFix(this)
 }
 
 // endregion

@@ -9,6 +9,9 @@ import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.checkCancellation
 import java.util.concurrent.ConcurrentHashMap
 
+/**
+ * @see TranslationToolProvider
+ */
 @Service
 class TranslationToolService : Disposable {
     /** @see TranslationToolProvider */

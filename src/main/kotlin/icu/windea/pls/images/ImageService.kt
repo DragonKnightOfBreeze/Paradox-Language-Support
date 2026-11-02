@@ -17,6 +17,9 @@ import kotlin.io.path.deleteIfExists
 import kotlin.io.path.fileSize
 import kotlin.io.path.isRegularFile
 
+/**
+ * @see ImageSupport
+ */
 @Service
 class ImageService {
     fun isImageFileType(fileType: FileType): Boolean {
@@ -31,6 +34,11 @@ class ImageService {
         return fileType is DdsFileType || fileType is TgaFileType
     }
 
+    /**
+     * 备注：调用方应确保不在 EDT/readAction 中等待该操作。
+     *
+     * @see ImageSupport.convertImageFormat
+     */
     @Throws(UnsupportedOperationException::class)
     suspend fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String) {
         // 3.0.5 fast return if necessary
@@ -39,6 +47,11 @@ class ImageService {
         withContext(Dispatchers.IO) { doConvertImageFormat(inputStream, outputStream, sourceFormat, targetFormat) }
     }
 
+    /**
+     * 备注：调用方应确保不在 EDT/readAction 中等待该操作。
+     *
+     * @see ImageSupport.convertImageFormat
+     */
     @Throws(UnsupportedOperationException::class)
     suspend fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
         // 3.0.5 fast return if necessary

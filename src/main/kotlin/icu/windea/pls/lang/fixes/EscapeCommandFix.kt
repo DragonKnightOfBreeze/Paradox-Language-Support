@@ -1,8 +1,8 @@
 package icu.windea.pls.lang.fixes
 
-import com.intellij.codeInsight.daemon.impl.actions.IntentionActionWithFixAllOption
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -13,7 +13,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommand
 
 class EscapeCommandFix(
     element: PsiElement
-) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
+) : LocalQuickFixAndIntentionActionOnPsiElement(element), DumbAware {
     override fun getText() = familyName
 
     override fun getFamilyName() = ChronicleInspectionBundle.message("fix.escapeCommand.name")

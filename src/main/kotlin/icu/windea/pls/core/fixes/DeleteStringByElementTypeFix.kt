@@ -1,6 +1,5 @@
 package icu.windea.pls.core.fixes
 
-import com.intellij.codeInsight.daemon.impl.actions.IntentionActionWithFixAllOption
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
@@ -13,13 +12,13 @@ import icu.windea.pls.core.select.oneBy
 
 class DeleteStringByElementTypeFix(
     element: PsiElement,
-    private val name: String,
+    private val title: String,
     private val startElementType: IElementType? = null,
     private val endElementType: IElementType? = null,
-) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption, DumbAware {
-    override fun getText() = name
+) : LocalQuickFixAndIntentionActionOnPsiElement(element), DumbAware {
+    override fun getFamilyName() = title
 
-    override fun getFamilyName() = text
+    override fun getText() = title
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         val element = startElement
@@ -33,8 +32,4 @@ class DeleteStringByElementTypeFix(
     }
 
     override fun startInWriteAction() = true
-
-    override fun belongsToMyFamily(action: IntentionActionWithFixAllOption): Boolean {
-        return action is DeleteStringByElementTypeFix && action.name == name
-    }
 }

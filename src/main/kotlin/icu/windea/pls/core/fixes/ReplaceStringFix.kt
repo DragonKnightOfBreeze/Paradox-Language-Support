@@ -1,6 +1,5 @@
 package icu.windea.pls.core.fixes
 
-import com.intellij.codeInsight.daemon.impl.actions.IntentionActionWithFixAllOption
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
@@ -10,15 +9,15 @@ import com.intellij.psi.PsiFile
 
 class ReplaceStringFix(
     element: PsiElement,
-    private val name: String,
+    private val title: String,
     private val string: String,
     private val offset: Int,
     private val length: Int,
     private val moveCaretToOffset: Int = -1,
-) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption, DumbAware {
-    override fun getText() = name
+) : LocalQuickFixAndIntentionActionOnPsiElement(element), DumbAware {
+    override fun getFamilyName() = title
 
-    override fun getFamilyName() = text
+    override fun getText() = title
 
     override fun invoke(project: Project, file: PsiFile, editor: Editor?, startElement: PsiElement, endElement: PsiElement) {
         if (length <= 0) return
@@ -30,8 +29,4 @@ class ReplaceStringFix(
     }
 
     override fun startInWriteAction() = true
-
-    override fun belongsToMyFamily(action: IntentionActionWithFixAllOption): Boolean {
-        return action is ReplaceStringFix && action.name == name
-    }
 }

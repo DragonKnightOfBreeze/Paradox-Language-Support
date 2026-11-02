@@ -38,7 +38,7 @@ data class TigerLintResult(
                 val locationGroup = item.locations.groupBy { it.path }
                 locationGroup.forEach { (path, locations) ->
                     val p = path.normalizePath()
-                    val newItem = Item(item.severity, item.confidence, item.key, item.message, item.info, locations)
+                    val newItem = Item(item.severity, item.confidence, item.key, item.message, item.info, item.wiki, locations)
                     result.getOrPut(p) { mutableSetOf() }.add(newItem)
                 }
             }
@@ -85,9 +85,13 @@ data class TigerLintResult(
          */
         val message: String? = null,
         /**
-         * Additional information to explain the message. Is often null.
+         * Additional information to explain the message. Is often `null`.
          */
         val info: String? = null,
+        /**
+         * Link to a relevant wiki page for this error. Is often `null`.
+         */
+        val wiki: String? = null,
         /**
          * An array of location dictionaries, each describing one code location relevant to the error.
          * There will always be at least one location.
@@ -110,14 +114,12 @@ data class TigerLintResult(
         /**
          * The full path to the file, suitable for opening it.
          */
-        @SerialName("fullpath")
-        val fullPath: String,
+        val fullpath: String,
         /**
          * The line number within the file, starting at 1.
          * Will be `null` if the report is for the whole file.
          */
-        @SerialName("linenr")
-        val lineNumber: Int? = null,
+        val linenr: Int? = null,
         /**
          * The column position within the line, starting at 1, and counting UTF-8 code points.
          * Will be `null` if the report is for the whole file.

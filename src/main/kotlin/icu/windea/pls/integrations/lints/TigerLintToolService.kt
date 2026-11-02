@@ -49,6 +49,8 @@ import java.util.concurrent.TimeoutException
  * 该服务为应用级别，不依赖项目或 PSI；检查结果通过 [TrackingCache] 按请求缓存。
  *
  * 参见：[Tiger](https://github.com/amtep/tiger)
+ *
+ * @see TigerLintToolProvider
  */
 @Service
 @Suppress("UnstableApiUsage")

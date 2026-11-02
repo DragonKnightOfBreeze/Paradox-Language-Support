@@ -1,12 +1,12 @@
 package icu.windea.pls.lang.fixes
 
-import com.intellij.codeInsight.daemon.impl.actions.IntentionActionWithFixAllOption
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.encoding.ChangeFileEncodingAction
 import com.intellij.openapi.vfs.encoding.EncodingUtil
@@ -21,7 +21,7 @@ class ChangeFileEncodingFix(
     element: PsiFile,
     private val charset: Charset,
     private val addBom: Boolean?,
-) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
+) : LocalQuickFixAndIntentionActionOnPsiElement(element), DumbAware {
     override fun getText() = familyName
 
     override fun getFamilyName() = ChronicleInspectionBundle.message("fix.changeFileEncoding.name")

@@ -9,13 +9,13 @@ import com.intellij.psi.PsiFile
 // com.intellij.codeInsight.daemon.impl.quickfix.InsertMissingTokenFix
 
 class InsertMissingTokenFix(
-    private val name: String,
+    private val title: String,
     private val token: String,
     private val offset: Int
 ) : IntentionAction, DumbAware {
-    override fun getText() = name
+    override fun getFamilyName() = title
 
-    override fun getFamilyName() = text
+    override fun getText() = title
 
     override fun isAvailable(project: Project, editor: Editor, file: PsiFile) = true
 

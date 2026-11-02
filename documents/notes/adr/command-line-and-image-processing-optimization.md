@@ -632,8 +632,10 @@ com.intellij.diagnostic.Freeze
 - [x] 清理 `ParadoxImageManager` 和 `ParadoxImageService`
   - 移除 `ParadoxImageManager`，将其中所有方法移到 `ParadoxImageService`。
   - 为 `ParadoxImageResolveResult` 新增方法 `canResolve` `resolveUrl`，委托给 `ParadoxImageService` 中的对应方法。
+- [x] 完善 `TigerLintResult`
+  - 重命名字段（从而移除 `@SerialName`），补充缺失的字段。
 - [ ] 清理 `ChronicleImageSettings` 和 `ChroniclePresentationSettings` 中的配置项
-  - 更加准确的命名和描述（适用对象是快速文档还是内嵌提示，普通图标还是文本图标，等等）
+  - 更加准确的命名和描述（适用对象是快速文档还是内嵌提示，普通图标还是文本图标，等等）。
 - [ ] 落实渲染快速文档/内嵌提示时，文本图标的缩放策略
   - 对于内嵌提示，因为已经使用了 `factory.smallScaledIcon(icon)`，预期不需要进行额外处理。
   - 对于快速文档，对于视为“文本图标”的图标（本地化文本中实际上也允许渲染大图片），需要基于文本高度缩放，以获得更好的 UI 效果。

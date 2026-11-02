@@ -19,6 +19,9 @@ import java.util.concurrent.ConcurrentHashMap
 import javax.imageio.ImageReadParam
 import javax.imageio.stream.ImageInputStream
 
+/**
+ * @see ImageToolProvider
+ */
 @Service
 class ImageToolService : Disposable {
     /** @see ImageToolProvider */

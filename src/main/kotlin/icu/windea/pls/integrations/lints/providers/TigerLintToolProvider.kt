@@ -4,6 +4,7 @@ import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.ProcessOutput
 import com.intellij.openapi.progress.ProgressManager
+import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
 import icu.windea.pls.core.util.io.parsePath
@@ -14,7 +15,6 @@ import icu.windea.pls.integrations.lints.TigerLintResult
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.CancellationException
@@ -75,7 +75,7 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
             request.outputPath.writeText(outputText)
         }
         // 如果无法解析 json，这里会直接报错
-        val items = Json.decodeFromString<List<TigerLintResult.Item>>(outputText)
+        val items = JsonService.json.decodeFromString<List<TigerLintResult.Item>>(outputText)
         return TigerLintResult(request, items = items)
     }
 
