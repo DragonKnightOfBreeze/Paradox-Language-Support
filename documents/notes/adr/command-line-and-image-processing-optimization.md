@@ -4,6 +4,7 @@
 > - 版本：v3.0.5
 > - 日期：2026-10-27 ~ 2026-11-03
 > - 状态：已完成（告一段落）
+> - 另见：`documents/notes/adr/command-line-and-image-processing-optimization.md`
 
 ## 说明
 
@@ -468,10 +469,10 @@ com.intellij.diagnostic.Freeze
   - [x] issue #396 回归测试 - `Issue396Test`
   - [x] Tiger 检查逻辑与 `ChronicleTigerLintInspection` 进阶测试 - `Issue396TigerLintTest`
   - [x] 进阶测试：`includeExternalTools` + `build/external-tools`
-- [ ] 清理与文档
-  - [ ] 清理旧 API、注释、常量
-  - [ ] 修订 ADR
-  - [ ] 补充 AI note
+- [x] 清理与文档
+  - [x] 清理旧 API、注释、常量
+  - [x] 修订 ADR
+  - [x] 补充 AI note
 
 ### 主要 & 次要（修订）
 
@@ -656,7 +657,7 @@ com.intellij.diagnostic.Freeze
   - 高度不超过 `quickDocTextIconHeightLimit` 的图片按文档文本高度缩放；更大的图片保持原始尺寸。
 - [x] 内嵌提示继续使用 `factory.smallScaledIcon(icon)`，不额外处理文本图标缩放。
 - [x] `ParadoxImageServiceTest` 清理与渲染策略相关的测试。
-- [ ] 重构 `StellarisTechnologyCardBuilder`，以隔离数据读取与UI渲染逻辑，避免在EDT中直接渲染图片（这可能会执行命令行）
+- [x] 重构 `StellarisTechnologyCardBuilder`，以隔离数据读取与UI渲染逻辑，避免在EDT中直接渲染图片（这可能会执行命令行）
   - ~~改为使用协程并在 `runWithModalProgressBlocking` 中执行。~~ - 这会导致无限刷新，目前的临时解决方案仍会阻塞 EDT，以后再考虑优化。
   - 首先读取通用数据，接着读取非通用数据，最后构建UI组件。
 

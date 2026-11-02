@@ -10,7 +10,7 @@
 ## 3.0.5
 
 - [x] 在快速文档中直接渲染片段的相关本地化 / Render related localisations directly in quick docs for snippets ([#432](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/432)) 
-- [ ] 优化命令行执行逻辑和图片处理逻辑，以避免可能的 IDE 冻结 / Optimize the command-line execution logic and image processing logic to avoid possible IDE freezes ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
+- [x] 优化命令行执行逻辑和图片处理逻辑，以避免可能的 IDE 冻结 / Optimize the command-line execution logic and image processing logic to avoid possible IDE freezes ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
 - [x] 修复插件在 IDEA 2026.3 EAP 中存在的兼容性问题 / Fix the compatibility issues of the plugin in IDEA 2026.3 EAP
 - [x] 修复 CWT 文件和脚本文件的结构视图无法正常显示的回归BUG（自插件版本 3.0.3） / Fix the regression bug where the structural view of CWT files and script files cannot display correctly (since plugin version 3.0.3)
 - [x] 修复脚本文件在导航栏中会错误地使用整个文件文本作为展示文本的BUG / Fix the bug where the script file incorrectly uses the entire file text as the display text in the navigation bar
