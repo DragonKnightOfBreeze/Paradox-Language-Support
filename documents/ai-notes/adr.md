@@ -9,3 +9,7 @@
 ### 构建与工程实践
 
 - [重构 `build.gradle.kts`：构建逻辑的封装与约定](adr/refactor-build-gradle-kts.md)
+
+### 性能优化
+
+- [命令行执行与图片处理优化：最终总结](adr/command-line-and-image-processing-optimization.md)

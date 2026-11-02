@@ -30,3 +30,6 @@
 
 - [Gradle + JUnit4 测试无法读取 -D 系统属性](solutions/gradle-junit4-system-properties.md)
 
+### 网络与外部工具
+
+- [本地下载测试受系统代理影响](solutions/download-service-system-proxy.md)
