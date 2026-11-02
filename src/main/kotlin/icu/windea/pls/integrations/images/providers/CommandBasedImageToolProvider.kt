@@ -1,6 +1,8 @@
 package icu.windea.pls.integrations.images.providers
 
 import com.intellij.execution.ExecutionException
+import com.intellij.openapi.progress.EmptyProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.runBlockingCancellable
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.util.io.ImageInputStreamAdapter
@@ -48,7 +50,9 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
             val path = tempParentPath.resolve(UUID.randomUUID().toString() + "." + sourceFormat)
             pathsToDelete.add(path)
             path.outputStream().use { IoService.copy(inputStream, it) }
-            val targetPath = runBlockingCancellable { convertImageFormat(path, null, null, sourceFormat, targetFormat) }
+            val targetPath = ProgressManager.getInstance().runProcess<Path>({
+                runBlockingCancellable { convertImageFormat(path, null, null, sourceFormat, targetFormat) }
+            }, EmptyProgressIndicator())
             pathsToDelete.add(targetPath)
             return targetPath.inputStream().use { ImageIoService.readImage(it) }
         } finally {

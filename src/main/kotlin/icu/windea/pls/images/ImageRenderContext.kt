@@ -2,11 +2,13 @@ package icu.windea.pls.images
 
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.UserDataHolder
+import icu.windea.pls.core.util.getOrPutUserData
 import kotlinx.coroutines.CoroutineScope
 
 /**
  * 将图片渲染会话附加到 hints/documentation 等通用上下文。
  */
+@Suppress("unused")
 object ImageRenderContext {
     private val sessionKey = Key.create<ImageRenderSession>("chronicle.image.renderSession")
 
@@ -19,6 +21,6 @@ object ImageRenderContext {
     }
 
     fun getOrCreateSession(context: UserDataHolder, scope: CoroutineScope): ImageRenderSession {
-        return getSession(context) ?: ImageRenderService.getInstance().newRenderSession(scope).also { setSession(context, it) }
+        return context.getOrPutUserData(sessionKey) { ImageRenderService.getInstance().newRenderSession(scope) }
     }
 }

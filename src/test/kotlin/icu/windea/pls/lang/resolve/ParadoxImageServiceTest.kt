@@ -90,7 +90,7 @@ class ParadoxImageServiceTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Test
     fun resolveByFile_notImage_test() {
-        val path = Path.of("build", "tmp", "paradox-image-service-test", "not-image.txt")
+        val path = root.resolve("not-image.txt")
         Files.createDirectories(path.parent)
         Files.writeString(path, "text")
         val file = findFile(path)

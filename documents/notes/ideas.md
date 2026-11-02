@@ -658,7 +658,7 @@
 - [ ] P3 考虑进一步完善 `ParadoxScriptExpressionBlockMatchOptimizer`
 - [ ] P3 考虑进一步完善 `ParadoxMatchResultProvider.forBlock`，或者直接将相关逻辑整合到 `ParadoxScriptExpressionBlockMatchOptimizer` 中
 
-## 2026-10-07
+### 2026-10-07
 
 - [x] P3 3.0.5 提供轻量化的推流（push stream）
   - 提供简洁、灵活且更加符合直觉的 API 调用方式，同时保持性能
@@ -684,7 +684,7 @@
   - 简单来说，只需要提供一个可配置的UI，以及附带的网络IO操作，就能达成需求了。至于更加复杂的细节，比如bbcode支持，并不是那么必要。
   - 低优先级，目前仅作记录。
 
-## 2026-10-08
+### 2026-10-08
 
 - [x] P2 3.0.5 优化插件自身提供的 `CommandLineExecutor` API
   - 考虑默认委托给平台提供的 `GeneralCommandLine`/`CapturingProcessHandler`。
@@ -709,13 +709,13 @@
   - 考虑准确性、复杂性、可参考性、可迁移性，等等
   - 代码量可能比较大，有一定难度/上下文限制
 
-## 2026-10-10
+### 2026-10-10
 
 - [x] P3/FAST 3.0.5 在快速文档中直接渲染片段的相关本地化
   - 因为片段对应的相关定义/相关本地化可以存在多个，目前仅考虑直接在快速文档中渲染相关本地化。
 - [x] P4/FAST 3.0.5 点击装订线图标后，也在弹出提示的标题中显示目标数量
 
-## 2026-10-16
+### 2026-10-16
 
 - [x] P4 3.0.5 完善基准测试
   - [x] 改为使用 `ChronicleAssume.includeBenchmark()` + JMH
@@ -734,7 +734,7 @@
   - 关于这里使用的 Query/PushStream：直接在测试代码中实现并使用
   - 搁置：涉及多种复杂场景，考虑根据日后的 profiling 来分析对比更真实的性能表现
 
-## 2026-10-27
+### 2026-10-27
 
 - [ ] P2 3.1.0 将最低支持的  IDE 版本 改为 IDEA 2026.2
   - 将 Kotlin 版本同步改为 2.4.0
@@ -752,7 +752,7 @@
 - [ ] P3 3.1.0 考虑完善插件的AI代理工作流
   - 例如：MCP、skill、command
 
-## 2026-10-29
+### 2026-10-29
 
 - [ ] P4/DELAY 移除图片处理相关的代码注入器（如 `DDSImageReaderCodeInjector`）
   - 因为需要支持直接在编辑器中渲染 DDS/TGA 图片，目前无法这样做
@@ -761,15 +761,22 @@
 - [ ] P4 内置所有图片工具（以及检查工具），或者提供便捷入口以在使用插件时一键下载对应的工具
   - 需要另行评估
 
-## 2026-10-30
+### 2026-10-30
 
 - [ ] P4 考虑重构和清理 `ConvertImageFormatAction`
   - 可以改为完全基于 Kotlin 协程实现，但是参考实现（`CopyFilesOrDirectoriesHandler`）目前尚未如此
   - 低优先级，只要能够正常工作即可
 
-## 2026-10-31
+### 2026-10-31
 
 - [ ] P4 modifier 的语义高亮在某些主题下（如 `Dark`）可能无法与普通属性的语法高亮相区分，需要考虑调整
   - 参见：`icu.windea.pls.script.highlighting.ParadoxScriptHighlighterColors.MODIFIER`
 - [ ] P4 考虑将图片处理库改为 [kotlin-graphics/gli](https://github.com/kotlin-graphics/gli)
   - 结论：非当前目标，需要另行评估
+
+### 2026-11-03
+
+- [x] P4 3.0.5 引入 `CancellableInputStream` 和 `CancellableOutputStream`
+  - 可通过 `checker` 进行取消检查
+- [ ] P4 3.0.x 引入 `MonitorableInputStream` 和 `MonitorableOutputStream`
+  - 可监控总长度和已处理长度，可能需要调整命名，可能需要与 `CancellableInputStream` / `CancellableOutputStream` 合并

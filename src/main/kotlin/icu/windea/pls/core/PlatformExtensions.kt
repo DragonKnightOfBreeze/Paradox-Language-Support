@@ -27,6 +27,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.extensions.ExtensionPointListener
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.extensions.PluginDescriptor
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -102,6 +103,9 @@ inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): B
 
 /**
  * 检查当前异常是否代表着一个取消异常。兼容 [InvocationTargetException]。
+ *
+ * @see ProcessCanceledException
+ * @see CancellationException
  */
 fun checkCancellation(e: Throwable?) {
     if (e == null) return
@@ -111,6 +115,13 @@ fun checkCancellation(e: Throwable?) {
     checkCancellation(e.cause)
 }
 
+/**
+ * 可取消地运行一段代码。
+ *
+ * @see ProcessCanceledException
+ * @see CancellationException
+ * @see checkCancellation
+ */
 inline fun <T> cancellable(block: () -> T): T {
     try {
         return block()
@@ -120,10 +131,24 @@ inline fun <T> cancellable(block: () -> T): T {
     }
 }
 
+/**
+ * 可取消地运行一段代码并捕捉异常，返回 [Result]。
+ *
+ * @see ProcessCanceledException
+ * @see CancellationException
+ * @see checkCancellation
+ */
 inline fun <R> runCatchingCancellable(block: () -> R): Result<R> {
     return runCatching(block).onFailure { e -> checkCancellation(e) }
 }
 
+/**
+ * 可取消地运行一段代码并捕捉异常，返回 [Result]。
+ *
+ * @see ProcessCanceledException
+ * @see CancellationException
+ * @see checkCancellation
+ */
 inline fun <T, R> T.runCatchingCancellable(block: T.() -> R): Result<R> {
     return runCatching(block).onFailure { e -> checkCancellation(e) }
 }

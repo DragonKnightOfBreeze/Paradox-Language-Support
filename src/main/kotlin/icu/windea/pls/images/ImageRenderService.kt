@@ -74,33 +74,6 @@ class ImageRenderService : Disposable {
     }
 
     /**
-     * 如果存在对应的本地缓存，则直接返回预期的目标路径。
-     */
-    fun getCachedImagePath(request: ImageRenderRequest): Path? {
-        val targetPath = request.targetPath
-        if (!targetPath.isRegularFile() || targetPath.fileSizeSafe() == 0L) return null
-        return targetPath
-    }
-
-    /**
-     * 尝试在当前渲染会话中记录渲染请求，并返回预期的目标路径。
-     *
-     * 如果当前没有渲染会话，则不会自动开始渲染；调用方应使用 [requestImageRender]。
-     */
-    fun getRecordedImagePath(request: ImageRenderRequest): Path? {
-        return getRecordedImagePath(request, currentRenderSession())
-    }
-
-    /**
-     * 在指定的渲染会话中记录渲染请求，并返回预期的目标路径。
-     */
-    fun getRecordedImagePath(request: ImageRenderRequest, session: ImageRenderSession?): Path? {
-        if (session == null) return null
-        @Suppress("DeferredResultUnused") session.launch(request)
-        return request.targetPath
-    }
-
-    /**
      * 同步请求渲染图片，并在后台进度中等待完成。相同请求会被合并。
      *
      * 注意：不能在 EDT 中调用；如果在 EDT 中调用，只会返回已有缓存或 `null`。
@@ -210,6 +183,15 @@ class ImageRenderService : Disposable {
         } catch (e: Exception) {
             logger.warn("Failed to clean up image cache.", e)
         }
+    }
+
+    /**
+     * 如果存在对应的本地缓存，则直接返回预期的目标路径。
+     */
+    fun getCachedImagePath(request: ImageRenderRequest): Path? {
+        val targetPath = request.targetPath
+        if (!targetPath.isRegularFile() || targetPath.fileSizeSafe() == 0L) return null
+        return targetPath
     }
 
     /**

@@ -15,6 +15,7 @@ class ChroniclePresentationSettingsConfigurable : BoundConfigurable(ChronicleBas
         return panel {
             group(ChronicleBaseBundle.message("settings.presentation.general")) {
                 val settings = ChroniclePresentationSettings.getInstance().state
+                // presentableTextLengthLimit
                 row {
                     label(ChronicleBaseBundle.message("settings.presentation.presentableTextLengthLimit")).widthGroup("chronicle.presentation.general")
                     intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::presentableTextLengthLimit)
@@ -30,16 +31,19 @@ class ChroniclePresentationSettingsConfigurable : BoundConfigurable(ChronicleBas
         val group = "chronicle.presentation.quickDoc"
         val settings = ChroniclePresentationSettings.getInstance().state
 
+        // quickDocLocalisationTextFontSize
         row {
-            label(ChronicleBaseBundle.message("settings.presentation.quickDocLocalisationTextIconFontSize")).widthGroup(group)
-            intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::quickDocLocalisationTextIconFontSize)
-            contextHelp(ChronicleBaseBundle.message("settings.presentation.quickDocLocalisationTextIconFontSize.tip"))
+            label(ChronicleBaseBundle.message("settings.presentation.quickDocLocalisationTextFontSize")).widthGroup(group)
+            intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::quickDocLocalisationTextFontSize)
+            contextHelp(ChronicleBaseBundle.message("settings.presentation.quickDocLocalisationTextFontSize.tip"))
         }
+        // quickDocMaxImageDisplaySize
         row {
             label(ChronicleBaseBundle.message("settings.presentation.quickDocMaxImageDisplaySize")).widthGroup(group)
             intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::quickDocMaxImageDisplaySize)
             contextHelp(ChronicleBaseBundle.message("settings.presentation.quickDocMaxImageDisplaySize.tip"))
         }
+        // quickDocTextIconHeightLimit
         row {
             label(ChronicleBaseBundle.message("settings.presentation.quickDocTextIconHeightLimit")).widthGroup(group)
             intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::quickDocTextIconHeightLimit)
@@ -51,11 +55,13 @@ class ChroniclePresentationSettingsConfigurable : BoundConfigurable(ChronicleBas
         val group = "chronicle.presentation.inlay"
         val settings = ChroniclePresentationSettings.getInstance().state
 
+        // inlayLocalisationTextLengthLimit
         row {
             label(ChronicleBaseBundle.message("settings.presentation.inlayLocalisationTextLengthLimit")).widthGroup(group)
             intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::inlayLocalisationTextLengthLimit)
             contextHelp(ChronicleBaseBundle.message("settings.presentation.inlayLocalisationTextLengthLimit.tip"))
         }
+        // inlayTextIconHeightLimit
         row {
             label(ChronicleBaseBundle.message("settings.presentation.inlayTextIconHeightLimit")).widthGroup(group)
             intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::inlayTextIconHeightLimit)

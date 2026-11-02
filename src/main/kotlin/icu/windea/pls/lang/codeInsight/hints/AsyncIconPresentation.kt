@@ -2,7 +2,7 @@ package icu.windea.pls.lang.codeInsight.hints
 
 import com.intellij.codeInsight.hints.presentation.InlayPresentation
 import com.intellij.codeInsight.hints.presentation.StatefulPresentation
-import com.intellij.openapi.application.UI
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.progress.coroutineToIndicator
 import com.intellij.psi.PsiElement
 import com.intellij.psi.SmartPsiElementPointer
@@ -42,8 +42,10 @@ class AsyncIconPresentation(
         val timeout = ChronicleImageSettings.getInstance().state.renderTimeoutSeconds.coerceAtLeast(1).seconds
         session.scope.launch {
             val icon = renderImageIcon(timeout) ?: return@launch
-            withContext(Dispatchers.UI) {
-                if (!context.project.isDisposed) state = icon
+            if (context.project.isDisposed) return@launch
+            withContext(Dispatchers.EDT) {
+                if (context.project.isDisposed) return@withContext
+                state = icon
             }
         }
     }

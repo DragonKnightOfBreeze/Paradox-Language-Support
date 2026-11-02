@@ -196,28 +196,26 @@ object ParadoxImageService {
      * 解析得到图片的最终地址。
      *
      * 说明：
+     * - 如果存在当前渲染会话，则首先在其中记录渲染请求。
      * - 如果不需要渲染，则直接返回源路径。
      * - 如果存在目标路径对应的本地缓存，则直接返回目标路径。
-     * - 如果存在渲染会话，则在当前渲染会话中记录渲染请求，并返回目标路径。这适用于渲染快速文档等场景。
+     * - 如果存在当前渲染会话，则直接返回目标路径。这适用于渲染快速文档等场景。
      * - 否则，尝试同步获取或渲染目标图片。
      * - 同步渲染失败时，按照设置中的失败策略返回目标路径、`null` 或占位图路径。
      */
     fun resolveUrl(result: ParadoxImageResolveResult, project: Project, imageSession: ImageRenderSession? = null): String? {
+        val renderService = ImageRenderService.getInstance()
         val request = result.toRenderRequest()
-        if (!result.renderRequired) {
-            @Suppress("DeferredResultUnused") imageSession?.launch(request)
-            return result.sourcePath.absolutePathString()
-        }
+        val session = renderService.currentRenderSession()
+
+        // 3.0.5 it's necessary to record render request first, or image policies may be not applied correctly
+        @Suppress("DeferredResultUnused") session?.launch(request)
 
         try {
-            val renderService = ImageRenderService.getInstance()
-            renderService.getCachedImagePath(request)?.let { return it.absolutePathString() }
-            val recordedPath = if (imageSession != null) {
-                renderService.getRecordedImagePath(request, imageSession)
-            } else {
-                renderService.getRecordedImagePath(request)
-            }
-            recordedPath?.let { return it.absolutePathString() }
+            if (!result.renderRequired) return result.sourcePath.absolutePathString()
+            val cachedPath = renderService.getCachedImagePath(request)
+            if (cachedPath != null) return cachedPath.absolutePathString()
+            if (session != null) return request.targetPath.absolutePathString()
             return renderService.requestImageRender(request, project)?.absolutePathString()
         } catch (e: Exception) {
             checkCancellation(e)

@@ -2,8 +2,8 @@
 
 > - 模块：后端 > 通用
 > - 版本：v3.0.5
-> - 日期：2026-10-27 ~ 2026-11-01
-> - 状态：基本完成（告一段落）
+> - 日期：2026-10-27 ~ 2026-11-03
+> - 状态：已完成（告一段落）
 
 ## 说明
 
@@ -813,7 +813,7 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.images.ImageRenderSession` - 新增
 - [x] `icu.windea.pls.model.policies.ImageCacheCleanupPolicy` - 新增
 - [x] `icu.windea.pls.model.policies.ImageRenderFailurePolicy` - 新增
-- [x] `icu.windea.pls.model.policies.ImageRenderPolicy` - 已移除
+- [x] ~~`icu.windea.pls.model.policies.ImageRenderPolicy`~~ - 已移除（已不再用于内嵌提示）
 - [x] `icu.windea.pls.base.settings.ChronicleImageSettings` - 新增；包含渲染超时
 - [x] `icu.windea.pls.base.settings.ChronicleImageSettingsConfigurable` - 新增
 - [x] `icu.windea.pls.base.settings.ChroniclePresentationSettings` - 新增
