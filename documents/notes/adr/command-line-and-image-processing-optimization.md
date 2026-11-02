@@ -446,7 +446,7 @@ com.intellij.diagnostic.Freeze
   - [x] 新增 `ProcessExecutor`、`ExecutionTimeouts`；弃用旧命令行 API
   - [x] 新增 `ImageMetadataService`
   - [x] 扩展 `ImageService`：缓存、渲染、`ImageRenderSession`、`ImageCacheCleaner`
-  - [x] 新增 `ImageCacheCleanupPolicy`、`ImageRenderFailurePolicy`、`ImageRenderPolicy` 及文案
+  - [x] 新增 `ImageCacheCleanupPolicy`、`ImageRenderFailurePolicy` 及文案
 - [x] 重构
   - [x] 迁移 Git、Texconv、Magick、Tiger、SpecialPath、CwtConfigService
   - [x] 新增 `ParadoxImageService`/`ParadoxImageResolveResult`，保留 `ParadoxImageManager` facade
@@ -454,12 +454,16 @@ com.intellij.diagnostic.Freeze
   - [x] 内嵌提示：`HintsContext` + 后台图片物化 + `StatefulPresentation` 占位更新
   - [x] 基础上下文使用 userData 附加图片数据，避免 core/base 依赖 images
   - [x] 展示阈值迁移到 `ChroniclePresentationSettings`；图片渲染超时迁移到 `ChronicleImageSettings`
+  - [x] 清理展示/图片设置命名和描述
+  - [x] 快速文档文本图标按文档文本高度缩放；内嵌提示使用 `smallScaledIcon`
+  - [x] 移除 `ImageRenderPolicy`
+  - [x] 移除不再需要的渲染策略设置项和测试
   - [x] 注入器：EDT/RA 跳过外部工具并 warning
   - [x] Tiger：`TigerLintToolService` + `TrackingCache` + `TigerLintResult` 扩展
 - [x] 测试
   - [x] `ProcessExecutor`：超时、取消、stderr、退出码、编码
   - [x] `ImageMetadataService`/`ImageService`：元数据、缓存、渲染、清理
-  - [x] `ImageCacheCleanupPolicy` / `ImageRenderFailurePolicy` / `ImageRenderPolicy` 的逻辑与设置项
+  - [x] `ImageCacheCleanupPolicy` / `ImageRenderFailurePolicy` 的逻辑与设置项
   - [x] 图片 IO 取消检查（按字节阈值）
   - [x] issue #396 回归测试 - `Issue396Test`
   - [x] Tiger 检查逻辑与 `ChronicleTigerLintInspection` 进阶测试 - `Issue396TigerLintTest`
@@ -611,7 +615,7 @@ com.intellij.diagnostic.Freeze
 #### 2026-11-01 - step 9 - presentation settings
 
 - [x] 新增 `ChroniclePresentationSettings`，统一快速文档/内嵌提示的文本和展示阈值。
-- [x] 将 `presentableTextLimit`、快速文档字体/图片/文本图标限制、内嵌提示文本长度/图标高度限制移入该设置。
+- [x] 将展示文本长度、快速文档字体/图片/文本图标限制、内嵌提示文本长度/文本图标高度限制移入该设置并统一命名。
 - [x] `ParadoxHintsSettings` 只保留 provider 级开关；provider 设置页移除数字阈值。
 - [x] 从 `ChronicleInternalSettings` 移除对应 Registry 阈值属性，统一使用新设置。
 - [x] 新增 `ChroniclePresentationSettingsConfigurable` 并注册到设置页。
@@ -634,12 +638,24 @@ com.intellij.diagnostic.Freeze
   - 为 `ParadoxImageResolveResult` 新增方法 `canResolve` `resolveUrl`，委托给 `ParadoxImageService` 中的对应方法。
 - [x] 完善 `TigerLintResult`
   - 重命名字段（从而移除 `@SerialName`），补充缺失的字段。
-- [ ] 清理 `ChronicleImageSettings` 和 `ChroniclePresentationSettings` 中的配置项
+- [x] 清理 `ChronicleImageSettings` 和 `ChroniclePresentationSettings` 中的配置项
   - 更加准确的命名和描述（适用对象是快速文档还是内嵌提示，普通图标还是文本图标，等等）。
-- [ ] 落实渲染快速文档/内嵌提示时，文本图标的缩放策略
+- [x] 落实渲染快速文档/内嵌提示时，文本图标的缩放策略
   - 对于内嵌提示，因为已经使用了 `factory.smallScaledIcon(icon)`，预期不需要进行额外处理。
   - 对于快速文档，对于视为“文本图标”的图标（本地化文本中实际上也允许渲染大图片），需要基于文本高度缩放，以获得更好的 UI 效果。
-- [ ] 移除已不再用于 hints 的 `ImageRenderPolicy`
+- [x] 移除已不再用于 hints 的 `ImageRenderPolicy`
+
+#### 2026-11-02 - step 11 - final revision
+
+- [x] 清理展示设置命名：明确快速文档/内嵌提示、普通图片/文本图标、显示尺寸/高度限制等语义。
+- [x] 清理图片设置中的 `ImageRenderPolicy` 字段、设置页、文案和相关测试。
+- [x] 移除 `ImageRenderPolicy` 枚举及 `ParadoxImageService.resolveUrl` 中的策略分支。
+- [x] 快速文档文本图标缩放：
+  - 渲染会话中记录所有相关图片请求，包括不需要实际转换的图片。
+  - `awaitAll` 后在 RA 外读取目标图片 metadata。
+  - 高度不超过 `quickDocTextIconHeightLimit` 的图片按文档文本高度缩放；更大的图片保持原始尺寸。
+- [x] 内嵌提示继续使用 `factory.smallScaledIcon(icon)`，不额外处理文本图标缩放。
+- [x] `ParadoxImageServiceTest` 清理与渲染策略相关的测试。
 
 #### 2026-10-30 - post doc
 
@@ -797,7 +813,7 @@ com.intellij.diagnostic.Freeze
 - [x] `icu.windea.pls.images.ImageRenderSession` - 新增
 - [x] `icu.windea.pls.model.policies.ImageCacheCleanupPolicy` - 新增
 - [x] `icu.windea.pls.model.policies.ImageRenderFailurePolicy` - 新增
-- [x] `icu.windea.pls.model.policies.ImageRenderPolicy` - 新增
+- [x] `icu.windea.pls.model.policies.ImageRenderPolicy` - 已移除
 - [x] `icu.windea.pls.base.settings.ChronicleImageSettings` - 新增；包含渲染超时
 - [x] `icu.windea.pls.base.settings.ChronicleImageSettingsConfigurable` - 新增
 - [x] `icu.windea.pls.base.settings.ChroniclePresentationSettings` - 新增
@@ -839,9 +855,9 @@ ead 保留同步 ImageReader SPI 语义
 - [x] `icu.windea.pls.config.configGroup.CwtConfigFileServiceTest` - `getGameTypeFromRepoFile` 集成测试（含各游戏规则仓库）
 - [x] `icu.windea.pls.images.ImageMetadataServiceTest` - 文件/路径元数据、`getMetadata`/`getMetadataOrNull` 和异常场景
 - [x] `icu.windea.pls.images.ImageServiceTest` - 格式转换/往返转换
-- [x] `icu.windea.pls.images.ImageRenderServiceTest` - 渲染、同步/异步请求、渲染会话、失败策略、内存 Icon 物化
+- [x] `icu.windea.pls.images.ImageRenderServiceTest` - 渲染、同步/异步请求、渲染会话、失败策略、内存 Icon 物化、文本图标缩放
 - [x] `icu.windea.pls.images.ImageCacheCleanerTest` - 全部缓存清理策略
-- [x] `icu.windea.pls.lang.resolve.ParadoxImageServiceTest` - PNG/DDS/TGA、帧数信息和非图片文件、图片判断、缓存命中、渲染策略
+- [x] `icu.windea.pls.lang.resolve.ParadoxImageServiceTest` - PNG/DDS/TGA、帧数信息、非图片文件、图片判断、缓存命中、失败策略
 - [x] `icu.windea.pls.core.util.io.IoServiceTest` - 路径/流复制、同路径跳过、取消检查
 - [x] `icu.windea.pls.core.util.io.ImageIoServiceTest` - 格式判断、读写、缩放、切分、复制和转换
 - [x] `icu.windea.pls.core.util.io.PathServiceTest` - 目录创建、类路径文件、可执行文件查找
