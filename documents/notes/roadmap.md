@@ -575,7 +575,6 @@
 - [x] P3 重构 `CwtConfigExpansionService` 和 `ParadoxConfigExpansionService`：创建并应用 `CwtExpandedConfig`
   - 参见：[adr/push-stream.md](adr/push-stream.md)
 - [x] P4 重构：将 `CwtLocationResolveResult` 重命名为 `ParadoxLocationExpressionResolveResult`，子类同理
-- [ ] P4 排序：在 `ParadoxScriptExpressionSupport` 等处，将 `annotate` 方法的顺序移到 `complete` 方法之前
 - [x] P3 重命名：`cancelable` -> `cancellable`
 - [x] P3 重命名：`Cache.cancelable` -> `Cache.asCancellable`
 - [x] P4 移动：将 `StdlibExtensions.kt` 中的部分方法移到 `icu.windea.pls.core.util.io` 中的 `PathExtensions.kt` 和 `FileExtensions.kt`（并且移除/补充一些方法）
@@ -585,8 +584,6 @@
 - [x] P4 从 `CodeInjectorService` 分理出 `CodeInjectorLifecycleListener`
 - [x] P4 引入 `CancellableInputStream` 和 `CancellableOutputStream`
   - 可通过 `checker` 进行取消检查
-- [ ] P4 引入 `MonitorableInputStream` 和 `MonitorableOutputStream`
-  - 可监控总长度和已处理长度，可能需要调整命名，可能需要与 `CancellableInputStream` / `CancellableOutputStream` 合并
 
 ## 按主题 {#by-topic}
 

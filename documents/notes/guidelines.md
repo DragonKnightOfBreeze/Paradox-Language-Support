@@ -297,7 +297,9 @@ TODO：
 
 > TODO：尚未严格实施
 
-语法相关（脚本语言）：
+### 语法相关
+
+脚本语言：
 
 - *属性/property*
 - *值/value*
@@ -308,7 +310,7 @@ TODO：
 - *条件化块/conditional block* - 作为插值的其中一种形式，应放到末尾。
 - *内联数学/inline math* 中的内容 - 懒加载。
 
-语法相关（本地化语言）：
+本地化语言：
 
 - *本地化列表/property list*
 - *语言环境/locale*
@@ -317,7 +319,7 @@ TODO：
 - *属性值/property value*
 - *属性值/property value* 中的内容 - 懒加载。
 
-语法相关（本地化语言，富文本）：
+本地化语言，富文本：
 
 - *普通文本/text*
 - *彩色文本/colorful text* - TODO：可能需要考虑重命名为 *文本颜色/text color*。可能不受所有主要游戏类型支持，因此需要降低优先级。

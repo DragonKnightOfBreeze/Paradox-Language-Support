@@ -17,6 +17,7 @@ on:
     branches:
       - master
       - "dev/**" # development branches
+      - "features/**" # feature branches
       - "releases/**" # compatibility branches (e.g., IDE versions)
     paths:
       - ".github/workflows/build.yml"

@@ -787,3 +787,4 @@
   - 提供语义层的扩展方法 `ImageDescriptor.resolveUrl`。
 - [ ] P4 3.0.x 考虑物化图片/图标时的缓存策略
   - 相关代码位置：`ImageService.createImage` `ImageService.createImageIcon`
+- [ ] P4 3.0.x 排序：在 `ParadoxScriptExpressionSupport` 等处，将 `annotate` 方法的顺序移到 `complete` 方法之前
