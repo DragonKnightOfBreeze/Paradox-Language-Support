@@ -59,7 +59,7 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
         // 如果无法解析（包括对应文件不存在的情况）就直接跳过
         if (!iconResolveResult.canResolve()) return
         val pointer = iconFile.toPsiFile(context.project)?.createPointer(context.project)
-        val maxHeight = ChroniclePresentationSettings.getInstance().state.inlayIconHeightLimit
+        val maxHeight = ChroniclePresentationSettings.getInstance().state.inlayTextIconHeightLimit
         sink.addInlinePresentation(element.endOffset, smallInset = true) {
             // 点击可以导航到声明处（图片）
             add(AsyncIconPresentation(context, iconResolveResult.toRenderRequest(), maxHeight, pointer))

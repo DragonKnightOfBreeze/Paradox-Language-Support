@@ -36,6 +36,7 @@ import javax.swing.ImageIcon
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createDirectories
 import kotlin.io.path.isRegularFile
+import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.days
 
 /**
@@ -234,6 +235,23 @@ class ImageRenderService : Disposable {
         }
         ImageIoService.writeImage(image, "png", placeholderPath)
         return placeholderPath
+    }
+
+    /**
+     * 对快速文档中的文本图标按文本高度进行缩放。
+     *
+     * 只处理高度不超过 [textIconSizeLimit] 的图片；较大的图片保留原始尺寸。
+     */
+    fun applyImageScaling(builder: DocumentationBuilder, session: ImageRenderSession, textHeight: Int, textIconSizeLimit: Int) {
+        if (textHeight <= 0 || textIconSizeLimit <= 0) return
+        for (request in session.requests()) {
+            val targetPath = request.targetPath
+            if (!targetPath.isRegularFile()) continue
+            val metadata = ImageMetadataService.getInstance().getMetadataOrNull(targetPath) ?: continue
+            if (metadata.height > textIconSizeLimit) continue
+            val width = (metadata.width * (textHeight.toDouble() / metadata.height)).roundToInt().coerceAtLeast(1)
+            builder.resizeImage(targetPath.absolutePathString(), width, textHeight)
+        }
     }
 
     /**

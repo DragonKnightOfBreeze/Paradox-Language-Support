@@ -22,7 +22,7 @@ import icu.windea.pls.script.ParadoxScriptLanguage
 
 @Suppress("unused")
 object ParadoxScriptPsiService {
-    private val presentableTextLimit get() = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
+    private val presentableTextLengthLimit get() = ChroniclePresentationSettings.getInstance().state.presentableTextLengthLimit
 
     fun getPresentableText(element: PsiPresentableTextAwareElement): String {
         when (element) {
@@ -81,7 +81,7 @@ object ParadoxScriptPsiService {
                     }
                 }
             }
-            is ParadoxScriptStringExpressionElement -> return element.text.transformAndKeepQuotes { it.truncate(presentableTextLimit) }
+            is ParadoxScriptStringExpressionElement -> return element.text.transformAndKeepQuotes { it.truncate(presentableTextLengthLimit) }
             is ParadoxScriptExpressionElement -> return element.value
             else -> return element.text
         }

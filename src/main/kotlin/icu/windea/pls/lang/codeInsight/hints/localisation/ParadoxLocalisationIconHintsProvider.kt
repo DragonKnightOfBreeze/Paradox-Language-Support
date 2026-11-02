@@ -56,7 +56,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
 
         // 如果无法解析（包括对应文件不存在的情况）就直接跳过
         if (!iconResolveResult.canResolve()) return
-        val maxHeight = ChroniclePresentationSettings.getInstance().state.inlayIconHeightLimit
+        val maxHeight = ChroniclePresentationSettings.getInstance().state.inlayTextIconHeightLimit
         val pointer = resolved?.createPointer(context.project)
         sink.addInlinePresentation(element.endOffset, smallInset = true) {
             // 点击可以导航到声明处（定义或图片）

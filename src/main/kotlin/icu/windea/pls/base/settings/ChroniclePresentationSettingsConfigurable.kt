@@ -16,9 +16,9 @@ class ChroniclePresentationSettingsConfigurable : BoundConfigurable(ChronicleBas
             group(ChronicleBaseBundle.message("settings.presentation.general")) {
                 val settings = ChroniclePresentationSettings.getInstance().state
                 row {
-                    label(ChronicleBaseBundle.message("settings.presentation.presentableTextLimit")).widthGroup("chronicle.presentation.general")
-                    intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::presentableTextLimit)
-                    contextHelp(ChronicleBaseBundle.message("settings.presentation.presentableTextLimit.tip"))
+                    label(ChronicleBaseBundle.message("settings.presentation.presentableTextLengthLimit")).widthGroup("chronicle.presentation.general")
+                    intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::presentableTextLengthLimit)
+                    contextHelp(ChronicleBaseBundle.message("settings.presentation.presentableTextLengthLimit.tip"))
                 }
             }
             group(ChronicleBaseBundle.message("settings.presentation.quickDoc")) { configureGroupForQuickDoc() }
@@ -31,19 +31,19 @@ class ChroniclePresentationSettingsConfigurable : BoundConfigurable(ChronicleBas
         val settings = ChroniclePresentationSettings.getInstance().state
 
         row {
-            label(ChronicleBaseBundle.message("settings.presentation.quickDocLocalisationTextFontSize")).widthGroup(group)
-            intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::quickDocLocalisationTextFontSize)
-            contextHelp(ChronicleBaseBundle.message("settings.presentation.quickDocLocalisationTextFontSize.tip"))
+            label(ChronicleBaseBundle.message("settings.presentation.quickDocLocalisationTextIconFontSize")).widthGroup(group)
+            intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::quickDocLocalisationTextIconFontSize)
+            contextHelp(ChronicleBaseBundle.message("settings.presentation.quickDocLocalisationTextIconFontSize.tip"))
         }
         row {
-            label(ChronicleBaseBundle.message("settings.presentation.quickDocMaxImageSize")).widthGroup(group)
-            intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::quickDocMaxImageSize)
-            contextHelp(ChronicleBaseBundle.message("settings.presentation.quickDocMaxImageSize.tip"))
+            label(ChronicleBaseBundle.message("settings.presentation.quickDocMaxImageDisplaySize")).widthGroup(group)
+            intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::quickDocMaxImageDisplaySize)
+            contextHelp(ChronicleBaseBundle.message("settings.presentation.quickDocMaxImageDisplaySize.tip"))
         }
         row {
-            label(ChronicleBaseBundle.message("settings.presentation.quickDocTextIconSizeLimit")).widthGroup(group)
-            intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::quickDocTextIconSizeLimit)
-            contextHelp(ChronicleBaseBundle.message("settings.presentation.quickDocTextIconSizeLimit.tip"))
+            label(ChronicleBaseBundle.message("settings.presentation.quickDocTextIconHeightLimit")).widthGroup(group)
+            intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::quickDocTextIconHeightLimit)
+            contextHelp(ChronicleBaseBundle.message("settings.presentation.quickDocTextIconHeightLimit.tip"))
         }
     }
 
@@ -57,9 +57,9 @@ class ChroniclePresentationSettingsConfigurable : BoundConfigurable(ChronicleBas
             contextHelp(ChronicleBaseBundle.message("settings.presentation.inlayLocalisationTextLengthLimit.tip"))
         }
         row {
-            label(ChronicleBaseBundle.message("settings.presentation.inlayIconHeightLimit")).widthGroup(group)
-            intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::inlayIconHeightLimit)
-            contextHelp(ChronicleBaseBundle.message("settings.presentation.inlayIconHeightLimit.tip"))
+            label(ChronicleBaseBundle.message("settings.presentation.inlayTextIconHeightLimit")).widthGroup(group)
+            intTextField(0..Int.MAX_VALUE, 1).bindIntText(settings::inlayTextIconHeightLimit)
+            contextHelp(ChronicleBaseBundle.message("settings.presentation.inlayTextIconHeightLimit.tip"))
         }
     }
 }

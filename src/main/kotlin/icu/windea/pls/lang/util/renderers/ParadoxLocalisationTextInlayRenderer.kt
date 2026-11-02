@@ -213,7 +213,7 @@ class ParadoxLocalisationTextInlayRenderContext(
 
             // 如果无法解析（包括对应文件不存在的情况）就直接跳过
             if (!iconResolveResult.canResolve()) return@run
-            val maxHeight = ChroniclePresentationSettings.getInstance().state.inlayIconHeightLimit
+            val maxHeight = ChroniclePresentationSettings.getInstance().state.inlayTextIconHeightLimit
             builder.add(AsyncIconPresentation(hintsContext, iconResolveResult.toRenderRequest(), maxHeight, resolved.createPointer()))
             return
         }

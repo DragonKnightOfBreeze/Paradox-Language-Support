@@ -8,7 +8,6 @@ import icu.windea.pls.core.util.ImageFrameInfo
 import icu.windea.pls.images.ImageRenderRequest
 import icu.windea.pls.images.ImageRenderService
 import icu.windea.pls.model.policies.ImageRenderFailurePolicy
-import icu.windea.pls.model.policies.ImageRenderPolicy
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.Assert
 import org.junit.Before
@@ -178,57 +177,6 @@ class ParadoxImageServiceTest : BasePlatformTestCase(), ChronicleTestScope {
         Assert.assertTrue(Files.isRegularFile(ImageRenderService.getInstance().getPlaceholderImagePath()))
     }
 
-    @Test
-    fun resolveUrl_asyncRenderPolicy_test() {
-        val source = root.resolve("async-source.png")
-        val target = root.resolve("async-target.png")
-        writeImage(source, 10, 10)
-
-        val result = ParadoxImageResolveResult(source, target)
-        val url = result.resolveUrl(project, ImageRenderPolicy.Async)
-        Assert.assertNull(url)
-
-        waitForFile(target)
-    }
-
-    @Test
-    fun resolveUrl_usesSettingsRenderPolicy_test() {
-        val source = root.resolve("settings-async-source.png")
-        val target = root.resolve("settings-async-target.png")
-        writeImage(source, 10, 10)
-
-        val settings = ChronicleImageSettings.getInstance().state
-        val oldPolicy = settings.renderPolicy
-        settings.renderPolicy = ImageRenderPolicy.Async
-        try {
-            val result = ParadoxImageResolveResult(source, target)
-            val url = result.resolveUrl(project)
-            Assert.assertNull(url)
-        } finally {
-            settings.renderPolicy = oldPolicy
-        }
-        waitForFile(target)
-    }
-
-    @Test
-    fun resolveUrl_explicitSyncOverridesSettings_test() {
-        val source = root.resolve("sync-source.png")
-        val target = root.resolve("sync-target.png")
-        writeImage(source, 10, 10)
-
-        val result = ParadoxImageResolveResult(source, target)
-        val settings = ChronicleImageSettings.getInstance().state
-        val oldPolicy = settings.renderPolicy
-        settings.renderPolicy = ImageRenderPolicy.Async
-        try {
-            val url = resolveUrlOnPooledThread(result, ImageRenderPolicy.Sync)
-            Assert.assertEquals(target.absolutePathString(), url)
-            Assert.assertTrue(Files.isRegularFile(target))
-        } finally {
-            settings.renderPolicy = oldPolicy
-        }
-    }
-
     private fun createBrokenRequest(name: String): ImageRenderRequest {
         val source = root.resolve("$name-source.png")
         val target = root.resolve("$name-target.png")
@@ -237,9 +185,9 @@ class ParadoxImageServiceTest : BasePlatformTestCase(), ChronicleTestScope {
         return ImageRenderRequest(source, target)
     }
 
-    private fun resolveUrlOnPooledThread(result: ParadoxImageResolveResult, policy: ImageRenderPolicy? = null): String? {
+    private fun resolveUrlOnPooledThread(result: ParadoxImageResolveResult): String? {
         return ApplicationManager.getApplication()
-            .executeOnPooledThread<String?> { result.resolveUrl(project, policy) }
+            .executeOnPooledThread<String?> { result.resolveUrl(project) }
             .get()
     }
 
@@ -252,14 +200,6 @@ class ParadoxImageServiceTest : BasePlatformTestCase(), ChronicleTestScope {
         } finally {
             settings.renderFailurePolicy = oldPolicy
         }
-    }
-
-    private fun waitForFile(path: Path) {
-        val deadline = System.currentTimeMillis() + 10_000
-        while (!Files.isRegularFile(path) && System.currentTimeMillis() < deadline) {
-            Thread.sleep(50)
-        }
-        Assert.assertTrue("Image rendering should eventually finish: $path", Files.isRegularFile(path))
     }
 
     @Suppress("SameParameterValue")

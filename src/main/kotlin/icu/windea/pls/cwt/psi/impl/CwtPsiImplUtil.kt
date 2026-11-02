@@ -180,7 +180,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: CwtOptionKey): String {
-        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLengthLimit
         return element.text.transformAndKeepQuotes { it.truncate(limit) }
     }
 
@@ -276,7 +276,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: CwtPropertyKey): String {
-        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLengthLimit
         return element.text.transformAndKeepQuotes { it.truncate(limit) }
     }
 
@@ -340,7 +340,7 @@ object CwtPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: CwtString): String {
-        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLengthLimit
         return element.text.transformAndKeepQuotes { it.truncate(limit) }
     }
 

@@ -117,7 +117,7 @@ object ParadoxCsvPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxCsvColumn): String {
-        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLengthLimit
         return element.text.transformAndKeepQuotes { it.truncate(limit) }
     }
 

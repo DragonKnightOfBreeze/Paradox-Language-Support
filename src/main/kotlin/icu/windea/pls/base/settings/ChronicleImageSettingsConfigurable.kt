@@ -8,7 +8,6 @@ import com.intellij.ui.dsl.listCellRenderer.*
 import icu.windea.pls.base.ChronicleBaseBundle
 import icu.windea.pls.model.policies.ImageCacheCleanupPolicy
 import icu.windea.pls.model.policies.ImageRenderFailurePolicy
-import icu.windea.pls.model.policies.ImageRenderPolicy
 
 class ChronicleImageSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle.message("settings.images")), SearchableConfigurable {
     override fun getId() = "chronicle.images"
@@ -57,13 +56,6 @@ class ChronicleImageSettingsConfigurable : BoundConfigurable(ChronicleBaseBundle
         val group = "chronicle.images.render"
         val settings = ChronicleImageSettings.getInstance().state
 
-        // renderPolicy
-        row {
-            label(ChronicleBaseBundle.message("settings.images.render.policy")).widthGroup(group)
-            comboBox(ImageRenderPolicy.entries, textListCellRenderer { it?.text })
-                .bindItem(settings::renderPolicy.toNullableProperty())
-            contextHelp(ChronicleBaseBundle.message("settings.images.render.policy.tip"))
-        }
         // renderTimeoutSeconds
         row {
             label(ChronicleBaseBundle.message("settings.images.render.timeoutSeconds")).widthGroup(group)

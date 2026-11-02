@@ -8,9 +8,12 @@ import com.intellij.platform.backend.presentation.TargetPresentation
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.createPointer
+import icu.windea.pls.base.settings.ChroniclePresentationSettings
 import icu.windea.pls.core.codeInsight.documentation.DocumentationContext
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.ep.codeInsight.documentation.ParadoxQuickDocTextProvider
+import icu.windea.pls.lang.getDocumentationFontSize
 import icu.windea.pls.images.ImageRenderContext
 import icu.windea.pls.images.ImageRenderService
 import kotlinx.coroutines.coroutineScope
@@ -63,6 +66,11 @@ class ParadoxDocumentationTarget(
                     }
                 } ?: return@coroutineScope null
                 session.awaitAll()
+                val presentationSettings = ChroniclePresentationSettings.getInstance().state
+                val textHeight = runCatchingCancellable { getDocumentationFontSize().size }.getOrNull()?.takeIf { it > 0 }
+                    ?: presentationSettings.quickDocLocalisationTextIconFontSize
+                val textIconSizeLimit = presentationSettings.quickDocTextIconHeightLimit
+                renderService.applyImageScaling(builder, session, textHeight, textIconSizeLimit)
                 renderService.applyFailurePolicy(builder, session)
                 builder.toDocumentation()
             }

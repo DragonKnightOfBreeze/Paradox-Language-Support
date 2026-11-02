@@ -9,7 +9,6 @@ import com.intellij.openapi.components.service
 import icu.windea.pls.model.constants.ChronicleConstants
 import icu.windea.pls.model.policies.ImageCacheCleanupPolicy
 import icu.windea.pls.model.policies.ImageRenderFailurePolicy
-import icu.windea.pls.model.policies.ImageRenderPolicy
 
 /**
  * 插件的图片处理设置。
@@ -32,7 +31,6 @@ class ChronicleImageSettings : SimplePersistentStateComponent<ChronicleImageSett
      * @property cacheTtlDays 图片磁盘缓存的 TTL（天）。仅当清理策略包含 TTL 时生效。
      * @property cacheMaxSizeMb 图片磁盘缓存的最大大小（MB）。仅当清理策略包含大小限制时生效。
      * @property cacheMaxFiles 图片磁盘缓存的最大文件数量。仅当清理策略包含大小限制时生效。
-     * @property renderPolicy 没有渲染会话且缓存未命中时默认使用的渲染策略。
      * @property renderFailurePolicy 图片渲染失败时的默认处理策略。
      * @property renderTimeoutSeconds 单次图片物化（metadata/渲染/解码）的超时时间（秒）。
      */
@@ -41,7 +39,6 @@ class ChronicleImageSettings : SimplePersistentStateComponent<ChronicleImageSett
         var cacheTtlDays by property(DEFAULT_CACHE_TTL_DAYS)
         var cacheMaxSizeMb by property(DEFAULT_CACHE_MAX_SIZE_MB)
         var cacheMaxFiles by property(DEFAULT_CACHE_MAX_FILES)
-        var renderPolicy by enum(ImageRenderPolicy.Sync)
         var renderFailurePolicy by enum(ImageRenderFailurePolicy.AcceptBroken)
         var renderTimeoutSeconds by property(DEFAULT_RENDER_TIMEOUT_SECONDS)
     }

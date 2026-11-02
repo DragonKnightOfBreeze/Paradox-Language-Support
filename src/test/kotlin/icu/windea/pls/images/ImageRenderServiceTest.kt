@@ -22,7 +22,6 @@ import kotlin.io.path.createDirectories
 
 /**
  * @see ImageRenderService
- * @see ParadoxImageManager
  */
 @RunWith(JUnit4::class)
 class ImageRenderServiceTest : BasePlatformTestCase() {
@@ -36,6 +35,40 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         ImageContext.init()
     }
 
+
+    @Test
+    fun applyImageScaling_textIcon_test() = runBlocking {
+        val source = root.resolve("scaling-source.png")
+        val target = root.resolve("scaling-target.png")
+        writeImage(source, 100, 40)
+
+        val request = ImageRenderRequest(source, target)
+        val service = ImageRenderService.getInstance()
+        val session = service.newRenderSession(this)
+        session.launch(request).await()
+        val builder = buildDocumentation { image(target.absolutePathString()) }
+
+        service.applyImageScaling(builder, session, textHeight = 20, textIconSizeLimit = 50)
+
+        Assert.assertTrue(builder.content.contains("width=\"50\" height=\"20\""))
+    }
+
+    @Test
+    fun applyImageScaling_largeImageKeepsOriginalSize_test() = runBlocking {
+        val source = root.resolve("scaling-large-source.png")
+        val target = root.resolve("scaling-large-target.png")
+        writeImage(source, 100, 100)
+
+        val request = ImageRenderRequest(source, target)
+        val service = ImageRenderService.getInstance()
+        val session = service.newRenderSession(this)
+        session.launch(request).await()
+        val builder = buildDocumentation { image(target.absolutePathString()) }
+
+        service.applyImageScaling(builder, session, textHeight = 20, textIconSizeLimit = 36)
+
+        Assert.assertTrue(builder.content.contains("<img src=\"${target.absolutePathString().toFileUrl()}\"/>"))
+    }
     @Test
     fun renderImage_test() {
         val dir = root

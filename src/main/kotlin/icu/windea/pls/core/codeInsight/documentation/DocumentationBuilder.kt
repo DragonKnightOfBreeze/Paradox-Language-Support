@@ -45,6 +45,8 @@ interface DocumentationBuilder : Appendable {
 
     fun replaceImage(url: String, newUrl: String): DocumentationBuilder
 
+    fun resizeImage(url: String, width: Int, height: Int): DocumentationBuilder
+
     fun definition(block: DocumentationBuilder.() -> Unit): DocumentationBuilder
 
     fun content(block: DocumentationBuilder.() -> Unit): DocumentationBuilder
@@ -122,6 +124,18 @@ private class DocumentationBuilderImpl(
 
     override fun replaceImage(url: String, newUrl: String): DocumentationBuilder {
         return replaceImageTag(url, newUrl)
+    }
+
+    override fun resizeImage(url: String, width: Int, height: Int): DocumentationBuilder {
+        val oldTag = """<img src="${url.toFileUrl()}"/>"""
+        val newTag = """<img src="${url.toFileUrl()}" width="$width" height="$height" vspace="0" hspace="0"/>"""
+        replaceInContent(oldTag, newTag)
+        for (sections in sectionGroups.values) {
+            for ((key, value) in sections) {
+                if (oldTag in value) sections[key] = value.replace(oldTag, newTag)
+            }
+        }
+        return this
     }
 
     private fun replaceImageTag(url: String, newUrl: String?): DocumentationBuilder {

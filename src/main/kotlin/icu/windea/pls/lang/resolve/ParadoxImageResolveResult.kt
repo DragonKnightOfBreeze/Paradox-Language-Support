@@ -4,7 +4,6 @@ import com.intellij.openapi.project.Project
 import icu.windea.pls.core.util.ImageFrameInfo
 import icu.windea.pls.images.ImageRenderRequest
 import icu.windea.pls.images.ImageRenderSession
-import icu.windea.pls.model.policies.ImageRenderPolicy
 import java.nio.file.Path
 
 /**
@@ -48,7 +47,7 @@ class ParadoxImageResolveResult(
     /**
      * @see ParadoxImageService.resolveUrl
      */
-    fun resolveUrl(project: Project, renderPolicy: ImageRenderPolicy? = null, imageSession: ImageRenderSession? = null): String? {
-        return ParadoxImageService.resolveUrl(this, project, renderPolicy, imageSession)
+    fun resolveUrl(project: Project, imageSession: ImageRenderSession? = null): String? {
+        return ParadoxImageService.resolveUrl(this, project, imageSession)
     }
 }
