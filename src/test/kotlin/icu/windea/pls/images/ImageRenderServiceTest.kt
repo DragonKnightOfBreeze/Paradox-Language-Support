@@ -117,7 +117,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         val target = root.resolve("icon-target.png")
         writeImage(source, 10, 10)
 
-        val icon = ImageRenderService.getInstance().renderImageIcon(ImageRenderRequest(source, target), maxHeight = 36)
+        val icon = ImageRenderService.getInstance().createImageIcon(ImageRenderRequest(source, target), heightLimit = 36)
 
         Assert.assertNotNull(icon)
         Assert.assertEquals(10, icon!!.iconWidth)
@@ -130,7 +130,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         val target = root.resolve("icon-too-tall-target.png")
         writeImage(source, 10, 10)
 
-        Assert.assertNull(ImageRenderService.getInstance().renderImageIcon(ImageRenderRequest(source, target), maxHeight = 5))
+        Assert.assertNull(ImageRenderService.getInstance().createImageIcon(ImageRenderRequest(source, target), heightLimit = 5))
     }
 
     @Test

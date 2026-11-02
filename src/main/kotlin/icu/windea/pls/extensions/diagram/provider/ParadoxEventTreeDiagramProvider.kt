@@ -100,6 +100,8 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     }
 
     class ElementManager(provider: ParadoxDefinitionDiagramProvider) : ParadoxDefinitionDiagramProvider.ElementManager(provider) {
+        // TODO 3.0.x preload more data to remove all `runSmartReadAction` here
+
         override fun isAcceptableAsNode(o: Any?): Boolean {
             return o is PsiDirectory || o is ParadoxScriptFile || o is ParadoxScriptProperty
         }

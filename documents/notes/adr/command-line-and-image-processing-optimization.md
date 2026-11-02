@@ -656,6 +656,9 @@ com.intellij.diagnostic.Freeze
   - 高度不超过 `quickDocTextIconHeightLimit` 的图片按文档文本高度缩放；更大的图片保持原始尺寸。
 - [x] 内嵌提示继续使用 `factory.smallScaledIcon(icon)`，不额外处理文本图标缩放。
 - [x] `ParadoxImageServiceTest` 清理与渲染策略相关的测试。
+- [ ] 重构 `StellarisTechnologyCardBuilder`，以隔离数据读取与UI渲染逻辑，避免在EDT中直接渲染图片（这可能会执行命令行）
+  - ~~改为使用协程并在 `runWithModalProgressBlocking` 中执行。~~ - 这会导致无限刷新，目前的临时解决方案仍会阻塞 EDT，以后再考虑优化。
+  - 首先读取通用数据，接着读取非通用数据，最后构建UI组件。
 
 #### 2026-10-30 - post doc
 
@@ -709,11 +712,10 @@ com.intellij.diagnostic.Freeze
 
 - [ ] 为 hints/docs 上下文补充专门的回归测试（验证 collect/EDT 不发生图片 IO）。
   - 现在：已人工验证，可评估如何编写测试
-- [ ] 图片转换动作的 EDT 阻塞路径进一步改造为后台转换 + EDT 提交。
-  - 现状：不是那么必要，留待后续评估
-- [ ] 需要评估渲染快速文档/内嵌提示时，文本图标的缩放策略。可能需要人工验证。
+- [x] 需要评估渲染快速文档/内嵌提示时，文本图标的缩放策略。可能需要人工验证。
   - 备注：需要区分“普通图标”和“文本图标”：对于内嵌提示和渲染器中渲染的图标，应全部视为“文本图标”，并基于文本高度进行缩放
   - 结论：必须处理快速文档中的，否则 UI 效果会不理想
+  - 状态：已完成
 
 #### 2026-10-30 - post
 
@@ -738,6 +740,22 @@ com.intellij.diagnostic.Freeze
   - 结论：非当前目标，需要另行评估
 - [x] 考虑重构代码以移除 `ParadoxDefinitionPresentationUtil` 中的 `.toFileUrl().toIconOrNull()`
   - 状态：已完成
+- [ ] 考虑将 `ImageRenderRequest`/`ParadoxImageResolveResult` 合并为 `ImageDescriptor`
+  - 更加通用，不限于“渲染”，也可用于“描述”和“解析”。
+  - 提供图片层的方法 `ImageDescriptor.createImage` `ImageDescriptor.createImageIcon`。
+  - 提供语义层的扩展方法 `ImageDescriptor.resolveUrl`。
+- [ ] 考虑物化图片/图标时的缓存策略
+  - 相关代码位置：`ImageService.createImage` `ImageService.createImageIcon`
+- [ ] UI Presentation API 的进一步重构
+  - 相关代码位置：`ParadoxDefinitionPresentation` `ParadoxDefinitionPresentationProvider` `ParadoxDefinitionPresentationService`
+  - 关键代码位置：`StellarisTechnologyCardBuilder.build`
+  - 思路：预先加载所有必要的数据，渲染所有必要的图表，尽可能消除 `ParadoxDefinitionDiagramProvider.ElementManager` 中的 readAction
+  - 备注：这个 Diagrams 官方插件本身就有 readAction 相关的 BUG，而且 API 设计也不太合理……
+  - 结论：非当前目标，需要另行评估
+- [ ] 图片转换动作的 EDT 阻塞路径进一步改造
+  - 关键代码位置：`ConvertImageFormatAction.convertImageFormat`
+  - 思路：后台转换 + EDT 提交
+  - 结论：非当前目标，需要另行评估
 
 ### 分析
 

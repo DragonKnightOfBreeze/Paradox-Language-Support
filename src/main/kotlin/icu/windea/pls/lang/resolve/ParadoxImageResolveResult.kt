@@ -1,9 +1,14 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.lang.resolve
 
 import com.intellij.openapi.project.Project
 import icu.windea.pls.core.util.ImageFrameInfo
 import icu.windea.pls.images.ImageRenderRequest
+import icu.windea.pls.images.ImageRenderService
+import java.awt.Image
 import java.nio.file.Path
+import javax.swing.Icon
 
 /**
  * 语义层的图片解析结果。
@@ -48,5 +53,19 @@ class ParadoxImageResolveResult(
      */
     fun resolveUrl(project: Project): String? {
         return ParadoxImageService.resolveUrl(this, project)
+    }
+
+    /**
+     * @see ImageRenderService.createImage
+     */
+    fun createImage(heightLimit: Int? = null): Image? {
+        return ImageRenderService.getInstance().createImage(toRenderRequest(), heightLimit)
+    }
+
+    /**
+     * @see ImageRenderService.createImageIcon
+     */
+    fun createImageIcon(heightLimit: Int? = null): Icon? {
+        return ImageRenderService.getInstance().createImageIcon(toRenderRequest(), heightLimit)
     }
 }

@@ -10,6 +10,8 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import javax.swing.JComponent
 
+// TODO 3.0.x further refactor
+
 /**
  * 科技的图形展示（科技卡）。
  */
@@ -21,7 +23,7 @@ class StellarisTechnologyCardPresentation(element: ParadoxDefinitionElement) : P
     }
 
     private fun doCreateComponent(): JComponent? {
-        val element = element ?: return null
-        return StellarisTechnologyCardBuilder(element).build()
+        val element = element
+        return StellarisTechnologyCardBuilder(element, element.project).build()
     }
 }

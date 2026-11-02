@@ -54,7 +54,7 @@ class AsyncIconPresentation(
         return withTimeoutOrNull(timeout) {
             withContext(Dispatchers.IO) {
                 coroutineToIndicator {
-                    ImageRenderService.getInstance().renderImageIcon(request, maxHeight)
+                    ImageRenderService.getInstance().createImageIcon(request, maxHeight)
                 }
             }
         }

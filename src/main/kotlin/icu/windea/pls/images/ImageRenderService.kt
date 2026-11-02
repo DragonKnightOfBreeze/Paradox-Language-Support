@@ -24,6 +24,7 @@ import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.withContext
 import java.awt.AlphaComposite
 import java.awt.Color
+import java.awt.Image
 import java.awt.image.BufferedImage
 import java.nio.file.Files
 import java.nio.file.Path
@@ -147,17 +148,29 @@ class ImageRenderService : Disposable {
     }
 
     /**
-     * 在后台物化图片，并返回可直接用于 presentation 的 [Icon]。
+     * 在后台物化图片，并返回可直接用于展示的 [Image]。
      *
-     * 该方法会读取原图 metadata、检查高度限制、按需渲染并解码目标图片。
+     * 该方法会读取图片的原始元数据、检查高度限制、按需渲染并解码目标图片。
      * 调用方应确保当前不在 EDT/readAction 中，并按需添加超时。
      */
-    fun renderImageIcon(request: ImageRenderRequest, maxHeight: Int? = null): Icon? {
+    fun createImage(request: ImageRenderRequest, heightLimit: Int? = null): Image? {
         val metadata = ImageMetadataService.getInstance().getMetadataOrNull(request.sourcePath) ?: return null
-        if (maxHeight != null && metadata.height > maxHeight) return null
+        if (heightLimit != null && metadata.height > heightLimit) return null
         val targetPath = renderImage(request)
         val image = ImageIoService.readImage(targetPath)
-        return ImageIcon(image)
+        return image
+    }
+
+    /**
+     * 在后台物化图片，并返回可直接用于展示的 [Icon]。
+     *
+     * 该方法会读取图片的原始元数据、检查高度限制、按需渲染并解码目标图片。
+     * 调用方应确保当前不在 EDT/readAction 中，并按需添加超时。
+     */
+    fun createImageIcon(request: ImageRenderRequest, heightLimit: Int? = null): Icon? {
+        val image = createImage(request, heightLimit) ?: return null
+        val imageIcon = ImageIcon(image)
+        return imageIcon
     }
 
     /**

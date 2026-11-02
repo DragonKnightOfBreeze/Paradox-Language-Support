@@ -26,14 +26,13 @@ import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.ep.util.data.StellarisTechnologyData
-import icu.windea.pls.ep.util.presentation.StellarisTechnologyCardPresentation
 import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.extensions.diagram.OrderedDiagramNodeContentManager
 import icu.windea.pls.extensions.diagram.settings.ParadoxTechTreeDiagramSettings
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
-import icu.windea.pls.lang.getDefinitionPresentation
 import icu.windea.pls.lang.presentation.ParadoxDefinitionPresentationUtil
+import icu.windea.pls.lang.presentation.StellarisTechnologyCardBuilder
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.util.ParadoxTechnologyManager
 import icu.windea.pls.model.ParadoxGameType
@@ -83,7 +82,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
 
     object Keys : KeyRegistry() {
         val typeText by registerKey<String>(Keys)
-        val nameText by registerKey<String>(Keys)
+        val presentableNameText by registerKey<String>(Keys)
         val nodeData by registerKey<StellarisTechnologyData>(Keys)
     }
 
@@ -116,6 +115,8 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
     }
 
     class ElementManager(provider: ParadoxDefinitionDiagramProvider) : ParadoxDefinitionDiagramProvider.ElementManager(provider) {
+        // TODO 3.0.x preload more data to remove all `runSmartReadAction` here
+
         override fun isAcceptableAsNode(o: Any?): Boolean {
             return o is PsiDirectory || o is ParadoxScriptFile || o is ParadoxScriptProperty
         }
@@ -139,7 +140,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                         val properties = ParadoxDefinitionPresentationUtil.getProperties(nodeElement, provider.getItemPropertyKeys())
                         properties.forEach { result += Items.Property(it, it.name in provider.getItemPropertyKeysInDetail()) }
                     }
-                    nodeElement.getUserData(Keys.nameText)?.let { result += Items.PresentableName(it) }
+                    nodeElement.getUserData(Keys.presentableNameText)?.let { result += Items.PresentableName(it) }
                     result += Items.Presentation(nodeElement)
                     result.toTypedArray()
                 }
@@ -153,9 +154,9 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                 is Items.PresentableName -> {
                     ParadoxDefinitionPresentationUtil.getLabel(nodeItem.text.orAnonymous())
                 }
-                is Items.Presentation -> runSmartReadAction {
-                    val presentationData = nodeItem.definition.getDefinitionPresentation<StellarisTechnologyCardPresentation>()
-                    presentationData?.createComponent()
+                is Items.Presentation -> {
+                    val builder = StellarisTechnologyCardBuilder(nodeItem.definition, builder.project)
+                    builder.build()
                 }
                 else -> null
             }
@@ -188,7 +189,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
     abstract class DataModel(
         project: Project,
         file: VirtualFile?, // umlFile
-        provider: ParadoxDefinitionDiagramProvider
+        provider: ParadoxDefinitionDiagramProvider,
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
         private val definitionType = ParadoxDefinitionTypes.technology
         private val nodeMap = mutableMapOf<ParadoxDefinitionElement, Node>()
@@ -294,8 +295,17 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
             }
             run {
                 val result = ParadoxDefinitionPresentationUtil.getNameText(technology)
-                technology.putUserData(Keys.nameText, result)
+                technology.putUserData(Keys.presentableNameText, result)
             }
+        }
+
+        override fun dispose() {
+            nodes.forEach { node ->
+                val element = node.identifyingElement
+                element.putUserData(Keys.typeText, null)
+                element.putUserData(Keys.presentableNameText, null)
+            }
+            super.dispose()
         }
 
         override fun getModificationTracker(): ModificationTracker {
