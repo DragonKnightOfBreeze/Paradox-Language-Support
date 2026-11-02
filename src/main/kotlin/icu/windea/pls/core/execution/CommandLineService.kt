@@ -1,8 +1,11 @@
+@file:Suppress("unused", "DEPRECATION")
+
 package icu.windea.pls.core.execution
 
 import com.intellij.openapi.util.SystemInfo
 import java.nio.charset.Charset
 
+@Deprecated("Use `ProcessExecutor` with `GeneralCommandLine` instead.")
 object CommandLineService {
     private val outputCharsetCandidates = listOf(Charsets.UTF_8, Charset.forName("GBK"))
 

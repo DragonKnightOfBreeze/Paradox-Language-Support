@@ -3,6 +3,7 @@ package icu.windea.pls.lang.psi
 import com.intellij.psi.PsiElement
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.orAnonymous
+import icu.windea.pls.lang.ParadoxLanguage
 import icu.windea.pls.lang.defineInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.light.ParadoxComplexEnumValueLightElement
@@ -22,6 +23,9 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 
 object ParadoxElementDescriptionService {
     fun getName(element: PsiElement): String? {
+        // 3.0.5 precheck (necessary)
+        if (!checkLanguage(element)) return null
+
         return when (element) {
             is ParadoxScriptProperty -> {
                 element.definitionInfo?.let { return it.name.orAnonymous() }
@@ -46,6 +50,9 @@ object ParadoxElementDescriptionService {
     }
 
     fun getType(element: PsiElement): String? {
+        // 3.0.5 precheck (necessary)
+        if (!checkLanguage(element)) return null
+
         // should not be upper-cased
         return when (element) {
             is ParadoxScriptProperty -> {
@@ -89,6 +96,9 @@ object ParadoxElementDescriptionService {
     }
 
     fun getNodeText(element: PsiElement): String? {
+        // 3.0.5 precheck (necessary)
+        if (!checkLanguage(element)) return null
+
         // {type} {nameOrAnonymous}
         val type = getType(element) ?: return null
         val name = getName(element)
@@ -96,6 +106,11 @@ object ParadoxElementDescriptionService {
     }
 
     fun getHighlightUsagesDescription(element: PsiElement): String? {
+        // 3.0.5 precheck (necessary)
+        if (!checkLanguage(element)) return null
+
         return getNodeText(element)
     }
+
+    private fun checkLanguage(element: PsiElement): Boolean = element.language is ParadoxLanguage
 }

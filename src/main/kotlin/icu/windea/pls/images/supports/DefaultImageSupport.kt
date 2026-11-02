@@ -1,65 +1,40 @@
 package icu.windea.pls.images.supports
 
-import com.intellij.openapi.diagnostic.thisLogger
-import icu.windea.pls.core.checkCancellation
+import icu.windea.pls.core.util.io.ImageIoService
 import icu.windea.pls.images.ImageSupport
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
-import java.nio.file.StandardOpenOption.*
 import javax.imageio.ImageIO
-import javax.imageio.ImageReader
-import javax.imageio.spi.ImageReaderSpi
-import kotlin.io.path.exists
-import kotlin.io.path.inputStream
-import kotlin.io.path.outputStream
+import kotlin.io.path.deleteIfExists
 
 /**
+ * 基于 [TwelveMonkeys ImageIO](https://github.com/haraldk/TwelveMonkeys) 实现的图片支持。
+ *
+ * 注意：存在一些限制。例如，不支持写入 DDS 图片，不支持转换为 DDS 图片，也不支持部分新版的 DDS 扩展格式（如 BC6H/BC7）。
+ *
  * @see ImageIO
- * @see ImageReader
- * @see ImageReaderSpi
+ * @see ImageIoService
  */
 class DefaultImageSupport : ImageSupport {
-    override fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
+    override suspend fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean {
+        // 3.0.5 fast return if necessary
+        if (ImageIoService.copyIfSameFormat(inputStream, outputStream, sourceFormat, targetFormat)) return true
+        // implementation
+        ImageIoService.convertImageFormat(inputStream, outputStream, targetFormat)
+        return true
+    }
+
+    override suspend fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
+        // 3.0.5 fast return if necessary
+        if (ImageIoService.copyIfSameFormat(path, targetPath, sourceFormat, targetFormat)) return true
+        // implementation
         try {
-            doConvertImageFormat(inputStream, outputStream, targetFormat)
+            ImageIoService.convertImageFormat(path, targetPath, targetFormat)
             return true
         } catch (e: Exception) {
-            checkCancellation(e)
-            thisLogger().warn(e)
-            throw UnsupportedOperationException(e)
+            runCatching { targetPath.deleteIfExists() }
+            throw e
         }
-    }
-
-    override fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
-        try {
-            val inputStream = path.inputStream(READ)
-            val outputStream = targetPath.outputStream(WRITE, CREATE, TRUNCATE_EXISTING)
-            doConvertImageFormat(inputStream, outputStream, targetFormat)
-            return targetPath.exists()
-        } catch (e: Exception) {
-            checkCancellation(e)
-            thisLogger().warn(e)
-            throw UnsupportedOperationException(e)
-        }
-    }
-
-    @Suppress("NAME_SHADOWING")
-    private fun doConvertImageFormat(inputStream: InputStream, outputStream: OutputStream, targetFormat: String): OutputStream {
-        inputStream.buffered().use { inputStream ->
-            val imageInputStream = ImageIO.createImageInputStream(inputStream)
-            val imageReader = ImageIO.getImageReaders(imageInputStream).next()
-            imageReader.input = imageInputStream
-            val numImages = imageReader.getNumImages(false)
-            if (numImages == 0) throw IllegalStateException()
-            outputStream.use { outputStream ->
-                repeat(numImages) { i ->
-                    val image0 = imageReader.read(i)
-                    ImageIO.write(image0, targetFormat, outputStream)
-                    outputStream.flush()
-                }
-            }
-        }
-        return outputStream
     }
 }

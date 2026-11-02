@@ -8,10 +8,10 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.gist.GistManager
 import com.intellij.util.gist.VirtualFileGist
 import com.intellij.util.io.DataExternalizer
-import icu.windea.pls.core.io.readIntFast
-import icu.windea.pls.core.io.readUTFFast
-import icu.windea.pls.core.io.writeIntFast
-import icu.windea.pls.core.io.writeUTFFast
+import icu.windea.pls.core.util.io.readIntFast
+import icu.windea.pls.core.util.io.readUTFFast
+import icu.windea.pls.core.util.io.writeIntFast
+import icu.windea.pls.core.util.io.writeUTFFast
 import java.io.DataInput
 import java.io.DataOutput
 
@@ -40,7 +40,7 @@ class DdsMetadataIndex {
             if (!file.isInLocalFileSystem) return@c null
             if (file.fileType !== DdsFileType) return@c null
             if (file.length > Registry.get("ide.index.image.max.size").asDouble() * 1024 * 1024) return@c null
-            DdsMetadataReader.read(file)
+            DdsMetadataReader.readOrNull(file)
         }
     }
 

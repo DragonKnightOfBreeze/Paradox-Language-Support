@@ -1,6 +1,6 @@
 package icu.windea.pls.core.match
 
-import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.util.cache.CacheBuilder
 
 /**
  * GLOB 模式的匹配器。

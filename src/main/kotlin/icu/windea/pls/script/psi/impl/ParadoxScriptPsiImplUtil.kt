@@ -13,7 +13,7 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
-import icu.windea.pls.base.settings.ChronicleInternalSettings
+import icu.windea.pls.base.settings.ChroniclePresentationSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.containsLineBreak
@@ -98,6 +98,11 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
+    fun getPresentableText(element: ParadoxScriptFile): String {
+        return element.name // 3.0.5 use file name (necessary)
+    }
+
+    @JvmStatic
     fun isEquivalentTo(element: ParadoxScriptFile, another: PsiElement?): Boolean {
         if (element === another) return true
         if (another !is ParadoxScriptFile) return false
@@ -177,17 +182,6 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun isEquivalentTo(element: ParadoxScriptProperty, another: PsiElement?): Boolean {
-        if (element === another) return true
-        if (another !is ParadoxScriptProperty) return false
-        // for definitions: by definitionInfo
-        // for others: never
-        if (element.definitionInfo.let { it == null || it != another.definitionInfo }) return false
-        // if (selectGameType(element) != selectGameType(another)) return false // unnecessary
-        return true
-    }
-
-    @JvmStatic
     fun getPresentableText(element: ParadoxScriptProperty): String {
         var keyElement: ParadoxScriptPropertyKey? = null
         var separatorElement: PsiElement? = null
@@ -206,6 +200,17 @@ object ParadoxScriptPsiImplUtil {
             append(" ")
             if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
         }
+    }
+
+    @JvmStatic
+    fun isEquivalentTo(element: ParadoxScriptProperty, another: PsiElement?): Boolean {
+        if (element === another) return true
+        if (another !is ParadoxScriptProperty) return false
+        // for definitions: by definitionInfo
+        // for others: never
+        if (element.definitionInfo.let { it == null || it != another.definitionInfo }) return false
+        // if (selectGameType(element) != selectGameType(another)) return false // unnecessary
+        return true
     }
 
     // endregion
@@ -239,7 +244,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptPropertyKey): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLengthLimit
         return element.text.transformAndKeepQuotes { it.truncate(limit) }
     }
 
@@ -294,7 +299,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptString): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLengthLimit
         return element.text.transformAndKeepQuotes { it.truncate(limit) }
     }
 
@@ -389,16 +394,6 @@ object ParadoxScriptPsiImplUtil {
     }
 
     @JvmStatic
-    fun isEquivalentTo(element: ParadoxScriptScriptedVariable, another: PsiElement): Boolean {
-        if (element === another) return true
-        if (another !is ParadoxScriptScriptedVariable) return false
-        // by name and gameType
-        if (element.name.let { it.isNullOrEmpty() || it != another.name }) return false
-        if (selectGameType(element) != selectGameType(another)) return false
-        return true
-    }
-
-    @JvmStatic
     fun getPresentableText(element: ParadoxScriptScriptedVariable): String {
         var nameElementElement: ParadoxScriptScriptedVariableName? = null
         var valueElement: ParadoxScriptValue? = null
@@ -413,6 +408,16 @@ object ParadoxScriptPsiImplUtil {
             append(" = ")
             if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
         }
+    }
+
+    @JvmStatic
+    fun isEquivalentTo(element: ParadoxScriptScriptedVariable, another: PsiElement): Boolean {
+        if (element === another) return true
+        if (another !is ParadoxScriptScriptedVariable) return false
+        // by name and gameType
+        if (element.name.let { it.isNullOrEmpty() || it != another.name }) return false
+        if (selectGameType(element) != selectGameType(another)) return false
+        return true
     }
 
     // endregion
@@ -432,7 +437,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptScriptedVariableName): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLengthLimit
         return element.text.truncate(limit)
     }
 
@@ -471,7 +476,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptScriptedVariableReference): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLengthLimit
         return element.text.truncate(limit)
     }
 
@@ -505,7 +510,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptInlineMathScriptedVariableReference): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLengthLimit
         return element.text.truncate(limit)
     }
 
@@ -651,7 +656,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptNormalParameterArgument): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLengthLimit
         return element.text.truncate(limit)
     }
 
@@ -730,7 +735,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun getPresentableText(element: ParadoxScriptInlineMathParameterArgument): String {
-        val limit = ChronicleInternalSettings.getInstance().presentableTextLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.presentableTextLengthLimit
         return element.text.truncate(limit)
     }
 
@@ -907,7 +912,7 @@ object ParadoxScriptPsiImplUtil {
 
     @JvmStatic
     fun toString(element: PsiElement): String {
-        return PsiService.toPresentableString(element)
+        return PsiService.toDefaultPresentableString(element)
     }
 
     @JvmStatic

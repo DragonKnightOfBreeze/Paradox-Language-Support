@@ -84,7 +84,7 @@ property ::= property_key COLON property_number? property_value {
   ]
   methods=[
     getIcon getName setName getNameIdentifier getTextOffset getType getValue setValue
-    getIElementType isEquivalentTo getPresentableText
+    getIElementType getPresentableText isEquivalentTo
     getPresentation
   ]
 }

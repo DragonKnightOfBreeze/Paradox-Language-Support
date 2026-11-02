@@ -1,12 +1,12 @@
 package icu.windea.pls.ep.index
 
 import com.intellij.psi.PsiElement
-import icu.windea.pls.core.io.readOrReadFrom
-import icu.windea.pls.core.io.readUTFFast
-import icu.windea.pls.core.io.writeByte
-import icu.windea.pls.core.io.writeOrWriteFrom
-import icu.windea.pls.core.io.writeUTFFast
 import icu.windea.pls.core.util.ReadWriteAccessC
+import icu.windea.pls.core.util.io.readOrReadFrom
+import icu.windea.pls.core.util.io.readUTFFast
+import icu.windea.pls.core.util.io.writeByte
+import icu.windea.pls.core.util.io.writeOrWriteFrom
+import icu.windea.pls.core.util.io.writeUTFFast
 import icu.windea.pls.core.util.optimized
 import icu.windea.pls.core.withState
 import icu.windea.pls.lang.index.ParadoxMergedIndexContext

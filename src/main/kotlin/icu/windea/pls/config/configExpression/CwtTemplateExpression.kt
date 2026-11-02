@@ -5,12 +5,12 @@ package icu.windea.pls.config.configExpression
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.match.CwtTemplateMatchService
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.containsBlank
 import icu.windea.pls.core.isIdentifierChar
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.text.TextPattern
+import icu.windea.pls.core.util.cache.CacheBuilder
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.ep.config.configExpression.CwtDataExpressionSupport
 

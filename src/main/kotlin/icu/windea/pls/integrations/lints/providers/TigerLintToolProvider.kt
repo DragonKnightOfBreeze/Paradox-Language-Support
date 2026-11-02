@@ -1,24 +1,28 @@
 package icu.windea.pls.integrations.lints.providers
 
-import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.execution.ExecutionException
+import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.process.ProcessOutput
 import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.vfs.VirtualFile
-import icu.windea.pls.base.io.ChronicleDataPathService
-import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
-import icu.windea.pls.base.settings.ChronicleProfilesSettings
-import icu.windea.pls.core.executeCommandLine
-import icu.windea.pls.core.orNull
-import icu.windea.pls.core.quote
-import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.core.text.QuotePatterns
-import icu.windea.pls.core.toPath
-import icu.windea.pls.core.toUuidString
+import icu.windea.pls.core.data.JsonService
+import icu.windea.pls.core.execution.ExecutionTimeouts
+import icu.windea.pls.core.execution.ProcessExecutor
+import icu.windea.pls.core.util.io.parsePath
+import icu.windea.pls.integrations.lints.LintRequest
+import icu.windea.pls.integrations.lints.LintToolSettings
+import icu.windea.pls.integrations.lints.TigerLintRequest
 import icu.windea.pls.integrations.lints.TigerLintResult
-import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.model.ParadoxGameType
-import icu.windea.pls.model.ParadoxRootInfo
-import kotlin.io.path.name
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.concurrent.CancellationException
+import java.util.concurrent.TimeoutException
+import kotlin.io.path.createDirectories
+import kotlin.io.path.extension
 import kotlin.io.path.nameWithoutExtension
+import kotlin.io.path.writeText
 
 /**
  * 参见：[Tiger](https://github.com/amtep/tiger)
@@ -26,116 +30,130 @@ import kotlin.io.path.nameWithoutExtension
  * 目前仅适用于模组目录。
  */
 abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
-    abstract val name: String
     abstract val forGameType: ParadoxGameType
-    abstract val exePath: String?
-    abstract val confPath: String?
+    abstract val configuredExecutablePath: Path?
+    abstract val configuredConfPath: Path?
 
     final override fun isEnabled(): Boolean {
-        return ChronicleIntegrationsSettings.getInstance().state.lint.enableTiger
+        return LintToolSettings.getInstance().enableTiger
     }
 
     final override fun isSupported(gameType: ParadoxGameType?): Boolean {
         return gameType == forGameType
     }
 
-    override fun isValid(): Boolean {
-        val path = exePath?.trim()
-        if (path.isNullOrEmpty()) return false
-        return isValidExePath(path)
+    final override fun getExecutablePath(): Path? {
+        configuredExecutablePath?.let { return it }
+        return null // by default null
     }
 
-    override fun isValidExePath(path: String): Boolean {
-        return runCatchingCancelable { checkExePath(path) }.getOrDefault(false)
+    final override fun validateExecutablePath(path: Path): Boolean {
+        // NOTE 3.0.5 出于轻量化的目的，不再通过执行命令行来检测工具是否可用
+        if (!path.nameWithoutExtension.equals(name, true)) return false
+        return Files.isRegularFile(path)
     }
 
-    private fun checkExePath(path: String): Boolean {
-        val fullExePath = path.toPath()
-        if (fullExePath.nameWithoutExtension != name) return false
-        val wd = fullExePath.parent?.toFile()
-        val exe = fullExePath.name
-
-        ProgressManager.checkCanceled() // 在执行命令前检查进度是否被取消
-        val command = "./$exe --version"
-        executeCommandLine(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
-        return true
+    fun getConfPath(): Path? {
+        configuredConfPath?.let { return it }
+        return null // by default null
     }
 
-    final override fun validateFile(file: VirtualFile): TigerLintResult? {
-        return null // unsupported
+    fun validateConfPath(path: Path): Boolean {
+        if (!path.extension.equals("conf", true)) return false
+        return Files.isRegularFile(path)
     }
 
-    final override fun validateRootDirectory(rootDirectory: VirtualFile): TigerLintResult? {
-        return runCatchingCancelable { doValidateRootDirectory(rootDirectory) }
-            .onFailure { thisLogger().warn(it) }.getOrElse { TigerLintResult(name, error = it) }
-    }
-
-    private fun doValidateRootDirectory(rootDirectory: VirtualFile): TigerLintResult? {
-        val tigerPath = exePath?.trim() ?: return null
-        val fullExePath = tigerPath.toPath()
-        if (fullExePath.nameWithoutExtension != name) return null
-        val wd = fullExePath.parent?.toFile()
-        val exe = fullExePath.name
-
-        val rootInfo = rootDirectory.rootInfo ?: return null
-        if (rootInfo !is ParadoxRootInfo.Mod) return null
-        val rootFile = rootInfo.rootFile
-        val rootPath = rootFile.path
-        val modSettings = ChronicleProfilesSettings.getInstance().state.modSettings.get(rootPath)
-        val argGamePath = modSettings?.finalGameDirectory?.orNull()?.quote(QuotePatterns.CommandLine)
-        val argConfPath = confPath?.orNull()?.quote(QuotePatterns.CommandLine)
-        val argPath = rootPath.quote(QuotePatterns.CommandLine) // 这里应该都可以直接输入模组目录
-
-        // 必须指定输出的 json 文件，然后从中读取检查结果（之后不删除这个临时文件）
-        val lintResultsPath = ChronicleDataPathService.getInstance().lintResultsPath
-        val outputPath = lintResultsPath.resolve("$name-result@${rootDirectory.url.toUuidString()}.json")
-        val argOutputPath = outputPath.toString().quote(QuotePatterns.CommandLine)
-
-        ProgressManager.checkCanceled() // 在执行命令前检查进度是否被取消
-        val command = buildString {
-            append("./$exe --json")
-            if (argGamePath != null) append(" --game ").append(argGamePath)
-            if (argConfPath != null) append(" --config ").append(argConfPath)
-            append(" ").append(argPath)
-            append(" > ").append(argOutputPath)
+    @Throws(UnsupportedOperationException::class, ExecutionException::class, CancellationException::class, TimeoutException::class)
+    override suspend fun validateRootDirectory(request: LintRequest): TigerLintResult {
+        if (request !is TigerLintRequest) throw IllegalArgumentException()
+        // 执行命令行
+        val output = validateRootDirectoryInternal(request)
+        val outputText = output.stdout.trim()
+        // 写入文件
+        withContext(Dispatchers.IO) {
+            request.outputPath.parent?.createDirectories()
+            request.outputPath.writeText(outputText)
         }
-        executeCommandLine(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
+        // 如果无法解析 json，这里会直接报错
+        val items = JsonService.json.decodeFromString<List<TigerLintResult.Item>>(outputText)
+        return TigerLintResult(request, items = items)
+    }
 
-        return TigerLintResult.parse(name, outputPath.toFile()) // 如果无法解析 json，这里会直接报错
+    private fun validateRootDirectoryInternal(request: TigerLintRequest): ProcessOutput {
+        val commands = buildList {
+            add(request.executablePath.toString())
+            add("--json")
+            if (request.confPath != null) {
+                add("--config")
+                add(request.confPath.toString())
+            }
+            if (request.gamePath != null) {
+                add("--game")
+                add(request.gamePath.toString())
+            }
+            add(request.modPath.toString())
+        }
+        val commandLine = GeneralCommandLine(commands)
+            .withWorkingDirectory(request.workingDirectory)
+            .withCharset(Charsets.UTF_8)
+
+        ProgressManager.checkCanceled()
+        val output = ProcessExecutor(commandLine)
+            .withTimeout(ExecutionTimeouts.veryLong)
+            .execute()
+
+        if (output.isCancelled) {
+            ProgressManager.checkCanceled() // 如果的确被取消，则抛出 `ProcessCanceledException`
+            val message = "Tiger command was cancelled." +
+                "\nCommand: ${commandLine.commandLineString}"
+            throw CancellationException(message)
+        }
+        if (output.isTimeout) {
+            val message = "Tiger command timed out." +
+                "\nCommand: ${commandLine.commandLineString}"
+            throw TimeoutException(message)
+        }
+        if (output.exitCode != 0) {
+            val message = "Tiger command failed (exitCode=${output.exitCode})." +
+                "\nCommand: ${commandLine.commandLineString}" +
+                "\nError: ${output.stderr.trim()}"
+            throw ExecutionException(message)
+        }
+        return output
     }
 
     class Ck3 : TigerLintToolProvider() {
-        override val name: String = "ck3-tiger"
-        override val forGameType: ParadoxGameType get() = ParadoxGameType.Ck3
-        override val exePath: String? get() = ChronicleIntegrationsSettings.getInstance().state.lint.ck3TigerPath
-        override val confPath: String? get() = ChronicleIntegrationsSettings.getInstance().state.lint.ck3TigerConfPath
+        override val name = "ck3-tiger"
+        override val forGameType = ParadoxGameType.Ck3
+        override val configuredExecutablePath get() = LintToolSettings.getInstance().ck3TigerPath.parsePath()
+        override val configuredConfPath get() = LintToolSettings.getInstance().ck3TigerConfPath.parsePath()
     }
 
     class Eu5 : TigerLintToolProvider() {
         override val name: String = "eu5-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Eu5
-        override val exePath: String? get() = ChronicleIntegrationsSettings.getInstance().state.lint.eu5TigerPath
-        override val confPath: String? get() = ChronicleIntegrationsSettings.getInstance().state.lint.eu5TigerConfPath
+        override val configuredExecutablePath get() = LintToolSettings.getInstance().eu5TigerPath.parsePath()
+        override val configuredConfPath get() = LintToolSettings.getInstance().eu5TigerConfPath.parsePath()
     }
 
     class Hoi4 : TigerLintToolProvider() {
         override val name: String = "hoi4-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Hoi4
-        override val exePath: String? get() = ChronicleIntegrationsSettings.getInstance().state.lint.hoi4TigerPath
-        override val confPath: String? get() = ChronicleIntegrationsSettings.getInstance().state.lint.hoi4TigerConfPath
+        override val configuredExecutablePath get() = LintToolSettings.getInstance().hoi4TigerPath.parsePath()
+        override val configuredConfPath get() = LintToolSettings.getInstance().hoi4TigerConfPath.parsePath()
     }
 
     class Ir : TigerLintToolProvider() {
         override val name: String = "imperator-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Ir
-        override val exePath: String? get() = ChronicleIntegrationsSettings.getInstance().state.lint.irTigerPath
-        override val confPath: String? get() = ChronicleIntegrationsSettings.getInstance().state.lint.irTigerConfPath
+        override val configuredExecutablePath get() = LintToolSettings.getInstance().irTigerPath.parsePath()
+        override val configuredConfPath get() = LintToolSettings.getInstance().irTigerConfPath.parsePath()
     }
 
     class Vic3 : TigerLintToolProvider() {
         override val name: String = "vic3-tiger"
         override val forGameType: ParadoxGameType get() = ParadoxGameType.Vic3
-        override val exePath: String? get() = ChronicleIntegrationsSettings.getInstance().state.lint.vic3TigerPath
-        override val confPath: String? get() = ChronicleIntegrationsSettings.getInstance().state.lint.vic3TigerConfPath
+        override val configuredExecutablePath get() = LintToolSettings.getInstance().vic3TigerPath.parsePath()
+        override val configuredConfPath get() = LintToolSettings.getInstance().vic3TigerConfPath.parsePath()
     }
 }

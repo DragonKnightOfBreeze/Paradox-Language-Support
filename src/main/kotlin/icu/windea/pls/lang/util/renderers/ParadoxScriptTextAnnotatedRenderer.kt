@@ -6,6 +6,7 @@ import icu.windea.pls.lang.data.annotated.ParadoxAnnotatedDataFactory
 import icu.windea.pls.model.data.annotated.ParadoxAnnotatedData
 import icu.windea.pls.model.data.annotated.ParadoxAnnotatedLevel
 import icu.windea.pls.model.data.annotated.ParadoxConfigExpressionAnnotatedData
+import icu.windea.pls.model.data.annotated.ParadoxDefinitionTypeAnnotatedData
 import icu.windea.pls.model.data.annotated.ParadoxOverrideStrategyAnnotatedData
 import icu.windea.pls.model.data.annotated.ParadoxScopeContextAnnotatedData
 import icu.windea.pls.model.data.annotated.ParadoxTypeAnnotatedData
@@ -20,7 +21,7 @@ import icu.windea.pls.script.psi.ParadoxScriptMember
  * 支持的注解数据：
  * - 类型信息。参见 [ParadoxTypeAnnotatedData.FromMember]。
  * - 规则表达式信息。参见 [ParadoxConfigExpressionAnnotatedData.FromMember]。
- * - 定义类型信息。参见 [ParadoxTypeAnnotatedData]。
+ * - 定义类型信息。参见 [ParadoxDefinitionTypeAnnotatedData]。
  * - 覆盖策略信息。参见 [ParadoxOverrideStrategyAnnotatedData]。
  * - 作用域上下文信息。参见 [ParadoxScopeContextAnnotatedData]。
  */

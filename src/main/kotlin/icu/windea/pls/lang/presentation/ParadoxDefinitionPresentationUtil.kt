@@ -8,15 +8,14 @@ import com.intellij.ui.ColorUtil
 import com.intellij.ui.SimpleColoredText
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.ui.JBUI
-import icu.windea.pls.core.toFileUrl
-import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.properties
+import icu.windea.pls.lang.resolve.ParadoxImageResolveResult
+import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.util.ParadoxDefinitionManager
-import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.renderers.ParadoxLocalisationTextHtmlRenderer
 import icu.windea.pls.lang.util.renderers.ParadoxScriptTextPlainRenderer
@@ -25,7 +24,6 @@ import icu.windea.pls.script.psi.ParadoxScriptProperty
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariableReference
 import java.awt.Color
 import java.util.*
-import javax.swing.Icon
 import javax.swing.JLabel
 
 // TODO 3.0.x refactor
@@ -104,26 +102,25 @@ object ParadoxDefinitionPresentationUtil {
         }
     }
 
-    fun getIcon(ddsFile: PsiFile): Icon? {
+    @Suppress("unused")
+    fun resolveIcon(ddsFile: PsiFile): ParadoxImageResolveResult? {
         val iconFile = ddsFile.virtualFile ?: return null
-        val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile, ddsFile.project) ?: return null
-        if (!ParadoxImageManager.canResolve(iconUrl)) return null
-        return iconUrl.toFileUrl().toIconOrNull()
+        val imageResolveResult = ParadoxImageService.resolveByFile(iconFile) ?: return null
+        return imageResolveResult
     }
 
-    fun getIcon(definition: ParadoxDefinitionElement): Icon? {
+    fun resolveIcon(definition: ParadoxDefinitionElement): ParadoxImageResolveResult? {
         val ddsFile = ParadoxDefinitionManager.getRelatedImages(definition, onlyOne = true, onlyPrimary = true).firstOrNull() ?: return null
         val iconFile = ddsFile.virtualFile ?: return null
-        val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile, ddsFile.project) ?: return null
-        if (!ParadoxImageManager.canResolve(iconUrl)) return null
-        return iconUrl.toFileUrl().toIconOrNull()
+        val imageResolveResult = ParadoxImageService.resolveByFile(iconFile) ?: return null
+        return imageResolveResult
     }
 
-    fun getIcon(definition: ParadoxDefinitionElement, ddsFile: PsiFile): Icon? {
+    @Suppress("unused")
+    fun resolveIcon(definition: ParadoxDefinitionElement, ddsFile: PsiFile): ParadoxImageResolveResult? {
         val iconFile = ddsFile.virtualFile ?: return null
         val frameInfo = definition.getUserData(ParadoxDefinitionManager.Keys.imageFrameInfo)
-        val iconUrl = ParadoxImageManager.resolveUrlByFile(iconFile, ddsFile.project, frameInfo) ?: return null
-        if (!ParadoxImageManager.canResolve(iconUrl)) return null
-        return iconUrl.toFileUrl().toIconOrNull()
+        val imageResolveResult = ParadoxImageService.resolveByFile(iconFile, frameInfo) ?: return null
+        return imageResolveResult
     }
 }

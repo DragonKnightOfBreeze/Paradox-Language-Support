@@ -5,88 +5,14 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfType
-import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
-import icu.windea.pls.core.forEachChild
-import icu.windea.pls.core.orUnresolved
-import icu.windea.pls.core.processChild
 import icu.windea.pls.core.psi.PsiBoundElement
-import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
 import icu.windea.pls.core.psi.PsiService
-import icu.windea.pls.core.transformAndKeepQuotes
-import icu.windea.pls.core.truncate
-import icu.windea.pls.core.util.DefaultStrings
-import icu.windea.pls.model.constants.ChronicleStrings
 import icu.windea.pls.script.ParadoxScriptLanguage
 
 @Suppress("unused")
 object ParadoxScriptPsiService {
-    private val presentableTextLimit get() = ChronicleInternalSettings.getInstance().presentableTextLimit
-
-    fun getPresentableText(element: PsiPresentableTextAwareElement): String {
-        when (element) {
-            is ParadoxScriptProperty -> {
-                var keyElement: ParadoxScriptPropertyKey? = null
-                var separatorElement: PsiElement? = null
-                var valueElement: ParadoxScriptValue? = null
-                element.forEachChild { e ->
-                    when {
-                        e is ParadoxScriptPropertyKey -> keyElement = e
-                        isPropertySeparator(e) -> separatorElement = e
-                        e is ParadoxScriptValue -> valueElement = e
-                    }
-                }
-                return buildString {
-                    if (keyElement != null) append(keyElement.presentableText) else append(DefaultStrings.unresolved)
-                    if (separatorElement?.elementType != ParadoxScriptElementTypes.SAFE_CALL_ASSIGN_SIGN) append(" ")
-                    append(separatorElement?.text ?: "=")
-                    append(" ")
-                    if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
-                }
-            }
-            is ParadoxScriptScriptedVariable -> {
-                var nameElementElement: ParadoxScriptScriptedVariableName? = null
-                var valueElement: ParadoxScriptValue? = null
-                element.forEachChild { e ->
-                    when {
-                        e is ParadoxScriptScriptedVariableName -> nameElementElement = e
-                        e is ParadoxScriptValue -> valueElement = e
-                    }
-                }
-                return buildString {
-                    if (nameElementElement != null) append(nameElementElement.text) else append(DefaultStrings.unresolved)
-                    append(" = ")
-                    if (valueElement != null) append(valueElement.presentableText) else append(DefaultStrings.unresolved)
-                }
-            }
-            is ParadoxScriptConditionalBlock -> {
-                val expressionText = element.conditionalExpression?.presentableText
-                return ChronicleStrings.conditionalBlockFolder(expressionText.orUnresolved())
-            }
-            is ParadoxScriptConditionalExpression -> {
-                return buildString {
-                    element.processChild {
-                        when {
-                            it is ParadoxScriptConditionalParameter -> {
-                                append(it.name)
-                                false
-                            }
-                            it.elementType == ParadoxScriptElementTypes.NOT_EQUAL_SIGN -> {
-                                append("!")
-                                true
-                            }
-                            else -> true
-                        }
-                    }
-                }
-            }
-            is ParadoxScriptStringExpressionElement -> return element.text.transformAndKeepQuotes { it.truncate(presentableTextLimit) }
-            is ParadoxScriptExpressionElement -> return element.value
-            else -> return element.text
-        }
-    }
-
     fun canAttachComment(element: PsiElement): Boolean {
         return element is ParadoxScriptProperty || (element is ParadoxScriptString && element.isDirectValue())
     }

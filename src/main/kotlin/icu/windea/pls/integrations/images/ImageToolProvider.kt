@@ -1,6 +1,7 @@
 package icu.windea.pls.integrations.images
 
 import com.intellij.openapi.extensions.ExtensionPointName
+import icu.windea.pls.integrations.ExternalToolProvider
 import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.io.OutputStream
@@ -9,17 +10,20 @@ import javax.imageio.ImageReadParam
 import javax.imageio.stream.ImageInputStream
 
 /**
- * 提供图片处理工具。用于预览与渲染图片，以及转换图片格式。
+ * 提供图片工具。
+ *
+ * 用于处理图片，例如预览、渲染、读写以及转换图片格式。
  */
-interface ImageToolProvider {
-    fun isAvailable(): Boolean
-
+interface ImageToolProvider : ExternalToolProvider {
     /** @see javax.imageio.ImageReader.read */
+    @Throws(UnsupportedOperationException::class)
     fun read(imageIndex: Int, param: ImageReadParam?, stream: ImageInputStream, sourceFormat: String, targetFormat: String): BufferedImage
 
-    fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String)
+    @Throws(UnsupportedOperationException::class)
+    suspend fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String)
 
-    fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String)
+    @Throws(UnsupportedOperationException::class)
+    suspend fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String)
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ImageToolProvider>("icu.windea.pls.integrations.imageToolProvider")

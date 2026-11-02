@@ -26,7 +26,6 @@ import icu.windea.pls.lang.actions.localisation.ManipulateLocalisationActionBase
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationContext
 import icu.windea.pls.lang.manipulation.ParadoxLocalisationManipulationService
 import icu.windea.pls.lang.selectLocale
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 
@@ -39,7 +38,6 @@ class AiReplaceLocalisationWithTranslationFromLocaleAction : ManipulateLocalisat
         return ParadoxLocalisationAiManipulationService.createPopup(project, callback)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Suppress("UnstableApiUsage")
     override suspend fun doHandleAll(e: AnActionEvent, project: Project, context: Context<String>) {
         // 进度条 - 显示的进度文本不会变化，按已处理的文件来显示当前进度

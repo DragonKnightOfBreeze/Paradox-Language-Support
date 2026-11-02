@@ -1,29 +1,52 @@
 package icu.windea.pls.base.io
 
+import com.intellij.execution.ExecutionException
+import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.components.serviceOrNull
-import icu.windea.pls.core.execution.CommandLineExecutionException
-import java.io.IOException
+import com.intellij.openapi.vfs.VirtualFile
 import java.nio.file.Path
+import java.util.concurrent.CancellationException
+import java.util.concurrent.TimeoutException
+import kotlin.time.Duration
 
+/**
+ * Git 服务。
+ *
+ * 关于执行命令行的方法的异常处理：
+ * - 当进程无法启动时，会抛出 [ExecutionException]。
+ * - 当命令超时、取消或返回非零退出码时，会抛出 [IllegalStateException]。
+ */
 interface ChronicleGitService {
     fun getRepositoryPathFromUrl(url: String): String
 
     fun isUpdateToDate(message: String?): Boolean
 
-    @Throws(IOException::class, InterruptedException::class, CommandLineExecutionException::class)
-    fun checkRemote(url: String): String
+    /**
+     * 得到仓库的远程地址列表。
+     *
+     * 备注：直接读取 `.git/config`，不会执行命令行。
+     */
+    fun getRemoteUrls(repositoryRoot: VirtualFile): List<String>
 
-    @Throws(IOException::class, InterruptedException::class, CommandLineExecutionException::class)
-    fun syncFromRemote(url: String, parentDirectory: String): String
+    fun createCommandLine(vararg arguments: String): GeneralCommandLine
 
-    @Throws(IOException::class, InterruptedException::class, CommandLineExecutionException::class)
+    @Throws(ExecutionException::class, CancellationException::class, TimeoutException::class)
+    fun execute(commandLine: GeneralCommandLine, timeout: Duration): String
+
+    @Throws(ExecutionException::class, CancellationException::class, TimeoutException::class)
     fun lsRemote(url: String): String
 
-    @Throws(IOException::class, InterruptedException::class, CommandLineExecutionException::class)
+    @Throws(ExecutionException::class, CancellationException::class, TimeoutException::class)
     fun clone(url: String, workDirectory: Path): String
 
-    @Throws(IOException::class, InterruptedException::class, CommandLineExecutionException::class)
+    @Throws(ExecutionException::class, CancellationException::class, TimeoutException::class)
     fun pull(url: String, workDirectory: Path): String
+
+    @Throws(ExecutionException::class, CancellationException::class, TimeoutException::class)
+    fun checkRemote(url: String): String
+
+    @Throws(ExecutionException::class, CancellationException::class, TimeoutException::class)
+    fun syncFromRemote(url: String, parentDirectory: String): String
 
     companion object {
         @JvmStatic

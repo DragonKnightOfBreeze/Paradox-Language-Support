@@ -32,8 +32,8 @@ import icu.windea.pls.base.notification.ChronicleNotificationGroups
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.execution.filters.ShowDiffWindowHyperlinkInfo
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.core.util.io.parsePath
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.tools.ChronicleToolsBundle
@@ -173,7 +173,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         val m = PATH_REGEX.find(line) ?: return@Filter null
         val path = m.groupValues[2].trim()
         if (path != params.inputPath && path != params.outputPath) return@Filter null
-        val vFile = path.toPathOrNull()?.toVirtualFile() ?: return@Filter null
+        val vFile = path.parsePath()?.toVirtualFile() ?: return@Filter null
         val start = entireLength - line.length + m.range.first + m.value.indexOf(path)
         val end = start + path.length
 
@@ -194,7 +194,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         val start = entireLength - line.length + i
         val end = start + SHOW_DIFF_MARK.length
 
-        val vFile = params.outputPath.toPathOrNull()?.toVirtualFile()
+        val vFile = params.outputPath.parsePath()?.toVirtualFile()
         val contentFactory = getInstance()
         val left = if (vFile != null) contentFactory.create(project, vFile) else contentFactory.create("")
         val right = contentFactory.create(project, hint.fileText, CwtFileType)

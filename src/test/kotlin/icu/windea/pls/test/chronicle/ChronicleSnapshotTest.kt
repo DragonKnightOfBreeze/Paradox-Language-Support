@@ -3,7 +3,7 @@ package icu.windea.pls.test.chronicle
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.normalizePath
-import icu.windea.pls.core.toPath
+import icu.windea.pls.core.util.io.toPath
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
@@ -111,11 +111,11 @@ abstract class ChronicleSnapshotTest : BasePlatformTestCase(), ChronicleTestScop
     protected fun displayPath(path: Path): String = path.toString().normalizePath()
 
     /** 输出一条快照测试日志。 */
-    protected fun log(message: String) = println("[chronicle] $message")
+    protected fun log(message: String) = println("[ChronicleSnapshotTest] $message")
 
     /** 输出一个快照测试日志分段标题。 */
     protected fun logHeader(title: String) {
         println()
-        println("[chronicle] ==================== $title ====================")
+        println("[ChronicleSnapshotTest] ==================== $title ====================")
     }
 }

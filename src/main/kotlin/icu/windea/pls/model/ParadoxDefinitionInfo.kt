@@ -44,19 +44,17 @@ data class ParadoxDefinitionInfo(
     override val configGroup: CwtConfigGroup get() = typeConfig.configGroup
 
     /** @see ParadoxDefinitionManager.getMemberPath */
-    val memberPath: ParadoxMemberPath get() = ParadoxDefinitionManager.getMemberPath(this)
-
-    // NOTE 2.1.3 以下属性目前保持为计算属性即可，不需要额外缓存
+    val memberPath: ParadoxMemberPath = ParadoxDefinitionManager.getMemberPath(this)
     /** @see ParadoxDefinitionManager.getRelatedLocalisationInfos */
-    val localisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getRelatedLocalisationInfos(this)
+    val localisations: List<RelatedLocalisationInfo> = ParadoxDefinitionManager.getRelatedLocalisationInfos(this)
     /** @see ParadoxDefinitionManager.getRelatedImageInfos */
-    val images: List<RelatedImageInfo> get() = ParadoxDefinitionManager.getRelatedImageInfos(this)
+    val images: List<RelatedImageInfo> = ParadoxDefinitionManager.getRelatedImageInfos(this)
     /** @see ParadoxDefinitionManager.getModifierInfos */
-    val modifiers: List<ModifierInfo> get() = ParadoxDefinitionManager.getModifierInfos(this)
+    val modifiers: List<ModifierInfo> = ParadoxDefinitionManager.getModifierInfos(this)
     /** @see ParadoxDefinitionManager.getPrimaryRelatedLocalisationInfos */
-    val primaryLocalisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedLocalisationInfos(this)
+    val primaryLocalisations: List<RelatedLocalisationInfo> = ParadoxDefinitionManager.getPrimaryRelatedLocalisationInfos(this)
     /** @see ParadoxDefinitionManager.getPrimaryRelatedImageInfos */
-    val primaryImages: List<RelatedImageInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedImageInfos(this)
+    val primaryImages: List<RelatedImageInfo> = ParadoxDefinitionManager.getPrimaryRelatedImageInfos(this)
 
     /** @see ParadoxDefinitionManager.getSubtypeConfigs */
     override fun getSubtypeConfigs(options: ParadoxMatchOptions?): List<CwtSubtypeConfig> = ParadoxDefinitionManager.getSubtypeConfigs(this, options)

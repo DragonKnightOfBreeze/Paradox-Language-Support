@@ -1,0 +1,72 @@
+package icu.windea.pls.lang.resolve
+
+import com.intellij.psi.PsiElement
+import icu.windea.pls.config.configExpression.CwtImageLocationExpression
+import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
+import icu.windea.pls.config.configExpression.CwtLocationExpression
+import icu.windea.pls.core.util.ImageFrameInfo
+import icu.windea.pls.lang.search.util.ParadoxQuery
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
+
+/**
+ * 位置信息的解析结果。
+ *
+ * @property name 名字。如果为 `null`，则表示无法解析为静态结果。
+ * @property element 解析得到的单个目标。
+ * @property elements 解析得到的一组目标。
+ *
+ * @see CwtLocationExpression
+ */
+sealed interface ParadoxLocationResolveResult<T> {
+    val name: String? get() = null
+    val element: T? get() = null
+    val elements: List<T> get() = emptyList()
+
+    operator fun component1() = name
+    operator fun component2() = element
+    operator fun component3() = elements
+
+    /**
+     * 本地化的位置信息的解析结果。
+     *
+     * @property name 本地化的名字。如果为 `null`，则表示无法解析为静态结果。
+     *
+     * @see CwtLocalisationLocationExpression
+     */
+    sealed class Localisation : ParadoxLocationResolveResult<ParadoxLocalisationProperty> {
+        class Static(
+            override val name: String,
+            val query: ParadoxQuery<*, ParadoxLocalisationProperty>,
+        ) : Localisation() {
+            override val element: ParadoxLocalisationProperty? by lazy { query.find() }
+            override val elements: List<ParadoxLocalisationProperty> by lazy { query.findAll() }
+        }
+
+        class Dynamic(
+            val message: String,
+        ) : Localisation()
+    }
+
+    /**
+     * 图片的位置信息的解析结果。
+     *
+     * @property name 图片的名字或文件路径。如果为 `null`，则表示无法解析为静态结果。
+     *
+     * @see CwtImageLocationExpression
+     */
+    sealed class Image : ParadoxLocationResolveResult<PsiElement> {
+        class Static(
+            override val name: String,
+            val frameInfo: ImageFrameInfo?,
+            val query: ParadoxQuery<*, out PsiElement>,
+        ) : Image() {
+            override val element: PsiElement? by lazy { query.find() }
+            override val elements: List<PsiElement> by lazy { query.findAll() }
+        }
+
+        class Dynamic(
+            val message: String,
+        ) : Image()
+    }
+}
+

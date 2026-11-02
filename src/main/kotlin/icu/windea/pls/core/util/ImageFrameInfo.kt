@@ -1,0 +1,48 @@
+package icu.windea.pls.core.util
+
+import java.util.*
+
+/**
+ * 图片的帧数信息，用于切分图片。
+ *
+ * @property frame 当前帧数。如果小于等于 0，或者大于总帧数，则视为未指定。
+ * @property frames 总帧数。如果小于等于 0，则视为未指定。
+ */
+@ConsistentCopyVisibility
+data class ImageFrameInfo private constructor(
+    val frame: Int,
+    val frames: Int,
+) {
+    fun canApply(): Boolean {
+        return frame > 0 && frames > 1 && frame <= frames
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return this === other || other is ImageFrameInfo && this.frame == other.frame && this.frames == other.frames
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(frame, frames)
+    }
+
+    override fun toString(): String {
+        return "ImageFrameInfo(frame=$frame, frames=$frames)"
+    }
+
+    companion object {
+        @JvmStatic
+        fun of(frame: Int? = null, frames: Int? = null): ImageFrameInfo {
+            val frames0 = if (frames == null || frames <= 0) 0 else frames
+            val frame0 = if (frame == null || frame <= 0 || (frames0 != 0 && frame > frames0)) 0 else frame
+            return ImageFrameInfo(frame0, frames0)
+        }
+
+        @JvmStatic
+        fun merge(frameInfo1: ImageFrameInfo?, frameInfo2: ImageFrameInfo?): ImageFrameInfo? {
+            if (frameInfo1 == null && frameInfo2 == null) return null
+            val frame = if (frameInfo2 == null || frameInfo2.frame == 0) frameInfo1?.frame else frameInfo2.frame
+            val frames = if (frameInfo2 == null || frameInfo2.frames == 0) frameInfo1?.frames else frameInfo2.frames
+            return of(frame, frames)
+        }
+    }
+}

@@ -13,9 +13,9 @@ import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.listCellRenderer.*
 import com.intellij.ui.layout.ValidationInfoBuilder
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.ui.bindText
 import icu.windea.pls.core.ui.textFieldWithHistoryWithBrowseButton
+import icu.windea.pls.core.util.io.parsePath
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.tools.ChronicleToolsBundle
 import icu.windea.pls.tools.config.generators.CwtConfigGenerator
@@ -147,8 +147,8 @@ class GenerateConfigDialog(
 
     private fun ValidationInfoBuilder.validateInputPath(): ValidationInfo? {
         val v = inputPath
-        if (v.isEmpty()) return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.empty"))
-        val p = v.toPathOrNull()
+        if (v.isBlank()) return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.empty"))
+        val p = v.parsePath()
         when {
             p == null -> return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.invalid"))
             generator.fromScripts && !p.isDirectory() -> return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.invalid"))
@@ -161,8 +161,8 @@ class GenerateConfigDialog(
 
     private fun ValidationInfoBuilder.validateOutputPath(): ValidationInfo? {
         val v = outputPath
-        if (v.isEmpty()) return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.empty"))
-        val p = v.toPathOrNull()
+        if (v.isBlank()) return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.empty"))
+        val p = v.parsePath()
         when {
             p == null -> return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.invalid"))
             !p.isRegularFile() || !p.extension.equals("cwt", true) -> return error(ChronicleToolsBundle.message("config.generation.dialog.validation.path.invalid"))

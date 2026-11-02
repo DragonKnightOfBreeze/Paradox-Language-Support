@@ -10,7 +10,6 @@ import java.io.File
 import java.lang.reflect.Modifier
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.time.Instant
 import java.util.jar.JarFile
 import java.util.regex.Pattern
@@ -87,7 +86,7 @@ object ChronicleBenchmarkLauncher {
         val classpath = System.getProperty("java.class.path").orEmpty()
         for (entry in classpath.split(File.pathSeparator)) {
             if (entry.isBlank()) continue
-            val path = Paths.get(entry)
+            val path = Path.of(entry)
             when {
                 Files.isDirectory(path) -> scanDirectory(path, classNames)
                 Files.isRegularFile(path) && entry.endsWith(".jar", ignoreCase = true) -> scanJar(path, classNames)

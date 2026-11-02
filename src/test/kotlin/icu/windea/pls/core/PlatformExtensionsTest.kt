@@ -132,25 +132,25 @@ class PlatformExtensionsTest {
     }
 
     @Test
-    fun cancelable_test() {
-        Assert.assertEquals(1, cancelable { 1 })
+    fun cancellable_test() {
+        Assert.assertEquals(1, cancellable { 1 })
         // 普通异常原样抛出
-        Assert.assertThrows(RuntimeException::class.java) { cancelable<Int> { throw RuntimeException("boom") } }
+        Assert.assertThrows(RuntimeException::class.java) { cancellable<Int> { throw RuntimeException("boom") } }
         // ProcessCanceledException 原样抛出
-        Assert.assertThrows(ProcessCanceledException::class.java) { cancelable<Int> { throw ProcessCanceledException() } }
+        Assert.assertThrows(ProcessCanceledException::class.java) { cancellable<Int> { throw ProcessCanceledException() } }
         // 根因为 PCE 的异常，抛出根因
         Assert.assertThrows(ProcessCanceledException::class.java) {
-            cancelable<Int> { throw RuntimeException(ProcessCanceledException()) }
+            cancellable<Int> { throw RuntimeException(ProcessCanceledException()) }
         }
     }
 
     @Test
-    fun runCatchingCancelable_test() {
-        Assert.assertEquals("ok", runCatchingCancelable { "ok" }.getOrThrow())
-        Assert.assertTrue(runCatchingCancelable<String> { throw RuntimeException("boom") }.isFailure)
+    fun runCatchingCancellable_test() {
+        Assert.assertEquals("ok", runCatchingCancellable { "ok" }.getOrThrow())
+        Assert.assertTrue(runCatchingCancellable<String> { throw RuntimeException("boom") }.isFailure)
         // PCE 不会被包装为失败结果，而是直接抛出
         Assert.assertThrows(ProcessCanceledException::class.java) {
-            runCatchingCancelable<String> { throw ProcessCanceledException() }
+            runCatchingCancellable<String> { throw ProcessCanceledException() }
         }
     }
 

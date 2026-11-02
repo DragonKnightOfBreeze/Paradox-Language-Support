@@ -9,6 +9,7 @@ import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.config.CwtConfigTypeCategories
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.codeInsight.documentation.DocumentationContext
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.isNotNullOrEmpty
@@ -31,10 +32,10 @@ import icu.windea.pls.lang.psi.light.ParadoxMeshLocatorLightElement
 import icu.windea.pls.lang.psi.light.ParadoxModifierLightElement
 import icu.windea.pls.lang.psi.light.ParadoxParameterLightElement
 import icu.windea.pls.lang.psi.light.ParadoxShaderEffectLightElement
-import icu.windea.pls.lang.resolve.CwtImageLocationResolveResult
-import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
 import icu.windea.pls.lang.resolve.ParadoxDefinitionService
-import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
+import icu.windea.pls.lang.resolve.ParadoxImageService
+import icu.windea.pls.lang.resolve.ParadoxLocationResolveResult
+import icu.windea.pls.lang.resolve.ParadoxLocationService
 import icu.windea.pls.lang.resolve.ParadoxModifierCategoryService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
@@ -45,7 +46,6 @@ import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.lang.selectLocale
 import icu.windea.pls.lang.util.ParadoxComplexEnumValueManager
 import icu.windea.pls.lang.util.ParadoxDynamicValueManager
-import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxInlineScriptManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxLocalisationArgumentManager
@@ -82,6 +82,10 @@ object ParadoxDocumentationManager {
     private const val SECTIONS_EXTRA = 3
 
     // region Entry Documentation Methods
+
+    fun compute(context: DocumentationContext): DocumentationBuilder? {
+        return compute(context.element, context.originalElement, context.hint)
+    }
 
     fun compute(element: PsiElement, originalElement: PsiElement?, hint: Boolean): DocumentationBuilder? {
         return buildDocumentation(hint) { build(element, originalElement) }.takeUnless { it.isEmpty() }
@@ -531,8 +535,9 @@ object ParadoxDocumentationManager {
         val sections = getSections(SECTIONS_IMAGES)
         run {
             if (iconFile == null) return@run
-            val url = ParadoxImageManager.resolveUrlByFile(iconFile, project) ?: return@run
-            sections["icon"] = buildDocumentation { image(url) }.toString()
+            val iconResolveResult = ParadoxImageService.resolveByFile(iconFile)
+            val iconUrl = iconResolveResult?.resolveUrl(project) ?: return@run
+            sections["icon"] = buildDocumentation { image(iconUrl) }.toString()
         }
     }
 
@@ -703,9 +708,9 @@ object ParadoxDocumentationManager {
         for ((key, locationExpression, required) in localisationInfos) {
             if (sectionKeys.contains(key)) continue
             ProgressManager.checkCanceled()
-            val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(usedLocale) } ?: continue // 发生意外，直接跳过
+            val resolveResult = ParadoxLocationService.resolve(locationExpression, element, definitionInfo) { preferLocale(usedLocale) } ?: continue // 发生意外，直接跳过
             when (resolveResult) {
-                is CwtLocalisationLocationResolveResult.Static -> {
+                is ParadoxLocationResolveResult.Localisation.Static -> {
                     val resolvedElement = resolveResult.element
                     if (resolvedElement != null) {
                         map[key] = buildDocumentation {
@@ -721,7 +726,7 @@ object ParadoxDocumentationManager {
                         map.putIfAbsent(key, resolveResult.name.escapeXml())
                     }
                 }
-                is CwtLocalisationLocationResolveResult.Dynamic -> {
+                is ParadoxLocationResolveResult.Localisation.Dynamic -> {
                     map[key] = resolveResult.message.escapeXml()
                 }
             }
@@ -734,17 +739,17 @@ object ParadoxDocumentationManager {
 
     private fun DocumentationBuilder.addRelatedImagesForDefinition(element: ParadoxDefinitionElement, definitionInfo: ParadoxDefinitionInfo) {
         val render = ChronicleSettings.getInstance().state.documentation.renderRelatedImagesForDefinitions
-        val imagesInfos = definitionInfo.images
-        if (imagesInfos.isEmpty()) return
+        if (definitionInfo.images.isEmpty()) return
+        val project = definitionInfo.project
         val map = mutableMapOf<String, String>()
         val sections = getSections(SECTIONS_IMAGES)
         val sectionKeys = mutableSetOf<String>()
-        for ((key, locationExpression, required) in imagesInfos) {
+        for ((key, locationExpression, required) in definitionInfo.images) {
             if (sectionKeys.contains(key)) continue
             ProgressManager.checkCanceled()
-            val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo) ?: continue // 发生意外，直接跳过
+            val resolveResult = ParadoxLocationService.resolve(locationExpression, element, definitionInfo) ?: continue // 发生意外，直接跳过
             when (resolveResult) {
-                is CwtImageLocationResolveResult.Static -> {
+                is ParadoxLocationResolveResult.Image.Static -> {
                     val resolvedElement = resolveResult.element
                     if (resolvedElement != null) {
                         val name = resolveResult.name
@@ -764,13 +769,13 @@ object ParadoxDocumentationManager {
                             // 渲染图片
                             val url = when {
                                 resolvedElement is ParadoxDefinitionElement && resolvedElement.definitionInfo != null -> {
-                                    ParadoxImageManager.resolveUrlByDefinition(resolvedElement, resolveResult.frameInfo)
+                                    ParadoxImageService.resolveByDefinition(resolvedElement, resolveResult.frameInfo)
                                 }
                                 resolvedElement is PsiFile -> {
-                                    ParadoxImageManager.resolveUrlByFile(resolvedElement.virtualFile, resolvedElement.project, resolveResult.frameInfo)
+                                    ParadoxImageService.resolveByFile(resolvedElement, resolveResult.frameInfo)
                                 }
                                 else -> null
-                            }
+                            }?.resolveUrl(project)
                             if (url != null) {
                                 sections[key] = buildDocumentation { image(url) }.toString()
                             }
@@ -779,7 +784,7 @@ object ParadoxDocumentationManager {
                         map.putIfAbsent(key, resolveResult.name.escapeXml())
                     }
                 }
-                is CwtImageLocationResolveResult.Dynamic -> {
+                is ParadoxLocationResolveResult.Image.Dynamic -> {
                     map[key] = resolveResult.message.escapeXml()
                 }
             }

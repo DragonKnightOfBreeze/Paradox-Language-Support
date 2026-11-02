@@ -176,14 +176,19 @@ value class BiPushStream<out T1, out T2>(val dispatch: ((T1, T2) -> Boolean) -> 
 
 ### 相关代码位置
 
-- API
-  - `icu.windea.pls.core.util.stream.PushStream`
-  - `icu.windea.pls.core.util.stream.BiPushStream`
-- 需要秦迁移
-  - `icu.windea.pls.config.manipulation.CwtConfigExpansionService`
-  - `icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService`
-- 其他
-  - `icu.windea.pls.config.config.CwtExpandedConfig`
-  - `icu.windea.pls.config.config.detached.CwtExpandedAliasConfig`
-  - `icu.windea.pls.config.config.detached.CwtExpandedSingleAliasConfig`
-  - `icu.windea.pls.config.config.detached.CwtExpandedUnionConfig`
+API：
+
+- [x] `icu.windea.pls.core.util.stream.PushStream`
+- [x] `icu.windea.pls.core.util.stream.BiPushStream`
+
+需要迁移：
+
+- [x] `icu.windea.pls.config.manipulation.CwtConfigExpansionService`
+- [x] `icu.windea.pls.lang.manipulation.ParadoxConfigExpansionService`
+
+其他：
+
+- [x] `icu.windea.pls.config.config.CwtExpandedConfig`
+- [x] `icu.windea.pls.config.config.detached.CwtExpandedAliasConfig`
+- [x] `icu.windea.pls.config.config.detached.CwtExpandedSingleAliasConfig`
+- [x] `icu.windea.pls.config.config.detached.CwtExpandedUnionConfig`

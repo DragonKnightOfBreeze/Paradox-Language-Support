@@ -21,6 +21,6 @@ class ParadoxCsvBreadCrumbsProvider : BreadcrumbsProvider {
     }
 
     override fun getElementInfo(element: PsiElement): String {
-        return ParadoxCsvElementPresentationService.getElementInfoInBreadCrumbs(element)
+        return ParadoxCsvElementPresentationService.getElementInfoInBreadCrumbs(element).orEmpty()
     }
 }

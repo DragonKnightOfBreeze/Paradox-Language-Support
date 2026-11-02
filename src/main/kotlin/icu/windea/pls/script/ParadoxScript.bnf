@@ -73,7 +73,7 @@ property ::= property_key property_separator property_value {
   ]
   methods=[
     getMemberContainer getMembers getBlock property_key="property_key" property_value="value"
-    getIcon getName setName getNameIdentifier getValue getIElementType isEquivalentTo getPresentableText
+    getIcon getName setName getNameIdentifier getValue getIElementType getPresentableText isEquivalentTo
     getPresentation
   ]
 }
@@ -210,7 +210,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
   ]
   methods=[
     scripted_variable_name="scripted_variable_name" scripted_variable_value="value"
-    getIcon getName setName getNameIdentifier getTextOffset getType getValue getIElementType isEquivalentTo getPresentableText
+    getIcon getName setName getNameIdentifier getTextOffset getType getValue getIElementType getPresentableText isEquivalentTo
     getPresentation
   ]
 }

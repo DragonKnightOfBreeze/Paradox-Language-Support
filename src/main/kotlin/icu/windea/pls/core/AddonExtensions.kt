@@ -41,7 +41,7 @@ inline fun <T> runOnce(marker: AtomicBoolean, action: () -> T): T? {
 }
 
 inline fun <T> withErrorRef(errorRef: AtomicReference<Throwable>, action: () -> T): Result<T> {
-    return runCatchingCancelable { action() }.onFailure { errorRef.compareAndSet(null, it) }
+    return runCatchingCancellable { action() }.onFailure { errorRef.compareAndSet(null, it) }
 }
 
 @Suppress("NOTHING_TO_INLINE")

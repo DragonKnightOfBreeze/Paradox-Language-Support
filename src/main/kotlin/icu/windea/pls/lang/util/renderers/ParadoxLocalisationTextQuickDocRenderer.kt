@@ -5,7 +5,6 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.ui.ColorUtil
-import icu.windea.pls.base.settings.ChronicleInternalSettings
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.escape
@@ -13,22 +12,18 @@ import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.psi.light.LightElementBase
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.text.EscapePatterns
-import icu.windea.pls.core.toFileUrl
-import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.core.unescape
 import icu.windea.pls.core.util.DefaultStrings
-import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.core.util.ImageFrameInfo
 import icu.windea.pls.lang.codeInsight.documentation.psiLinkOrUnresolved
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.getDocumentationFontSize
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
+import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.lang.resolve.ReferenceLinkService
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
-import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocalisationIconManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.highlighting.ParadoxLocalisationHighlighterColors
@@ -48,7 +43,6 @@ import icu.windea.pls.localisation.text.ParadoxLocalisation
 import icu.windea.pls.model.ReferenceLinkType
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.Color
-import javax.imageio.ImageIO
 import javax.swing.UIManager
 
 /**
@@ -149,7 +143,6 @@ class ParadoxLocalisationTextQuickDocRenderContext(
                 builder.append(v)
                 return@action
             }
-
             // 回退：直接显示原始文本（点击其中的相关文本也能跳转到相关声明，但不显示为超链接）
             builder.append("<code>")
             renderElementText(element)
@@ -163,42 +156,24 @@ class ParadoxLocalisationTextQuickDocRenderContext(
 
     override fun renderIcon(element: ParadoxLocalisationIcon) {
         // 尝试渲染图标
-        runCatchingCancelable r@{
-            val resolved = element.reference?.resolve() ?: return@r
+        run {
+            val resolved = element.reference?.resolve() ?: return@run
             val iconFrame = ParadoxLocalisationIconManager.getFrame(element)
-            val frameInfo = ImageFrameInfo.of(iconFrame)
-            val iconUrl = when {
-                resolved is ParadoxDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)
-                resolved is PsiFile -> ParadoxImageManager.resolveUrlByFile(resolved.virtualFile, resolved.project, frameInfo)
+            val iconFrameInfo = ImageFrameInfo.of(iconFrame)
+            val iconResolveResult = when (resolved) {
+                is ParadoxDefinitionElement -> ParadoxImageService.resolveByDefinition(resolved, iconFrameInfo)
+                is PsiFile -> ParadoxImageService.resolveByFile(resolved, iconFrameInfo)
                 else -> null
             }
+            if (iconResolveResult == null) return@run
 
             // 如果无法解析（包括对应文件不存在的情况）就直接跳过
-            if (!ParadoxImageManager.canResolve(iconUrl)) return@r
-
-            val iconFileUrl = iconUrl.toFileUrl()
-            val icon = iconFileUrl.toIconOrNull() ?: return@r
-            // 这里需要尝试使用图标的原始高度
-            val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
-            // 如果图标高度在 `localisationFontSize` 到 `localisationTextIconSizeLimit` 之间，则将图标大小缩放到文档字体大小，否则需要基于文档字体大小进行缩放
-            // 实际上，本地化文本可以嵌入任意大小的图片
-            val docFontSize = getDocumentationFontSize().size
-            val locFontSize = ChronicleInternalSettings.getInstance().localisationTextFontSizeForQuickDoc
-            val locMaxTextIconSize = ChronicleInternalSettings.getInstance().textIconSizeLimitForQuickDoc
-            val scaleByDocFontSize = when {
-                originalIconHeight in locFontSize..locMaxTextIconSize -> docFontSize.toFloat() / originalIconHeight
-                else -> docFontSize.toFloat() / locFontSize
-            }
-            val iconWidth = icon.iconWidth
-            val iconHeight = icon.iconHeight
-            val scaleByIcon = originalIconHeight.toFloat() / iconHeight
-            val scale = scaleByDocFontSize * scaleByIcon
-            val finalIconWidth = (iconWidth * scale).toInt()
-            val finalIconHeight = (iconHeight * scale).toInt()
-            builder.image(iconUrl, finalIconWidth, finalIconHeight)
+            if (!iconResolveResult.canResolve()) return@run
+            // 图片尺寸由渲染/展示层处理；这里只记录 URL，避免在 readAction 中读取图片或 Icon
+            val iconUrl = iconResolveResult.resolveUrl(element.project) ?: return@run
+            builder.image(iconUrl)
             return
         }
-
         // 回退：直接显示原始文本（点击其中的相关文本也能跳转到相关声明，但不显示为超链接）
         builder.append("<code>")
         renderElementText(element)
@@ -250,7 +225,6 @@ class ParadoxLocalisationTextQuickDocRenderContext(
             }
             return
         }
-
         withColorSpan(conceptColor) {
             // 回退：直接显示原始文本（点击其中的相关文本也能跳转到相关声明，但不显示为超链接）
             builder.append("<code>")

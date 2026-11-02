@@ -6,7 +6,7 @@
 
 可以在这里配置要启用的规则分组的来源，以及相关的链接和目录。
 
-![](../assets/config/config_settings_1.png)
+![](../assets/settings/settings_config.png)
 
 ## 规则分组 {#config-group}
 

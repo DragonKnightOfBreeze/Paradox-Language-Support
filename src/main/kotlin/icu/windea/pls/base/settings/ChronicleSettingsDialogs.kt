@@ -83,7 +83,7 @@ class DefinitionTypeBindingsInCallHierarchyDialog(val list: MutableList<Entry<St
     override fun createCenterPanel(): JComponent {
         return panel {
             row {
-                val keyName = ChronicleBaseBundle.message("settings.configure.definitionTypeBindings.dialog.key")
+                val keyName = ChronicleBaseBundle.message("settings.hierarchy.definitionTypeBindings.dialog.key")
                 val valueName = ChronicleBaseBundle.message("settings.hierarchy.definitionTypeBindings.dialog.value")
                 cell(EntryListTableModel.createStringMapPanel(resultList, keyName, valueName)).align(Align.FILL)
             }.resizableRow() // 占据额外的垂直空间

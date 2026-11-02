@@ -5,6 +5,7 @@ import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.codeInspection.ProblemDescriptor
+import com.intellij.modcommand.ActionContext
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -12,10 +13,11 @@ import com.intellij.psi.PsiFile
 import com.intellij.refactoring.RefactoringSettings
 import com.intellij.refactoring.rename.RenameProcessor
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.core.asQuickFix
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.children
 import icu.windea.pls.core.collections.toArray
-import icu.windea.pls.core.fixes.BrowseUrlFix
+import icu.windea.pls.core.intentions.OpenUrlIntention
 import icu.windea.pls.core.match.MatchService
 import icu.windea.pls.core.vfs.VirtualFileBomService
 import icu.windea.pls.core.vfs.VirtualFileService
@@ -109,7 +111,7 @@ object ParadoxFileInspectionService {
 
     private class RenameFileFix(
         element: ParadoxLocalisationLocale,
-        private val expectedFileName: String
+        private val expectedFileName: String,
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
         override fun getText() = ChronicleInspectionBundle.message("lang.incorrectFileName.fix.1.name", expectedFileName)
 
@@ -136,7 +138,7 @@ object ParadoxFileInspectionService {
 
     private class RenameLocaleFix(
         element: ParadoxLocalisationLocale,
-        private val expectedLocaleId: String
+        private val expectedLocaleId: String,
     ) : LocalQuickFixAndIntentionActionOnPsiElement(element), PriorityAction {
         override fun getText() = ChronicleInspectionBundle.message("lang.incorrectFileName.fix.2.name", expectedLocaleId)
 
@@ -177,10 +179,19 @@ object ParadoxFileInspectionService {
             else -> return
         }
         val fixes = arrayOf(
-            BrowseUrlFix(ChronicleInspectionBundle.message("lang.unmatchedFile.fix.1"), ChronicleUrls.contributing),
-            BrowseUrlFix(ChronicleInspectionBundle.message("lang.unmatchedFile.fix.2"), ChronicleUrls.configRepositories),
+            OpenUrlFix(ChronicleInspectionBundle.message("lang.unmatchedFile.fix.1"), ChronicleUrls.contributing).asQuickFix(),
+            OpenUrlFix(ChronicleInspectionBundle.message("lang.unmatchedFile.fix.2"), ChronicleUrls.configRepositories).asQuickFix(),
         )
         holder.registerProblem(file, description, *fixes)
+    }
+
+    private class OpenUrlFix(
+        private val title: String,
+        private val url: String,
+    ): OpenUrlIntention() {
+        override fun getFamilyName() = title
+
+        override fun getUrl(context: ActionContext) = url
     }
 
     // endregion

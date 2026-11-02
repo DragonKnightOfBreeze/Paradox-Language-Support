@@ -7,8 +7,8 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.splitByBlank
-import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.core.util.io.parsePath
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
@@ -31,10 +31,8 @@ object ParadoxGameManager {
         // - 路径合法
         // - 路径对应的目录存在
         // - 路径是游戏目录
-        val gameDirectory = gameDirectory?.normalizePath()?.orNull()
-        if (gameDirectory == null) return null
-        val path = gameDirectory.toPathOrNull()
-        if (path == null) return builder.error(ChronicleBundle.message("gameDirectory.error.1"))
+        val gameDirectory = gameDirectory?.normalizePath()?.orNull() ?: return null
+        val path = gameDirectory.parsePath() ?: return builder.error(ChronicleBundle.message("gameDirectory.error.1"))
         if (path.notExists()) return builder.error(ChronicleBundle.message("gameDirectory.error.2"))
         val rootFile = path.toVirtualFile(refreshIfNeed = true)?.takeIf { it.exists() }
         if (rootFile == null) return builder.error(ChronicleBundle.message("gameDirectory.error.2"))
@@ -46,7 +44,8 @@ object ParadoxGameManager {
 
     fun getGameVersionFromGameDirectory(gameDirectory: String?): String? {
         val gameDirectory = gameDirectory?.normalizePath()?.orNull() ?: return null
-        val rootFile = gameDirectory.toVirtualFile(true)?.takeIf { it.exists() } ?: return null
+        val path = gameDirectory.parsePath() ?: return null
+        val rootFile = path.toVirtualFile(refreshIfNeed = true)?.takeIf { it.exists() } ?: return null
         val rootInfo = rootFile.rootInfo
         if (rootInfo !is ParadoxRootInfo.Game) return null
         return rootInfo.version

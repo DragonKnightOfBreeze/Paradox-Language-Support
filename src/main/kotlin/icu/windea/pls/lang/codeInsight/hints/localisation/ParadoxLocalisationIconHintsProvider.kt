@@ -6,21 +6,19 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.base.settings.ChroniclePresentationSettings
 import icu.windea.pls.core.createPointer
-import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.core.toFileUrl
-import icu.windea.pls.core.ui.toIconOrNull
-import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.core.util.ImageFrameInfo
+import icu.windea.pls.lang.codeInsight.hints.AsyncIconPresentation
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsProvider
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsSettings
 import icu.windea.pls.lang.codeInsight.hints.addInlinePresentation
 import icu.windea.pls.lang.isParameterized
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
-import icu.windea.pls.lang.util.ParadoxImageManager
+import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.lang.util.ParadoxLocalisationIconManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
-import javax.imageio.ImageIO
 
 /**
  * 为本地化图标显示渲染后图标。
@@ -48,26 +46,21 @@ class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
 
         val resolved = element.reference?.resolve()
         val iconFrame = ParadoxLocalisationIconManager.getFrame(element)
-        val frameInfo = ImageFrameInfo.of(iconFrame)
-        val iconUrl = when {
-            resolved is ParadoxDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)
-            resolved is PsiFile -> ParadoxImageManager.resolveUrlByFile(resolved.virtualFile, context.project, frameInfo)
+        val iconFrameInfo = ImageFrameInfo.of(iconFrame)
+        val iconResolveResult = when (resolved) {
+            is ParadoxDefinitionElement -> ParadoxImageService.resolveByDefinition(resolved, iconFrameInfo)
+            is PsiFile -> ParadoxImageService.resolveByFile(resolved, iconFrameInfo)
             else -> null
         }
+        if (iconResolveResult == null) return
 
         // 如果无法解析（包括对应文件不存在的情况）就直接跳过
-        if (!ParadoxImageManager.canResolve(iconUrl)) return
-
-        // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-        val iconFileUrl = iconUrl.toFileUrl()
-        val icon = iconFileUrl.toIconOrNull() ?: return
-        // 这里需要尝试使用图标的原始高度
-        val originalIconHeight = context.runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
-        if (originalIconHeight > context.settings.iconHeightLimit) return
-
+        if (!iconResolveResult.canResolve()) return
+        val maxHeight = ChroniclePresentationSettings.getInstance().state.inlayTextIconHeightLimit
+        val pointer = resolved?.createPointer(context.project)
         sink.addInlinePresentation(element.endOffset, smallInset = true) {
             // 点击可以导航到声明处（定义或图片）
-            icon(icon, resolved?.createPointer())
+            add(AsyncIconPresentation(context, iconResolveResult.toRenderRequest(), maxHeight, pointer))
         }
     }
 }

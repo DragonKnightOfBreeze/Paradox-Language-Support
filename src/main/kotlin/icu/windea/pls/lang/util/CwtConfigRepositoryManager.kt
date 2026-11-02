@@ -25,8 +25,8 @@ import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.getCurrentProject
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.core.toPath
+import icu.windea.pls.core.runCatchingCancellable
+import icu.windea.pls.core.util.io.toPath
 import icu.windea.pls.lang.listeners.CwtConfigDirectoriesListener
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Deferred
@@ -56,9 +56,8 @@ object CwtConfigRepositoryManager {
         // NOTE 这里需要执行git命令的校验，需要并发进行
 
         val results = runWithModalProgressBlocking(ModalTaskOwner.guess(), ChronicleBundle.message("config.repo.validation.progress.title")) r@{
-            reportRawProgress { reporter ->
-                reporter.text(ChronicleBundle.message("config.repo.validation.progress.text"))
-                reporter.details(ChronicleBundle.message("config.repo.validation.progress.details"))
+            reportRawProgress { rawReporter ->
+                rawReporter.text(ChronicleBundle.message("config.repo.validation.progress.text"))
 
                 val resultFutures = urls.map {
                     async {
@@ -88,7 +87,7 @@ object CwtConfigRepositoryManager {
 
     private fun tryCheckRemote(string: String): Result<String> {
         if (string.isEmpty()) return Result.success("")
-        return runCatchingCancelable { ChronicleGitService.getInstance().checkRemote(string) }
+        return runCatchingCancellable { ChronicleGitService.getInstance().checkRemote(string) }
     }
 
     fun isValidToSync(): Boolean {
@@ -114,7 +113,7 @@ object CwtConfigRepositoryManager {
         val notificationTitle = ChronicleBundle.message("config.repo.sync.result.title")
 
         // 创建父目录，如果存在报错，发送通知并直接返回
-        val r = runCatchingCancelable { parentDirectory.toPath().createDirectories() }
+        val r = runCatchingCancellable { parentDirectory.toPath().createDirectories() }
         if (r.isFailure) {
             val warningMessage = ChronicleBundle.message("config.repo.sync.createDirectoryFailed")
             val notification = ChronicleNotificationGroups.global().createNotification(notificationTitle, warningMessage, NotificationType.ERROR)
@@ -125,9 +124,8 @@ object CwtConfigRepositoryManager {
         val coroutineScope = ChronicleFacade.getCoroutineScope()
         coroutineScope.launch c@{
             val results = withBackgroundProgress(project, ChronicleBundle.message("config.repo.sync.progress.title"), cancellable = true) p@{
-                reportRawProgress { reporter ->
-                    reporter.text(ChronicleBundle.message("config.repo.sync.progress.text"))
-                    reporter.details(ChronicleBundle.message("config.repo.sync.progress.details"))
+                reportRawProgress { rawReporter ->
+                    rawReporter.text(ChronicleBundle.message("config.repo.sync.progress.text"))
 
                     val resultFutures = mutableListOf<Deferred<Result<String>>>()
                     urlMap.forEach { (_, url) ->
@@ -171,6 +169,6 @@ object CwtConfigRepositoryManager {
 
     private fun trySyncFromRemote(url: String, parentDirectory: String): Result<String> {
         if (url.isEmpty()) return Result.success("")
-        return runCatchingCancelable { ChronicleGitService.getInstance().syncFromRemote(url, parentDirectory) }
+        return runCatchingCancellable { ChronicleGitService.getInstance().syncFromRemote(url, parentDirectory) }
     }
 }

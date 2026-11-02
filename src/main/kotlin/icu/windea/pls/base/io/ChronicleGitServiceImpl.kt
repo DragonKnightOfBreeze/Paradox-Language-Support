@@ -1,11 +1,19 @@
 package icu.windea.pls.base.io
 
-import icu.windea.pls.core.executeCommandLine
-import icu.windea.pls.core.quoteIfNeeded
-import icu.windea.pls.core.text.QuotePatterns
-import icu.windea.pls.core.toPath
+import com.intellij.execution.ExecutionException
+import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.core.execution.ExecutionTimeouts
+import icu.windea.pls.core.execution.ProcessExecutor
+import icu.windea.pls.core.runCatchingCancellable
+import icu.windea.pls.core.util.io.toPath
 import java.nio.file.Path
+import java.util.concurrent.CancellationException
+import java.util.concurrent.TimeoutException
 import kotlin.io.path.exists
+import kotlin.time.Duration
 
 class ChronicleGitServiceImpl : ChronicleGitService {
     override fun getRepositoryPathFromUrl(url: String): String {
@@ -14,6 +22,61 @@ class ChronicleGitServiceImpl : ChronicleGitService {
 
     override fun isUpdateToDate(message: String?): Boolean {
         return message.isNullOrEmpty() || message.startsWith("Already up to date")
+    }
+
+    override fun getRemoteUrls(repositoryRoot: VirtualFile): List<String> {
+        val configFile = repositoryRoot.findChild(".git")?.findChild("config") ?: return emptyList()
+        val configText = runCatchingCancellable { VfsUtil.loadText(configFile) }.getOrNull() ?: return emptyList()
+        return Regex("""(?m)^\s*url\s*=\s*([^\r\n]+?)\s*$""")
+            .findAll(configText)
+            .map { it.groupValues[1].trim() }
+            .toList()
+    }
+
+    override fun createCommandLine(vararg arguments: String): GeneralCommandLine {
+        // NOTE 3.0.5 加上额外的设置项（如非交互），以避免在一些特殊场景（如要求凭证输入）下被永久挂起
+        return GeneralCommandLine(listOf("git") + arguments.asList())
+            .withEnvironment("GIT_TERMINAL_PROMPT", "0")
+            .withEnvironment("GCM_INTERACTIVE", "never")
+            .withEnvironment("GIT_PAGER", "cat")
+            .withEnvironment("PAGER", "cat")
+            .withCharset(Charsets.UTF_8)
+    }
+
+    override fun execute(commandLine: GeneralCommandLine, timeout: Duration): String {
+        val output = ProcessExecutor(commandLine).withTimeout(timeout).execute()
+        if (output.isCancelled) {
+            ProgressManager.checkCanceled() // 如果的确被取消，则抛出 `ProcessCanceledException`
+            val message = "Git command was cancelled: ${commandLine.commandLineString}"
+            throw CancellationException(message)
+        }
+        if (output.isTimeout) {
+            val message = "Git command timed out (${timeout}): ${commandLine.commandLineString}"
+            throw TimeoutException(message)
+        }
+        if (output.exitCode != 0) {
+            val message = "Git command failed (exitCode=${output.exitCode}): ${commandLine.commandLineString}" +
+                "\n${output.stderr.trim()}"
+            throw ExecutionException(message)
+        }
+        return output.stdout.trim()
+    }
+
+    override fun lsRemote(url: String): String {
+        val commandLine = createCommandLine("ls-remote", url)
+        return execute(commandLine, ExecutionTimeouts.normal)
+    }
+
+    override fun clone(url: String, workDirectory: Path): String {
+        val commandLine = createCommandLine("clone", url)
+            .withWorkingDirectory(workDirectory.normalize().toAbsolutePath())
+        return execute(commandLine, ExecutionTimeouts.veryLong)
+    }
+
+    override fun pull(url: String, workDirectory: Path): String {
+        val commandLine = createCommandLine("pull", url)
+            .withWorkingDirectory(workDirectory.normalize().toAbsolutePath())
+        return execute(commandLine, ExecutionTimeouts.veryLong)
     }
 
     override fun checkRemote(url: String): String {
@@ -29,22 +92,5 @@ class ChronicleGitServiceImpl : ChronicleGitService {
         } else {
             clone(url, parentPath)
         }
-    }
-
-    override fun lsRemote(url: String): String {
-        val url = url.quoteIfNeeded(QuotePatterns.CommandLine)
-        return executeCommandLine("git ls-remote $url")
-    }
-
-    override fun clone(url: String, workDirectory: Path): String {
-        val url = url.quoteIfNeeded(QuotePatterns.CommandLine)
-        val wd = workDirectory.normalize().toAbsolutePath().toFile()
-        return executeCommandLine("git clone $url", workDirectory = wd)
-    }
-
-    override fun pull(url: String, workDirectory: Path): String {
-        val url = url.quoteIfNeeded(QuotePatterns.CommandLine)
-        val wd = workDirectory.normalize().toAbsolutePath().toFile()
-        return executeCommandLine("git pull $url", workDirectory = wd)
     }
 }

@@ -1,7 +1,7 @@
 package icu.windea.pls.core.match
 
-import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.trimFast
+import icu.windea.pls.core.util.cache.CacheBuilder
 
 /**
  * ANT 路径模式的匹配器。

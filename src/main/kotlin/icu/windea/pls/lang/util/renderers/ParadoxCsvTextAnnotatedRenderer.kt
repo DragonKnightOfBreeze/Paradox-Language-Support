@@ -5,6 +5,8 @@ import icu.windea.pls.csv.psi.ParadoxCsvColumnContainer
 import icu.windea.pls.lang.data.annotated.ParadoxAnnotatedDataFactory
 import icu.windea.pls.model.data.annotated.ParadoxAnnotatedData
 import icu.windea.pls.model.data.annotated.ParadoxAnnotatedLevel
+import icu.windea.pls.model.data.annotated.ParadoxConfigExpressionAnnotatedData
+import icu.windea.pls.model.data.annotated.ParadoxTypeAnnotatedData
 
 /**
  * 将 CSV 文本渲染为带注解的文本的渲染器。
@@ -13,8 +15,8 @@ import icu.windea.pls.model.data.annotated.ParadoxAnnotatedLevel
  * - 可以配置详细的注解级别。参见 [ParadoxAnnotatedLevel]。
  *
  * 支持的注解：
- * - 类型信息。参见 [ParadoxCsvAnnotatedManager.getTypeAnnotation]。
- * - 规则表达式信息。参见 [ParadoxCsvAnnotatedManager.getConfigExpressionAnnotation]。
+ * - 类型信息。参见 [ParadoxTypeAnnotatedData.FromColumns]。
+ * - 规则表达式信息。参见 [ParadoxConfigExpressionAnnotatedData.FromColumns]。
  */
 class ParadoxCsvTextAnnotatedRenderer : ParadoxCsvTextRenderer<String, ParadoxCsvTextAnnotatedRenderSettings, ParadoxCsvTextAnnotatedRenderContext>() {
     override val settings = ParadoxCsvTextAnnotatedRenderSettings()

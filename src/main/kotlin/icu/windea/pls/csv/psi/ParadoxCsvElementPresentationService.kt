@@ -1,15 +1,18 @@
 package icu.windea.pls.csv.psi
 
-import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiElement
 import icu.windea.pls.core.icon
-import icu.windea.pls.core.psi.PsiPresentableTextAwareElement
+import icu.windea.pls.core.psi.PsiService
+import icu.windea.pls.csv.ParadoxCsvLanguage
 import icu.windea.pls.lang.psi.ParadoxElementPresentationService
 import icu.windea.pls.model.constants.ChronicleStrings
 import javax.swing.Icon
 
 object ParadoxCsvElementPresentationService {
     fun getIcon(element: PsiElement): Icon? {
+        // 3.0.5 precheck (necessary)
+        if (!checkLanguage(element)) return null
+
         // 3.0.3 promote to semantic level if needed
         ParadoxElementPresentationService.getIcon(element)?.let { return it }
 
@@ -17,17 +20,20 @@ object ParadoxCsvElementPresentationService {
     }
 
     fun getPresentableText(element: PsiElement): String? {
+        // 3.0.5 precheck (necessary)
+        if (!checkLanguage(element)) return null
+
         return when (element) {
-            is ParadoxCsvFile -> element.name
             is ParadoxCsvHeader -> ChronicleStrings.headerPlaceholder
             is ParadoxCsvRow -> ChronicleStrings.rowPlaceholder
-            is PsiPresentableTextAwareElement -> element.presentableText
-            is NavigatablePsiElement -> element.name
-            else -> null
+            else -> PsiService.getDefaultPresentableText(element)
         }
     }
 
     fun getLocationString(element: PsiElement): String? {
+        // 3.0.5 precheck (necessary)
+        if (!checkLanguage(element)) return null
+
         // 3.0.3 promote to semantic level if needed
         ParadoxElementPresentationService.getLocationString(element)?.let { return it }
 
@@ -35,6 +41,9 @@ object ParadoxCsvElementPresentationService {
     }
 
     fun getTreeLocationString(element: PsiElement): String? {
+        // 3.0.5 precheck (necessary)
+        if (!checkLanguage(element)) return null
+
         return when (element) {
             is ParadoxCsvColumn -> ParadoxCsvPsiService.getHeaderColumn(element)?.presentableText
             else -> null
@@ -42,14 +51,22 @@ object ParadoxCsvElementPresentationService {
     }
 
     fun getPresentableTextInNavBar(element: PsiElement): String? {
+        // 3.0.5 precheck (necessary)
+        if (!checkLanguage(element)) return null
+
         val p = getPresentableText(element) ?: return null
         val l = getTreeLocationString(element) ?: return p
         return "$p ($l)"
     }
 
-    fun getElementInfoInBreadCrumbs(element: PsiElement): String {
-        val p = getPresentableText(element) ?: return ""
+    fun getElementInfoInBreadCrumbs(element: PsiElement): String? {
+        // 3.0.5 precheck (necessary)
+        if (!checkLanguage(element)) return null
+
+        val p = getPresentableText(element) ?: return null
         val l = getTreeLocationString(element) ?: return p
         return "$p ($l)"
     }
+
+    private fun checkLanguage(element: PsiElement): Boolean = element.language == ParadoxCsvLanguage
 }

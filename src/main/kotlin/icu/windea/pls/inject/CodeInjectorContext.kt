@@ -48,6 +48,20 @@ internal object CodeInjectorContext {
     }
 
     @PublishedApi
+    internal fun cleanUp() {
+        if (!ChronicleFacade.isUnitTestMode()) {
+            application.putUserData(applyInjectionMethodKey, null)
+        }
+
+        reported.clear()
+        codeInjectors.clear()
+
+        // clean up class pool
+        classPool = null // detach
+        staticProperty<ClassPool, ClassPool?>("defaultPool").set(null) // tricky but somehow necessary (~20M)
+    }
+
+    @PublishedApi
     internal fun initClassPool(): ClassPool {
         val classPool = ClassPool.getDefault()
         val classPathList = System.getProperty("java.class.path")
@@ -78,20 +92,6 @@ internal object CodeInjectorContext {
             }
             codeInjectors.put(codeInjectorId, codeInjector)
         }
-    }
-
-    @PublishedApi
-    internal fun cleanUp() {
-        if (!ChronicleFacade.isUnitTestMode()) {
-            application.putUserData(applyInjectionMethodKey, null)
-        }
-
-        reported.clear()
-        codeInjectors.clear()
-
-        // clean up class pool
-        classPool = null // detach
-        staticProperty<ClassPool, ClassPool?>("defaultPool").set(null) // tricky but somehow necessary (~20M)
     }
 
     /**

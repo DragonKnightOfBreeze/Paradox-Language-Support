@@ -11,7 +11,7 @@ Here you can configure which extension features to enable.
 
 Diagram settings are configured in a separate [settings page](#diagram-settings-page).
 
-![](../assets/extensions/extensions_settings_1.png)
+![](../assets/settings/settings_extensions.png)
 
 ## Markdown {#md}
 
@@ -205,7 +205,7 @@ In the IDE settings page, go to `Languages & Frameworks > Paradox Chronicle > Di
 
 Here you can configure which nodes to display for various diagram types based on multiple conditions.
 
-![](../assets/extensions/diagram_settings_1.png)
+![](../assets/settings/settings_diagrams.png)
 
 ### Event Tree {#diagram-event-tree}
 

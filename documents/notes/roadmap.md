@@ -533,21 +533,26 @@
   - 同步更新 `AGENTS.md` 和 `CONTRIBUTING.md`。
 - [x] P3 提供轻量化的推流（push stream）
   - 参见：[adr/push-stream.md](adr/push-stream.md)
-- [ ] P2 优化命令行执行逻辑和图片处理逻辑 ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
+- [x] P2 优化命令行执行逻辑和图片处理逻辑 ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
   - 适用取消检查和超时限制，以避免可能的 IDE 冻结。
   - 避免在 EDT 中直接执行（预期存在一定耗时的）命令行，以避免可能的 IDE 冻结。
   - 执行命令行时，通常需要考虑进行取消检查（抵达时间间隔阈值时）。
   - 执行命令行时，通常需要考虑指定超时。
   - 进行图片IO（渲染/转换/等等）时，也需要考虑进行取消检查（抵达字节大小阈值时）。
   - 参见：[adr/command-line-and-image-processing-optimization.md](adr/command-line-and-image-processing-optimization.md)
-- [ ] P2 优化插件自身提供的 `CommandLineExecutor` API ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
-  - 考虑默认委托给平台提供的 `ExecUtil` `GeneralCommandLine`，从而有可能通过传入 `ProgressIndicator` 来进行取消检查。
+- [x] P2 优化插件自身提供的 `CommandLineExecutor` API ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
+  - 考虑默认委托给平台提供的 `GeneralCommandLine`/`CapturingProcessHandler`，从而有可能通过传入 `ProgressIndicator` 来进行取消检查。
   - 参见：[adr/command-line-and-image-processing-optimization.md](adr/command-line-and-image-processing-optimization.md)
 - [x] P1 修复插件在 IDEA 2026.3 EAP 中存在的兼容性问题
   - 参见：`com.intellij.util.OpenSourceUtil`
 - [x] P1 修复 CWT 文件和脚本文件的结构视图无法正常显示的回归BUG（自插件版本 3.0.3）
   - 参见：`icu.windea.pls.cwt.structureView.CwtFileTreeElement`
   - 参见：`icu.windea.pls.script.structureView.ParadoxScriptFileTreeElement`
+- [x] P2 修复脚本文件在导航栏中会错误地使用整个文件文本作为展示文本的BUG（应当显示文件名）
+  - 参见：`com.intellij.platform.navbar.frontend.ui.NavBarItemComponent`
+  - 结论：`com.intellij.ide.navigationToolbar.NavBarModelExtension.getPresentableText(java.lang.Object)` 中也需要检查语言（不会自动检查）
+  - 结论：需要防御性编程，各种 elementPresentationService/elementDescriptionService 中的方法都要检查语言
+- [x] P2 优化 `ParadoxFileChangeCollector` 中与 rootInfo/fileInfo 失效相关的缓存失效逻辑
 
 #### 任务（次要）
 
@@ -569,7 +574,19 @@
   - 参见：[adr/push-stream.md](adr/push-stream.md)
 - [x] P3 重构 `CwtConfigExpansionService` 和 `ParadoxConfigExpansionService`：创建并应用 `CwtExpandedConfig`
   - 参见：[adr/push-stream.md](adr/push-stream.md)
+- [x] P4 重构：将 `CwtLocationResolveResult` 重命名为 `ParadoxLocationExpressionResolveResult`，子类同理
 - [ ] P4 排序：在 `ParadoxScriptExpressionSupport` 等处，将 `annotate` 方法的顺序移到 `complete` 方法之前
+- [x] P3 重命名：`cancelable` -> `cancellable`
+- [x] P3 重命名：`Cache.cancelable` -> `Cache.asCancellable`
+- [x] P4 移动：将 `StdlibExtensions.kt` 中的部分方法移到 `icu.windea.pls.core.util.io` 中的 `PathExtensions.kt` 和 `FileExtensions.kt`（并且移除/补充一些方法）
+- [x] P4 移动：`icu.windea.pls.core.cache` -> `icu.windea.pls.core.util.cache`
+- [x] P4 移动：将 `icu.windea.pls.images.ImageFrameInfo` 移到 `icu.windea.pls.core.util.ImageFrameInfo`（对齐 `RangeInfo` 和 `Template`，以后可能还会新增 `ImageLayerInfo` 等）
+- [x] P4 从 `ImageService` 分理出 `ImageContext` 以及 `ImageLifecycleListener`
+- [x] P4 从 `CodeInjectorService` 分理出 `CodeInjectorLifecycleListener`
+- [x] P4 引入 `CancellableInputStream` 和 `CancellableOutputStream`
+  - 可通过 `checker` 进行取消检查
+- [ ] P4 引入 `MonitorableInputStream` 和 `MonitorableOutputStream`
+  - 可监控总长度和已处理长度，可能需要调整命名，可能需要与 `CancellableInputStream` / `CancellableOutputStream` 合并
 
 ## 按主题 {#by-topic}
 
@@ -595,6 +612,7 @@
 
 > - 标签：性能优化
 > - 版本：v3.0.5
+> - 状态：已完成（告一段落）
 
 #### 概述
 
@@ -602,12 +620,14 @@
 
 #### 内容
 
-- [ ] P2 优化插件自身提供的 `CommandLineExecutor` API ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
-  - 考虑默认委托给平台提供的 `ExecUtil` `GeneralCommandLine`。
+- [x] P2 优化插件自身提供的 `CommandLineExecutor` API ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
+  - 考虑默认委托给平台提供的 `GeneralCommandLine`/`CapturingProcessHandler`。
   - 可以通过传入 `ProgressIndicator` 来进行取消检查（抵达时间间隔阈值时）。
   - 可以指定执行超时。
-- [ ] P3 优化图片处理逻辑 ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
+  - 参见：[adr/command-line-and-image-processing-optimization.md](adr/command-line-and-image-processing-optimization.md)
+- [x] P3 优化图片处理逻辑 ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
   - 进行图片IO（渲染/转换/等等）时，也进行取消检查（抵达字节大小阈值时）。
+  - 参见：[adr/command-line-and-image-processing-optimization.md](adr/command-line-and-image-processing-optimization.md)
 
 ### snippet-match
 

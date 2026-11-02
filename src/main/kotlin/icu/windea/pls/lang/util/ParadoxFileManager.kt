@@ -12,12 +12,13 @@ import com.intellij.util.io.createDirectories
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.core.checkCancellation
-import icu.windea.pls.core.formatted
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.core.util.io.clean
 import icu.windea.pls.csv.ParadoxCsvFileType
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.fileInfo
+import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.localisation.ParadoxLocalisationFileType
 import icu.windea.pls.model.ParadoxFileGroup
@@ -42,7 +43,7 @@ object ParadoxFileManager {
         val mainEntry = gameType.metadata.gameMainEntries.firstOrNull()
         val mainEntryPath = if (mainEntry != null) gamePath.resolve(mainEntry) else gamePath
         val resultPath = mainEntryPath.resolve(path)
-        return resultPath.formatted()
+        return resultPath.clean()
     }
 
     fun getFileType(fileGroup: ParadoxFileGroup): FileType? {
@@ -85,7 +86,7 @@ object ParadoxFileManager {
             ParadoxFileGroup.Localisation -> true
             ParadoxFileGroup.Csv -> true
             ParadoxFileGroup.ModDescriptor -> false
-            ParadoxFileGroup.Other -> ParadoxImageManager.isImageFile(file) // currently only accept generic images
+            ParadoxFileGroup.Other -> ParadoxImageService.isImageFile(file) // currently only accept generic images
         }
     }
 

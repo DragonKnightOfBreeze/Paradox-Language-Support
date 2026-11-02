@@ -238,6 +238,7 @@ kotlin {
         optIn.addAll(
             "kotlin.RequiresOptIn",
             "kotlin.ExperimentalStdlibApi",
+            "kotlin.io.path.ExperimentalPathApi",
             "kotlinx.serialization.ExperimentalSerializationApi",
         )
         freeCompilerArgs.addAll(

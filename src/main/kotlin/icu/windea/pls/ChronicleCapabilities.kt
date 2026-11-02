@@ -97,6 +97,14 @@ object ChronicleCapabilities {
         var includeRemote = getBooleanProperty("chronicle.test.include.remote", false)
         var includeLocalEnv = getBooleanProperty("chronicle.test.include.local.env", false)
         var includeConfigGenerator = getBooleanProperty("chronicle.test.include.config.generator", false)
+        var includeExternalTools = getBooleanProperty("chronicle.test.include.external.tools", true)
+
+        /**
+         * 是否将不正确的执行上下文（EDT/readAction）视为测试失败，而不是仅输出警告。
+         *
+         * 对应系统属性：`chronicle.test.strict.context`。
+         */
+        var strictContext = getBooleanProperty("chronicle.test.strict.context", false)
     }
 
     /**

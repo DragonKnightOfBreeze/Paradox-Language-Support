@@ -8,6 +8,7 @@ import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.internal.CwtSchemaConfig
 import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configExpression.CwtSchemaExpression
+import icu.windea.pls.config.configGroup.CwtConfigFileService
 import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.flatMapFast
@@ -20,9 +21,11 @@ import icu.windea.pls.cwt.psi.isPropertyValue
 @Optimized
 object CwtConfigSchemaManager {
     fun getContextConfigs(element: PsiElement, containerElement: PsiElement, file: PsiFile, schema: CwtSchemaConfig): List<CwtMemberConfig<*>> {
-        if (CwtConfigManager.isInternalFile(file)) return emptyList() // 排除内部规则文件
+        // 排除规则路径不存在的情况
         val configPath = CwtConfigManager.getConfigPath(containerElement)
         if (configPath == null) return emptyList()
+        // 排除内部规则文件
+        if (CwtConfigFileService.getInstance().isInternalFile(file)) return emptyList()
 
         if (schema.properties.isEmpty()) return emptyList()
         var contextConfigs = buildList<CwtMemberConfig<*>> { addAll(schema.properties) }

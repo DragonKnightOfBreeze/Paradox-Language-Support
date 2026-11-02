@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.colors.TextAttributesKey.*
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.ui.ColorUtil
-import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.util.cache.CacheBuilder
 import icu.windea.pls.csv.ParadoxCsvLanguage
 import icu.windea.pls.csv.highlighting.ParadoxCsvHighlighterColors
 import icu.windea.pls.localisation.ParadoxLocalisationLanguage

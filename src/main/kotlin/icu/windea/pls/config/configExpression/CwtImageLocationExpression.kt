@@ -4,11 +4,11 @@ package icu.windea.pls.config.configExpression
 
 import icu.windea.pls.config.config.delegated.CwtTypeImagesConfig
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.optimized
 import icu.windea.pls.core.splitFast
 import icu.windea.pls.core.toDelimitedSet
+import icu.windea.pls.core.util.cache.CacheBuilder
 
 /**
  * 图片位置表达式。

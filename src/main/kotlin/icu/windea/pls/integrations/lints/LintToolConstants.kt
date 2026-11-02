@@ -10,13 +10,13 @@ object LintToolConstants {
         const val url = "https://github.com/amtep/tiger"
 
         fun pathTip(gameType: ParadoxGameType): String {
-            val name = TigerLintToolService.getInstance().findTool(gameType)?.exePath ?: "tiger"
+            val name = TigerLintToolService.getInstance().findTool(gameType)?.name ?: "tiger"
             val suffix = if (SystemInfo.isWindows) ".exe" else ""
             return "/path/to/$name$suffix"
         }
 
         fun confPathTip(gameType: ParadoxGameType): String {
-            val name = TigerLintToolService.getInstance().findTool(gameType)?.exePath ?: "tiger"
+            val name = TigerLintToolService.getInstance().findTool(gameType)?.name ?: "tiger"
             val suffix = ".conf"
             return "/path/to/$name$suffix"
         }

@@ -10,8 +10,8 @@ import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.lang.actions.ChronicleActions
 import icu.windea.pls.lang.codeInsight.markers.ParadoxLineMarkerProvider
 import icu.windea.pls.lang.definitionInfo
-import icu.windea.pls.lang.resolve.CwtLocalisationLocationResolveResult
-import icu.windea.pls.lang.resolve.ParadoxLocationExpressionService
+import icu.windea.pls.lang.resolve.ParadoxLocationResolveResult
+import icu.windea.pls.lang.resolve.ParadoxLocationService
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -68,15 +68,15 @@ class ParadoxDefinitionRelatedLocalisationsLineMarkerProvider : ParadoxLineMarke
         val toDistinct = HashSet<String>(localisationInfos.size)
         for ((key, locationExpression) in localisationInfos) {
             ProgressManager.checkCanceled()
-            val resolveResult = ParadoxLocationExpressionService.resolve(locationExpression, element, definitionInfo) { preferLocale(preferredLocale) } ?: continue
+            val resolveResult = ParadoxLocationService.resolve(locationExpression, element, definitionInfo) { preferLocale(preferredLocale) } ?: continue
             resolved.addAll(resolveResult.elements)
             if (!toDistinct.add(key)) break
             when (resolveResult) {
-                is CwtLocalisationLocationResolveResult.Static -> {
+                is ParadoxLocationResolveResult.Localisation.Static -> {
                     if (resolveResult.elements.isEmpty()) continue
                     tooltipLines.add("$prefix $key = ${resolveResult.name}")
                 }
-                is CwtLocalisationLocationResolveResult.Dynamic -> {
+                is ParadoxLocationResolveResult.Localisation.Dynamic -> {
                     tooltipLines.add("$prefix $key = ${resolveResult.message}")
                 }
             }

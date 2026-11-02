@@ -15,34 +15,12 @@ class ParadoxHintsSettingsConfigurable(
     override fun createComponent(listener: ChangeListener): JComponent = panel {
         // NOTE 这里不能直接绑定 Kotlin 属性，否则无法追踪更改
         if (provider.showScopeContextInfo) createScopeContextInfoRow()
-        if (provider.renderLocalisation) createLocalisationTextLengthLimitRow()
-        if (provider.renderIcon) createIconHeightLimitRow()
     }
 
     private fun Panel.createScopeContextInfoRow() {
         row {
             checkBox(ChronicleBundle.message("hints.settings.showScopeContextOnlyIfIsChanged"))
                 .bindSelected(settings::showScopeContextOnlyIfIsChanged.toAtomicProperty())
-        }
-    }
-
-    private fun Panel.createLocalisationTextLengthLimitRow() {
-        row {
-            label(ChronicleBundle.message("hints.settings.localisationTextLengthLimit")).widthGroup("left")
-            textField()
-                .bindIntText(settings::localisationTextLengthLimit.toAtomicProperty())
-                .errorOnApply(ChronicleBundle.message("error.shouldBePositiveOrZero")) { (it.text.toIntOrNull() ?: 0) < 0 }
-            contextHelp(ChronicleBundle.message("hints.settings.localisationTextLengthLimit.tip"))
-        }
-    }
-
-    private fun Panel.createIconHeightLimitRow() {
-        row {
-            label(ChronicleBundle.message("hints.settings.iconHeightLimit")).widthGroup("left")
-            textField()
-                .bindIntText(settings::iconHeightLimit.toAtomicProperty())
-                .errorOnApply(ChronicleBundle.message("error.shouldBePositive")) { (it.text.toIntOrNull() ?: 0) <= 0 }
-            contextHelp(ChronicleBundle.message("hints.settings.iconHeightLimit.tip"))
         }
     }
 }

@@ -42,7 +42,7 @@ abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
         if (!isPreview && !isAvailable(file, editor)) return null
 
         return object : FactoryInlayHintsCollector(editor) {
-            private val context = ParadoxHintsContext(file, editor, settings, factory)
+            private val context = ParadoxHintsContext(file, editor, settings, sink, factory)
 
             override fun collect(element: PsiElement, editor: Editor, sink: InlayHintsSink): Boolean {
                 // NOTE 这里需要尽可能返回 `true`，并不是注释所说的“返回 `false` 的话就不遍历子节点”

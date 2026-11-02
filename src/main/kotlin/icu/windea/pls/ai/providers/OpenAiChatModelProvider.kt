@@ -12,8 +12,8 @@ import icu.windea.pls.ai.ChronicleAiBundle
 import icu.windea.pls.ai.model.AiConstants
 import icu.windea.pls.ai.providers.ChatModelProvider.*
 import icu.windea.pls.base.settings.ChronicleAiSettings
+import icu.windea.pls.core.options.OptionProvider
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.util.OptionProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking

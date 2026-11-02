@@ -5,7 +5,7 @@ package icu.windea.pls.config.configExpression
 import com.intellij.openapi.diagnostic.thisLogger
 import icu.windea.pls.config.option.CwtOptionMetadata
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cache.CacheBuilder
+import icu.windea.pls.core.util.cache.CacheBuilder
 
 /**
  * 基数表达式。

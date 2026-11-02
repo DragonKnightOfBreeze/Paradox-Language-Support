@@ -11,11 +11,13 @@ import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.config.CwtPropertyConfig
 import icu.windea.pls.config.config.CwtValueConfig
 import icu.windea.pls.config.config.tagType
+import icu.windea.pls.config.configGroup.CwtConfigFileService
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.documentation
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.codeInsight.documentation.DocumentationContext
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.collections.orNull
 import icu.windea.pls.core.escapeXml
@@ -40,12 +42,12 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.constraints.ParadoxLocalisationIndexConstraint
 import icu.windea.pls.lang.psi.light.CwtConfigSymbolLightElement
 import icu.windea.pls.lang.psi.light.CwtMemberConfigLightElement
+import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.lang.search.ParadoxFilePathSearch
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.search.util.preferLocale
 import icu.windea.pls.lang.search.util.withConstraint
-import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocaleManager
 import icu.windea.pls.lang.util.ParadoxModifierManager
 import icu.windea.pls.lang.util.ParadoxScopeManager
@@ -65,6 +67,10 @@ object CwtDocumentationManager {
     private const val SECTIONS_LOC = 2
 
     // region Entry Documentation Methods
+
+    fun compute(context: DocumentationContext): DocumentationBuilder? {
+        return compute(context.element, context.originalElement, context.hint)
+    }
 
     fun compute(element: PsiElement, originalElement: PsiElement?, hint: Boolean): DocumentationBuilder? {
         return buildDocumentation(hint) { build(element, originalElement) }.takeUnless { it.isEmpty() }
@@ -348,8 +354,8 @@ object CwtDocumentationManager {
         val sections = getSections(SECTIONS_IMAGES)
         run {
             if (iconFile == null) return@run
-            val url = ParadoxImageManager.resolveUrlByFile(iconFile, project) ?: return@run
-            sections["icon"] = buildDocumentation { image(url) }.toString()
+            val iconUrl = ParadoxImageService.resolveByFile(iconFile)?.resolveUrl(project) ?: return@run
+            sections["icon"] = buildDocumentation { image(iconUrl) }.toString()
         }
     }
 
@@ -455,7 +461,8 @@ object CwtDocumentationManager {
             return ChronicleFacade.getConfigGroup(project, originalElement)
         }
         if (element.language === CwtLanguage) {
-            return CwtConfigManager.getContainingConfigGroup(element)
+            val file = element.containingFile ?: return null
+            return CwtConfigFileService.getInstance().getContainingConfigGroup(file)
         }
         return null
     }

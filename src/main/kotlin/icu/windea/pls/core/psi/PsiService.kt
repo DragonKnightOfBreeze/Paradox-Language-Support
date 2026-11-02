@@ -21,7 +21,16 @@ import icu.windea.pls.core.runSmartReadAction
 
 @Suppress("unused")
 object PsiService {
-    fun toPresentableString(element: PsiElement): String {
+    fun getDefaultPresentableText(element: PsiElement): String? {
+        return when(element) {
+            is PsiFile -> element.name // in case and fallback
+            is PsiPresentableTextAwareElement -> element.presentableText // in case and fallback
+            is NavigatablePsiElement -> element.name // in case and fallback
+            else -> null
+        }
+    }
+
+    fun toDefaultPresentableString(element: PsiElement): String {
         return buildString {
             val type = element.javaClass.simpleName.removeSuffix("Impl")
             append(type)

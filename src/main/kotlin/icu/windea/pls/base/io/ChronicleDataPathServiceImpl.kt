@@ -1,7 +1,7 @@
 package icu.windea.pls.base.io
 
-import icu.windea.pls.core.io.PathService
-import icu.windea.pls.core.toPath
+import icu.windea.pls.core.util.io.PathService
+import icu.windea.pls.core.util.io.toPath
 import java.nio.file.Path
 
 class ChronicleDataPathServiceImpl : ChronicleDataPathService {
@@ -12,17 +12,17 @@ class ChronicleDataPathServiceImpl : ChronicleDataPathService {
     private val _imagesPath = _path.resolve("images")
     private val _imagesTempPath = _imagesPath.resolve("_tmp")
     private val _lintResultsPath = _path.resolve("lint-results")
-    private val _toolsPath = _path.resolve("tools")
-    private val _texconvExePath = _toolsPath.resolve("texconv.exe")
+    private val _externalToolsPath = _path.resolve("external-tools")
+    private val _texconvExePath = _externalToolsPath.resolve("texconv.exe")
 
-    override val path: Path get() = _path.withDirectoryCreated()
-    override val imagesPath: Path get() = _imagesPath.withDirectoryCreated()
-    override val imagesTempPath: Path get() = _imagesTempPath.withDirectoryCreated()
-    override val lintResultsPath: Path get() = _lintResultsPath.withDirectoryCreated()
-    override val toolsPath: Path get() = _toolsPath.withDirectoryCreated()
-    override val texconvExePath: Path get() = _texconvExePath.withFileCreatedFromClasspath("/tools/texconv.exe")
+    override val path: Path get() = _path.also { PathService.ensureDirectoryCreated(it) }
+    override val imagesPath: Path get() = _imagesPath.also { PathService.ensureDirectoryCreated(it) }
+    override val imagesTempPath: Path get() = _imagesTempPath.also { PathService.ensureDirectoryCreated(it) }
+    override val lintResultsPath: Path get() = _lintResultsPath.also { PathService.ensureDirectoryCreated(it) }
+    override val externalToolsPath: Path get() = _externalToolsPath.also { PathService.ensureDirectoryCreated(it) }
+    override val texconvExePath: Path get() = _texconvExePath.also { PathService.ensureParentDirectoryCreated(it) }
 
-    private fun Path.withDirectoryCreated() = apply { PathService.ensureDirectoryCreated(this) }
-
-    private fun Path.withFileCreatedFromClasspath(url: String) = apply { PathService.ensureFileCreatedFromClasspath(this, url) }
+    override fun ensureTexconvExePath() {
+        PathService.ensureFileCreatedFromClasspath(_texconvExePath, "/external-tools/texconv.exe")
+    }
 }

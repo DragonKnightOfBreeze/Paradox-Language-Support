@@ -36,7 +36,7 @@ abstract class ParadoxLightElementBase(parent: PsiElement) : LightElementBase(pa
     }
 
     override fun toString(): String {
-        return PsiService.toPresentableString(this)
+        return PsiService.toDefaultPresentableString(this)
     }
 
     final override fun getIcon(unused: Boolean): Icon? {

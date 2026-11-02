@@ -5,6 +5,7 @@ import com.intellij.codeInsight.hints.SettingsKey
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.endOffset
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.core.codeInsight.hints.HintsContext
 import icu.windea.pls.csv.psi.ParadoxCsvColumn
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProvider
 import icu.windea.pls.ep.codeInsight.hints.ParadoxHintTextProviderBase
@@ -35,7 +36,7 @@ class ParadoxComplexEnumValueHintTextHintsProvider : ParadoxHintsProvider() {
     override val renderLocalisation get() = true
     override val renderIcon get() = true
 
-    context(context: ParadoxHintsContext)
+    context(context: HintsContext<ParadoxHintsSettings>)
     override fun collectFromElement(element: PsiElement, sink: InlayHintsSink) {
         if (element !is ParadoxCsvColumn) return
         val expression = element.name

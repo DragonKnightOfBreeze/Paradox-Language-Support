@@ -22,6 +22,6 @@ class CwtBreadCrumbsProvider : BreadcrumbsProvider {
     }
 
     override fun getElementInfo(element: PsiElement): String {
-        return CwtElementPresentationService.getElementInfoInBreadCrumbs(element)
+        return CwtElementPresentationService.getElementInfoInBreadCrumbs(element).orEmpty()
     }
 }

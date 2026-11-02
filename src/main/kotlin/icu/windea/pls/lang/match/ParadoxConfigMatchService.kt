@@ -22,8 +22,6 @@ import icu.windea.pls.config.config.stringValue
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.match.CwtConfigMatchService
 import icu.windea.pls.core.annotations.Optimized
-import icu.windea.pls.core.cache.CacheBuilder
-import icu.windea.pls.core.cache.cancelable
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.collections.anyFast
 import icu.windea.pls.core.collections.filterFast
@@ -36,6 +34,8 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.sequences.process
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.cache.CacheBuilder
+import icu.windea.pls.core.util.cache.asCancellable
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKeyWithThis
@@ -80,19 +80,19 @@ object ParadoxConfigMatchService {
         // 3.0.3 use expireAfterAccess to optimize memory
         CacheBuilder("expireAfterAccess=1h").build<ParadoxPath, List<CwtTypeConfig>> { path ->
             types.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
-        }.cancelable()
+        }.asCancellable()
     }
     private val CwtConfigGroup.complexEnumConfigCandidatesCache by registerKeyWithThis(Keys) {
         // 3.0.3 use expireAfterAccess to optimize memory
         CacheBuilder("expireAfterAccess=1h").build<ParadoxPath, List<CwtComplexEnumConfig>> { path ->
             complexEnums.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
-        }.cancelable()
+        }.asCancellable()
     }
     private val CwtConfigGroup.rowConfigCandidatesCache by registerKeyWithThis(Keys) {
         // 3.0.3 use expireAfterAccess to optimize memory
         CacheBuilder("expireAfterAccess=1h").build<ParadoxPath, List<CwtRowConfig>> { path ->
             rows.values.filter { CwtConfigMatchService.matchesFilePath(it, path) }.optimized()
-        }.cancelable()
+        }.asCancellable()
     }
 
     // region Members and Expressions

@@ -96,6 +96,9 @@ Configs are categorized by level as follows:
 
 Override configs specify the override strategy per target directory for targets (global scripted variables, definitions, define variables, localisations, etc.). They affect the order in which targets take effect and the sorting of query results (except for streaming queries).
 
+Path location:
+- `overrides/{path}`. Here, `{path}` matches the path of the target directory.
+
 There are two sources of override strategies:
 
 1. **Forced strategies**: specified by the plugin itself, independent of config files, and take precedence:

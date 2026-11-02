@@ -22,10 +22,10 @@ import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.executeWriteCommand
 import icu.windea.pls.core.processChild
-import icu.windea.pls.core.toPath
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
 import icu.windea.pls.core.unquote
+import icu.windea.pls.core.util.io.toPath
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch

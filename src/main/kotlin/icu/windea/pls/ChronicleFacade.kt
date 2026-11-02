@@ -80,6 +80,15 @@ object ChronicleFacade {
     }
 
     /**
+     * 从 [event] 得到对应的规则分组。
+     */
+    fun getConfigGroup(event: AnActionEvent): CwtConfigGroup {
+        val project = event.project
+        val finalGameType = selectGameType(event.getData(CommonDataKeys.VIRTUAL_FILE)) ?: ParadoxGameType.Core
+        return CwtConfigGroupService.getInstance(project).getConfigGroup(finalGameType)
+    }
+
+    /**
      * 检查指定项目与上下文的规则分组是否已加载完毕。
      *
      * 如果指定的项目是默认项目，则会检查应用级别的规则分组。
@@ -91,15 +100,6 @@ object ChronicleFacade {
     fun checkConfigGroupInitialized(project: Project, context: Any? = null): Boolean {
         val gameType = selectGameType(context) ?: ParadoxGameType.Core
         return CwtConfigGroupService.getInstance(project).checkConfigGroupInitialized(gameType)
-    }
-
-    /**
-     * 从 [event] 得到对应的规则分组。
-     */
-    fun getConfigGroup(event: AnActionEvent): CwtConfigGroup {
-        val project = event.project
-        val finalGameType = selectGameType(event.getData(CommonDataKeys.VIRTUAL_FILE)) ?: ParadoxGameType.Core
-        return CwtConfigGroupService.getInstance(project).getConfigGroup(finalGameType)
     }
 
     /**

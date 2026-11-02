@@ -6,7 +6,7 @@ import icu.windea.pls.ai.model.errors.OpenAiErrorInfo
 import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.core.isNotNullOrEmpty
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 
 object AiManipulationService {
     fun getOptimizedDescription(description: String?): String? {
@@ -19,11 +19,11 @@ object AiManipulationService {
         when (e) {
             is LangChain4jException -> {
                 if (message.isNotNullOrEmpty()) {
-                    runCatchingCancelable {
+                    runCatchingCancellable {
                         val errorInfo = JsonService.json.decodeFromString<OpenAiErrorInfo>(message)
                         return "[${errorInfo.error.code}] ${errorInfo.error.message}"
                     }
-                    runCatchingCancelable {
+                    runCatchingCancellable {
                         val errorInfo = JsonService.json.decodeFromString<AnthropicErrorInfo>(message)
                         return "[${errorInfo.error.type}] ${errorInfo.error.message}"
                     }

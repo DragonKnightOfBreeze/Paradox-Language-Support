@@ -1,7 +1,7 @@
 package icu.windea.pls.base.annotations
 
-import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.cache.CacheBuilder
 import icu.windea.pls.model.ParadoxDefinitionInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.expressions.ParadoxDefinitionTypeExpression

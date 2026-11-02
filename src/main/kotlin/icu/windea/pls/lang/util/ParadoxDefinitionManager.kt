@@ -13,6 +13,7 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.filterFast
 import icu.windea.pls.core.optimized
+import icu.windea.pls.core.util.ImageFrameInfo
 import icu.windea.pls.core.util.KeyRegistry
 import icu.windea.pls.core.util.getCachedValueOnDemand
 import icu.windea.pls.core.util.getValue
@@ -20,7 +21,6 @@ import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.core.util.values.singletonListOrEmpty
 import icu.windea.pls.core.util.values.to
-import icu.windea.pls.images.ImageFrameInfo
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.match.ParadoxMatchOptions
 import icu.windea.pls.lang.match.ParadoxMatchOptionsService

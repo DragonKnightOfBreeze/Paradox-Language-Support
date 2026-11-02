@@ -16,11 +16,12 @@ interface ChronicleDataPathService {
     val imagesTempPath: Path
     /** `{path}/lintResults` */
     val lintResultsPath: Path
-    /** `{path}/tools` */
-    val toolsPath: Path
-
-    /** `{path}/tools/texconv.exe` */
+    /** `{path}/external-tools` */
+    val externalToolsPath: Path
+    /** `{path}/external-tools/texconv.exe` */
     val texconvExePath: Path
+
+    fun ensureTexconvExePath()
 
     companion object {
         @JvmStatic

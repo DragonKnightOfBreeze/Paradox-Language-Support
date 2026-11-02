@@ -9,26 +9,26 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import icu.windea.pls.base.settings.ChroniclePresentationSettings
 import icu.windea.pls.core.codeInsight.hints.mergePresentations
 import icu.windea.pls.core.collections.forEachFast
+import icu.windea.pls.core.createPointer
 import icu.windea.pls.core.forEachChild
 import icu.windea.pls.core.letIf
 import icu.windea.pls.core.psi.light.LightElementBase
-import icu.windea.pls.core.runCatchingCancelable
 import icu.windea.pls.core.text.EscapePatterns
-import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.ui.UiService
-import icu.windea.pls.core.ui.toIconOrNull
 import icu.windea.pls.core.unescape
 import icu.windea.pls.core.util.DefaultStrings
-import icu.windea.pls.images.ImageFrameInfo
+import icu.windea.pls.core.util.ImageFrameInfo
+import icu.windea.pls.lang.codeInsight.hints.AsyncIconPresentation
 import icu.windea.pls.lang.codeInsight.hints.ParadoxHintsContext
 import icu.windea.pls.lang.highlighting.ParadoxSemanticHighlighterColors
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.resolveLocalisation
 import icu.windea.pls.lang.psi.resolveScriptedVariable
+import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.lang.util.ParadoxGameConceptManager
-import icu.windea.pls.lang.util.ParadoxImageManager
 import icu.windea.pls.lang.util.ParadoxLocalisationIconManager
 import icu.windea.pls.lang.util.ParadoxLocalisationManager
 import icu.windea.pls.localisation.highlighting.ParadoxLocalisationHighlighterColors
@@ -48,7 +48,6 @@ import icu.windea.pls.localisation.text.ParadoxLocalisation
 import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import java.awt.Color
 import java.util.concurrent.atomic.AtomicInteger
-import javax.imageio.ImageIO
 
 /**
  * 将本地化文本渲染为内嵌提示（[InlayPresentation]）的渲染器。
@@ -62,15 +61,15 @@ class ParadoxLocalisationTextInlayRenderer(
 ) : ParadoxLocalisationTextRenderer<InlayPresentation?, ParadoxLocalisationTextInlayRenderContext, ParadoxLocalisationTextInlayRenderSettings>() {
     override val settings = ParadoxLocalisationTextInlayRenderSettings()
 
-    override fun createContext() = ParadoxLocalisationTextInlayRenderContext(settings, hintsContext)
+    override fun createContext() = ParadoxLocalisationTextInlayRenderContext(hintsContext, settings)
 }
 
 class ParadoxLocalisationTextInlayRenderContext(
-    private val settings: ParadoxLocalisationTextInlayRenderSettings,
     val hintsContext: ParadoxHintsContext,
+    private val settings: ParadoxLocalisationTextInlayRenderSettings,
     var builder: MutableList<InlayPresentation> = mutableListOf(),
 ) : ParadoxLocalisationTextRenderContext<InlayPresentation?>() {
-    private val truncateRemain: AtomicInteger = AtomicInteger(hintsContext.settings.localisationTextLengthLimit) // 记录到需要截断为止所剩余的长度
+    private val truncateRemain: AtomicInteger = AtomicInteger(ChroniclePresentationSettings.getInstance().state.inlayLocalisationTextLengthLimit) // 记录到需要截断为止所剩余的长度
     private var lineEnd: Boolean = false
     private var truncated: Boolean = false
     private val guardStack: ArrayDeque<String> = ArrayDeque() // 避免 StackOverflow
@@ -180,7 +179,6 @@ class ParadoxLocalisationTextInlayRenderContext(
                 updateTruncationState()
                 return@action
             }
-
             // 回退：直接显示原始文本（点击其中的相关文本也能跳转到相关声明）
             val presentation = getElementPresentation(element)
             if (presentation != null) builder.add(presentation)
@@ -202,32 +200,23 @@ class ParadoxLocalisationTextInlayRenderContext(
     override fun renderIcon(element: ParadoxLocalisationIcon) {
         if (truncated) return
         // 尝试渲染图标
-        runCatchingCancelable r@{
-            val resolved = element.reference?.resolve() ?: return@r
+        run {
+            val resolved = element.reference?.resolve() ?: return@run
             val iconFrame = ParadoxLocalisationIconManager.getFrame(element)
-            val frameInfo = ImageFrameInfo.of(iconFrame)
-            val iconUrl = when {
-                resolved is ParadoxDefinitionElement -> ParadoxImageManager.resolveUrlByDefinition(resolved, frameInfo)
-                resolved is PsiFile -> ParadoxImageManager.resolveUrlByFile(resolved.virtualFile, resolved.project, frameInfo)
+            val iconFrameInfo = ImageFrameInfo.of(iconFrame)
+            val iconResolveResult = when (resolved) {
+                is ParadoxDefinitionElement -> ParadoxImageService.resolveByDefinition(resolved, iconFrameInfo)
+                is PsiFile -> ParadoxImageService.resolveByFile(resolved, iconFrameInfo)
                 else -> null
             }
+            if (iconResolveResult == null) return@run
 
             // 如果无法解析（包括对应文件不存在的情况）就直接跳过
-            if (!ParadoxImageManager.canResolve(iconUrl)) return@r
-
-            val iconFileUrl = iconUrl.toFileUrl()
-            // 找不到图标的话就直接跳过
-            val icon = iconFileUrl.toIconOrNull() ?: return@r
-            // 这里需要尝试使用图标的原始高度
-            val originalIconHeight = runCatchingCancelable { ImageIO.read(iconFileUrl).height }.getOrElse { icon.iconHeight }
-            // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-            if (originalIconHeight > this@ParadoxLocalisationTextInlayRenderContext.hintsContext.settings.iconHeightLimit) return@r // 图标过大，不再尝试渲染
-            // 基于内嵌提示的字体大小缩放图标，直到图标宽度等于字体宽度
-            val presentation = factory.psiSingleReference(factory.smallScaledIcon(icon)) { resolved }
-            builder.add(presentation)
+            if (!iconResolveResult.canResolve()) return@run
+            val maxHeight = ChroniclePresentationSettings.getInstance().state.inlayTextIconHeightLimit
+            builder.add(AsyncIconPresentation(hintsContext, iconResolveResult.toRenderRequest(), maxHeight, resolved.createPointer()))
             return
         }
-
         // 回退：直接显示原始文本（点击其中的相关文本也能跳转到相关声明）
         val presentation = getElementPresentation(element)
         if (presentation != null) builder.add(presentation)
@@ -279,7 +268,6 @@ class ParadoxLocalisationTextInlayRenderContext(
             }
             return
         }
-
         // 回退：直接显示原始文本（点击其中的相关文本也能跳转到相关声明）
         val presentation = getElementPresentation(element)
         if (presentation != null) builder.add(wrapConceptPresentation(presentation, referenceElement))
@@ -333,7 +321,7 @@ class ParadoxLocalisationTextInlayRenderContext(
         // 3.0.4 # 418 trim leading blank of whole localisation text if necessary (specially for rendering inlay hints)
         if (builder.isEmpty()) textTruncated = text.trimStart()
         // truncated by configured limit if necessary
-        val limit = hintsContext.settings.localisationTextLengthLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.inlayLocalisationTextLengthLimit
         if (limit > 0) textTruncated = textTruncated.take(truncateRemain.get())
         // truncated to first line if necessary
         val lineBreakIndex = textTruncated.indexOfFirst { it == '\n' || it == '\r' }
@@ -353,7 +341,7 @@ class ParadoxLocalisationTextInlayRenderContext(
 
     private fun updateTruncationState() {
         if (truncated) return
-        val limit = hintsContext.settings.localisationTextLengthLimit
+        val limit = ChroniclePresentationSettings.getInstance().state.inlayLocalisationTextLengthLimit
         truncated = lineEnd || (limit > 0 && truncateRemain.get() <= 0)
     }
 

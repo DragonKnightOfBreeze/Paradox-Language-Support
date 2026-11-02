@@ -8,8 +8,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.gist.GistManager
 import com.intellij.util.gist.VirtualFileGist
 import com.intellij.util.io.DataExternalizer
-import icu.windea.pls.core.io.readIntFast
-import icu.windea.pls.core.io.writeIntFast
+import icu.windea.pls.core.util.io.readIntFast
+import icu.windea.pls.core.util.io.writeIntFast
 import java.io.DataInput
 import java.io.DataOutput
 
@@ -38,7 +38,7 @@ class TgaMetadataIndex {
             if (!file.isInLocalFileSystem) return@c null
             if (file.fileType !== TgaFileType) return@c null
             if (file.length > Registry.get("ide.index.image.max.size").asDouble() * 1024 * 1024) return@c null
-            TgaMetadataReader.read(file)
+            TgaMetadataReader.readOrNull(file)
         }
     }
 

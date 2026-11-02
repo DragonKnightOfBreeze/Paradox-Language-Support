@@ -11,12 +11,12 @@ import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.base.settings.ChronicleConfigSettings
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.config.configGroup.CwtConfigGroupFileSource
-import icu.windea.pls.core.normalizePath
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.core.toClasspathUrl
-import icu.windea.pls.core.toPathOrNull
 import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.core.util.io.clean
+import icu.windea.pls.core.util.io.parsePath
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.model.ParadoxGameType
 
@@ -59,15 +59,18 @@ abstract class CwtConfigGroupFileProviderBase : CwtConfigGroupFileProvider {
 
     protected fun processFilesInConfigDirectory(configDirectory: VirtualFile, consumer: (String, VirtualFile) -> Boolean) {
         if (!configDirectory.isDirectory) return
-        VfsUtil.visitChildrenRecursively(configDirectory, object : VirtualFileVisitor<Void>() {
-            override fun visitFile(file: VirtualFile): Boolean {
-                if (file.extension?.lowercase() == "cwt") {
-                    val filePath = VfsUtil.getRelativePath(file, configDirectory) ?: return true
-                    consumer(filePath, file)
+        VfsUtil.visitChildrenRecursively(
+            configDirectory,
+            object : VirtualFileVisitor<Void>() {
+                override fun visitFile(file: VirtualFile): Boolean {
+                    if (file.extension?.lowercase() == "cwt") {
+                        val filePath = VfsUtil.getRelativePath(file, configDirectory) ?: return true
+                        consumer(filePath, file)
+                    }
+                    return true
                 }
-                return true
-            }
-        })
+            },
+        )
     }
 
     override fun getHintMessage(): String? {
@@ -156,8 +159,7 @@ class CwtRemoteConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 
     private fun doGetRootDirectory(): VirtualFile? {
         val directory = ChronicleConfigSettings.getInstance().state.remoteConfigDirectory
-        val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
-        val path = absoluteDirectory.toPathOrNull() ?: return null
+        val path = directory.parsePath()?.clean() ?: return null
         val file = path.toVirtualFile(refreshIfNeed = true)
         return file?.takeIf { it.isDirectory }
     }
@@ -206,8 +208,7 @@ class CwtLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
 
     private fun doGetRootDirectory(): VirtualFile? {
         val directory = ChronicleConfigSettings.getInstance().state.localConfigDirectory
-        val absoluteDirectory = directory?.normalizePath()?.orNull() ?: return null
-        val path = absoluteDirectory.toPathOrNull() ?: return null
+        val path = directory.parsePath()?.clean() ?: return null
         val file = path.toVirtualFile(refreshIfNeed = true)
         return file?.takeIf { it.isDirectory }
     }
@@ -224,7 +225,6 @@ class CwtLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
  * - `{gameType}` 为游戏类型 ID，对于通用的规则分组则为 `core`。
  */
 class CwtProjectLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() {
-
     override val source get() = CwtConfigGroupFileSource.Local
 
     override fun isEnabled(): Boolean {
@@ -239,8 +239,9 @@ class CwtProjectLocalConfigGroupFileProvider : CwtConfigGroupFileProviderBase() 
 
     private fun doGetRootDirectory(project: Project): VirtualFile? {
         val projectRootDirectory = project.guessProjectDir() ?: return null
-        val rootPath = ChronicleConfigSettings.getInstance().state.projectLocalConfigDirectoryName?.orNull() ?: ".config"
-        val file = VfsUtil.findRelativeFile(projectRootDirectory, rootPath)
+        val directoryName = ChronicleConfigSettings.getInstance().state.projectLocalConfigDirectoryName
+        val name = directoryName?.orNull() ?: ".config"
+        val file = VfsUtil.findRelativeFile(projectRootDirectory, name)
         return file?.takeIf { it.isDirectory }
     }
 

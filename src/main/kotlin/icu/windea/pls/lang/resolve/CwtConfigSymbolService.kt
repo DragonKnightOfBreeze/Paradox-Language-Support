@@ -6,6 +6,7 @@ import icu.windea.pls.config.CwtConfigTypes
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtDataExpressionRole
+import icu.windea.pls.config.configGroup.CwtConfigFileService
 import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.findKeywordsWithTextRanges
@@ -180,7 +181,8 @@ object CwtConfigSymbolService {
     }
 
     private fun getGameType(element: CwtStringExpressionElement): ParadoxGameType? {
-        return CwtConfigManager.getContainingConfigGroup(element)?.gameType
+        val file = element.containingFile ?: return null
+        return CwtConfigFileService.getInstance().getContainingConfigGroup(file)?.gameType
     }
 
     private fun getSymbolConfigType(configType: CwtConfigType): CwtConfigType? {

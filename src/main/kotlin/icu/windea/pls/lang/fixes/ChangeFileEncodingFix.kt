@@ -1,18 +1,18 @@
 package icu.windea.pls.lang.fixes
 
-import com.intellij.codeInsight.daemon.impl.actions.IntentionActionWithFixAllOption
 import com.intellij.codeInsight.intention.preview.IntentionPreviewInfo
 import com.intellij.codeInspection.LocalQuickFixAndIntentionActionOnPsiElement
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.encoding.ChangeFileEncodingAction
 import com.intellij.openapi.vfs.encoding.EncodingUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.vfs.VirtualFileBomService
 import icu.windea.pls.lang.inspections.ChronicleInspectionBundle
 import java.nio.charset.Charset
@@ -21,7 +21,7 @@ class ChangeFileEncodingFix(
     element: PsiFile,
     private val charset: Charset,
     private val addBom: Boolean?,
-) : LocalQuickFixAndIntentionActionOnPsiElement(element), IntentionActionWithFixAllOption {
+) : LocalQuickFixAndIntentionActionOnPsiElement(element), DumbAware {
     override fun getText() = familyName
 
     override fun getFamilyName() = ChronicleInspectionBundle.message("fix.changeFileEncoding.name")
@@ -31,11 +31,11 @@ class ChangeFileEncodingFix(
         val changeCharset = virtualFile.charset != charset
         val hasBom = VirtualFileBomService.hasBom(virtualFile, VirtualFileBomService.utf8Bom)
         if (addBom == true && !hasBom) {
-            runCatchingCancelable {
+            runCatchingCancellable {
                 VirtualFileBomService.addBom(virtualFile, VirtualFileBomService.utf8Bom)
             }.onFailure { e -> thisLogger().warn("Unexpected exception occurred on attempt to add BOM from file $this", e) }
         } else if (addBom == false && hasBom) {
-            runCatchingCancelable {
+            runCatchingCancellable {
                 VirtualFileBomService.removeBom(virtualFile, VirtualFileBomService.utf8Bom)
             }.onFailure { e -> thisLogger().warn("Unexpected exception occurred on attempt to remove BOM from file $this", e) }
         }

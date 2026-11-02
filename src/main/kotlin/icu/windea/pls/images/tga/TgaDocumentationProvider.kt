@@ -6,7 +6,7 @@ import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileSystemItem
-import icu.windea.pls.base.settings.ChronicleInternalSettings
+import icu.windea.pls.base.settings.ChroniclePresentationSettings
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.runSmartReadAction
@@ -28,7 +28,7 @@ class TgaDocumentationProvider : AbstractDocumentationProvider() {
         // 加入用于渲染的图片的标签
         run {
             val maxSize = maxOf(metadata.width, metadata.height)
-            val maxImageSize = ChronicleInternalSettings.getInstance().maxImageSizeForQuickDoc
+            val maxImageSize = ChroniclePresentationSettings.getInstance().state.quickDocMaxImageDisplaySize
             val scaleFactor = if (maxSize > maxImageSize) maxImageSize.toDouble() / maxSize.toDouble() else 1.0
             val imageWidth = (metadata.width * scaleFactor).toInt()
             val imageHeight = (metadata.height * scaleFactor).toInt()

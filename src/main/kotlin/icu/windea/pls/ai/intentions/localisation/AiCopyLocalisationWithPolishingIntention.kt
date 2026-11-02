@@ -57,15 +57,15 @@ class AiCopyLocalisationWithPolishingIntention : ManipulateLocalisationIntention
             run {
                 if (contextsToHandle.isEmpty()) return@run
                 val total = contextsToHandle.size
-                reportRawProgress { reporter ->
-                    reporter.text(ChronicleBundle.message("manipulation.localisation.polish.progress.step"))
-                    reporter.fraction(0.0)
+                reportRawProgress { rawReporter ->
+                    rawReporter.text(ChronicleBundle.message("manipulation.localisation.polish.progress.step"))
+                    rawReporter.fraction(0.0)
 
                     val request = PolishLocalisationAiRequest(project, file, contextsToHandle, description)
                     val callback: suspend (LocalisationAiResult) -> Unit = { data ->
                         current++
-                        reporter.text(ChronicleBundle.message("manipulation.localisation.polish.progress.itemStep", data.key))
-                        reporter.fraction(current / total.toDouble())
+                        rawReporter.text(ChronicleBundle.message("manipulation.localisation.polish.progress.itemStep", data.key))
+                        rawReporter.fraction(current / total.toDouble())
                     }
                     withErrorRef(errorRef) { handleText(request, callback) }.getOrNull()
 

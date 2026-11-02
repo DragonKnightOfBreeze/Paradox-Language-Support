@@ -54,8 +54,9 @@ data class ParadoxDefinitionInjectionInfo(
     /** @see ParadoxDefinitionInjectionManager.isReplaceMode */
     fun isReplaceMode(): Boolean = ParadoxDefinitionInjectionManager.isReplaceMode(this)
 
-    // /** @see ParadoxDefinitionInjectionManager.isCreateMode */
-    // fun isCreateMode(): Boolean = ParadoxDefinitionInjectionManager.isCreateMode(this)
+    /** @see ParadoxDefinitionInjectionManager.isCreateMode */
+    @Suppress("unused")
+    fun isCreateMode(): Boolean = ParadoxDefinitionInjectionManager.isCreateMode(this)
 
     /** @see ParadoxDefinitionInjectionManager.isTargetValid */
     fun isTargetValid(): Boolean = ParadoxDefinitionInjectionManager.isTargetValid(this)

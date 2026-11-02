@@ -1,12 +1,11 @@
 package icu.windea.pls.ai.prompts
 
-import icu.windea.pls.core.cache.CacheBuilder
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.util.cache.CacheBuilder
 import java.io.File
-import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
+import kotlin.io.path.readText
 
 /**
  * 从类路径加载模板内容。
@@ -45,10 +44,10 @@ data class FilePromptTemplateLoader(
 
     private fun doLoad(path: String): String? {
         // 将相对路径解析到 baseDir 下，并防止越界访问
-        val relative: Path = Paths.get(path.replace('/', File.separatorChar))
+        val relative: Path = Path.of(path.replace('/', File.separatorChar))
         val resolved = baseDir.resolve(relative).normalize()
         if (!resolved.startsWith(baseDir)) return null
         if (!Files.exists(resolved) || !Files.isRegularFile(resolved)) return null
-        return Files.readString(resolved, StandardCharsets.UTF_8)
+        return resolved.readText()
     }
 }

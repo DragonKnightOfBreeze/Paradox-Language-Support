@@ -1,18 +1,19 @@
 package icu.windea.pls.integrations.images.providers
 
-import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.execution.ExecutionException
+import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.base.io.ChronicleDataPathService
-import icu.windea.pls.base.settings.ChronicleIntegrationsSettings
-import icu.windea.pls.core.executeCommandLine
-import icu.windea.pls.core.quote
-import icu.windea.pls.core.quoteIfNeeded
-import icu.windea.pls.core.runCatchingCancelable
-import icu.windea.pls.core.text.QuotePatterns
-import icu.windea.pls.core.toPath
+import icu.windea.pls.core.execution.ExecutionTimeouts
+import icu.windea.pls.core.execution.ProcessExecutor
+import icu.windea.pls.core.util.io.parsePath
+import icu.windea.pls.integrations.images.ImageToolSettings
+import java.nio.file.Files
 import java.nio.file.Path
+import java.util.concurrent.CancellationException
+import java.util.concurrent.TimeoutException
 import kotlin.io.path.createDirectories
-import kotlin.io.path.name
 import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.notExists
 
@@ -20,34 +21,25 @@ import kotlin.io.path.notExists
  * 参见：[Image Magick](https://www.imagemagick.org)
  */
 class MagickToolProvider : CommandBasedImageToolProvider() {
+    override val name = "magick"
+
     override fun isEnabled(): Boolean {
-        return ChronicleIntegrationsSettings.getInstance().state.image.enableMagick
+        return ImageToolSettings.getInstance().enableMagick
     }
 
     override fun isSupported(): Boolean {
         return true
     }
 
-    override fun isValid(): Boolean {
-        val toolPath = ChronicleIntegrationsSettings.getInstance().state.image.magickPath?.trim()
-        if (toolPath.isNullOrEmpty()) return false
-        return isValidExePath(toolPath)
+    override fun getExecutablePath(): Path? {
+        val configured = ImageToolSettings.getInstance().magickPath.parsePath()
+        configured?.let { return it }
+        return null // by default null
     }
 
-    override fun isValidExePath(path: String): Boolean {
-        return runCatchingCancelable { doValidatePath(path) }.getOrDefault(false)
-    }
-
-    private fun doValidatePath(path: String): Boolean {
-        val fullExePath = path.toPath()
-        val wd = fullExePath.parent?.toFile()
-        val exe = fullExePath.name
-
-        ProgressManager.checkCanceled() // 在执行命令前检查进度是否被取消
-
-        val command = "./$exe -version"
-        val result = executeCommandLine(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
-        return result.contains("ImageMagick") || result.contains("Version")
+    override fun validateExecutablePath(path: Path): Boolean {
+        // NOTE 3.0.5 出于轻量化的目的，不再通过执行命令行来检测工具是否可用
+        return Files.isRegularFile(path)
     }
 
     // 常用命令示例（ImageMagick）：
@@ -65,14 +57,8 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
     // 6. 添加水印：
     //    magick input.jpg watermark.png -gravity southeast -geometry +10+10 -composite output.jpg
 
-    override fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
-        return runCatchingCancelable { doConvertImageFormat(path, targetDirectoryPath, targetFileName, targetFormat) }
-            .onFailure { thisLogger().warn(it) }.getOrThrow()
-    }
-
-    private fun doConvertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, targetFormat: String): Path {
-        val toolPath = ChronicleIntegrationsSettings.getInstance().state.image.magickPath?.trim()
-        if (toolPath.isNullOrEmpty()) throw IllegalStateException()
+    override suspend fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
+        val executablePath = getExecutablePath() ?: throw IllegalStateException("ImageMagick path is not configured or invalid")
 
         val tempParentPath = ChronicleDataPathService.getInstance().imagesTempPath
         val outputDirectoryPath = targetDirectoryPath ?: tempParentPath
@@ -80,21 +66,50 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
         val outputFileName = targetFileName ?: (path.nameWithoutExtension + "." + targetFormat)
         val outputPath = outputDirectoryPath.resolve(outputFileName)
 
-        val fullExePath = toolPath.toPath()
-        val wd = fullExePath.parent?.toFile()
-        val exe = fullExePath.name.quoteIfNeeded(QuotePatterns.CommandLine)
-        val input = path.toString().quote(QuotePatterns.CommandLine)
-        val output = outputPath.toString().quote(QuotePatterns.CommandLine)
-
-        ProgressManager.checkCanceled() // 在执行命令前检查进度是否被取消
-
-        val command = "./$exe $input $output"
-        val result = executeCommandLine(command, workDirectory = wd) // 尽可能地先转到工作目录，再执行可执行文件
-
-        if (outputPath.notExists()) {
-            throw IllegalStateException("Failed to convert image: output file not found.\nCommand: $command\nResult: $result")
-        }
+        convertImageFormatInternal(executablePath, path, outputPath)
 
         return outputPath
+    }
+
+    private fun convertImageFormatInternal(executablePath: Path, path: Path, outputPath: Path) {
+        val commands = listOf(
+            executablePath.toString(),
+            path.toString(),
+            outputPath.toString(),
+        )
+        val commandLine = GeneralCommandLine(commands)
+            .withWorkingDirectory(executablePath.parent)
+            .withCharset(Charsets.UTF_8)
+        if (SystemInfo.isLinux && executablePath.toString().endsWith(".AppImage", ignoreCase = true)) {
+            commandLine.withEnvironment("APPIMAGE_EXTRACT_AND_RUN", "1")
+        }
+
+        ProgressManager.checkCanceled()
+        val output = ProcessExecutor(commandLine).withTimeout(ExecutionTimeouts.normal).execute()
+
+        if (output.isCancelled) {
+            ProgressManager.checkCanceled() // 如果的确被取消，则抛出 `ProcessCanceledException`
+            val message = "Failed to convert image: command was cancelled." +
+                "\nCommand: ${commandLine.commandLineString}"
+            throw CancellationException(message)
+        }
+        if (output.isTimeout) {
+            val message = "Failed to convert image: command timed out." +
+                "\nCommand: ${commandLine.commandLineString}"
+            throw TimeoutException(message)
+        }
+        if (output.exitCode != 0) {
+            val message = "Failed to convert image: command failed (exitCode=${output.exitCode})." +
+                "\nCommand: ${commandLine.commandLineString}" +
+                "\nError: ${output.stderr.trim()}"
+            throw ExecutionException(message)
+        }
+        if (outputPath.notExists()) {
+            val message = "Failed to convert image: output file not found." +
+                "\nCommand: ${commandLine.commandLineString}" +
+                "\nResult: ${output.stdout.trim()}" +
+                "\nError: ${output.stderr.trim()}"
+            throw IllegalStateException(message)
+        }
     }
 }

@@ -3,7 +3,7 @@
 package icu.windea.pls.core.initializer
 
 import com.intellij.openapi.diagnostic.thisLogger
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -28,7 +28,7 @@ class Initializer(
         coroutineScope {
             initializeActions.map { action ->
                 async {
-                    runCatchingCancelable { action() }.onFailure { logger.warn(it) }
+                    runCatchingCancellable { action() }.onFailure { logger.warn(it) }
                 }
             }.awaitAll()
             initializeActions.clear() // 这里可以直接清空

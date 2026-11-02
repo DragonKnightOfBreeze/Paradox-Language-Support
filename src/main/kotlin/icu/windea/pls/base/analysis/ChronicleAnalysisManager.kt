@@ -168,6 +168,8 @@ object ChronicleAnalysisManager {
             withContext(Dispatchers.EDT) {
                 FileContentUtilCore.reparseFiles(files)
             }
+            // 3.0.5 refresh files
+            refreshFiles()
         }
     }
 

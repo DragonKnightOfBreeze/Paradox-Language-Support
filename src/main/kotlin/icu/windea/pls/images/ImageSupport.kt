@@ -7,10 +7,10 @@ import java.nio.file.Path
 
 interface ImageSupport {
     @Throws(UnsupportedOperationException::class)
-    fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean
+    suspend fun convertImageFormat(inputStream: InputStream, outputStream: OutputStream, sourceFormat: String, targetFormat: String): Boolean
 
     @Throws(UnsupportedOperationException::class)
-    fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean
+    suspend fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ImageSupport>("icu.windea.pls.images.support")

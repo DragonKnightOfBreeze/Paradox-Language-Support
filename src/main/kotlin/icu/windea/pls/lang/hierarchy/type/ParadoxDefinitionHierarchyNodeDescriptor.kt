@@ -11,7 +11,7 @@ import com.intellij.ui.SimpleTextAttributes
 import icu.windea.pls.ChronicleDocBundle
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.settings.ChronicleSettings
-import icu.windea.pls.config.util.CwtConfigManager
+import icu.windea.pls.config.configGroup.CwtConfigFileService
 import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.orNull
 import icu.windea.pls.lang.definitionInfo
@@ -37,7 +37,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
     isBase: Boolean,
     val name: String,
     val type: Type,
-    val nodeType: NodeType
+    val nodeType: NodeType,
 ) : HierarchyNodeDescriptor(project, parentDescriptor, element, isBase) {
     override fun update(): Boolean {
         var changes = super.update()
@@ -85,7 +85,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         run {
             if (nodeType == NodeType.Type || nodeType == NodeType.Subtype) {
                 // always show location info here
-                val filePath = CwtConfigManager.getFilePath(file) ?: return@run
+                val filePath = CwtConfigFileService.getInstance().getFilePath(file) ?: return@run
                 myHighlightedText.ending.addText(" in $filePath", getLocationAttributes())
                 return@run
             }

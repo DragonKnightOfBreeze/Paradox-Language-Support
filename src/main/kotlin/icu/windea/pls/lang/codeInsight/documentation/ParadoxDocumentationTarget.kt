@@ -7,9 +7,16 @@ import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.presentation.TargetPresentation
 import com.intellij.pom.Navigatable
 import com.intellij.psi.PsiElement
+import icu.windea.pls.base.settings.ChroniclePresentationSettings
+import icu.windea.pls.core.codeInsight.documentation.DocumentationContext
 import icu.windea.pls.core.createPointer
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.ep.codeInsight.documentation.ParadoxQuickDocTextProvider
+import icu.windea.pls.images.ImageRenderContext
+import icu.windea.pls.images.ImageRenderService
+import icu.windea.pls.lang.getDocumentationFontSize
+import kotlinx.coroutines.coroutineScope
 
 // org.jetbrains.kotlin.idea.k2.codeinsight.quickDoc.KotlinDocumentationTarget
 
@@ -21,7 +28,7 @@ import icu.windea.pls.ep.codeInsight.documentation.ParadoxQuickDocTextProvider
 @Suppress("UnstableApiUsage")
 class ParadoxDocumentationTarget(
     val element: PsiElement,
-    val originalElement: PsiElement?
+    val originalElement: PsiElement?,
 ) : DocumentationTarget {
     override fun createPointer(): Pointer<out DocumentationTarget> {
         val elementPtr = element.createPointer()
@@ -40,12 +47,33 @@ class ParadoxDocumentationTarget(
     }
 
     override fun computeDocumentationHint(): String? {
-        return runSmartReadAction { ParadoxDocumentationManager.compute(element, originalElement, hint = true)?.toString() }
+        val builder = runSmartReadAction {
+            ParadoxDocumentationManager.compute(element, originalElement, hint = true)
+        } ?: return null
+        return builder.toString()
     }
 
     override fun computeDocumentation(): DocumentationResult {
         return DocumentationResult.asyncDocumentation {
-            readAction { ParadoxDocumentationManager.compute(element, originalElement, hint = false)?.toDocumentation() }
+            coroutineScope {
+                val renderService = ImageRenderService.getInstance()
+                val session = renderService.newRenderSession(this)
+                val context = DocumentationContext(element, originalElement, hint = false)
+                ImageRenderContext.setSession(context, session)
+                val builder = readAction {
+                    renderService.withRenderSession(session) {
+                        ParadoxDocumentationManager.compute(context)
+                    }
+                } ?: return@coroutineScope null
+                session.awaitAll()
+                val presentationSettings = ChroniclePresentationSettings.getInstance().state
+                val textHeight = runCatchingCancellable { getDocumentationFontSize().size }.getOrNull()?.takeIf { it > 0 }
+                    ?: presentationSettings.quickDocLocalisationTextFontSize
+                val textIconSizeLimit = presentationSettings.quickDocTextIconHeightLimit
+                renderService.applyImageScaling(builder, session, textHeight, textIconSizeLimit)
+                renderService.applyFailurePolicy(builder, session)
+                builder.toDocumentation()
+            }
         }
     }
 }

@@ -11,7 +11,7 @@
 
 图表需要在单独的[设置页面](#diagram-settings-page)中进行配置。
 
-![](../assets/extensions/extensions_settings_1.png)
+![](../assets/settings/settings_extensions.png)
 
 ## Markdown {#md}
 
@@ -205,7 +205,7 @@ defense_army = {
 
 可以在此根据多种条件，配置各类图表需要显示的节点。
 
-![](../assets/extensions/diagram_settings_1.png)
+![](../assets/settings/settings_diagrams.png)
 
 ### 事件树 {#diagram-event-tree}
 

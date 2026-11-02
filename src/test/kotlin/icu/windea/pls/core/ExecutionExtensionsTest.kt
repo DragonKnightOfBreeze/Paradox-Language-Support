@@ -6,6 +6,7 @@ import org.junit.Assert
 import org.junit.Assume
 import org.junit.Test
 
+@Suppress("DEPRECATION")
 class ExecutionExtensionsTest {
     @Test
     fun executeCommandLine_string_smokeTest() {

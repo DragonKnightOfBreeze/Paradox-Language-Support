@@ -2,6 +2,7 @@
 
 package icu.windea.pls.core
 
+import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.credentialStore.CredentialAttributes
 import com.intellij.ide.passwordSafe.PasswordSafe
 import com.intellij.lang.ASTNode
@@ -11,6 +12,8 @@ import com.intellij.lang.LighterASTTokenNode
 import com.intellij.lang.PsiBuilder
 import com.intellij.lang.parser.GeneratedParserUtilBase
 import com.intellij.lang.tree.util.siblings
+import com.intellij.modcommand.ModCommandAction
+import com.intellij.modcommand.ModCommandService
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -24,6 +27,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.extensions.ExtensionPointListener
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.extensions.PluginDescriptor
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
@@ -67,6 +71,7 @@ import icu.windea.pls.core.psi.PsiFileService
 import icu.windea.pls.core.sequences.filterIsInstance
 import icu.windea.pls.core.sequences.findIsInstance
 import icu.windea.pls.core.util.Tuple2
+import icu.windea.pls.core.util.io.toPathOrNull
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.util.values.singletonSetOrEmpty
 import icu.windea.pls.core.util.values.to
@@ -98,6 +103,9 @@ inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): B
 
 /**
  * 检查当前异常是否代表着一个取消异常。兼容 [InvocationTargetException]。
+ *
+ * @see ProcessCanceledException
+ * @see CancellationException
  */
 fun checkCancellation(e: Throwable?) {
     if (e == null) return
@@ -107,7 +115,14 @@ fun checkCancellation(e: Throwable?) {
     checkCancellation(e.cause)
 }
 
-inline fun <T> cancelable(block: () -> T): T {
+/**
+ * 可取消地运行一段代码。
+ *
+ * @see ProcessCanceledException
+ * @see CancellationException
+ * @see checkCancellation
+ */
+inline fun <T> cancellable(block: () -> T): T {
     try {
         return block()
     } catch (e: Exception) {
@@ -116,11 +131,25 @@ inline fun <T> cancelable(block: () -> T): T {
     }
 }
 
-inline fun <R> runCatchingCancelable(block: () -> R): Result<R> {
+/**
+ * 可取消地运行一段代码并捕捉异常，返回 [Result]。
+ *
+ * @see ProcessCanceledException
+ * @see CancellationException
+ * @see checkCancellation
+ */
+inline fun <R> runCatchingCancellable(block: () -> R): Result<R> {
     return runCatching(block).onFailure { e -> checkCancellation(e) }
 }
 
-inline fun <T, R> T.runCatchingCancelable(block: T.() -> R): Result<R> {
+/**
+ * 可取消地运行一段代码并捕捉异常，返回 [Result]。
+ *
+ * @see ProcessCanceledException
+ * @see CancellationException
+ * @see checkCancellation
+ */
+inline fun <T, R> T.runCatchingCancellable(block: T.() -> R): Result<R> {
     return runCatching(block).onFailure { e -> checkCancellation(e) }
 }
 
@@ -229,7 +258,7 @@ inline operator fun <T> DataKey<T>.getValue(thisRef: AnActionEvent, property: KP
 
 /** 将文件路径转换为 VirtualFile（可选刷新 VFS）。 */
 fun String.toVirtualFile(refreshIfNeed: Boolean = false): VirtualFile? {
-    val path = this.toPathOrNull() ?: return null
+    val path = toPathOrNull() ?: return null
     return VfsUtil.findFile(path, refreshIfNeed)
 }
 
@@ -770,6 +799,7 @@ fun executeWriteCommand(
 // endregion
 
 // region EP Extensions
+
 // NOTE 3.0.0 [compatibility] `addExtensionPointListener(listener: ExtensionPointListener<T>)` is deprecated since IDEA-262
 //  - Pass CoroutineScope to addExtensionPointListener.
 inline fun <T : Any> ExtensionPointName<T>.addExtensionPointListener(crossinline action: (extension: T) -> Unit) {
@@ -782,6 +812,14 @@ inline fun <T : Any> ExtensionPointName<T>.addExtensionPointListener(crossinline
             action(extension)
         }
     })
+}
+
+// endregion
+
+// region Code Insight Extensions
+
+fun ModCommandAction.asQuickFix(): LocalQuickFix {
+    return ModCommandService.getInstance().wrapToQuickFix(this)
 }
 
 // endregion

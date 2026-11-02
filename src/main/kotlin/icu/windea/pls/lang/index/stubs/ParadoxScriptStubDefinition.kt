@@ -6,7 +6,7 @@ import com.intellij.lang.PsiBuilderFactory
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.stubs.LightLanguageStubDefinition
 import com.intellij.util.diff.FlyweightCapableTreeStructure
-import icu.windea.pls.core.runCatchingCancelable
+import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.index.ChronicleIndexVersions
@@ -26,7 +26,7 @@ class ParadoxScriptStubDefinition : LightLanguageStubDefinition {
         // 不索引在本地化目录下的文件
 
         if (VirtualFileService.isLightFile(file)) return false
-        val fileInfo = runCatchingCancelable { file.fileInfo }.getOrNull()
+        val fileInfo = runCatchingCancellable { file.fileInfo }.getOrNull()
         if (fileInfo == null) return false
         if (!ParadoxPathConstraint.ScriptFile.test(fileInfo.path)) return false
         return true

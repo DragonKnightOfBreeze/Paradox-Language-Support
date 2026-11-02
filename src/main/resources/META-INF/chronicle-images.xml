@@ -25,8 +25,8 @@
   </extensions>
 
   <applicationListeners>
-    <listener class="icu.windea.pls.images.ImageService" topic="com.intellij.ide.AppLifecycleListener"/>
-    <listener class="icu.windea.pls.images.ImageService" topic="com.intellij.ide.plugins.DynamicPluginListener"/>
+    <listener class="icu.windea.pls.images.ImageLifecycleListener" topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="icu.windea.pls.images.ImageLifecycleListener" topic="com.intellij.ide.plugins.DynamicPluginListener"/>
   </applicationListeners>
 
   <actions>

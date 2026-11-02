@@ -9,12 +9,12 @@ import icu.windea.pls.core.annotations.Optimized
 import icu.windea.pls.core.collections.asMutable
 import icu.windea.pls.core.collections.buildImmutableList
 import icu.windea.pls.core.collections.forEachFast
-import icu.windea.pls.core.io.readIntFast
-import icu.windea.pls.core.io.readUTFFast
-import icu.windea.pls.core.io.writeByte
-import icu.windea.pls.core.io.writeIntFast
-import icu.windea.pls.core.io.writeUTFFast
 import icu.windea.pls.core.util.ReadWriteAccessC
+import icu.windea.pls.core.util.io.readIntFast
+import icu.windea.pls.core.util.io.readUTFFast
+import icu.windea.pls.core.util.io.writeByte
+import icu.windea.pls.core.util.io.writeIntFast
+import icu.windea.pls.core.util.io.writeUTFFast
 import icu.windea.pls.core.util.optimized
 import icu.windea.pls.cwt.CwtFileType
 import icu.windea.pls.cwt.psi.CwtPsiService

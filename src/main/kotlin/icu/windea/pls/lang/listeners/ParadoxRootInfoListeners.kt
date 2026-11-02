@@ -1,12 +1,29 @@
 package icu.windea.pls.lang.listeners
 
+import com.intellij.ui.EditorNotifications
 import com.intellij.util.application
 import icu.windea.pls.base.settings.ChronicleProfilesSettings
 import icu.windea.pls.base.settings.ParadoxGameDescriptorSettingsState
 import icu.windea.pls.base.settings.ParadoxGameSettingsState
 import icu.windea.pls.base.settings.ParadoxModDescriptorSettingsState
 import icu.windea.pls.base.settings.ParadoxModSettingsState
+import icu.windea.pls.lang.editor.ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
 import icu.windea.pls.model.ParadoxRootInfo
+
+/**
+ * 当根目录信息被添加或删除后，更新编辑器通知。
+ *
+ * @see ParadoxGameDirectoryNotConfiguredEditorNotificationProvider
+ */
+class ParadoxUpdateEditorNotificationsOnRootInfoChangedListener : ParadoxRootInfoListener {
+    override fun onAdd(rootInfo: ParadoxRootInfo) {
+        EditorNotifications.updateAll()
+    }
+
+    override fun onChange(oldRootInfo: ParadoxRootInfo?, newRootInfo: ParadoxRootInfo?) {
+        EditorNotifications.updateAll()
+    }
+}
 
 /**
  * 当根目录信息被添加后，同步相关配置。
@@ -19,6 +36,8 @@ class ParadoxUpdateSettingsOnRootInfoChangedListener : ParadoxRootInfoListener {
             else -> {}
         }
     }
+
+    override fun onChange(oldRootInfo: ParadoxRootInfo?, newRootInfo: ParadoxRootInfo?) {}
 
     private fun addGameSettings(rootInfo: ParadoxRootInfo.Game) {
         val settings = ChronicleProfilesSettings.getInstance().state

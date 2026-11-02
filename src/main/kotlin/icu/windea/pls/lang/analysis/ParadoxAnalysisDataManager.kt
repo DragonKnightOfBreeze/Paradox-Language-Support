@@ -16,6 +16,7 @@ import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
 import java.nio.file.Path
+import java.util.concurrent.ConcurrentMap
 
 object ParadoxAnalysisDataManager {
     object Keys : KeyRegistry() {
@@ -27,8 +28,6 @@ object ParadoxAnalysisDataManager {
         val cachedFileInfo by registerKey<LazyValue<ParadoxFileInfo>>(this)
         /** 用于在文件级别保存语言环境规则（[CwtLocaleConfig]）。 */
         val cachedLocaleConfig by registerKey<LazyValue<CwtLocaleConfig>>(this)
-        /** 用于切分图片文件。 */
-        val sliceInfos by registerKey<MutableSet<String>>(this)
 
         /** 用于为文件注入根信息（[ParadoxRootInfo]）。 */
         val injectedRootInfo by registerKey<ParadoxRootInfo>(this)
@@ -40,7 +39,7 @@ object ParadoxAnalysisDataManager {
         val injectedRootKeys by registerKey<List<String>>(this)
     }
 
-    val trackedFiles: MutableMap<VirtualFile, Boolean> = CollectionFactory.createConcurrentWeakIdentityMap()
+    val trackedFiles: ConcurrentMap<VirtualFile, Boolean> = CollectionFactory.createConcurrentWeakIdentityMap()
 
     /** 是否直接根据文件扩展名决定是否需要将文件类型重载为对应的文件类型（[ParadoxFileType]）。可用于集成测试。 */
     @Volatile var useDefaultFileExtensions: Boolean = false

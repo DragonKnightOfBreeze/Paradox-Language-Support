@@ -9,6 +9,8 @@ import icu.windea.pls.model.ParadoxRootInfo
 interface ParadoxRootInfoListener {
     fun onAdd(rootInfo: ParadoxRootInfo)
 
+    fun onChange(oldRootInfo: ParadoxRootInfo?, newRootInfo: ParadoxRootInfo?)
+
     companion object {
         @Topic.AppLevel
         val TOPIC = Topic(ParadoxRootInfoListener::class.java, Topic.BroadcastDirection.NONE, true)

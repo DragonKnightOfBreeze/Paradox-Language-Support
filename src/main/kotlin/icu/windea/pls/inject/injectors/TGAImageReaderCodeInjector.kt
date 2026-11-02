@@ -10,7 +10,6 @@ import javax.imageio.ImageReadParam
 import javax.imageio.stream.ImageInputStream
 
 /**
- * @see icu.windea.pls.images.spi.TgaImageReaderSpi
  * @see com.twelvemonkeys.imageio.plugins.tga.TGAImageReader
  * @see com.twelvemonkeys.imageio.plugins.tga.TGAImageReader.read
  */
