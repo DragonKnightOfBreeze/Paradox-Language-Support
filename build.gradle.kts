@@ -135,7 +135,7 @@ dependencies {
     }
 
     // Guava and fastutil are provided by the IntelliJ Platform at runtime; benchmarks run outside the IDE need them explicitly
-    jmh("com.google.guava:guava:33.2.1-jre")
+    jmh("com.google.guava:guava:33.7.2-jre")
     jmh("it.unimi.dsi:fastutil:8.5.19")
 
     // TwelveMonkeys - https://github.com/haraldk/TwelveMonkeys
