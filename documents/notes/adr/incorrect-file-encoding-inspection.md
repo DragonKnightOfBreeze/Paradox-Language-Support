@@ -4,7 +4,7 @@
 > - 版本：v2.1.10
 > - 日期：2026-06-22
 > - 状态：已实施
-> - 相关问题：https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/345
+> - 相关问题：[#345](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/345)
 
 使用以下规则：
 - Always use `UTF-8` for script/loc/csv files

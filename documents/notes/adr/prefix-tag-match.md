@@ -4,7 +4,7 @@
 > - 版本：v3.2.0+
 > - 日期：2026-07-14+
 > - 状态：TODO
-> - 相关问题：https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/263
+> - 相关问题：[#263](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/263)
 
 "前缀标签"指目标脚本表达式之前紧邻的作为前缀的字符串，例如 `k = list v` 中的 `list`。
 

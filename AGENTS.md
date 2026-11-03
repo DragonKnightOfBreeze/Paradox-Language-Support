@@ -173,7 +173,7 @@ Some tests are intentionally **disabled by default** and only run when explicitl
 |----------------------------|-------------------------------------------|-----------------------------------------------------------------------------------|
 | `includeAi()`              | `chronicle.test.include.ai`               | AI-backed tests                                                                   |
 | `includeRemote()`          | `chronicle.test.include.remote`           | Tests requiring access remote network (e.g., `SpecialUrlServiceTest`)             |
-| `includeLocalEnv()`        | `chronicle.test.include.local.env`        | Tests requiring a real local game/mod environment (e.g. `ParadoxModImporterTest`) |
+| `includeLocalEnv()`        | `chronicle.test.include.local.env`        | Tests requiring a real local game/mod environment (e.g., `ParadoxModImporterTest`) |
 | `includeConfigGenerator()` | `chronicle.test.include.config.generator` | Config generator tests (require local game dirs)                                  |
 | `includeExternalTools()`   | `chronicle.test.include.external.tools`   | External tool tests (require downloading)                                         |
 
@@ -198,13 +198,20 @@ Benchmarks are based on JMH and suitable for several performance-sensitive codes
 - `icu.windea.pls.script`: Infrastructure to support the script language. Usually semantic-free.
 - `icu.windea.pls.localisation`: Infrastructure to support the localization language. Usually semantic-free.
 - `icu.windea.pls.csv`: Infrastructure to support the CSV language. Usually semantic-free.
+- `icu.windea.pls.images`: Infrastructure for image support. Including SPIs, editors, actions, rendering, metadata, etc.
 - `icu.windea.pls.config`: Infrastructure for the config system. Including config, config expression, config group, etc.
 - `icu.windea.pls.lang`: The semantic module. Including semantic matching, semantic resolution, language construct support, language feature support, domain-specific logic, etc.
-  - `icu.windea.pls.lang.match`: Semantic-level matching. Mainly based on indices, reference resolution and configs.
-  - `icu.windea.pls.lang.resolve`: Semantic-level resolution. Mainly based on indices, reference resolution and configs.
-  - `icu.windea.pls.lang.util`: High-level managers and special components.
-- `icu.windea.pls.integrations`: The integration module. Provides integrations to third-party tools (e.g., image processing tools and linting tools).
-- `icu.windea.pls.extensions`: The extension module. Provides integrations and extensions to third-party plugins (e.g., JSON and Markdown).
+  - `match`: Semantic-level matching. Mainly based on indices, reference resolution, configs, and specific strategies.
+  - `resolve`: Semantic-level resolution. Mainly based on indices, reference resolution, configs, and specific strategies.
+  - `util`: High-level managers and special components.
+- `icu.windea.pls.extensions`: The extension module. Provides integrations and extensions to third-party plugins.
+  - `diagram`: For official Diagrams plugin. Provides addon diagram providers and settings.
+  - `json`: For official JSON plugin. Provides addon JSON schemas providers.
+  - `markdown`: For official Markdown plugin. Provides addon resolution and inspections.
+- `icu.windea.pls.integrations`: The integration module. Provides integrations to third-party tools.
+  - `images`: For external image tools (texconv and magick).
+  - `lints`: For external lint tools (tiger). Drives related external annotators and inspections.
+  - `translation`: For translation tools (Translation plugin). Drives related intentions and actions.
 - `icu.windea.pls.tools`: The tool module. Provides several bundled utilities and integrations (e.g., game launchers and config generators).
 - `icu.windea.pls.ep`: Various EP interfaces and implementations to provide language construct support, language feature support and several QoL features.
 
@@ -224,19 +231,19 @@ Notes on `icu.windea.pls.config.manipulation` and `icu.windea.pls.lang.manipulat
 - The code here typically transforms or directly mutates the state of a target (a config object, PSI, etc.).
 - It can happen at several different stages/levels (building the resolution context, performing semantic resolution, invoking a language feature, etc.).
 - It also serves as infrastructure for parts of semantic resolution as well as some refactorings, intentions, and quick fixes.
+- Common manipulations include: transform, inline, merge, etc.
 
-Notes on `Service` vs `Manager` vs `Util`:
+Notes on `Service` vs `Manager` vs `Util`/`Factory`/`Builder`:
 - `Service`: lower-level, may include domain analysis/matching/resolution logic that's delegated to concrete EP implementations.
 - `Manager`: higher-level, exposes ready-to-use domain methods, which may depend on the corresponding `Service` methods.
-- `Util`: narrowly-scoped helper methods usable only for a specific component/feature, or only in a handful of specific scenarios.
+- `Util`/`Factory`/`Builder`: narrowly-scoped helper methods usable only for a specific component/feature, or only in a handful of specific scenarios.
 - `Service` and `Manager` don't need to be declared as IntelliJ services, they can be declared as plain Kotlin singleton objects if stateless.
-- Caching logic usually lives at the `Manager` level, `Service`-level code is usually a direct fetch/resolve without caching.
+- Caching logic usually lives at the `Manager` level, codes at the `Service` level is usually a direct fetch/resolve without caching.
 
 ## Coding conventions
 
 ### Naming
 
-Here are some common conversions:
 - Prefer using prefix for language and domain specific class names (e.g., `Cwt...` `Paradox...` `ParadoxScript...`).
 - prefer using verb form for actions and intentions (e.g., `CopyDefinitionNameIntention`).
 - Prefer word-based or prefix-based abbreviations (e.g., for `scopeContext`: `context`, `sc` or just `c` is good, `ctx` is bad).
@@ -245,9 +252,9 @@ For more details, see: `agents/context/naming-conventions.md`
 
 ### Importing
 
-- Prefer explicit imports; avoid wildcard (`*`) imports except for a short list of DSL-style packages (see below), or when the explicit imports from one package would exceed the star-import threshold (50).
-- Packages preferred for wildcard imports (including subpackages): `com.intellij.ui.dsl` (IntelliJ UI DSL), `icu.windea.pls.lang.resolve.complexExpression.dsl`, `icu.windea.pls.lang.resolve.complexExpression.nodes`.
-- It's fine for agent-authored code to leave behind unused or slightly unordered imports - these are trivial for a human (or an "Optimize Imports" pass) to clean up afterward, so don't block on perfecting imports over correct logic.
+- Prefer explicit imports for most packages.
+- Use wildcard imports (`*`) only for few special packages. For example, DSL-style packages (`com.intellij.ui.dsl`, etc.).
+- If a package has more than the limit of explicit imports (50), switch to using a star import.
 
 For more details, see: `agents/context/importing-conventions.md`
 
@@ -257,10 +264,8 @@ For more details, see: `agents/context/importing-conventions.md`
 - Write doc comments for other languages in English by default, unless explicitly requested, or need to be consistent with the context.
 - Write normal comments in Chinese or English, based on the context.
 - Prefer KDoc style for Kotlin.
-- When referencing types like `PsiElement` in KDoc, prefer KDoc links like `[PsiElement]`.
-- Prefer natural-language descriptions over embedding literal code snippets; reference key code locations instead (e.g., via `@see`) when necessary.
-- Avoid documenting member properties individually - fold them into the containing class/interface KDoc (using `@property`) unless a property truly needs detailed documentation.
-- Avoid overly long parameter-by-parameter docs (`@param`) unless truly necessary; prefer describing the method as a whole and referencing parameters inline (e.g., `[param]`) when needed.
+
+For more details, see: `agents/context/comment-conventions.md`
 
 ### Caching
 
@@ -280,9 +285,18 @@ For more details, see: `agents/context/importing-conventions.md`
 
 ### Code guidance
 
-Here are some common code patterns:
+Follow the specifications below:
 - Get the coroutine scope: Use `ChronicleFacade.getCoroutineScope(project)` (or `ChronicleFacade.getCoroutineScope()` for application level).
 - Get the config group: Use `ChronicleFacade.getConfigGroup(project, gameType)` (or `ChronicleFacade.getConfigGroup(gameType)` for application level).
+- Introduce new settings, options and capabilities: Use `...Settings` (platform service), `...Options` (immutable data class) and `ChronicleCapabilities`, accordingly.
+- Handle data (JSON, Markdown, etc.): Use `JsonService`, `MarkdownService`, etc., uniformly.
+
+About general infrastructure:
+- Extension methods: `icu.windea.pls.core` provides many extension methods applicable to the standard library, platform, collections, concurrency, UI, etc. Such as `orNull()` `castOrNull` `runCatchingCancellable()`.
+- Components and strategies: `icu.windea.pls.core` provides many useful components and strategies, as well as corresponding services and extension methods. Such as `AntMatcher` `QuotePattern` `ProcessExecutor`.
+- Utilities: `icu.windea.pls.core.util` provides many useful utilities, services, and extension methods. Such as `Keys.kt` `KeyAccessors.kt` `Caches.kt` `SoftValue` `RecursionGuard`.
+
+About common code patterns:
 - Get the config context: Use `ParadoxConfigManager.getConfigContext(element)`.
 - Get the matched configs: Use `ParadoxConfigManager.getConfigs(element, options)`.
 - How to filter and query configs in config trees (e.g., query down, by path): Use the config select API (see `icu.windea.pls.config.select`).
@@ -330,7 +344,7 @@ For the documents and examples, see:
 - `cwt/cwtools-stellaris-config/` (the real-game config directory for Stellaris, also available for other game types)
 - `src/test/testData/` (there are also various test config files under the test data directory)
 
-## Maintainer documentation
+## Maintainer documentation (IMPORTANT)
 
 ### Introduce 
 
@@ -387,11 +401,11 @@ Do not read the entire `documents/` directory at once, instead, read specific do
 
 - Prefer using built-in tools for plain file operations (e.g., read, write, edit, patch).
 - Prefer using built-in tools to execute commands for build tool operations (e.g., building, running tests).
-- Run Gradle tasks through the built-in shell with `--no-daemon --console=plain` (see [Gradle execution environment](#gradle-execution-environment)).
+- Run Gradle tasks through the built-in shell with `--no-daemon --console=plain`.
 
 ### Search and navigation
 
-- Always prefer using MCP (intellij mcp or intellij-index mcp) for structured search, semantic search and code navigation over text-based search.
+- **Always** prefer using MCP (intellij mcp or intellij-index mcp) for structured search, semantic search and code navigation over text-based search.
 - Use MCP to navigate to declarations, usages, implementations, super methods, type hierarchies, library sources, etc.
 - Use MCP to run code inspections before compilation, building, or running tests, if necessary.
 - Prefer MCP over built-in grep/glob/shell-based search in most cases. Only fall back to the latter when the target is trivial and unambiguous (e.g., locating a file by an exact name, matching a plain literal).

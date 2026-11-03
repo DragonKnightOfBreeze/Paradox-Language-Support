@@ -4,7 +4,7 @@
 > - 版本：v2.2.0
 > - 日期：2026-07-05
 > - 状态：已实施
-> - 相关问题：https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314
+> - 相关问题：[#314](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/314)
 
 任务：
 - [x] 支持在 CSV 文件中声明复杂枚举值（通过在列规则上使用 `## declare_complex_enum = x`）。

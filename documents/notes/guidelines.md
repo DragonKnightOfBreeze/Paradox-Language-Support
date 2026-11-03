@@ -14,13 +14,26 @@
 - `icu.windea.pls.script` - 脚本语言支持的基础设施。通常是语义无关的。
 - `icu.windea.pls.localisation` - 本地化语言支持的基础设施。通常是语义无关的。
 - `icu.windea.pls.csv` - CSV 文件语言支持的基础设施。通常是语义无关的。
-- `icu.windea.pls.images` - 图片支持的基础设施。包括 SPI、编辑器、动作、元数据以及其他相关代码。
+- `icu.windea.pls.images` - 图片支持的基础设施。包括 SPI、编辑器、动作、渲染、元数据以及其他相关代码。
 - `icu.windea.pls.config` - 规则系统的基础设施。包括规则、规则表达式、规则分组以及其他相关代码。
 - `icu.windea.pls.lang` - 语义模块。包括语义匹配、语义解析、语言构造支持、语言功能支持、领域特定逻辑以及其他相关代码。
-- `icu.windea.pls.extensions` - 扩展模块。提供对第三方插件的集成和扩展。例如 JSON 和 Markdown。
-- `icu.windea.pls.integrations` - 集成模块。提供对第三方工具的集成。例如图片处理工具和检查工具。
+  - `match` - 语义匹配（规则、引用解析、索引、特定策略等。
+  - `resolve` - 语义解析（规则、引用解析、索引、特定策略等）。
+  - `util` - 高级管理器（门面、可能经过缓存）和特殊组件（评估器、渲染器等）。
+- `icu.windea.pls.extensions` - 扩展模块。提供对第三方插件的集成和扩展。
+  - `diagram` - 用于官方 Diagrams 插件。提供额外的 diagramProvider 和 diagramSettings。
+  - `json` - 用于官方 JSON 插件。提供额外的 jsonSchemaProvider。
+  - `markdown` - 用于官方的 Markdown 插件。提供额外的解析逻辑和代码检查。
+- `icu.windea.pls.integrations` - 集成模块。提供对第三方工具的集成。
+  - `images` - 用于外部图片工具（[texconv](https://github.com/microsoft/DirectXTex/wiki/Texconv) 和 [magick](https://www.imagemagick.org)）。
+  - `lints` - 用于外部检查工具（[tiger](https://github.com/amtep/tiger)）。驱动相关的外部注解器和代码检查。
+  - `translation` - 用于翻译工具（[Translation Plugin](https://github.com/yiiguxing/TranslationPlugin)）。驱动相关的意向和动作。
 - `icu.windea.pls.tools` - 工具模块。提供一些附带的实用工具和集成。例如游戏启动器和规则生成器。
 - `icu.windea.pls.ep` - 用于提供语言构造支持、语言功能支持以及部分便捷功能的多种 EP 接口和实现。
+
+### 模块依赖
+
+> - [ ] `icu.windea.pls.ep.util.data` and `icu.windea.pls.ep.util.presentation` dependencies in `icu.windea.pls.extensions.diagram.provider`
 
 关于模块之间的依赖关系：
 
@@ -41,10 +54,6 @@
 
 虽然期望尽可能移除模块之间的非预期的双向依赖，有时也存在导入语句仅用于文档注释的情况……
 
-TODO：
-
-- [ ] `icu.windea.pls.ep.util.data` and `icu.windea.pls.ep.util.presentation` dependencies in `icu.windea.pls.extensions.diagram.provider`
-
 ### 备注
 
 关于 `icu.windea.pls.config`：
@@ -58,20 +67,21 @@ TODO：
 - 这里的代码相对 `icu.windea.pls.lang.util.*Manager` 中的更加底层，后者仅在必要时提取和重构到前者中，大部分仍然可以保留。
 - 尽可能仅在这里（一般是在 `*Service` 中）调用涉及匹配和解析逻辑的 EP，而不是在 EP 接口的伴生对象或 `*Manager` 中。
 - 为了优化编制和查询索引时的性能，有时需要直接传入 LighterAST，而非 PSI。
-- 主要基于索引、引用解析和规则文件。
+- 主要基于索引、引用解析、规则以及特定策略。
 
 关于 `icu.windea.pls.config.manipulation` 和 `icu.winddea.pls.lang.manipulation`：
 
-- 这里用于存放强调“操作”的服务，以及相关的模型类、枚举、扩展方法等。
+- 这里用于存放强调“操作/manipulate”的服务，以及相关的模型类、枚举、扩展方法等。
 - 这里的代码通常会转换目标（规则对象、PSI）的状态，或者直接修改为需要的状态。
 - 可以发生在多个不同的阶段和级别（例如，构建解析上下文时、进行语义解析时、调用语言功能时）。
 - 同时作为部分语义解析逻辑，以及部分代码重构、意向动作和快速修复的基础设施。
+- 常见的“操作”包括：“转换/transform”、“内联/inline”、“合并/merge”，等等。
 
-关于 `Service` `Manager` 和 `Util`：
+关于 `Service` `Manager` 和 `Util`/`Factory`/`Builder`：
 
 - `Service` - 更加底层的服务，可以包含领域的分析、匹配或解析逻辑，这些逻辑可能需要交给具体的扩展点实现。
 - `Manager` - 更加高层的管理器，可以包含各种可以直接使用的领域方法，这些方法可能需要依赖对应的服务方法。
-- `Util` - 拥有特定用途的工具类，其中的方法可能仅适用于某种特定组件或功能，或者只在少数特定场合才会用到。
+- `Util`/`Factory`/`Builder` - 拥有特定用途的工具类，其中的方法可能仅适用于某种特定组件或功能，或者只在少数特定场合才会用到。
 - `Service` 和 `Manager` 不一定必须声明为 IntelliJ 服务，如果是无状态的，它们也可以直接声明为 Kotlin 单例对象。
 - 缓存逻辑一般位于 `Manager` 级别，`Service` 级别一般是直接的获取和解析逻辑，不经过缓存。
 
@@ -89,12 +99,14 @@ TODO：
 
 原则：
 
-- 除少数特殊情况以外，尽可能地使用显式导入。
-- 将星号导入的上限设为50。
+- 显式导入适用于绝大多数情况。
+- 星号导入仅适用于少数特殊情况。例如，DSL 风格的包。
+- 如果同包的显式导入超过上限（50），改为使用星号导入。
 
 优先使用星号导入的包名（包含子包）：
 
 - `com.intellij.ui.dsl` - IntelliJ UI DSL
+- `icu.windea.pls.pls.test.dsl` - 测试 DSL
 - `icu.windea.pls.lang.resolve.complexExpression.dsl` - 复杂表达式的 DSL
 - `icu.windea.pls.lang.resolve.complexExpression.nodes` - 复杂表达式节点
 - （待补充）
@@ -135,6 +147,19 @@ TODO：
 - 需要解析 PSI 引用，或者需要依赖规则数据的数据（如定义、复杂枚举等），应优先使用文件索引（`FileBasedIndex`）。
 - 为了优化性能，对于文件索引，需要依赖解析得到的匹配的成员规则的数据，应考虑统一使用合并索引（`ParadoxMergedIndex`）。
 - 为了优化性能，对于文件索引，应在必要时压缩写入的数据（如使用 `readOrReadFrom` 或 `readIndexedStringList`）。
+
+### 编码指南
+
+规范：
+- 获取协程作用域：使用 `ChronicleFacade.getCoroutineScope(project)`（项目级别）或 `ChronicleFacade.getCoroutineScope()`（应用级别）。
+- 获取规则分组：使用 `ChronicleFacade.getConfigGroup(project, gameType)`（项目级别）或 `ChronicleFacade.getConfigGroup`（应用级别）。
+- 引入新的设置、选项、能力项：对应地使用 `...Settings`（平台服务）、`...Options`（只读数据类）以及 `ChronicleCapabilities`。
+- 处理数据（Json/Markdown/等等）：统一使用 `JsonService`，`MarkdownService`，等等。
+
+通用基础设施：
+- 扩展方法：`icu.windea.pls.core` 中提供了许多适用于标准库、平台、集合、并发、UI 等的扩展方法。诸如 `orNull()` `castOrNull` `runCatchingCancellable()`。
+- 组件与策略：`icu.windea.pls.core` 中提供了许多有用的组件与策略，以及对应的服务和扩展方法。诸如 `AntMatcher` `QuotePattern` `ProcessExecutor`。
+- 工具：`icu.windea.pls.core.util` 中提供了许多有用的工具、服务和扩展方法。诸如 `Keys.kt` `KeyAccessors.kt` `Caches.kt` `SoftValue` `RecursionGuard`。
 
 ## 命名
 

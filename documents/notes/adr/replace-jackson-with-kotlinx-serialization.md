@@ -7,6 +7,7 @@
 
 说明：
 - 将 JSON 序列化框架从 jackson 改为 kotlinx-serialization（通过修改 `build.gradle.kts`）。同步修改相关的生产代码和测试代码。
+- 主要目的是为了未来能够更加轻松地接入 ktor/rpc/web-view。
 - 不再显式排除 jackson 依赖（通过在 `build.gradle.kts` 中移除 `exclude(group = "com.fasterxml.jackson.core")`），以解决插件在 IDEA 2026.3 eap 中存在的兼容性问题。
 
 关于兼容性问题：

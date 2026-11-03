@@ -4,7 +4,7 @@
 > - 版本：v3.0.2
 > - 日期：2026-08-20
 > - 状态：已实施
-> - 相关问题：https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/386
+> - 相关问题：[#386](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/386)
 
 说明：
 - 由于目前未区分“当前不存在上下文规则，但期望存在”这种特殊情况，此时代码检查 `UnresolvedExpressionInspection` 并不会提供必要的报错信息。

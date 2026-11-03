@@ -6,9 +6,19 @@ import icu.windea.pls.images.dds.DdsImageWriterSpi
 import icu.windea.pls.images.tga.TgaFileType
 import icu.windea.pls.images.tga.TgaImageReaderSpi
 import icu.windea.pls.images.tga.TgaImageWriterSpi
+import icu.windea.pls.inject.injectors.DDSImageReaderCodeInjector
+import icu.windea.pls.inject.injectors.TGAImageReaderCodeInjector
 import java.net.URLConnection
 import javax.imageio.spi.IIORegistry
 
+/**
+ * @see DdsImageReaderSpi
+ * @see DdsImageWriterSpi
+ * @see TgaImageReaderSpi
+ * @see TgaImageWriterSpi
+ * @see DDSImageReaderCodeInjector
+ * @see TGAImageReaderCodeInjector
+ */
 @PublishedApi
 internal object ImageContext {
     // NOTE for DDS and TGA images, use SPIs from TwelveMonkeys

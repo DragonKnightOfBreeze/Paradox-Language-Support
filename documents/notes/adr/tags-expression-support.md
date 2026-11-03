@@ -4,7 +4,7 @@
 > - 版本：v2.1.10
 > - 日期：2026-06-19
 > - 状态：已实施
-> - 相关问题：https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163
+> - 相关问题：[#163](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/163)
 
 计划：
 - 示例：`tag1,tag2` - 写访问。`tag1` 和 `tag2` 视为标识符（作为动态值节点）。

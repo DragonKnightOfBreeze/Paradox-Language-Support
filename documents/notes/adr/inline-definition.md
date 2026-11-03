@@ -4,7 +4,7 @@
 > - 版本：v3.2.0+
 > - 日期：2026-07-14+
 > - 状态：TODO
-> - 相关问题：https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/194
+> - 相关问题：[#194](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/191)
 
 即通过内联脚本声明的定义，其名字可以取决于传入的参数值。
 

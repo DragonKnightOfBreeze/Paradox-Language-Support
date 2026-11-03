@@ -664,11 +664,8 @@ com.intellij.diagnostic.Freeze
 #### 2026-10-30 - post doc
 
 - [x] 作为总结，补充 ADR（AI 编写，`documents/ai-notes/adr/`）
-  - 暂时搁置
 - [x] 关于网络代理的问题：需要考虑补充解决方案笔记（AI 编写，`documents/ai-notes/solutions/`）
-  - 暂时搁置
 - [x] 编写参考文档 `images.md`
-  - 暂不确定
 
 ### 评估
 

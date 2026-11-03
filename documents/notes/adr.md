@@ -48,7 +48,7 @@
 
 ### 后端
 
-#### 通用
+#### 通用基础设施
 
 - [重构 `CwtDataTypes` `CwtConfigTypes` - 改为偏好使用 lambda 式构建器](adr/cwt-data-types-and-config-types-builder.md)
 - [重构作用域和作用域方法 - 改为偏好使用成员方法作为作用域方法，而非带上下文参数的扩展方法](adr/scope-and-scope-methods-refactor.md)
@@ -61,8 +61,9 @@
 - [颜色处理](adr/color-pattern.md)
 - [提供轻量化的推流（push stream）](adr/push-stream.md)
 - [优化命令行执行逻辑和图片处理逻辑](adr/command-line-and-image-processing-optimization.md)
+- [重构 JSON 服务，提供统一入口，额外兼容 UTF-8 BOM](adr/json-service-refactoring.md)
 
-#### 通用基础设施
+#### 插件基础设施
 
 - [刷新文件与重解析文件](adr/refresh-and-reparse-files.md)
 

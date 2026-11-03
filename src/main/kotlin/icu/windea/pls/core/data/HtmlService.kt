@@ -9,6 +9,9 @@ import org.jsoup.nodes.TextNode
  * 用于数据处理的 HTML 服务。
  */
 object HtmlService {
+    /**
+     * 检查两端 HTML 文本是否是等效的。
+     */
     fun areEquivalent(html1: String, html2: String): Boolean {
         if (html1 == html2) return true
 

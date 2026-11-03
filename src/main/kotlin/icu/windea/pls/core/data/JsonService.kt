@@ -15,7 +15,7 @@ import java.io.OutputStream
  *
  * 基于 [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization)。
  *
- * 统一提供 [read] 和 [write] 方法作为读写 JSON 的入口：
+ * 统一提供 [read] 和 [write] 方法，作为读写 JSON 的入口：
  * - 读取时统一兼容 UTF-8 BOM（参见 [InputStream.skipUtf8Bom]）。
  * - 写入时统一使用不包含 BOM 的 UTF-8 编码。
  * - 通过 `json5` 参数选择是否使用 JSON5 格式（宽松模式）。
