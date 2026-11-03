@@ -12,6 +12,7 @@
 - [signPlugin 抛出 NPE：PrivateKeyUtils.loadKeyPair（密钥/证书内容格式不正确）](solutions/gradle-sign-plugin-npe.md)
 - [Gradle Download 插件下载失败：SSLHandshakeException / PKIX path building failed](solutions/gradle-download-ssl-handshake-failure.md)
 - [平台不再提供 Jackson 导致 IDEA 2026.3 EAP 兼容性问题（迁移到 kotlinx-serialization）（2026-09-30）](solutions/jackson-removal-in-idea-2026-3-eap.md)
+- [`StatefulPresentation` 被标记为内部 API 导致 IDEA 2026.3 兼容性问题（改用 `BasePresentation` 自定义实现）（2026-11-03）](solutions/stateful-presentation-internal-in-idea-2026-3.md)
 
 ### 前端（参考文档）
 
