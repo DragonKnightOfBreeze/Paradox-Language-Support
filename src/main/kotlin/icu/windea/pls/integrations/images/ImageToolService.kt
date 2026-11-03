@@ -37,21 +37,9 @@ class ImageToolService : Disposable {
     fun read(imageIndex: Int, param: ImageReadParam?, stream: ImageInputStream, sourceFormat: String, targetFormat: String): BufferedImage? {
         // implementation
         val tool = findTool() ?: return null // skip
-        if (with(tool) {
-                warnIfIncorrectContext(this)
-            }) return null // skip
-        try {
-            val result = tool.read(imageIndex, param, stream, sourceFormat, targetFormat)
-            with(tool) {
-                logOperation(tool = this) { "read (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
-            }
-            return result
-        } catch (e: Exception) {
-            checkCancellation(e)
-            with(tool) {
-                logOperation(this, e) { "read (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
-            }
-            throw e
+        if (warnIfIncorrectContext(tool)) return null // skip
+        return with(tool) {
+            doRead(imageIndex, param, stream, sourceFormat, targetFormat)
         }
     }
 
@@ -84,6 +72,19 @@ class ImageToolService : Disposable {
         if (warnIfIncorrectContext(tool)) return false // skip
         return with(tool) {
             withContext(Dispatchers.IO) { doConvertImageFormat(path, targetPath, sourceFormat, targetFormat) }
+        }
+    }
+
+    context(tool: ImageToolProvider)
+    private fun doRead(imageIndex: Int, param: ImageReadParam?, stream: ImageInputStream, sourceFormat: String, targetFormat: String): BufferedImage {
+        try {
+            val result = tool.read(imageIndex, param, stream, sourceFormat, targetFormat)
+            logOperation(tool) { "read (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
+            return result
+        } catch (e: Exception) {
+            checkCancellation(e)
+            logOperation(tool, e) { "read (sourceFormat=$sourceFormat, targetFormat=$targetFormat)" }
+            throw e
         }
     }
 

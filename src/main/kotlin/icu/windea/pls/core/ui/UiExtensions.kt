@@ -5,6 +5,7 @@ package icu.windea.pls.core.ui
 import com.intellij.openapi.util.IconLoader
 import com.intellij.ui.ClickListener
 import com.intellij.ui.DoubleClickListener
+import com.intellij.ui.scale.ScaleContext
 import com.intellij.util.IconUtil
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
@@ -24,27 +25,44 @@ operator fun Color.component2() = green
 operator fun Color.component3() = blue
 operator fun Color.component4() = alpha
 
-/** 调整图标尺寸为 [width]×[height]。 */
+/**
+ * @see IconUtil.toSize
+ */
 fun Icon.resize(width: Int, height: Int): Icon {
     return IconUtil.toSize(this, width, height)
 }
 
-/** 将图标转换为 `Image`。 */
-fun Icon.toImage(): Image {
-    return IconUtil.toImage(this)
+/**
+ * @see IconUtil.toSize
+ */
+fun Icon.toImage(context: ScaleContext? = null): Image {
+    return IconUtil.toImage(this, context)
+}
+
+/**
+ * @see IconUtil.toBufferedImage
+ */
+fun Icon.toBufferedImage(context: ScaleContext? = null, inUserScale: Boolean = false): BufferedImage {
+    return IconUtil.toBufferedImage(this, context, inUserScale)
 }
 
 /**
  * 尝试从反射路径或资源 URL 加载图标。
  *
  * 注意：应传入反射路径（如 `"/icons/xxx.svg"` 或 `Icons.Test`）或 URL（而非文件系统路径）。
+ *
+ * @see IconLoader.findIcon
  */
 fun String.toIconOrNull(locationClass: Class<*> = ChronicleFacade::class.java): Icon? {
     // 注意这里需要使用反射路径（如，Icons.Test）或者文件URL（而非文件路径）
     return IconLoader.findIcon(this, locationClass)
 }
 
-/** 从 URL 加载图标。 */
+/**
+ * 从 URL 加载图标。
+ *
+ * @see IconLoader.findIcon
+ */
 fun URL.toIconOrNull(): Icon? {
     return IconLoader.findIcon(this)
 }

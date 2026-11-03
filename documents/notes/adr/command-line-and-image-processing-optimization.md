@@ -740,10 +740,12 @@ com.intellij.diagnostic.Freeze
   - 状态：已完成
 - [ ] 考虑将 `ImageRenderRequest`/`ParadoxImageResolveResult` 合并为 `ImageDescriptor`
   - 更加通用，不限于“渲染”，也可用于“描述”和“解析”。
-  - 提供图片层的方法 `ImageDescriptor.createImage` `ImageDescriptor.createImageIcon`。
-  - 提供语义层的扩展方法 `ImageDescriptor.resolveUrl`。
-- [ ] 考虑物化图片/图标时的缓存策略
+  - 提供图片层的方法 `ImageDescriptor.createImage` `ImageDescriptor.createImageIcon` `ImageDescriptor.resolveUrl`。
+  - 考虑区分渲染和解析策略：`Direct` `Delegated`（converted/sliced/convertedAndSliced）。
+- [ ] 考虑物化图片/图标时的缓存策略（读取/渲染/解析）
   - 相关代码位置：`ImageService.createImage` `ImageService.createImageIcon`
+  - 参见：`com.intellij.util.IconUtil`
+  - 参见：`com.intellij.ui.icons.CachedImageIcon`
 - [ ] UI Presentation API 的进一步重构
   - 相关代码位置：`ParadoxDefinitionPresentation` `ParadoxDefinitionPresentationProvider` `ParadoxDefinitionPresentationService`
   - 关键代码位置：`StellarisTechnologyCardBuilder.build`
@@ -930,6 +932,8 @@ ead 保留同步 ImageReader SPI 语义
 - `org.intellij.images.index.ImageInfoIndex`
 - `org.intellij.images.util.ImageInfoReader`
 - `org.intellij.images.util.imageio.CommonsImagingImageReaderSpi`
+- `com.intellij.util.IconUtil`
+- `com.intellij.ui.icons.CachedImageIcon`
 
 网络代理相关：
 

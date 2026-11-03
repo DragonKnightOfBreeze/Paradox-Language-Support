@@ -783,10 +783,12 @@
 - [ ] P4 3.0.x 在快速文档中提示图片文件的尺寸（tailText，` (widthxheight)`）
 - [ ] P4 3.0.x 考虑将 `ImageRenderRequest`/`ParadoxImageResolveResult` 合并为 `ImageDescriptor`
   - 更加通用，不限于“渲染”，也可用于“描述”和“解析”。
-  - 提供图片层的方法 `ImageDescriptor.createImage` `ImageDescriptor.createImageIcon`。
-  - 提供语义层的扩展方法 `ImageDescriptor.resolveUrl`。
-- [ ] P4 3.0.x 考虑物化图片/图标时的缓存策略
+  - 提供图片层的方法 `ImageDescriptor.createImage` `ImageDescriptor.createImageIcon` `ImageDescriptor.resolveUrl`。
+  - 考虑区分渲染和解析策略：`Direct` `Delegated`（converted/sliced/convertedAndSliced）。
+- [ ] P4 3.0.x 考虑物化图片/图标时的缓存策略（读取/渲染/解析）
   - 相关代码位置：`ImageService.createImage` `ImageService.createImageIcon`
+  - 参见：`com.intellij.util.IconUtil`
+  - 参见：`com.intellij.ui.icons.CachedImageIcon`
 - [ ] P4 3.0.x 排序：在 `ParadoxScriptExpressionSupport` 等处，将 `annotate` 方法的顺序移到 `complete` 方法之前
 - [ ] P4 3.0.x 重构：考虑提取 `CwtDataTypePriorities`，以更好地控制数据类型的优先级（这在一些场景下是极其敏感的）
 - [ ] P4 3.0.x 重构：优化 `JsonService`：新增 `JsonOptions` 并应用
