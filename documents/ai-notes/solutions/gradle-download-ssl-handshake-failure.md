@@ -1,4 +1,4 @@
-# Gradle Download 插件下载失败：SSLHandshakeException / PKIX path building failed
+# Gradle Download 插件下载失败：`SSLHandshakeException / PKIX path building failed`
 
 > - 模块：构建
 

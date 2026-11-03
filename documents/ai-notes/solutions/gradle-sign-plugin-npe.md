@@ -1,4 +1,4 @@
-# signPlugin 抛出 NPE：PrivateKeyUtils.loadKeyPair（密钥/证书内容格式不正确）
+# `signPlugin` 抛出 NPE：`PrivateKeyUtils.loadKeyPair`（密钥/证书内容格式不正确）
 
 > - 模块：构建
 

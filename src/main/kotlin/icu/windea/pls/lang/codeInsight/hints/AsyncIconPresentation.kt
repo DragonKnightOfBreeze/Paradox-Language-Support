@@ -31,9 +31,6 @@ import kotlin.time.Duration.Companion.seconds
  * 异步物化图片的内嵌提示 presentation。
  *
  * 占位状态只显示文本，物化完成后在 EDT 更新为图标。
- *
- * 直接基于 [BasePresentation] 实现状态更新，不依赖平台内部的 `StatefulPresentation`
- * （后者在 IDEA 2026.3 中已被标记为内部 API）。
  */
 @Suppress("UnstableApiUsage")
 class AsyncIconPresentation(
@@ -42,6 +39,8 @@ class AsyncIconPresentation(
     private val maxHeight: Int?,
     private val pointer: SmartPsiElementPointer<out PsiElement>?,
 ) : BasePresentation() {
+    // NOTE 3.0.5 [compatibility] 直接基于 `BasePresentation` 实现状态更新，不依赖平台内部的 `StatefulPresentation`（后者在 IDEA 2026.2 中已被标记为内部 API）
+
     private var state: Icon? = null
     private var currentPresentation: InlayPresentation? = null
     private var presentationListener: PresentationListener? = null

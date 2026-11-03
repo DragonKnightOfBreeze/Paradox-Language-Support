@@ -1,4 +1,4 @@
-# ProfilesSettings 持久化迁移到 SQLite（Ktorm + DbBackedStateMap）（2025-08-31）
+# ProfilesSettings` 持久化迁移到 SQLite（`Ktorm` + `DbBackedStateMap`）（2025-08-31）
 
 > - 模块：后端
 

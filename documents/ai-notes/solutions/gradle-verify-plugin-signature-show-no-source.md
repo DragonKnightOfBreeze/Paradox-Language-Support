@@ -1,4 +1,4 @@
-# verifyPluginSignature 显示 NO-SOURCE（未找到可校验的签名包）
+# `verifyPluginSignature` 显示 `NO-SOURCE`（未找到可校验的签名包）
 
 > - 模块：构建
 
