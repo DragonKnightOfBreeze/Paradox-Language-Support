@@ -14,8 +14,8 @@
 - [x] 修复插件在 IDEA 2026.3 EAP 中存在的兼容性问题 / Fix the compatibility issues of the plugin in IDEA 2026.3 EAP
 - [x] 修复 CWT 文件和脚本文件的结构视图无法正常显示的回归BUG（自插件版本 3.0.3） / Fix the regression bug where the structural view of CWT files and script files cannot display correctly (since plugin version 3.0.3)
 - [x] 修复脚本文件在导航栏中会错误地使用整个文件文本作为展示文本的BUG / Fix the bug where the script file incorrectly uses the entire file text as the display text in the navigation bar
-- [x] 修复属性值为单别名时，作为属性键的模板表达式无法被正确解析的BUG（如 `alias[trigger:some_<type>] = single_alias_right[some_clause]`） / Fixed the bug where, when a property value is a single alias, the template expression used as the property key could not be resolved correctly (e.g., `alias[trigger:some_<type>] = single_alias_right[some_clause]`) [#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/430)
-- [x] 使用 kotlinx-serialization 解析 JSON 文件/文本时，应额外兼容 UTF-8 BOM / When using kotlinx-serialization to parse JSON files/text, it should additionally be compatible with UTF-8 BOM [#438](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/438)
+- [x] 修复属性值为单别名时，作为属性键的模板表达式无法被正确解析的BUG（如 `alias[trigger:some_<type>] = single_alias_right[some_clause]`） / Fixed the bug where, when a property value is a single alias, the template expression used as the property key could not be resolved correctly (e.g., `alias[trigger:some_<type>] = single_alias_right[some_clause]`) ([#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/430))
+- [x] 使用 kotlinx-serialization 解析 JSON 文件/文本时，应额外兼容 UTF-8 BOM / When using kotlinx-serialization to parse JSON files/text, it should additionally be compatible with UTF-8 BOM ([#438](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/438))
 - [x] 完善基准测试 / Improve benchmarks
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
