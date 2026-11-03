@@ -553,13 +553,14 @@
   - 结论：`com.intellij.ide.navigationToolbar.NavBarModelExtension.getPresentableText(java.lang.Object)` 中也需要检查语言（不会自动检查）
   - 结论：需要防御性编程，各种 elementPresentationService/elementDescriptionService 中的方法都要检查语言
 - [x] P2 优化 `ParadoxFileChangeCollector` 中与 rootInfo/fileInfo 失效相关的缓存失效逻辑
-- [ ] P3 修复属性值为单别名时，作为属性键的模板表达式无法被正确解析的BUG（如 `alias[trigger:some_<type>] = single_alias_right[some_clause]`） [#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/430)
-  - [ ] 需要补充测试（`Issue430Test`）
-- [ ] P3 使用 kotlinx-serialization 解析 JSON 文件时，应额外兼容 UTF-8 BOM [#438](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/438)
-  - [ ] 需要重构（`JsonService`），提供 read/write 方法，作为读写 JSON 的统一入口。
-  - [ ] 需要提供 `icu.windea.pls.core.util.io.SkipInputStream`（类似 `PushbackStream`，但可以直接指定 byteArray）。
-  - [ ] 需要在 `IoStreams.kt` 中提供 `InputStream.skip(ByteArray)` 和 `InputStream.skipUtf8Bom()`
-  - [ ] 需要清理和补充测试（`JsonServiceTest`，等等）
+- [x] P3 修复属性值为单别名时，作为属性键的模板表达式无法被正确解析的BUG（如 `alias[trigger:some_<type>] = single_alias_right[some_clause]`） [#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/430)
+  - [x] 需要补充测试（`Issue430Test`）
+  - 结论：模板表达式（`CwtDataTypes.Template`）作为属性键时，比纯粹的定义引用（`CwtDataTypes.Definition`）更精确，因此其优先级应更高（`72.0` VS `70.0`）。否则，在匹配候选项的选择阶段，可能会错误地选择 `alias[trigger:<script_value>]` 之类的规则，导致模板表达式无法被正确解析。
+- [x] P3 使用 kotlinx-serialization 解析 JSON 文件时，应额外兼容 UTF-8 BOM [#438](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/438)
+  - [x] 需要重构（`JsonService`），提供 read/write 方法，作为读写 JSON 的统一入口。
+  - [x] 需要提供 `icu.windea.pls.core.util.io.SkipInputStream`（类似 `PushbackStream`，但可以直接指定 byteArray）。
+  - [x] 需要在 `IoStreams.kt` 中提供 `InputStream.skip(ByteArray)` 和 `InputStream.skipUtf8Bom()`
+  - [x] 需要清理和补充测试（`JsonServiceTest`，等等）
   - [ ] （人工）需要补充 ADR（`documents/notes/adr/json-service-refactoring.md`）
   - [ ] （人工）需要更新 `guidelines.md` `AGENTS.md` 中的相关章节（`core` 模块：JSON 处理、匹配器、递归守卫、缓存、Key/UserDataHolder、等等）
 

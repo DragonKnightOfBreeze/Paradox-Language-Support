@@ -9,6 +9,8 @@
 
 ## 3.0.5
 
+- [x] 修复属性值为单别名时，作为属性键的模板表达式无法被正确解析的BUG / Fix the bug where a template expression used as a property key cannot be resolved correctly when the property value is a single alias ([#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/430))
+- [x] 使用 kotlinx-serialization 解析 JSON 文件时兼容 UTF-8 BOM / Support UTF-8 BOM when parsing JSON files with kotlinx-serialization ([#438](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/438))
 - [x] 在快速文档中直接渲染片段的相关本地化 / Render related localisations directly in quick docs for snippets ([#432](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/432)) 
 - [x] 优化命令行执行逻辑和图片处理逻辑，以避免可能的 IDE 冻结 / Optimize the command-line execution logic and image processing logic to avoid possible IDE freezes ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
 - [x] 修复插件在 IDEA 2026.3 EAP 中存在的兼容性问题 / Fix the compatibility issues of the plugin in IDEA 2026.3 EAP
