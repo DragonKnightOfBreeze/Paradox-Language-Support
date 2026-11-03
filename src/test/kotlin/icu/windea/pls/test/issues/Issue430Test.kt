@@ -6,6 +6,9 @@ import com.intellij.testFramework.IndexingTestUtil
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.config.CwtDataTypes
+import icu.windea.pls.config.manipulation.CwtConfigInlineService
+import icu.windea.pls.config.util.CwtConfigManager
 import icu.windea.pls.lang.inspections.script.expression.UnresolvedExpressionInspection
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
@@ -73,6 +76,55 @@ class Issue430Test : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     @Test
+    fun testInspection_GeographicRegionIteratorForState() {
+        markFileInfo(ParadoxGameType.Vic3, "common/geographic_regions/test.txt")
+        myFixture.configureByFile("issues/430/common/geographic_regions/test.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Vic3, "common/journal_entries/test.txt")
+        myFixture.configureByText(
+            "test.txt",
+            """
+            test_journal_entry = {
+                is_shown_when_inactive = {
+                    any_state_in_greek_heartlands = {
+                        NOT = { owner = root }
+                    }
+                }
+            }
+            """.trimIndent()
+        )
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.checkHighlighting()
+    }
+
+    @Test
+    fun testCompletion_GeographicRegionIteratorForState() {
+        markFileInfo(ParadoxGameType.Vic3, "common/geographic_regions/test.txt")
+        myFixture.configureByFile("issues/430/common/geographic_regions/test.txt")
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+
+        markFileInfo(ParadoxGameType.Vic3, "common/journal_entries/test.txt")
+        myFixture.configureByText(
+            "test.txt",
+            """
+            test_journal_entry = {
+                is_shown_when_inactive = {
+                    any_state_in_<caret> = {}
+                }
+            }
+            """.trimIndent()
+        )
+
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+        myFixture.complete(CompletionType.BASIC)
+        assertContainsElements(myFixture.lookupElementStrings!!, "greek_heartlands", "anatolia")
+    }
+
+    @Test
     fun testCompletion_GeographicRegionIterator() {
         markFileInfo(ParadoxGameType.Vic3, "common/geographic_regions/test.txt")
         myFixture.configureByFile("issues/430/common/geographic_regions/test.txt")
@@ -99,6 +151,43 @@ class Issue430Test : BasePlatformTestCase(), ChronicleTestScope {
     // endregion
 
     // region extended cases
+
+    @Test
+    fun testConfig_AliasWithTemplateSubNameAndSingleAliasRight() {
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Vic3)
+        val alias = configGroup.aliasGroups["trigger"]?.get("any_state_in_<geographic_region_short_key>")?.firstOrNull()
+        expectScope {
+            alias.expectNotNull()
+            alias.subNameExpression.type.expectEquals(CwtDataTypes.Template)
+            val inlined = CwtConfigInlineService.inlineAlias(alias.config, alias)
+            inlined.expectNotNull()
+            // 作为属性键的模板表达式应被正确保留（不应是 `alias[...]`）
+            inlined.keyExpression.type.expectEquals(CwtDataTypes.Template)
+            inlined.keyExpression.expressionString.expectEquals("any_state_in_<geographic_region_short_key>")
+            // 单别名应被内联为对应的块规则
+            inlined.valueExpression.type.expectEquals(CwtDataTypes.Block)
+        }
+    }
+
+    @Test
+    fun testConfig_AliasTemplateShouldOutrankGenericDefinitionAlias() {
+        val configGroup = ChronicleFacade.getConfigGroup(project, ParadoxGameType.Vic3)
+        val genericAlias = configGroup.aliasGroups["trigger"]?.get("<script_value>")?.firstOrNull()
+        val specificAlias = configGroup.aliasGroups["trigger"]?.get("any_state_in_<geographic_region_short_key>")?.firstOrNull()
+        expectScope {
+            genericAlias.expectNotNull()
+            specificAlias.expectNotNull()
+            val genericConfig = CwtConfigInlineService.inlineAlias(genericAlias.config, genericAlias)
+            val specificConfig = CwtConfigInlineService.inlineAlias(specificAlias.config, specificAlias)
+            genericConfig.expectNotNull()
+            specificConfig.expectNotNull()
+            // 模板表达式（作为属性键）比纯粹的定义引用更精确，应当被优先选择
+            val selected = CwtConfigManager.selectSinglePrioritizedConfig(listOf(genericConfig, specificConfig))
+            selected.expectNotNull()
+            selected.keyExpression.type.expectEquals(CwtDataTypes.Template)
+            selected.keyExpression.expressionString.expectEquals("any_state_in_<geographic_region_short_key>")
+        }
+    }
 
     @Test
     fun testConfig_ForShortKey() {

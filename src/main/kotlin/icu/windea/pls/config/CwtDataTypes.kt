@@ -726,7 +726,10 @@ object CwtDataTypes {
      * @see ParadoxTemplateExpression
      */
     val Template = CwtDataType.builder("Template").reference().build {
-        withPriority(65.0) // for templates and snippets
+        // NOTE 3.0.5 #430 a template expression is more specific than a bare definition reference
+        // (e.g., `alias[trigger:any_state_in_<geographic_region_short_key>]` should be preferred over `alias[trigger:<script_value>]`),
+        // so its priority should be higher than `Definition` (70.0)
+        withPriority(72.0)
     }
 
     /**
