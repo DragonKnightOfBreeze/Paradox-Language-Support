@@ -19,7 +19,6 @@ import icu.windea.pls.model.ParadoxRootInfo
 import icu.windea.pls.model.analysis.ParadoxMetadataJsonBasedModMetadata
 import icu.windea.pls.model.constraints.ParadoxGameTypeConstraint
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.encodeToStream
 import java.util.function.Function
 import javax.swing.JComponent
 
@@ -71,7 +70,7 @@ class ParadoxGameTypeNotDeclaredInMetadataJsonEditorNotificationProvider : Edito
     private fun updateGameType(metadata: ParadoxMetadataJsonBasedModMetadata, gameType: ParadoxGameType) {
         val infoFile = metadata.infoPath.toVirtualFile(refreshIfNeed = true) ?: return
         val newInfo = metadata.info.copy(gameId = gameType.gameId)
-        infoFile.getOutputStream(this).use { JsonService.json.encodeToStream(newInfo, it) }
+        infoFile.getOutputStream(this).use { JsonService.write(newInfo, it) }
 
         // 之后，`ParadoxFileListener` 将会监听到 `.metadata/metadata.json` 的更改，从而进行必要的刷新
     }

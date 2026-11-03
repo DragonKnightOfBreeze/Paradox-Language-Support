@@ -7,7 +7,6 @@ import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.json.encodeToStream
 import java.nio.file.Path
 import kotlin.io.path.outputStream
 
@@ -28,7 +27,7 @@ abstract class ParadoxJsonBasedModExporter : ParadoxModExporter {
 
     private fun <T> doWriteData(filePath: Path, data: T, serializer: KSerializer<T>) {
         try {
-            filePath.outputStream().use { JsonService.json.encodeToStream(serializer, data, it) }
+            filePath.outputStream().use { JsonService.write(serializer, data, it) }
         } catch (e: Exception) {
             throw IllegalStateException(ChronicleEpBundle.message("mod.exporter.error.data", filePath), e)
         }

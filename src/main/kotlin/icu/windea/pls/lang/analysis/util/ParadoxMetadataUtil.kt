@@ -12,7 +12,6 @@ import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.model.ParadoxRootInfo
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -64,7 +63,7 @@ object ParadoxMetadataUtil {
      */
     fun detectLauncherPlaylistPositionIsInt(file: VirtualFile): Boolean? {
         return try {
-            val root = file.inputStream.use { JsonService.json.decodeFromStream(JsonElement.serializer(), it) }
+            val root = file.inputStream.use { JsonService.read(JsonElement.serializer(), it) }
             val modsNode = root.jsonObject["mods"]?.jsonArray ?: return null
             val first = modsNode.firstOrNull()?.jsonObject ?: return null
             val position = first["position"] as? JsonPrimitive ?: return null

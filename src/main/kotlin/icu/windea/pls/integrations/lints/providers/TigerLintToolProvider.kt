@@ -75,7 +75,7 @@ abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
             request.outputPath.writeText(outputText)
         }
         // 如果无法解析 json，这里会直接报错
-        val items = JsonService.json.decodeFromString<List<TigerLintResult.Item>>(outputText)
+        val items = JsonService.read<List<TigerLintResult.Item>>(outputText)
         return TigerLintResult(request, items = items)
     }
 

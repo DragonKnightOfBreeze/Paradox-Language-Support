@@ -5,7 +5,6 @@ import icu.windea.pls.lang.tools.SpecialPathService
 import icu.windea.pls.model.ParadoxGameType
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -38,7 +37,7 @@ class DataModelsLocalValidationTest {
         val file = gameDataDir.resolve(Constants.dlcLoadPath)
         Assume.assumeTrue("Skip: ${file} not found", file.exists() && file.isRegularFile())
 
-        val model = file.inputStream().use { JsonService.json.decodeFromStream<DlcLoadJson>(it) }
+        val model = file.inputStream().use { JsonService.read<DlcLoadJson>(it) }
         // 基本断言 + 更严格校验
         assert(model.disabledDlcs.all { it.isNotBlank() })
         assert(model.enabledMods.all { it.isNotBlank() })
@@ -53,7 +52,7 @@ class DataModelsLocalValidationTest {
         val file = gameDataDir.resolve(Constants.contentLoadPath)
         Assume.assumeTrue("Skip: ${file} not found", file.exists() && file.isRegularFile())
 
-        val model = file.inputStream().use { JsonService.json.decodeFromStream<ContentLoadJson>(it) }
+        val model = file.inputStream().use { JsonService.read<ContentLoadJson>(it) }
         // 基本断言 + 更严格校验：路径应当为 .mod 描述符
         val modPaths = model.enabledMods.map { it.path }
         assert(modPaths.all { it.isNotBlank() })
@@ -73,7 +72,7 @@ class DataModelsLocalValidationTest {
         val fileText = file.readText()
 
         // 先用 JsonElement 探测 position 类型（V2: string, V3: int）。
-        val root = JsonService.json.decodeFromString<JsonElement>(fileText)
+        val root = JsonService.read<JsonElement>(fileText)
         val modsNode = root.jsonObject["mods"]?.jsonArray
         val first = modsNode?.firstOrNull()?.jsonObject
         // 注意：intOrNull 不会区分带引号的数字字符串，需额外排除字符串字面量。
@@ -85,13 +84,13 @@ class DataModelsLocalValidationTest {
         assert(game == ParadoxGameType.Stellaris.gameId)
 
         if (isV3) {
-            val model = JsonService.json.decodeFromString<LauncherJsonV3>(fileText)
+            val model = JsonService.read<LauncherJsonV3>(fileText)
             assert(model.mods.all { it.position >= 0 })
             // 每个 mod 应该至少有 steamId 或 pdxId
             assert(model.mods.all { !it.steamId.isNullOrEmpty() || !it.pdxId.isNullOrEmpty() })
             println("playlist.json -> V3, mods=${model.mods.size}")
         } else {
-            val model = JsonService.json.decodeFromString<LauncherJsonV2>(fileText)
+            val model = JsonService.read<LauncherJsonV2>(fileText)
             assert(model.mods.all { it.position.isNotEmpty() })
             assert(model.mods.all { !it.steamId.isNullOrEmpty() || !it.pdxId.isNullOrEmpty() })
             println("playlist.json -> V2, mods=${model.mods.size}")

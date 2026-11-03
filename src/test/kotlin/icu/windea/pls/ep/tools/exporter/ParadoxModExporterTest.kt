@@ -17,7 +17,6 @@ import icu.windea.pls.model.tools.ParadoxModSetInfo
 import icu.windea.pls.test.ChronicleAssume
 import icu.windea.pls.test.ChronicleTestScope
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.decodeFromStream
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -77,7 +76,7 @@ class ParadoxModExporterTest : BasePlatformTestCase(), ChronicleTestScope {
         assertActualTotal(result.actualTotal)
 
         // 验证 JSON 内容
-        val json = outFile.inputStream().use { JsonService.json.decodeFromStream<LauncherJsonV2>(it) }
+        val json = outFile.inputStream().use { JsonService.read<LauncherJsonV2>(it) }
         assertEquals(modSet.gameType.gameId, json.game)
         assertTrue(json.mods.size == result.actualTotal)
         assertTrue(json.mods.all { it.enabled })
@@ -96,7 +95,7 @@ class ParadoxModExporterTest : BasePlatformTestCase(), ChronicleTestScope {
         assertActualTotal(result.actualTotal)
 
         // 验证 JSON 内容
-        val json = outFile.inputStream().use { JsonService.json.decodeFromStream<LauncherJsonV3>(it) }
+        val json = outFile.inputStream().use { JsonService.read<LauncherJsonV3>(it) }
         assertEquals(modSet.gameType.gameId, json.game)
         assertTrue(json.mods.size == result.actualTotal)
         assertTrue(json.mods.all { it.enabled })

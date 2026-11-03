@@ -20,11 +20,11 @@ object AiManipulationService {
             is LangChain4jException -> {
                 if (message.isNotNullOrEmpty()) {
                     runCatchingCancellable {
-                        val errorInfo = JsonService.json.decodeFromString<OpenAiErrorInfo>(message)
+                        val errorInfo = JsonService.read<OpenAiErrorInfo>(message)
                         return "[${errorInfo.error.code}] ${errorInfo.error.message}"
                     }
                     runCatchingCancellable {
-                        val errorInfo = JsonService.json.decodeFromString<AnthropicErrorInfo>(message)
+                        val errorInfo = JsonService.read<AnthropicErrorInfo>(message)
                         return "[${errorInfo.error.type}] ${errorInfo.error.message}"
                     }
                 }

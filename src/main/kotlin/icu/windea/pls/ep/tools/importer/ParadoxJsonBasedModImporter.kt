@@ -7,7 +7,6 @@ import icu.windea.pls.model.ParadoxGameType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.json.decodeFromStream
 import java.nio.file.Path
 import kotlin.io.path.inputStream
 
@@ -28,7 +27,7 @@ abstract class ParadoxJsonBasedModImporter : ParadoxModImporter {
 
     private fun <T> doReadData(filePath: Path, serializer: KSerializer<T>): T {
         return try {
-            filePath.inputStream().use { JsonService.json.decodeFromStream(serializer, it) }
+            filePath.inputStream().use { JsonService.read(serializer, it) }
         } catch (e: Exception) {
             throw IllegalStateException(ChronicleEpBundle.message("mod.importer.error.data", filePath), e)
         }
