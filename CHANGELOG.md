@@ -7,21 +7,19 @@
 - [ ] 分析与优化完成项目分析后的性能和内存占用 / Analyze and optimize performance and memory after finishing project analysis
 - [ ] 完善测试用例 / Improve test cases
 
-## 3.0.5
+## 3.0.5 - 2026-11-03
 
-- [x] 修复属性值为单别名时，作为属性键的模板表达式无法被正确解析的BUG / Fix the bug where a template expression used as a property key cannot be resolved correctly when the property value is a single alias ([#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/430))
-- [x] 使用 kotlinx-serialization 解析 JSON 文件时兼容 UTF-8 BOM / Support UTF-8 BOM when parsing JSON files with kotlinx-serialization ([#438](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/438))
 - [x] 在快速文档中直接渲染片段的相关本地化 / Render related localisations directly in quick docs for snippets ([#432](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/432)) 
 - [x] 优化命令行执行逻辑和图片处理逻辑，以避免可能的 IDE 冻结 / Optimize the command-line execution logic and image processing logic to avoid possible IDE freezes ([#396](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/396))
 - [x] 修复插件在 IDEA 2026.3 EAP 中存在的兼容性问题 / Fix the compatibility issues of the plugin in IDEA 2026.3 EAP
 - [x] 修复 CWT 文件和脚本文件的结构视图无法正常显示的回归BUG（自插件版本 3.0.3） / Fix the regression bug where the structural view of CWT files and script files cannot display correctly (since plugin version 3.0.3)
 - [x] 修复脚本文件在导航栏中会错误地使用整个文件文本作为展示文本的BUG / Fix the bug where the script file incorrectly uses the entire file text as the display text in the navigation bar
-- [x] 修复属性值为单别名时，作为属性键的模板表达式无法被正确解析的BUG（如 `alias[trigger:some_<type>] = single_alias_right[some_clause]`） / Fixed the bug where, when an property value is a single alias, the template expression used as the property key could not be resolved correctly (e.g., `alias[trigger:some_<type>] = single_alias_right[some_clause]`) [#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/430)
+- [x] 修复属性值为单别名时，作为属性键的模板表达式无法被正确解析的BUG（如 `alias[trigger:some_<type>] = single_alias_right[some_clause]`） / Fixed the bug where, when a property value is a single alias, the template expression used as the property key could not be resolved correctly (e.g., `alias[trigger:some_<type>] = single_alias_right[some_clause]`) [#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/430)
 - [x] 使用 kotlinx-serialization 解析 JSON 文件/文本时，应额外兼容 UTF-8 BOM / When using kotlinx-serialization to parse JSON files/text, it should additionally be compatible with UTF-8 BOM [#438](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/438)
 - [x] 完善基准测试 / Improve benchmarks
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
 
-## 3.0.4
+## 3.0.4 - 2026-10-07
 
 - [x] Leading blank is not trimmed when rendering loc text in inlay hints & Log text is not recognized as loc text when containing commands ([#418](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/418))
 - [x] [Vic3] Plugin not correctly detecting used Parameters ([#429](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/429))
@@ -123,7 +121,7 @@
 - [x] 支持将数字（而不仅仅是字符串）解析为复杂枚举值 / Support to resolve numbers (rather than only strings) into complex enum values
 - [x] 修复了一个可能导致错误的语义匹配结果，从而引发误报的并发处理问题 / Fix a concurrency processing issue that could result in incorrect semantic match results, which may cause false positives
 - [x] 修复 Islands Dark 主题的自定义配色方案未被正确应用的回归BUG / Fix a regression bug where the custom color scheme of the Islands Dark theme was not applied correctly
-- [x] [VIC3/EU5] Add support for turkish language or respect locales config ([#343](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/343))
+- [x] [VIC3/EU5] Add support for Turkish language or respect locales config ([#343](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/343))
 - [x] [Jomini] On action event type validation wrong ([#344](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/344))
 - [x] Improve inspections for file charset and file encoding, fix false positives ([#345](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/345))
 - [x] 其他优化与BUG修复 / Other optimizations and bug fixes
