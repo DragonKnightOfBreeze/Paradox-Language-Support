@@ -41,7 +41,9 @@
   - 不能简单地只设计一个 generator 组件，考虑分成 dataExtractor/dataMerger/generator 等组件，并且拥有额外的工具类和上层组件。
   - 后续改进时，可以考虑引入AI。
 - [ ] DELAY 让 AI 有能力自行维护规则文件，并且尽可能自动化
-- [ ] DELAY 需要使用 WebView 渲染的高级可视化功能
+- [ ] DELAY 进阶的可视化功能（用于渲染各种展示和 GUI，基于 WebView/Composite UI）
+- [ ] DELAY 进阶的 AI 集成功能（特定的工作流，而非 AI 代理）
+- [ ] DELAY 提供规范化的 MCP（需要考虑与 官方或第三方的 MCP 插件的集成和兼容）
 
 ## 候选 {#candidates}
 
@@ -781,19 +783,20 @@
 - [ ] P4 3.0.x 引入 `MonitorableInputStream` 和 `MonitorableOutputStream`
   - 可监控总长度和已处理长度，可能需要调整命名，可能需要与 `CancellableInputStream` / `CancellableOutputStream` 合并
 - [ ] P4 3.0.x 在快速文档中提示图片文件的尺寸（tailText，` (widthxheight)`）
-- [ ] P4 3.0.x 考虑将 `ImageRenderRequest`/`ParadoxImageResolveResult` 合并为 `ImageDescriptor`
+- [ ] P2 3.0.x 考虑将 `ImageRenderRequest`/`ParadoxImageResolveResult` 合并为 `ImageDescriptor`
   - 更加通用，不限于“渲染”，也可用于“描述”和“解析”。
   - 提供图片层的方法 `ImageDescriptor.createImage` `ImageDescriptor.createImageIcon` `ImageDescriptor.resolveUrl`。
   - 考虑区分渲染和解析策略：`Direct` `Delegated`（converted/sliced/convertedAndSliced）。
-- [ ] P4 3.0.x 考虑物化图片/图标时的缓存策略（读取/渲染/解析）
+- [ ] P2 3.0.x 考虑物化图片/图标时的缓存策略（读取/渲染/解析）
   - 相关代码位置：`ImageService.createImage` `ImageService.createImageIcon`
   - 参见：`com.intellij.util.IconUtil`
   - 参见：`com.intellij.ui.icons.CachedImageIcon`
-- [ ] P4 3.0.x 排序：在 `ParadoxScriptExpressionSupport` 等处，将 `annotate` 方法的顺序移到 `complete` 方法之前
-- [ ] P4 3.0.x 重构：考虑提取 `CwtDataTypePriorities`，以更好地控制数据类型的优先级（这在一些场景下是极其敏感的）
-- [ ] P4 3.0.x 重构：优化 `JsonService`：新增 `JsonOptions` 并应用
+- [ ] P4 排序：在 `ParadoxScriptExpressionSupport` 等处，将 `annotate` 方法的顺序移到 `complete` 方法之前
+- [ ] P3 重构：考虑提取 `CwtDataTypePriorities`，以更好地控制数据类型的优先级（这在一些场景下是极其敏感的）
+- [ ] P3 重构：优化 `JsonService`：新增 `JsonOptions` 并应用
   - 这里的选项应能在合适的范围内控制要使用的底层实现（参见 `Json`），并且可以控制额外的处理逻辑（如对 utf8 bom 的处理） 
   - 提供 `DEFAULT` `JSON5` 等默认选项
-- [ ] P4 3.0.x 重构：优化 `MarkdownService`：新增 `MarkdownOptions` 并应用
+- [ ] P3 重构：优化 `MarkdownService`：新增 `MarkdownOptions` 并应用
   - 这里的选项应能在合适的范围内控制要使用的底层实现（参见 `MarkdownFlavourDescriptor`），并且可以控制额外的处理逻辑
   - 提供 `GFM` `CommonMark` 等默认选项
+- [ ] P3 `DownloadOptions`（以及未来可能的 `NetOptions` 等）应可以指定重试机制，并提供默认选项，例如默认重试3次

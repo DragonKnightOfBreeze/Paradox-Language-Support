@@ -48,10 +48,10 @@ Jackson 底层的 `ByteSourceJsonBootstrapper` 在读取 `InputStream` 时会自
 
 ### 评估
 
-- [ ] P4 3.0.x 重构：优化 `JsonService`：新增 `JsonOptions` 并应用
+- [ ] P3 重构：优化 `JsonService`：新增 `JsonOptions` 并应用
   - 这里的选项应能在合适的范围内控制要使用的底层实现（参见 `Json`），并且可以控制额外的处理逻辑（如对 utf8 bom 的处理）
   - 提供 `DEFAULT` `JSON5` 等默认选项
-- [ ] P4 3.0.x 重构：优化 `MarkdownService`：新增 `MarkdownOptions` 并应用
+- [ ] P3 重构：优化 `MarkdownService`：新增 `MarkdownOptions` 并应用
   - 这里的选项应能在合适的范围内控制要使用的底层实现（参见 `MarkdownFlavourDescriptor`），并且可以控制额外的处理逻辑
   - 提供 `GFM` `CommonMark` 等默认选项
 
