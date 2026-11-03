@@ -33,7 +33,8 @@ object ArchiveService {
                 ArchiveType.SevenZip -> extractSevenZip(archivePath, targetDirectory, settings)
             }
         } finally {
-            if (settings.deleteArchiveAfterExtract) archivePath.deleteIfExists()
+            // ArchiveType.None 表示下载文件本身就是目标文件（例如 AppImage），此时不应删除（无论选项如何）
+            if (type != ArchiveType.None && settings.deleteArchiveAfterExtract) archivePath.deleteIfExists()
         }
     }
 

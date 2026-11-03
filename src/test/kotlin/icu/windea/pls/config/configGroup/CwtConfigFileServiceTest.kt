@@ -7,6 +7,7 @@ import icu.windea.pls.core.util.io.toPathOrNull
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.test.ChronicleTestScope
 import org.junit.Assert
+import org.junit.Assume
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -34,7 +35,11 @@ class CwtConfigFileServiceTest : BasePlatformTestCase(), ChronicleTestScope {
                 .sorted()
                 .toList()
         }
-        Assert.assertFalse("No config repositories found under cwt/.", repoDirs.isEmpty())
+
+        // 本地规则仓库目录 `cwt/cwtools-*-config` 会被 `.gitignore` 忽略，并且未作为 git submodules
+        // 如果缺失，例如在 CI 环境中，需要直接跳过验证
+        Assume.assumeTrue("No config repositories found under cwt/.", repoDirs.isNotEmpty())
+
         for (repoDir in repoDirs) {
             val repoName = repoDir.fileName.toString()
             val gameTypeId = repoName.removePrefix("cwtools-").removeSuffix("-config")

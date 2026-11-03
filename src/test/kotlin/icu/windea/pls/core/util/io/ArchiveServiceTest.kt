@@ -14,8 +14,10 @@ import java.nio.file.Path
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import kotlin.io.path.createDirectories
+import kotlin.io.path.exists
 import kotlin.io.path.outputStream
 import kotlin.io.path.readText
+import kotlin.io.path.writeText
 
 /**
  * @see ArchiveService
@@ -62,6 +64,19 @@ class ArchiveServiceTest {
         val target = dir.resolve("out").also { it.createDirectories() }
         ArchiveService.extract(archive, target, ArchiveType.TarGz)
         Assert.assertEquals("hello", target.resolve("file.txt").readText())
+    }
+
+    @Test
+    fun extractNone_test() {
+        val dir = root.resolve("none")
+        dir.createDirectories()
+        // 直接下载的文件本身就是目标文件（例如 AppImage），不应在“解压”后被删除
+        val file = dir.resolve("tool.AppImage")
+        file.writeText("binary")
+        val target = dir.resolve("out").also { it.createDirectories() }
+        ArchiveService.extract(file, target, ArchiveType.None)
+        Assert.assertTrue(file.exists())
+        Assert.assertEquals("binary", file.readText())
     }
 
     @Test
