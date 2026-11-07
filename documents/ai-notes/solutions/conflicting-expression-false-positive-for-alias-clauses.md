@@ -10,7 +10,7 @@
 - 3.0.6-dev 的 CI（`Build` 工作流中的 `Test` 任务，即 `./gradlew check -Dchronicle.test.include.remote=true`）从 2026-11-07 起持续失败，最后两次成功/失败的运行分别是：
   - 成功：`41700819602`（master，2026-11-03）；
   - 失败：`42370916949`（master）、`42375658568`（dev/3.0.6-dev）。
-- 由于 CI 日志与测试结果 artifact 需要仓库写权限才能下载，普通只读 API 无法获取，因此改在本地按 CI 的方式复现：使用同一份 CWT 规则（`cwtools-*-config` 的 `master` 分支 zip）与同一份代码。
+- 定位方式：先在本地按 CI 的方式复现（使用同一份 CWT 规则，即 `cwtools-*-config` 的 `master` 分支 zip，与同一份代码），再与 CI 的测试报告交叉确认；两者报告的偏移量完全一致（254 / 368 / 517）。
 - 复现结果：`icu.windea.pls.test.issues.Issue284Test` 失败，`testScopeLinkInTrigger` 报告多余的警告：
   ```
   extra (6:5/5): 'owner' (`owner = {...}` matches multiple configs with conflicts) [WARNING_ATTRIBUTES]
@@ -67,6 +67,7 @@
 
 - `./gradlew test --tests "icu.windea.pls.test.*"`：通过（含 `Issue284Test`、`Issue142Test` 等回归测试）。
 - `./gradlew test --tests "icu.windea.pls.lang.inspections.script.expression.ConflictingExpressionInspectionTest"`：通过。
+- CI：`dev/3.0.6-dev` 修复后的运行 `42389551512`，`Build` / `Test` / `Verify plugin` / `Benchmark` 四个 job 全部通过。
 - 补充的用例：`src/test/testData/issues/284/common/scripted_triggers/test_trigger.test.txt` 新增“作用域链接的块中再嵌套触发器块”的场景。
 
 ## 参考链接
