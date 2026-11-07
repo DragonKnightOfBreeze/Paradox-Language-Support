@@ -15,6 +15,7 @@ import icu.windea.pls.config.configExpression.CwtDataExpressionRole
 import icu.windea.pls.config.configGroup.CwtConfigGroup
 import icu.windea.pls.core.emptyPointer
 import icu.windea.pls.model.type.CwtExpressionType
+import icu.windea.pls.model.type.CwtSeparatorType
 
 object CwtConfigInlineService {
     fun inlineAlias(config: CwtPropertyConfig, aliasConfig: CwtAliasConfig): CwtPropertyConfig? {
@@ -24,6 +25,9 @@ object CwtConfigInlineService {
             keyExpression = aliasConfig.subNameExpression,
             valueExpression = other.valueExpression,
             valueType = other.valueType,
+            // NOTE 保留别名规则声明处的 `==` 分隔符，否则内联后 `==` 的语义（要求使用比较运算符）会丢失
+            // 其他情况仍沿用用法处的分隔符
+            separatorType = if (aliasConfig.separatorType == CwtSeparatorType.DoubleEqual) CwtSeparatorType.DoubleEqual else config.separatorType,
             configs = CwtConfigManipulationService.deepCopyConfigs(other),
         )
         inlined.postOptimize() // do post optimization

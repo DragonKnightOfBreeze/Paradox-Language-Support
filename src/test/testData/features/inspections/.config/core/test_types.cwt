@@ -20,7 +20,16 @@ test_entity = {
     value_with_double_equal == int
     ## cardinality = 0..inf
     status = bool
+
+    # 使用别名规则（别名规则声明处的分隔符应在内联后保留）
+    ## cardinality = 0..inf
+    alias_name[test_alias] = alias_match_left[test_alias]
 }
+
+# 别名规则声明处使用 == 分隔符，内联后应保留该分隔符
+alias[test_alias:value_with_alias_double_equal] == int
+# 别名规则声明处使用 = 分隔符
+alias[test_alias:value_with_alias_equal] = int
 
 test_type = {
     # 定义引用片段：脚本表达式为 `test` 时，对应定义 `test_a`（`$_a`）或 `b_test`（`b_$`）。
