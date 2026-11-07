@@ -5,14 +5,18 @@
 # In trigger context, both `alias[trigger:scope_field]` and `alias[trigger:value_field]` are available,
 # leading to conflicting resolved configs for block values.
 
-# case 1: `var:test` with trigger-only block content - conflict happens - no inlining yet
+# case 1: `var:test` with trigger-only block content - no conflict
+# NOTE the block content only matches the trigger clause, the value (arithmetic) clause is not applicable,
+# so the ambiguity is resolved by the clause content. (see #284)
 test_trigger_with_var_simple = {
-    <warning descr="`var:test = {...}` matches multiple configs with conflicts">var:test</warning> = {
+    var:test = {
         always = yes
     }
 }
 
-# case 2: `var:test` with ambiguous block content - conflict happens - no non-constant match yet
+# case 2: `var:test` with ambiguous block content - conflict happens
+# NOTE `root` is a scope link, which also matches the arithmetic (value) clause as a scope-based operand,
+# so the ambiguity cannot be resolved by the clause content.
 test_trigger_with_var_complex = {
     <warning descr="`var:test = {...}` matches multiple configs with conflicts">var:test</warning> = {
         root = root

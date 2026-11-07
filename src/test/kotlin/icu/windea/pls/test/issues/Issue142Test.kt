@@ -17,12 +17,13 @@ import org.junit.runners.JUnit4
  *
  * In VIC3, the `var` link is declared with `type = both`, so `var:xxx` can match both `scope_field` and
  * `value_field`. In trigger context both `alias[trigger:scope_field]` and `alias[trigger:value_field]`
- * are applicable, so a `var:xxx` block value whose content is ambiguous matches multiple conflicting
- * configs and is reported by the conflicting expression inspection.
+ * are applicable, so a `var:xxx` block value matches multiple configs, and the conflicting expression
+ * inspection reports it if the block content is still ambiguous.
  *
- * Cause: the ambiguity is inherent to the `var` link, and the inspection is designed to report it, so
- * there is currently no resolution-time fix. In effect context only `scope_field` applies, so no conflict
- * is reported there.
+ * Cause: the ambiguity is inherent to the `var` link (e.g., an empty block value), so it cannot always be
+ * resolved at match time. If the block content only matches one of the candidate clauses (e.g., only
+ * triggers), the conflict is resolved by the clause content, and no conflict is reported. (see #284)
+ * In effect context only `scope_field` applies, so no conflict is reported there.
  *
  * @see icu.windea.pls.lang.inspections.script.expression.ConflictingExpressionInspection
  */
