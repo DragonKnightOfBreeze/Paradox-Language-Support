@@ -800,3 +800,9 @@
   - 这里的选项应能在合适的范围内控制要使用的底层实现（参见 `MarkdownFlavourDescriptor`），并且可以控制额外的处理逻辑
   - 提供 `GFM` `CommonMark` 等默认选项
 - [ ] P3 `DownloadOptions`（以及未来可能的 `NetOptions` 等）应可以指定重试机制，并提供默认选项，例如默认重试3次
+
+### 2026-11-08
+
+- [ ] P3 让 `CwtSeparatorType.DoubleEqual`（在规则文件中显式使用 `==`，而非常规的 `=`）可以影响规则匹配
+  - 这已经可以影响代码检查，但未默认启用
+  - 需要评估是否默认启用
