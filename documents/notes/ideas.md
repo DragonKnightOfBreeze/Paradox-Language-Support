@@ -658,7 +658,7 @@
 - [x] P3 3.0.4 考虑将“优先级规则/priorityConfig”重命名为“覆盖规则/overrideConfig”，同步更改规则文件和文档
 - [x] P3 3.0.4 尝试确认各个游戏的各个目录的覆盖策略，更新 `00_overrides.cwt` 和 `overrides.cwt`，并在 `documents/ai_notes/domain` 中新增笔记（附带版本和日期的标注）
 - [ ] P3 考虑进一步完善 `ParadoxScriptExpressionBlockMatchOptimizer`
-- [ ] P3 考虑进一步完善 `ParadoxMatchResultProvider.forBlock`，或者直接将相关逻辑整合到 `ParadoxScriptExpressionBlockMatchOptimizer` 中
+- [ ] P3 考虑进一步完善 `ParadoxMatchResultFactory.forBlock`，或者直接将相关逻辑整合到 `ParadoxScriptExpressionBlockMatchOptimizer` 中
 
 ### 2026-10-07
 
