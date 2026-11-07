@@ -89,7 +89,7 @@ For example, by viewing the reference documentation and configuration files (e.g
 ### Contributing Config Files
 
 Given the plugin's config-driven architecture, contributing config files is one of the most effective ways to improve support for specific games.
-Config files define the semantic information (definitions, corrections, scopes, effects, triggers, etc.) that drives code completion, code inspections, and information hints. Keeping them up to date directly improves the user experience for all users of that game.
+Config files define the semantic information (definitions, modifiers, scopes, effects, triggers, etc.) that drives code completion, code inspections, and information hints. Keeping them up to date directly improves the user experience for all users of that game.
 
 For reference, please read the [documentation for the config system](config.md), the [syntax reference manual](ref-syntax.md), and the [config format reference manual](ref-config-format.md).
 

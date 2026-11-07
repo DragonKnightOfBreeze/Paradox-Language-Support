@@ -196,7 +196,7 @@
 
 ## 2.1.3 - 2026-02-20
 
-- [x] 修复：修复解析生成的修正时来源没有排除匿名定义的问题 / FIX: Fixed a bug that the source of the correction was not excluded when parsing generated corrections
+- [x] 修复：修复解析生成的修正时来源没有排除匿名定义的问题 / FIX: Fixed a bug that the source of the modifier was not excluded when parsing generated modifiers
 - [x] 修复：修复条件块中的参数在调用时是否必须传入的判断逻辑的相关问题 / FIX: Fixed a bug that the parameters in the condition block were not correctly identified ([#272](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/272))
 - [x] 优化：格式化 CWT 文件时，`!=` `<>` 周围始终保留空格，避免格式化前后的语法不等效 / OP: Optimize the formatting of CWT files, always keep spaces around `!=` and `<>`, to avoid syntax inequality before and after formatting
 - [x] 优化：与重命名有关的相关优化与BUG修复 / OP: Optimizations and bug fixes related to renaming
