@@ -7,6 +7,11 @@
 - [ ] 分析与优化完成项目分析后的性能和内存占用 / Analyze and optimize performance and memory after finishing project analysis
 - [ ] 完善测试用例 / Improve test cases
 
+## 3.0.6
+
+- [x] 修复作用域链接（如 `owner = { ... }`）会被误报为“匹配多个存在冲突的规则”的BUG：子句中的规则均为别名引用时，块内容无法参与区分 / Fix the bug where a scope link (e.g. `owner = { ... }`) was reported as a conflicting expression: the block content could not distinguish the clauses when all of their configs are alias references ([#284](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/284))
+- [x] 修复别名规则声明处显式使用的 `==` 分隔符在内联后丢失的BUG，从而能够正确地检查比较运算符 / Fix the bug where the `==` separator explicitly used by an alias config was lost when inlining it, so that comparison operators can be checked correctly
+
 ## 3.0.5 - 2026-11-03
 
 - [x] 在快速文档中直接渲染片段的相关本地化 / Render related localisations directly in quick docs for snippets ([#432](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/432)) 
