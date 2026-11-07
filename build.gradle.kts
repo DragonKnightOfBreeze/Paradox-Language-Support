@@ -135,7 +135,7 @@ dependencies {
     }
 
     // Guava and fastutil are provided by the IntelliJ Platform at runtime; benchmarks run outside the IDE need them explicitly
-    jmh("com.google.guava:guava:33.2.1-jre")
+    jmh("com.google.guava:guava:33.7.2-jre")
     jmh("it.unimi.dsi:fastutil:8.5.19")
 
     // TwelveMonkeys - https://github.com/haraldk/TwelveMonkeys
@@ -171,7 +171,7 @@ dependencies {
     // Persistence
 
     // sqlite - https://github.com/xerial/sqlite-jdbc
-    runtimeOnly("org.xerial:sqlite-jdbc:3.53.4.0")
+    runtimeOnly("org.xerial:sqlite-jdbc:3.54.1.0")
     // ktorm - https://www.ktorm.org/
     implementation("org.ktorm:ktorm-core:4.2.1") {
         exclude(group = "org.jetbrains.kotlin")
@@ -190,8 +190,8 @@ dependencies {
     // Currently for reference only
 
     // byte-buddy - https://github.com/raphw/byte-buddy
-    testImplementation("net.bytebuddy:byte-buddy:1.18.14")
-    testImplementation("net.bytebuddy:byte-buddy-agent:1.18.14")
+    testImplementation("net.bytebuddy:byte-buddy:1.18.16")
+    testImplementation("net.bytebuddy:byte-buddy-agent:1.18.16")
 
     // jte - https://github.com/casid/jte
     testImplementation("gg.jte:jte:3.2.4")
