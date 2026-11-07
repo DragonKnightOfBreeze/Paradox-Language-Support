@@ -594,6 +594,40 @@
 - [x] P4 引入 `CancellableInputStream` 和 `CancellableOutputStream`
   - 可通过 `checker` 进行取消检查
 
+### v3.0.6 {#v3-0-6}
+
+> - 开始日期：2026-11-04
+> - 状态：进行中
+
+#### 概述
+
+核心的规则匹配逻辑的细节完善（BUG 修复），以及继续推进基础设施模块和图片处理模块的重构。
+
+#### 任务（主要）
+
+- [x] P1 修复作用域链接（如 `owner = { ... }`）会被误报为“匹配多个存在冲突的规则”的BUG ([#284](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/284))
+  - 触发条件：上游规则仓库（`cwtools-vic3-config`）新增了 `alias[trigger:scope_field] == { alias_name[arithmetic_operation] = alias_match_left[arithmetic_operation] }`，使得同一个作用域链接在触发器上下文中同时存在两个值为块的子句规则。
+  - 原因：`ParadoxMatchFactory.matchesBlock` 仅根据子句中的常量键（`CwtConfigManager.getWithinBlockKeys`）判断是否匹配。当子句中的规则全部是别名引用时，常量键为空，于是会认为任意块内容都能匹配，导致同一个表达式匹配到多个子句规则。
+  - 解决方案：无法根据常量键判断时，改为用块中的成员匹配子句规则，并且只接受可用作判断依据的匹配结果（排除通配符匹配、部分匹配和回退匹配）。空块的语义本身就是歧义的，仍然视为匹配。
+  - 补充测试（`Issue284Test`），同时修正 `Issue142Test` 中相关用例的预期（`var:test = { always = yes }` 的歧义可由块内容消解）。
+  - 参见：[ai-notes/solutions/conflicting-expression-false-positive-for-alias-clauses.md](../ai-notes/solutions/conflicting-expression-false-positive-for-alias-clauses.md)
+- [x] P2 修复别名规则声明处显式使用的 `==` 分隔符在内联后丢失的BUG
+  - 触发条件：以 `alias[trigger:some_clause] == { ... }` 的形式声明别名规则。`==` 表示匹配的脚本属性应使用比较运算符，而非赋值运算符。
+  - 原因：`CwtAliasConfig` 不暴露 `separatorType`，而 `CwtConfigInlineService.inlineAlias` 复制的是用法处（`alias_name[...] = alias_match_left[...]`）的分隔符，因此内联后的规则总是使用 `=`，`ParadoxSyntaxService.isComparisonOperatorValid` 无法对内联后的规则生效。
+  - 解决方案：`CwtAliasConfig` 暴露 `separatorType`（委托给底层的属性规则），内联时保留 `==`；其他情况仍沿用用法处的分隔符。
+  - 补充测试（`IncorrectSyntaxInspectionTest.comparisonOperator_semantic_alias`）。
+
+#### 任务（次要）
+
+- [ ] P3 引入 `Options`：适用于多个通用基础设施层的服务。
+  - 例如 `JsonOptions` `MarkdownOptions` `DownloadOptions` `IoOptions` 等。
+  - 用于在合适的范围内控制底层实现，以及额外的处理逻辑，并提供默认选项。
+- [ ] P2 重构 `ImageDescriptor` 和相关代码。
+  - 参见：[ideas.md](ideas.md) 中关于合并 `ImageRenderRequest` / `ParadoxImageResolveResult` 的记录。
+- [ ] P2 评估和优化图片读取、渲染和解析时的缓存策略。
+- [ ] P3 重构和改进 `ConvertImageFormatAction`：使用协程、读写分离、避免冻结 EDT、支持指定目标图片格式，等等。
+- [ ] P3 重构和改进 diagramProvider 和相关代码：使用协程、预先加载数据、避免冻结 EDT、考虑提取 presentationData，等等。
+
 ## 按主题 {#by-topic}
 
 ### merged-index-optimization
