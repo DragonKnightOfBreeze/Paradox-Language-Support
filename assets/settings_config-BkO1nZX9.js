@@ -1,0 +1,1 @@
+var e=`/Paradox-Language-Support/assets/settings_config-D2QRxMOC.png`;export{e as t};

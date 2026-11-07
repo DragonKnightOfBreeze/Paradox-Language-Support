@@ -1,0 +1,1 @@
+var e=`/Paradox-Language-Support/assets/settings_ai-D2J_ZhD9.png`;export{e as t};
