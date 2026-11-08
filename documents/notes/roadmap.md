@@ -458,7 +458,7 @@
 
 #### 任务（主要）
 
-- [x] P1 初步支持片段匹配，新增数据类型 `DefinitionSnippet` 和 `LocalisationSnippet`，以匹配作为完整的定义引用或本地化引用的一部分的字符串（数据表达式示例：`<sprite>|GFX_$` `localisation|$_desc`） ([#340](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/340) [#413](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/413))
+- [x] P1 初步支持片段匹配，新增数据类型 `DefinitionSnippet` 和 `LocalisationSnippet`，以匹配作为完整的定义引用或本地化引用的一部分的字符串（数据表达式示例：`<sprite>|GFX_$` `localisation|$_desc`） ([#340](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/340), [#413](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/413))
   - 参见：[#snippet-match](#snippet-match)
   - 参见：[adr/snippet-match.md](adr/snippet-match.md)
 - [x] P2 完善规则匹配逻辑，新增数据类型 `WildcardAny` 和 `WildcardLiteral`，作为特殊变体，当匹配候选项过多，或者无法进一步确定时使用（数据表达式：`$$any` `$$literal`）

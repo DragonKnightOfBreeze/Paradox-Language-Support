@@ -2,7 +2,7 @@
 
 > - 模块：后端 > 规则系统
 > - 状态：已变更，参见 [#snippet-match](##snippet-match)
-> - 相关问题：[#340](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/340) [#413](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/413)
+> - 相关问题：[#340](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/340), [#413](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/413)
 
 说明：
 - 支持 *位置感知的数据类型*，适用于定义和本地化的匹配（如 `localisation|$_name,$_desc`），并替换掉现有的 *后缀感知的数据类型* （如 `localisation|_name,_desc`）。
