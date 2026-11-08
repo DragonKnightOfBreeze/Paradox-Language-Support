@@ -1,14 +1,19 @@
 package icu.windea.pls.core.data
 
 import icu.windea.pls.core.util.io.UTF8_BOM
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.Serializable
 import org.junit.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  * @see JsonService
+ * @see JsonOptions
  */
 class JsonServiceTest {
     // region string
@@ -34,9 +39,18 @@ class JsonServiceTest {
         assert(text.contains("  \"key\": \"k\""))
     }
 
+    @Test
+    fun defaultOptionsTest() {
+        // DEFAULT 预设使用标准 JSON 配置，且默认跳过 UTF-8 BOM
+        assertFalse(JsonOptions.DEFAULT.isLenient)
+        assertFalse(JsonOptions.DEFAULT.allowTrailingComma)
+        assertFalse(JsonOptions.DEFAULT.allowComments)
+        assertTrue(JsonOptions.DEFAULT.skipUtf8Bom)
+    }
+
     @Suppress("JsonStandardCompliance")
     @Test
-    fun json5Test() {
+    fun json5OptionsTest() {
         val text = """
             {
               // line comment
@@ -46,6 +60,36 @@ class JsonServiceTest {
             }
         """.trimIndent()
 
+        val result = JsonService.read<Weapon>(text, JsonOptions.JSON5)
+        assertEquals(Weapon("Saber", "Sword", 180), result)
+    }
+
+    @Suppress("JsonStandardCompliance")
+    @Test
+    fun json5PresetTest() {
+        // JSON5 预设应在 DEFAULT 的基础上放开宽松模式、尾随逗号和注释
+        assertTrue(JsonOptions.JSON5.isLenient)
+        assertTrue(JsonOptions.JSON5.allowTrailingComma)
+        assertTrue(JsonOptions.JSON5.allowComments)
+        assertTrue(JsonOptions.JSON5.skipUtf8Bom)
+    }
+
+    @Suppress("JsonStandardCompliance")
+    @Test
+    fun standardJsonCannotParseCommentsWithDefaultOptionsTest() {
+        val text = """{name:"Saber",category:"Sword",attack:180}"""
+
+        assertFailsWith<SerializationException> {
+            JsonService.read<Weapon>(text, JsonOptions.DEFAULT)
+        }
+    }
+
+    @Suppress("JsonStandardCompliance")
+    @Test
+    fun json5CompatibilityOverloadTest() {
+        val text = """{name:"Saber",category:"Sword",attack:180}"""
+
+        // 保留的 json5: Boolean 兼容重载应等价于 JsonOptions.JSON5
         val result = JsonService.read<Weapon>(text, json5 = true)
         assertEquals(Weapon("Saber", "Sword", 180), result)
     }
@@ -56,6 +100,16 @@ class JsonServiceTest {
 
         val result = JsonService.read<Weapon>(text)
         assertEquals(Weapon("Saber", "Sword", 180), result)
+    }
+
+    @Test
+    fun readStringWithoutSkippingUtf8BomTest() {
+        val text = "\uFEFF" + """{"name":"Saber","category":"Sword","attack":180}"""
+
+        // skipUtf8Bom = false：不额外处理 BOM，解析应当失败
+        assertFailsWith<SerializationException> {
+            JsonService.read<Weapon>(text, JsonOptions(skipUtf8Bom = false))
+        }
     }
 
     // endregion
@@ -80,12 +134,23 @@ class JsonServiceTest {
     }
 
     @Test
-    fun readStreamJson5WithUtf8BomTest() {
+    fun readStreamWithUtf8BomAndJson5OptionsTest() {
         val text = """{name:"Saber",category:"Sword",attack:180}"""
         val bytes = UTF8_BOM + text.toByteArray()
 
-        val result = ByteArrayInputStream(bytes).use { JsonService.read<Weapon>(it, json5 = true) }
+        val result = ByteArrayInputStream(bytes).use { JsonService.read<Weapon>(it, JsonOptions.JSON5) }
         assertEquals(Weapon("Saber", "Sword", 180), result)
+    }
+
+    @Test
+    fun readStreamWithoutSkippingUtf8BomTest() {
+        val text = """{"name":"Saber","category":"Sword","attack":180}"""
+        val bytes = UTF8_BOM + text.toByteArray()
+
+        // skipUtf8Bom = false：不额外处理 BOM，解析应当失败
+        assertFailsWith<SerializationException> {
+            ByteArrayInputStream(bytes).use { JsonService.read<Weapon>(it, JsonOptions(skipUtf8Bom = false)) }
+        }
     }
 
     @Test
