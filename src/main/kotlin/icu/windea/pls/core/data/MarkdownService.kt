@@ -20,14 +20,18 @@ object MarkdownService {
     }
 
     fun toHtml(markdownText: String, options: MarkdownOptions = MarkdownOptions.DEFAULT): String {
-        val text = if (options.skipUtf8Bom) markdownText.withoutUtf8Bom() else markdownText
+        val text = markdownText.resolveWithUtf8Bom(options)
         val flavour = options.flavour
         val parser = options.resolveParser()
         val ast = parser.buildMarkdownTreeFromString(text)
         return HtmlGenerator(text, ast, flavour).generateHtml()
     }
 
-    private fun String.withoutUtf8Bom(): String {
+    private fun String.resolveWithUtf8Bom(options: MarkdownOptions): String {
+        return if (options.skipUtf8Bom) skipUtf8Bom() else this
+    }
+
+    private fun String.skipUtf8Bom(): String {
         return if (startsWith('\uFEFF')) substring(1) else this
     }
 }

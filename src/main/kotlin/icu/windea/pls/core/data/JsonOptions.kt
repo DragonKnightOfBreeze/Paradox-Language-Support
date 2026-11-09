@@ -32,10 +32,6 @@ data class JsonOptions(
         @JvmField val DEFAULT = JsonOptions()
 
         /** JSON5 模式：允许注释、尾随逗号和不带引号的键。 */
-        @JvmField val JSON5 = JsonOptions(
-            isLenient = true,
-            allowTrailingComma = true,
-            allowComments = true,
-        )
+        @JvmField val JSON5 = JsonOptions(isLenient = true, allowTrailingComma = true, allowComments = true)
     }
 }

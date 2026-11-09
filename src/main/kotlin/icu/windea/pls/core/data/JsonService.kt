@@ -24,6 +24,46 @@ import java.util.concurrent.ConcurrentHashMap
 object JsonService {
     private val formats = ConcurrentHashMap<JsonOptions, Json>()
 
+    /** 从输入流中读取 JSON，可通过 [JsonOptions.skipUtf8Bom] 兼容 UTF-8 BOM。 */
+    fun <T> read(serializer: DeserializationStrategy<T>, inputStream: InputStream, options: JsonOptions = JsonOptions.DEFAULT): T {
+        return options.resolveFormat().decodeFromStream(serializer, inputStream.resolveWithUtf8Bom(options))
+    }
+
+    /** 从输入流中读取 JSON，可通过 [JsonOptions.skipUtf8Bom] 兼容 UTF-8 BOM。 */
+    inline fun <reified T> read(inputStream: InputStream, options: JsonOptions = JsonOptions.DEFAULT): T {
+        return read(serializer(), inputStream, options)
+    }
+
+    /** 从字符串中读取 JSON，可通过 [JsonOptions.skipUtf8Bom] 兼容 UTF-8 BOM 字符。 */
+    fun <T> read(serializer: DeserializationStrategy<T>, text: String, options: JsonOptions = JsonOptions.DEFAULT): T {
+        return options.resolveFormat().decodeFromString(serializer, text.resolveWithUtf8Bom(options))
+    }
+
+    /** 从字符串中读取 JSON，可通过 [JsonOptions.skipUtf8Bom] 兼容 UTF-8 BOM 字符。 */
+    inline fun <reified T> read(text: String, options: JsonOptions = JsonOptions.DEFAULT): T {
+        return read(serializer(), text, options)
+    }
+
+    /** 将 JSON 写入输出流（不包含 BOM）。 */
+    fun <T> write(serializer: SerializationStrategy<T>, value: T, outputStream: OutputStream, options: JsonOptions = JsonOptions.DEFAULT) {
+        options.resolveFormat().encodeToStream(serializer, value, outputStream)
+    }
+
+    /** 将 JSON 写入输出流（不包含 BOM）。 */
+    inline fun <reified T> write(value: T, outputStream: OutputStream, options: JsonOptions = JsonOptions.DEFAULT) {
+        write(serializer(), value, outputStream, options)
+    }
+
+    /** 将 JSON 转为字符串。 */
+    fun <T> write(serializer: SerializationStrategy<T>, value: T, options: JsonOptions = JsonOptions.DEFAULT): String {
+        return options.resolveFormat().encodeToString(serializer, value)
+    }
+
+    /** 将 JSON 转为字符串。 */
+    inline fun <reified T> write(value: T, options: JsonOptions = JsonOptions.DEFAULT): String {
+        return write(serializer(), value, options)
+    }
+
     private fun JsonOptions.resolveFormat(): Json {
         format?.let { return it }
         return formats.computeIfAbsent(this) { options ->
@@ -40,100 +80,15 @@ object JsonService {
         }
     }
 
-    private fun InputStream.resolveUtf8Bom(options: JsonOptions): InputStream {
+    private fun InputStream.resolveWithUtf8Bom(options: JsonOptions): InputStream {
         return if (options.skipUtf8Bom) skipUtf8Bom() else this
     }
 
-    private fun String.resolveUtf8Bom(options: JsonOptions): String {
-        return if (options.skipUtf8Bom) withoutUtf8Bom() else this
+    private fun String.resolveWithUtf8Bom(options: JsonOptions): String {
+        return if (options.skipUtf8Bom) skipUtf8Bom() else this
     }
 
-    /** 从输入流中读取 JSON，可通过 [JsonOptions.skipUtf8Bom] 兼容 UTF-8 BOM。 */
-    fun <T> read(serializer: DeserializationStrategy<T>, inputStream: InputStream, options: JsonOptions = JsonOptions.DEFAULT): T {
-        return options.resolveFormat().decodeFromStream(serializer, inputStream.resolveUtf8Bom(options))
-    }
-
-    /** 从输入流中读取 JSON，可通过 [JsonOptions.skipUtf8Bom] 兼容 UTF-8 BOM。 */
-    inline fun <reified T> read(inputStream: InputStream, options: JsonOptions = JsonOptions.DEFAULT): T {
-        return read(serializer(), inputStream, options)
-    }
-
-    /** 从输入流中读取 JSON，可通过 [JsonOptions.skipUtf8Bom] 兼容 UTF-8 BOM。 */
-    fun <T> read(serializer: DeserializationStrategy<T>, inputStream: InputStream, json5: Boolean): T {
-        return read(serializer, inputStream, json5Options(json5))
-    }
-
-    /** 从输入流中读取 JSON，可通过 [JsonOptions.skipUtf8Bom] 兼容 UTF-8 BOM。 */
-    inline fun <reified T> read(inputStream: InputStream, json5: Boolean): T {
-        return read(serializer(), inputStream, json5Options(json5))
-    }
-
-    /** 从字符串中读取 JSON，可通过 [JsonOptions.skipUtf8Bom] 兼容 UTF-8 BOM 字符。 */
-    fun <T> read(serializer: DeserializationStrategy<T>, text: String, options: JsonOptions = JsonOptions.DEFAULT): T {
-        return options.resolveFormat().decodeFromString(serializer, text.resolveUtf8Bom(options))
-    }
-
-    /** 从字符串中读取 JSON，可通过 [JsonOptions.skipUtf8Bom] 兼容 UTF-8 BOM 字符。 */
-    inline fun <reified T> read(text: String, options: JsonOptions = JsonOptions.DEFAULT): T {
-        return read(serializer(), text, options)
-    }
-
-    /** 从字符串中读取 JSON，可通过 [JsonOptions.skipUtf8Bom] 兼容 UTF-8 BOM 字符。 */
-    fun <T> read(serializer: DeserializationStrategy<T>, text: String, json5: Boolean): T {
-        return read(serializer, text, json5Options(json5))
-    }
-
-    /** 从字符串中读取 JSON，可通过 [JsonOptions.skipUtf8Bom] 兼容 UTF-8 BOM 字符。 */
-    inline fun <reified T> read(text: String, json5: Boolean): T {
-        return read(serializer(), text, json5Options(json5))
-    }
-
-    /** 将 JSON 写入输出流（不包含 BOM）。 */
-    fun <T> write(serializer: SerializationStrategy<T>, value: T, outputStream: OutputStream, options: JsonOptions = JsonOptions.DEFAULT) {
-        options.resolveFormat().encodeToStream(serializer, value, outputStream)
-    }
-
-    /** 将 JSON 写入输出流（不包含 BOM）。 */
-    inline fun <reified T> write(value: T, outputStream: OutputStream, options: JsonOptions = JsonOptions.DEFAULT) {
-        write(serializer(), value, outputStream, options)
-    }
-
-    /** 将 JSON 写入输出流（不包含 BOM）。 */
-    fun <T> write(serializer: SerializationStrategy<T>, value: T, outputStream: OutputStream, json5: Boolean) {
-        write(serializer, value, outputStream, json5Options(json5))
-    }
-
-    /** 将 JSON 写入输出流（不包含 BOM）。 */
-    inline fun <reified T> write(value: T, outputStream: OutputStream, json5: Boolean) {
-        write(serializer(), value, outputStream, json5Options(json5))
-    }
-
-    /** 将 JSON 转为字符串。 */
-    fun <T> write(serializer: SerializationStrategy<T>, value: T, options: JsonOptions = JsonOptions.DEFAULT): String {
-        return options.resolveFormat().encodeToString(serializer, value)
-    }
-
-    /** 将 JSON 转为字符串。 */
-    inline fun <reified T> write(value: T, options: JsonOptions = JsonOptions.DEFAULT): String {
-        return write(serializer(), value, options)
-    }
-
-    /** 将 JSON 转为字符串。 */
-    fun <T> write(serializer: SerializationStrategy<T>, value: T, json5: Boolean): String {
-        return write(serializer, value, json5Options(json5))
-    }
-
-    /** 将 JSON 转为字符串。 */
-    inline fun <reified T> write(value: T, json5: Boolean): String {
-        return write(serializer(), value, json5Options(json5))
-    }
-
-    @PublishedApi
-    internal fun json5Options(json5: Boolean): JsonOptions {
-        return if (json5) JsonOptions.JSON5 else JsonOptions.DEFAULT
-    }
-
-    private fun String.withoutUtf8Bom(): String {
+    private fun String.skipUtf8Bom(): String {
         return if (startsWith('\uFEFF')) substring(1) else this
     }
 }

@@ -1,8 +1,8 @@
 package icu.windea.pls.core.data
 
 import icu.windea.pls.core.util.io.UTF8_BOM
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 import org.junit.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -90,7 +90,7 @@ class JsonServiceTest {
         val text = """{name:"Saber",category:"Sword",attack:180}"""
 
         // 保留的 json5: Boolean 兼容重载应等价于 JsonOptions.JSON5
-        val result = JsonService.read<Weapon>(text, json5 = true)
+        val result = JsonService.read<Weapon>(text, options = JsonOptions.JSON5)
         assertEquals(Weapon("Saber", "Sword", 180), result)
     }
 
