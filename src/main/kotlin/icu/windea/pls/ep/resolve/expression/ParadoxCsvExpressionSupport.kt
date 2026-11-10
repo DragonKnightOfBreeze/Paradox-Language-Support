@@ -25,7 +25,7 @@ import icu.windea.pls.script.psi.ParadoxScriptExpressionElement
  *
  * 用于实现代码高亮、引用解析、代码补全等语言功能。
  *
- * 注意：相比 [ParadoxCsvExpressionSupport]，仅支持有限的 [CwtDataType]。
+ * 注意：相比 [ParadoxScriptExpressionSupport]，仅支持有限的 [CwtDataType]。
  *
  * @see ParadoxExpressionElement
  * @see ParadoxScriptExpressionElement
