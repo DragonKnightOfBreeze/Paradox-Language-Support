@@ -66,9 +66,12 @@ This project uses **Gradle** and the **IntelliJ Platform Gradle Plugin**.
 
 ### Generating lexer and parser (Grammar-Kit & JFlex)
 
-- Official Gradle tasks (provided by `org.jetbrains.intellij.platform.grammarkit`): `generateLexer` (`GenerateLexerTask`) and `generateParser` (`GenerateParserTask`).
-- In this multi-grammar project (Script, Localisation, CSV, CWT, etc.), these default tasks are not bound to a single `sourceFile`, so calling them directly fails with `property 'sourceFile' doesn't have a configured value`.
-- Recommended generation methods:
+- The project registers named Gradle tasks for all grammars in `build.gradle.kts` (via `org.jetbrains.intellij.platform.grammarkit`). AI agents can run them directly from the CLI:
+  - `./gradlew generateGrammars --no-daemon --console=plain` - generate all lexers and parsers.
+  - `./gradlew generateLexers --no-daemon --console=plain` - generate all lexers only.
+  - `./gradlew generateParsers --no-daemon --console=plain` - generate all parsers only.
+- The official tasks `generateLexer` (`GenerateLexerTask`) and `generateParser` (`GenerateParserTask`) are still provided by the plugin, but their default instances are not bound to a single `sourceFile` in this multi-grammar project (Script, Localisation, CSV, CWT, etc.), so calling them directly fails with `property 'sourceFile' doesn't have a configured value`. Use the named or aggregate tasks above instead.
+- Alternative generation methods:
   1. In the IDE, right-click a `.bnf` file and choose **Generate Parser Code**, or right-click a `.flex` file and choose **Run JFlex Generator**.
   2. Use the standalone JFlex toolchain at the repository root: `java -jar jflex-1.10.17.jar --skel idea-flex.skeleton -d src/main/gen/<package_dir> <flex_file_path>`.
 

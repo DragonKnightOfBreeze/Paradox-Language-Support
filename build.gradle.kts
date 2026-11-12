@@ -1,8 +1,11 @@
 import icu.windea.pls.gradle.markdown.ChangelogSupport
 import icu.windea.pls.gradle.markdown.MarkdownSupport
+import org.jetbrains.intellij.platform.gradle.Constants.Configurations
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.extensions.excludeCoroutines
 import org.jetbrains.intellij.platform.gradle.extensions.excludeKotlinStdlib
+import org.jetbrains.intellij.platform.gradle.tasks.GenerateLexerTask
+import org.jetbrains.intellij.platform.gradle.tasks.GenerateParserTask
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -312,5 +315,78 @@ tasks {
         // Keep archive entry timestamps consistent with file write times (not normalized to a constant)
         // https://docs.gradle.org/current/userguide/working_with_files.html#sec:reproducible_archives
         isPreserveFileTimestamps = true
+    }
+
+    // Grammar-Kit & JFlex generation tasks
+    // The default `generateLexer` / `generateParser` tasks are not bound to a single source file
+    // in this multi-grammar project, so register named tasks for each grammar instead.
+
+    val lexerTasks = listOf(
+        "generateParadoxScriptLexer" to "src/main/kotlin/icu/windea/pls/script/ParadoxScript.flex",
+        "generateParadoxScriptInlineMathLexer" to "src/main/kotlin/icu/windea/pls/script/ParadoxScript.InlineMath.flex",
+        "generateParadoxLocalisationLexer" to "src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.flex",
+        "generateParadoxLocalisationTextLexer" to "src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.Text.flex",
+        "generateParadoxCsvLexer" to "src/main/kotlin/icu/windea/pls/csv/ParadoxCsv.flex",
+        "generateCwtLexer" to "src/main/kotlin/icu/windea/pls/cwt/Cwt.flex",
+    )
+    val parserTasks = listOf(
+        Triple(
+            "generateParadoxScriptParser",
+            "src/main/kotlin/icu/windea/pls/script/ParadoxScript.bnf",
+            "icu/windea/pls/script/parser/ParadoxScriptParser.java" to "icu/windea/pls/script/psi",
+        ),
+        Triple(
+            "generateParadoxLocalisationParser",
+            "src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.bnf",
+            "icu/windea/pls/localisation/parser/ParadoxLocalisationParser.java" to "icu/windea/pls/localisation/psi",
+        ),
+        Triple(
+            "generateParadoxCsvParser",
+            "src/main/kotlin/icu/windea/pls/csv/ParadoxCsv.bnf",
+            "icu/windea/pls/csv/parser/ParadoxCsvParser.java" to "icu/windea/pls/csv/psi",
+        ),
+        Triple(
+            "generateCwtParser",
+            "src/main/kotlin/icu/windea/pls/cwt/Cwt.bnf",
+            "icu/windea/pls/cwt/parser/CwtParser.java" to "icu/windea/pls/cwt/psi",
+        ),
+    )
+
+    lexerTasks.forEach { (taskName, sourcePath) ->
+        register<GenerateLexerTask>(taskName) {
+            group = "grammar kit"
+            sourceFile.set(file(sourcePath))
+            targetRootOutputDir.set(file("src/main/gen"))
+            purgeOldFiles.set(false)
+            skeleton.set(file("idea-flex.skeleton"))
+            classpath = classpath + configurations[Configurations.INTELLIJ_PLATFORM_JFLEX]
+        }
+    }
+    parserTasks.forEach { (taskName, sourcePath, outputPaths) ->
+        val (pathToParser, pathToPsiRoot) = outputPaths
+        register<GenerateParserTask>(taskName) {
+            group = "grammar kit"
+            sourceFile.set(file(sourcePath))
+            targetRootOutputDir.set(file("src/main/gen"))
+            purgeOldFiles.set(false)
+            this.pathToParser.set(pathToParser)
+            this.pathToPsiRoot.set(pathToPsiRoot)
+            classpath = classpath +
+                configurations[Configurations.INTELLIJ_PLATFORM_GRAMMAR_KIT] +
+                configurations[Configurations.INTELLIJ_PLATFORM_CLASSPATH]
+        }
+    }
+
+    register("generateLexers") {
+        group = "grammar kit"
+        dependsOn(lexerTasks.map { it.first })
+    }
+    register("generateParsers") {
+        group = "grammar kit"
+        dependsOn(parserTasks.map { it.first })
+    }
+    register("generateGrammars") {
+        group = "grammar kit"
+        dependsOn("generateLexers", "generateParsers")
     }
 }
