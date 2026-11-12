@@ -616,6 +616,11 @@
   - 原因：`CwtAliasConfig` 不暴露 `separatorType`，而 `CwtConfigInlineService.inlineAlias` 复制的是用法处（`alias_name[...] = alias_match_left[...]`）的分隔符，因此内联后的规则总是使用 `=`，`ParadoxSyntaxService.isComparisonOperatorValid` 无法对内联后的规则生效。
   - 解决方案：`CwtAliasConfig` 暴露 `separatorType`（委托给底层的属性规则），内联时保留 `==`；其他情况仍沿用用法处的分隔符。
   - 补充测试（`IncorrectSyntaxInspectionTest.comparisonOperator_semantic_alias`）。
+- [x] P2 修复 Victoria 3 本地化命令（如 `Concept` 数据函数）中使用引号转义修饰符 `|q` 时中断语法解析的BUG ([#451](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/451))
+  - 触发条件：在本地化命令（如 `[Concept('...','$loc_key|q$')]`）中，引用的本地化参数带有 `|q` 参数修饰符。
+  - 原因：`CommandTextChar` / `CommandTextBoundChar` 未排除 `$`，导致 `{CommandTextToken}` 因最长匹配吞入参数起始标记与名称，词法分析器未能进入 `IN_PARAMETER` 状态，随后 `|` 被误判为命令修饰符并连锁产生语法错误。此前命令内的普通参数也因此长期被扁平化为单一 `COMMAND_TEXT_TOKEN`。
+  - 解决方案：在 `ParadoxLocalisation.Text.flex` 中将 `$` 从命令文本字符集中排除，并使 `getFallbackToken()` 按当前词法状态返回合法 Token；补充回归测试与快照，确认命令内参数正确生成 `ParadoxLocalisationParameter` 子节点。
+  - 参见：[issues/issue-451-vic3-quote-escape-parser-break.md](issues/issue-451-vic3-quote-escape-parser-break.md)
 
 #### 任务（次要）
 
