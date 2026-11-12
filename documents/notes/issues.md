@@ -24,6 +24,7 @@
 - [ ] `scope[species]`应当始终可以匹配`this` - 如果无法准确匹配，需要直接匹配同类型的第一个规则 - 待验证
 - [x] 作用域上下文的内嵌提示显示有问题 - 应当显示在`possible = {`后面，且要求`{`之后不存在空白以外的字符
 - [x] `some_trigger = value`中的`value`不应当被特别高亮
+- [x] [\[Vic3\] New quote escape construct breaks the localization parser · Issue #451](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/451) - [分析](issues/issue-451-vic3-quote-escape-parser-break.md)
 
 ### 来自 CWTools 的 Github 仓库
 
