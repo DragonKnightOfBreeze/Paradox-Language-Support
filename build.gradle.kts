@@ -159,7 +159,7 @@ dependencies {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
-    implementation("dev.langchain4j:langchain4j-anthropic:1.22.0") {
+    implementation("dev.langchain4j:langchain4j-anthropic:1.23.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
