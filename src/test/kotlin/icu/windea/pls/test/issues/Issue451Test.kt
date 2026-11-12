@@ -30,7 +30,10 @@ import org.junit.runners.JUnit4
  * the longest-match race against the parameter start rule. The fallback token was also always
  * `TEXT_TOKEN`, which could make recovery harder inside command states.
  *
- * @see icu.windea.pls.localisation.ParadoxLocalisation.Text.flex
+ * see:
+ * - `src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.flex`
+ * - `src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.Text.flex`
+ *
  * @see icu.windea.pls.lang.util.ParadoxLocalisationArgumentManager
  */
 @RunWith(JUnit4::class)
