@@ -20,3 +20,5 @@ l_english:
  command_parameterized_1:0 "[a_$b$_c]"
  command_parameterized_2:0 "[$b$_c]"
  command_parameterized_3:0 "[a_$b$]"
+ command_parameterized_concept:0 "[Concept('concept_gate_magic_ethic','$concept_gate_magic_ethics|q$')]"
+ command_parameterized_with_argument:0 "[Root.GetName('$param|arg$')]"
