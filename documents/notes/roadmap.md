@@ -840,6 +840,12 @@
 
 - [ ] P2/MS 重构复杂表达式的 API，尤其是解析逻辑与校验逻辑。考虑将相关代码移到 `icu.windea.pls.expression`
 - [ ] P2/MS 优化对复杂表达式的支持：优化对动态链接节点中传入的字面量的处理逻辑
+- [x] P2/MS 本地化命令的词法防御机制与边界保护
+  - 维持文法层作为坚固、宽容的 AST 容器，从 `CommandTextChar` 中排除 `$` 并增加状态感知 fallback 容错，彻底解决参数起始标记被贪婪吞噬的问题，为上层复杂表达式提供安全干净的输入。
+  - 参见：[adr/localisation-command-lexical-defense.md](adr/localisation-command-lexical-defense.md)
+- [ ] P2/MS [VIC3/CK3] 本地化命令的高级复杂表达式与单引号字面量语义支持
+  - 在复杂表达式层（而非底层 JFlex/BNF）对 Jomini 本地化数据函数（如 `Concept(...)`、`SelectLocalization(...)`、`AddTextIf(...)`）及其单引号字符串实参进行结构化建模，支持单引号内特殊字符词法隔离、Concept 强引用解析、参数签名代码补全与语法检查。
+  - 参见：[adr/localisation-command-advanced-semantic-support.md](adr/localisation-command-advanced-semantic-support.md)
 
 ### macro-explanation
 

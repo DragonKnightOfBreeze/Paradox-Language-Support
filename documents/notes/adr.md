@@ -50,6 +50,7 @@
 - [字符边界相关](adr/localisation-syntax-character-edge-cases.md)
 - [字符串变体、标签与上下文标签](adr/localisation-syntax-grammatical.md)
 - [高级富文本](adr/localisation-syntax-advanced-rich-text.md)
+- [本地化命令的词法防御机制与边界保护](adr/localisation-command-lexical-defense.md)
 
 #### CSV 文件
 
@@ -133,6 +134,7 @@
 - [[CK3/VIC3/EU5] 完善对标签集表达式（tagsExpression）的支持](adr/tags-expression-support.md)
 - [完善对 CSV 文件与 rowConfig 的支持](adr/csv-and-row-config-support.md)
 - [支持内联定义](adr/inline-definition.md)
+- [[VIC3/CK3] 本地化命令的高级复杂表达式与单引号字面量语义支持](adr/localisation-command-advanced-semantic-support.md)
 
 #### 语言功能支持
 
