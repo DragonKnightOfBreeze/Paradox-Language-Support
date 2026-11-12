@@ -16,7 +16,7 @@ dependencies {
     // Provides the JMH Gradle plugin and its extension types
     implementation("me.champeau.jmh:me.champeau.jmh.gradle.plugin:0.7.3") // https://github.com/melix/jmh-gradle-plugin
     // Used to parse JMH JSON results
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1") // https://github.com/Kotlin/kotlinx.serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.12.0") // https://github.com/Kotlin/kotlinx.serialization
 }
 
 gradlePlugin {
