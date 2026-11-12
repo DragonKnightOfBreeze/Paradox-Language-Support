@@ -414,7 +414,7 @@
 - `createRootInfo(gameType, gameVersion)` - 创建注入的根信息。可用于额外指定游戏版本。
 - `markFileInfo(gameType, path, ...)` - （为后续配置的测试数据文件）注入文件信息。传入的路径相对于入口目录（其不一定同时是游戏或模组目录）。例如应直接传入 `events/test_events.txt`，而非传入 `game/events/test_events.txt`。参见 `ParadoxGameTypeMetadata`。
 - `VirtualFile.injectFileInfo(gameType, path, ...)` - （为当前的测试数据文件）注入文件信息。类似前者。
-- `initConfigGroups(project, ...gameTypes)` - 为指定的一组游戏类型初始化规则分组。使用注入的和内置的规则文件。通用的规则分组（`core`）总是会被初始化。
+- `initConfigGroups(project, ...gameTypes)` - 为指定的一组游戏类型初始化规则分组。使用注入的和内置的规则文件。通用的内置规则分组（`core`）总是会被初始化。
 
 对于需要注入上下文信息（如文件信息）或需要基于规则数据的平台测试：
 
