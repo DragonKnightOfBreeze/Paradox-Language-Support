@@ -1,0 +1,4 @@
+l_english:
+ target_loc_key:0 "Target"
+ with_quote_escape:0 "[Concept('concept_key', '$target_loc_key|q$')]"
+ without_quote_escape:0 "[Concept('concept_key', '$target_loc_key$')]"
