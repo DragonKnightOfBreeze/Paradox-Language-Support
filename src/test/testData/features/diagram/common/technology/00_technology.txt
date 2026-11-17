@@ -1,0 +1,11 @@
+tech_diagram_test = {
+    icon = "test_icon"
+    area = physics
+    tier = tier_1
+    cost = 100
+}
+
+tech_diagram_missing_icon = {
+    area = physics
+    cost = 10
+}

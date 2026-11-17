@@ -1,0 +1,10 @@
+spriteTypes = {
+    spriteType = {
+        name = "GFX_tech_entry_physics_bg"
+        textureFile = "gfx/interface/technologies/test_bg.png"
+    }
+    spriteType = {
+        name = "GFX_bottom_line_physics"
+        textureFile = "gfx/interface/technologies/test_bottom_line.png"
+    }
+}

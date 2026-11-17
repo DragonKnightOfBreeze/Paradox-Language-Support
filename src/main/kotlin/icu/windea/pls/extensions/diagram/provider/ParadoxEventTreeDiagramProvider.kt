@@ -20,13 +20,11 @@ import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.ChronicleIcons
 import icu.windea.pls.base.ChronicleModificationTrackers
 import icu.windea.pls.core.orAnonymous
-import icu.windea.pls.core.runSmartReadAction
-import icu.windea.pls.core.util.KeyRegistry
-import icu.windea.pls.core.util.getValue
-import icu.windea.pls.core.util.provideDelegate
-import icu.windea.pls.core.util.registerKey
 import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
 import icu.windea.pls.extensions.diagram.OrderedDiagramNodeContentManager
+import icu.windea.pls.extensions.diagram.ParadoxDefinitionDiagramNodeModel
+import icu.windea.pls.extensions.diagram.ParadoxDiagramPropertyItem
+import icu.windea.pls.extensions.diagram.getDiagramNodeModel
 import icu.windea.pls.extensions.diagram.settings.ParadoxEventTreeDiagramSettings
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.presentation.ParadoxDefinitionPresentationUtil
@@ -63,13 +61,8 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
 
     object Items {
         class Type(val text: String)
-        class Property(val property: ParadoxScriptProperty, val detail: Boolean)
+        class Property(val text: SimpleColoredText)
         class PresentableName(val text: String)
-    }
-
-    object Keys : KeyRegistry() {
-        val typeText by registerKey<String>(Keys)
-        val nameText by registerKey<String>(Keys)
     }
 
     private val _elementManager by lazy { ElementManager(this) }
@@ -100,35 +93,28 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     }
 
     class ElementManager(provider: ParadoxDefinitionDiagramProvider) : ParadoxDefinitionDiagramProvider.ElementManager(provider) {
-        // TODO 3.0.x preload more data to remove all `runSmartReadAction` here
-
         override fun isAcceptableAsNode(o: Any?): Boolean {
             return o is PsiDirectory || o is ParadoxScriptFile || o is ParadoxScriptProperty
         }
 
-        override fun getElementTitle(element: PsiElement): String? {
+        override fun getElementTitle(element: PsiElement, builder: DiagramBuilder): String? {
             ProgressManager.checkCanceled()
-            return when (element) {
-                is ParadoxScriptProperty -> runSmartReadAction { ParadoxEventManager.getName(element) }
-                else -> super.getElementTitle(element)
+            if (element is ParadoxScriptProperty) {
+                // 直接读取预加载的节点展示模型，无需读锁
+                return builder.getDiagramNodeModel(element)?.title
             }
+            return super.getElementTitle(element, builder)
         }
 
         override fun getNodeItems(nodeElement: PsiElement?, builder: DiagramBuilder): Array<Any> {
             ProgressManager.checkCanceled()
-            return when (nodeElement) {
-                is ParadoxScriptProperty -> {
-                    val result = mutableListOf<Any>()
-                    nodeElement.getUserData(Keys.typeText)?.let { result += Items.Type(it) }
-                    runSmartReadAction {
-                        val properties = ParadoxDefinitionPresentationUtil.getProperties(nodeElement, provider.getItemPropertyKeys())
-                        properties.forEach { result += Items.Property(it, it.name in provider.getItemPropertyKeysInDetail()) }
-                    }
-                    nodeElement.getUserData(Keys.nameText)?.let { result += Items.PresentableName(it) }
-                    result.toTypedArray()
-                }
-                else -> emptyArray()
-            }
+            if (nodeElement == null) return emptyArray()
+            val model = builder.getDiagramNodeModel(nodeElement) ?: return emptyArray()
+            val result = mutableListOf<Any>()
+            model.typeText?.let { result += Items.Type(it) }
+            model.properties.forEach { result += Items.Property(it.text) }
+            model.presentableName?.let { result += Items.PresentableName(it) }
+            return result.toTypedArray()
         }
 
         override fun getItemComponent(nodeElement: PsiElement, nodeItem: Any?, builder: DiagramBuilder): JComponent? {
@@ -147,10 +133,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                 is Items.Type -> {
                     SimpleColoredText(nodeItem.text, DEFAULT_TEXT_ATTR)
                 }
-                is Items.Property -> runSmartReadAction {
-                    val propertyText = ParadoxDefinitionPresentationUtil.getPropertyText(nodeItem.property, nodeItem.detail)
-                    propertyText
-                }
+                is Items.Property -> nodeItem.text
                 else -> null
             }
         }
@@ -255,16 +238,25 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             }
         }
 
+        /**
+         * 在读锁阶段一次性预加载节点的全部展示数据，避免渲染阶段再次访问 PSI 并加读锁。
+         */
         private fun preloadData(event: ParadoxDefinitionElement) {
             ProgressManager.checkCanceled()
-            run {
-                val result = event.definitionInfo?.typeText
-                event.putUserData(Keys.typeText, result)
+            val definitionInfo = event.definitionInfo
+            val keys = provider.getItemPropertyKeys()
+            val detailKeys = provider.getItemPropertyKeysInDetail()
+            val properties = ParadoxDefinitionPresentationUtil.getProperties(event, keys).map { property ->
+                ParadoxDiagramPropertyItem(ParadoxDefinitionPresentationUtil.getPropertyText(property, property.name in detailKeys))
             }
-            run {
-                val result = ParadoxDefinitionPresentationUtil.getNameText(event)
-                event.putUserData(Keys.nameText, result)
-            }
+            val model = ParadoxDefinitionDiagramNodeModel(
+                title = ParadoxEventManager.getName(event),
+                typeText = definitionInfo?.typeText,
+                presentableName = ParadoxDefinitionPresentationUtil.getNameText(event),
+                subtypes = definitionInfo?.subtypes?.toSet().orEmpty(),
+                properties = properties,
+            )
+            putNodeModel(event, model)
         }
 
         override fun getModificationTracker(): ModificationTracker {
