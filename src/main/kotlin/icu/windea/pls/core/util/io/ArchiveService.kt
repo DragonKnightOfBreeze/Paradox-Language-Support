@@ -24,17 +24,17 @@ import kotlin.io.path.outputStream
 object ArchiveService {
     private val logger = logger<ArchiveService>()
 
-    fun extract(archivePath: Path, targetDirectory: Path, type: ArchiveType, settings: ArchiveOptions = ArchiveOptions.DEFAULT) {
+    fun extract(archivePath: Path, targetDirectory: Path, type: ArchiveType, options: ArchiveOptions = ArchiveOptions.DEFAULT) {
         try {
             when (type) {
                 ArchiveType.None -> return
                 ArchiveType.Zip -> extractZip(archivePath, targetDirectory)
                 ArchiveType.TarGz -> extractTarGz(archivePath, targetDirectory)
-                ArchiveType.SevenZip -> extractSevenZip(archivePath, targetDirectory, settings)
+                ArchiveType.SevenZip -> extractSevenZip(archivePath, targetDirectory, options)
             }
         } finally {
             // ArchiveType.None 表示下载文件本身就是目标文件（例如 AppImage），此时不应删除（无论选项如何）
-            if (type != ArchiveType.None && settings.deleteArchiveAfterExtract) archivePath.deleteIfExists()
+            if (type != ArchiveType.None && options.deleteArchiveAfterExtract) archivePath.deleteIfExists()
         }
     }
 
@@ -76,13 +76,13 @@ object ArchiveService {
         }
     }
 
-    private fun extractSevenZip(archivePath: Path, targetDirectory: Path, settings: ArchiveOptions) {
+    private fun extractSevenZip(archivePath: Path, targetDirectory: Path, options: ArchiveOptions) {
         try {
             extractSevenZipWithCommons(archivePath, targetDirectory)
         } catch (e: IOException) {
             // Commons Compress 暂不支持部分 7z 的多输入/输出流编码器（例如 BCJ2），回退到外部 7z 工具
-            val sevenZip = settings.sevenZipPath?.takeIf { Files.isRegularFile(it) }
-                ?: (if (settings.allowExternalSevenZip) findSevenZipExecutable() else null)
+            val sevenZip = options.sevenZipPath?.takeIf { Files.isRegularFile(it) }
+                ?: (if (options.allowExternalSevenZip) findSevenZipExecutable() else null)
                 ?: throw e
             logger.info("Falling back to external 7z executable: $sevenZip")
             extractSevenZipWithCommand(sevenZip, archivePath, targetDirectory)
