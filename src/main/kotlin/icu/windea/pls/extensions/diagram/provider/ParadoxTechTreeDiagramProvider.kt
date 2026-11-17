@@ -216,6 +216,8 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
         override fun updateDataModel() {
             // 群星原版科技有400+
 
+            val showPresentation = nodeContentManager.isCategoryEnabled(Categories.Presentation)
+
             val title = ChronicleDiagramBundle.message("techTree.update.title")
             runWithModalProgressBlocking(project, title) action@{
                 reportSequentialProgress { sReporter ->
@@ -249,7 +251,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                     }
 
                     val step4 = ChronicleDiagramBundle.message("techTree.update.step.4", size)
-                    sReporter.nextStep(100, step4) {
+                    sReporter.nextStep(if (showPresentation) 75 else 100, step4) {
                         reportProgressScope(size) { reporter ->
                             technologies.forEach { technology ->
                                 reporter.itemStep {
@@ -261,7 +263,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
 
                     // 关键三段隔离（第三步）：读锁释放后，在无锁的后台线程中物化科技卡渲染资产。
                     // 仅当图形展示类别处于启用状态时才预物化；否则在元素管理器中被按需安全地懒物化。
-                    if (nodeContentManager.isCategoryEnabled(Categories.Presentation)) {
+                    if (showPresentation) {
                         val step5 = ChronicleDiagramBundle.message("techTree.update.step.5", size)
                         sReporter.nextStep(100, step5) {
                             reportProgressScope(size) { reporter ->

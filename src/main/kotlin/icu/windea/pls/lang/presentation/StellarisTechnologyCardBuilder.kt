@@ -27,9 +27,7 @@ import java.awt.Color
 import java.awt.Dimension
 import java.awt.Graphics
 import java.awt.Graphics2D
-import java.awt.Image
 import java.awt.RenderingHints
-import javax.swing.Icon
 import javax.swing.JComponent
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -39,7 +37,7 @@ import javax.swing.JPanel
  *
  * 为了消除 UI 冻结与读锁死锁，构建过程被拆分为三个互相隔离的阶段：
  * - [loadModel]：在读锁阶段加载纯数据呈现模型（[StellarisTechnologyCardPresentationModel]）。
- * - [materializeAssets]：在**无锁**的 `Dispatchers.IO` 阶段物化渲染资产（[StellarisTechnologyCardAssets]）。
+ * - [materializeAssets]：在**无锁**阶段物化渲染资产（[StellarisTechnologyCardAssets]）。
  * - [build]：在纯内存、零锁、零 IO 的情况下组装 Swing 组件。
  *
  * @see StellarisTechnologyCardPresentationModel
@@ -100,19 +98,13 @@ class StellarisTechnologyCardBuilder(
     /**
      * 在**无锁**的后台线程中物化科技卡渲染资产。
      *
-     * 调用方必须确保当前不在 EDT 且不在读锁中，通常应当是 `Dispatchers.IO`。
+     * 调用方必须确保当前不在 EDT 且不在读锁中，且协程上下文通常应当是 `Dispatchers.IO`。
+     *
      * 如果关键图标（[StellarisTechnologyCardAssets.icon]）无法物化，返回 `null`。
      */
     suspend fun materializeAssets(model: StellarisTechnologyCardPresentationModel): StellarisTechnologyCardAssets? {
         return withContext(Dispatchers.IO) {
-            val indicator = ProgressManager.getInstance().progressIndicator ?: EmptyProgressIndicator()
-            ProgressManager.getInstance().runProcess<StellarisTechnologyCardAssets?>({
-                val icon = model.iconDescriptor.createImageIcon()?.resize(52, 52) ?: return@runProcess null
-                val categoryIcon = model.categoryIconDescriptor?.createImageIcon()?.resize(30, 30)
-                val backgroundImage = model.backgroundIconDescriptor.createImage()
-                val bottomLineImage = model.bottomLineIconDescriptor.createImage()
-                StellarisTechnologyCardAssets(icon, categoryIcon, backgroundImage, bottomLineImage)
-            }, indicator)
+            materializeAssetsInternal(model)
         }
     }
 
@@ -124,8 +116,20 @@ class StellarisTechnologyCardBuilder(
     fun materializeAssetsBlocking(model: StellarisTechnologyCardPresentationModel): StellarisTechnologyCardAssets? {
         val indicator = ProgressManager.getInstance().progressIndicator ?: EmptyProgressIndicator()
         return ProgressManager.getInstance().runProcess<StellarisTechnologyCardAssets?>({
-            runBlockingCancellable { materializeAssets(model) }
+            runBlockingCancellable {
+                withContext(Dispatchers.IO) {
+                    materializeAssetsInternal(model)
+                }
+            }
         }, indicator)
+    }
+
+    private fun materializeAssetsInternal(model: StellarisTechnologyCardPresentationModel): StellarisTechnologyCardAssets? {
+        val icon = model.iconDescriptor.createImageIcon()?.resize(52, 52) ?: return null
+        val categoryIcon = model.categoryIconDescriptor?.createImageIcon()?.resize(30, 30)
+        val backgroundImage = model.backgroundIconDescriptor.createImage()
+        val bottomLineImage = model.bottomLineIconDescriptor.createImage()
+        return StellarisTechnologyCardAssets(icon, categoryIcon, backgroundImage, bottomLineImage)
     }
 
     /**
