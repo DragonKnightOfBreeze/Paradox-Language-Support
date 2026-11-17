@@ -76,6 +76,8 @@
     <group id="Pls.Images.ConvertGroup">
       <separator/>
       <action id="Pls.ConvertImageFormatToPng" class="icu.windea.pls.images.actions.ConvertImageFormatActions$Png"/>
+      <action id="Pls.ConvertImageFormatToJpg" class="icu.windea.pls.images.actions.ConvertImageFormatActions$Jpg"/>
+      <action id="Pls.ConvertImageFormatToGif" class="icu.windea.pls.images.actions.ConvertImageFormatActions$Gif"/>
       <action id="Pls.ConvertImageFormatToDds" class="icu.windea.pls.images.actions.ConvertImageFormatActions$Dds"/>
       <action id="Pls.ConvertImageFormatToTga" class="icu.windea.pls.images.actions.ConvertImageFormatActions$Tga"/>
       <separator/>

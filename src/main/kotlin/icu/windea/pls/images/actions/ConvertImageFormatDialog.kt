@@ -54,7 +54,7 @@ class ConvertImageFormatDialog(
     // （输入框）文件名
     // （文件路径输入框）目标目录
 
-    override fun createCenterPanel(): DialogPanel {
+    public override fun createCenterPanel(): DialogPanel {
         return panel {
             row {
                 val text = when {
@@ -92,7 +92,7 @@ class ConvertImageFormatDialog(
 
     private fun initNewFileNameField(): EditorTextField {
         val newFileName = defaultNewFileName.orEmpty()
-        val newFileNameField = EditorTextField()
+        val newFileNameField = EditorTextField().also { this.newFileNameField = it }
         newFileNameField.text = newFileName
         newFileNameField.editor.let { editor ->
             if (editor != null) {

@@ -13,6 +13,21 @@ interface ConvertImageFormatActions {
         }
     }
 
+    class Jpg : ConvertImageFormatAction("JPG") {
+        override fun isAvailableForFile(file: VirtualFile): Boolean {
+            val extension = file.extension?.lowercase()
+            if (extension == "jpg" || extension == "jpeg") return false
+            return super.isAvailableForFile(file)
+        }
+    }
+
+    class Gif : ConvertImageFormatAction("GIF") {
+        override fun isAvailableForFile(file: VirtualFile): Boolean {
+            if (file.extension?.lowercase() == "gif") return false
+            return super.isAvailableForFile(file)
+        }
+    }
+
     class Dds : ConvertImageFormatAction("DDS") {
         override fun isAvailableForFile(file: VirtualFile): Boolean {
             if (file.fileType === DdsFileType) return false
