@@ -27,9 +27,17 @@ data class IntRangeInfo(
     override val openStart: Boolean,
     override val openEnd: Boolean
 ) : RangeInfo<Int> {
-    private val prefix = if (openStart) "(" else "["
-    private val suffix = if (openEnd) ")" else "]"
+    val prefix = if (openStart) "(" else "["
+    val suffix = if (openEnd) ")" else "]"
+
     override val expression: String = "$prefix$start..$end$suffix"
+
+    /**
+     * 进行规范化处理（去重）。
+     */
+    fun normalize(): IntRangeInfo {
+        return interner.intern(this)
+    }
 
     override fun contains(value: Int): Boolean {
         val r1 = when {
@@ -48,13 +56,6 @@ data class IntRangeInfo(
     }
 
     override fun toString() = expression
-
-    /**
-     * 进行规范化处理（去重）。
-     */
-    fun normalize(): IntRangeInfo {
-        return interner.intern(this)
-    }
 
     companion object {
         private val interner = Interner.newWeakInterner<IntRangeInfo>()
@@ -92,9 +93,17 @@ data class FloatRangeInfo(
     override val openStart: Boolean,
     override val openEnd: Boolean
 ) : RangeInfo<Float> {
-    private val prefix = if (openStart) "(" else "["
-    private val suffix = if (openEnd) ")" else "]"
+    val prefix = if (openStart) "(" else "["
+    val suffix = if (openEnd) ")" else "]"
+
     override val expression: String = "$prefix$start..$end$suffix"
+
+    /**
+     * 进行规范化处理（去重）。
+     */
+    fun normalize(): FloatRangeInfo {
+        return interner.intern(this)
+    }
 
     override fun contains(value: Float): Boolean {
         val r1 = when {
@@ -113,13 +122,6 @@ data class FloatRangeInfo(
     }
 
     override fun toString() = expression
-
-    /**
-     * 进行规范化处理（去重）。
-     */
-    fun normalize(): FloatRangeInfo {
-        return interner.intern(this)
-    }
 
     companion object {
         private val interner = Interner.newWeakInterner<FloatRangeInfo>()

@@ -40,6 +40,13 @@ data class UnaryTemplateInfo(
     val prefix: String = expression.substringBefore(placeholder)
     val suffix: String = expression.substringAfter(placeholder)
 
+    /**
+     * 进行规范化处理（去重）。
+     */
+    fun normalize(): UnaryTemplateInfo {
+        return interner.intern(this)
+    }
+
     override fun extract(text: String): String? {
         if (text.length < prefix.length + suffix.length) return null
         if (!text.startsWith(prefix)) return null
@@ -52,13 +59,6 @@ data class UnaryTemplateInfo(
     }
 
     override fun toString(): String = expression
-
-    /**
-     * 进行规范化处理（去重）。
-     */
-    fun normalize(): UnaryTemplateInfo {
-        return interner.intern(this)
-    }
 
     companion object {
         private val interner = Interner.newWeakInterner<UnaryTemplateInfo>()
