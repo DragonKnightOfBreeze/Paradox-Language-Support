@@ -831,3 +831,8 @@
 
 - [ ] 3.1.0~ 完善 GitHub 工作流（Issue 模板、标签模板，等等）
 - [ ] 3.1.0~ 完善 AI 代理工作流（Issue/PR 监听、自动编写维护者文档，等等）
+
+## 2026-11-18
+
+- [ ] 3.1.x 暴露更多工具动作作为 run configuration
+- [ ] 3.1.x 重构 `extensions.diagram`：将核心逻辑提取到语义层的 `lang.diagram` `lang.graph` 等，`diagramProvider` 等尽可能仅保留作为门面和桥接
