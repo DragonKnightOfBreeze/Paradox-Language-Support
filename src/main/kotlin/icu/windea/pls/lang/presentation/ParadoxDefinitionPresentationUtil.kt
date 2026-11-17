@@ -59,7 +59,9 @@ object ParadoxDefinitionPresentationUtil {
     }
 
     fun getPropertyText(property: ParadoxScriptProperty, detail: Boolean = false): SimpleColoredText {
-        val renderer = ParadoxScriptTextPlainRenderer().apply { settings.renderInBlock = detail }
+        val renderer = ParadoxScriptTextPlainRenderer()
+        renderer.settings.renderInBlock = detail
+        renderer.settings.multiline = false
         val rendered = renderer.render(property)
         val propertyText = SimpleColoredText(rendered, DiagramElementManager.DEFAULT_TEXT_ATTR)
         val propertyValue = property.propertyValue
