@@ -79,6 +79,8 @@
 - [提供轻量化的推流（push stream）](adr/push-stream.md)
 - [优化命令行执行逻辑和图片处理逻辑](adr/command-line-and-image-processing-optimization.md)
 - [重构 JSON 服务，提供统一入口，额外兼容 UTF-8 BOM](adr/json-service-refactoring.md)
+- [统一 IO 与下载选项体系、引入可监视流及重试机制](adr/io-and-download-options-unification.md)
+- [统一 `ImageDescriptor` 模型并分离图片层与语义层职责](adr/image-descriptor-unification.md)
 
 #### 插件基础设施
 

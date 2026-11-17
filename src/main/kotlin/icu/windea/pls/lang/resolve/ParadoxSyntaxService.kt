@@ -108,6 +108,8 @@ object ParadoxSyntaxService {
      */
     fun isComparisonOperatorValid(element: ParadoxScriptProperty): Boolean? {
         // TODO 2.1.4+ further verification and optimization for config files (mainly `triggers.cwt`) is needed
+        // NOTE 3.0.6 [A3] 评估结论：旧作与部分规则仓（CK2/Vic2/EU4 等）几乎未标注 `==`，
+        //  因此不在规则匹配层默认硬启用，保持当前仅在显式开启 `checkComparisonOperators` 时用于代码检查
         if (!ChronicleConfigSettings.getInstance().state.features.checkComparisonOperators) return null
 
         // NOTE 2.1.4 所在属性对应的匹配的规则，不一定在触发器子句规则之内
