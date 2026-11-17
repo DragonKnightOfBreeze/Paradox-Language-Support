@@ -15,12 +15,7 @@ import icu.windea.pls.model.ParadoxGameType
 
 @ForGameType(ParadoxGameType.Vic3)
 class Vic3EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Vic3) {
-    object Constants {
-        const val id = "Vic3.EventTree"
-        val itemPropertyKeys = listOf("picture", "icon", "left_icon", "right_icon", "minor_left_icon", "minor_right_icon", "gui_window")
-    }
-
-    override fun getID() = Constants.id
+    override fun getID() = Constants.ID
 
     override fun getPresentableName() = ChronicleDiagramBundle.message("eventTree.name.vic3")
 
@@ -33,7 +28,7 @@ class Vic3EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
     class DataModel(
         project: Project,
         file: VirtualFile?, // umlFile
-        override val provider: Vic3EventTreeDiagramProvider
+        override val provider: Vic3EventTreeDiagramProvider,
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
         override fun showNode(definition: ParadoxDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
             if (settings !is Vic3EventTreeDiagramSettings.State) return true
@@ -44,5 +39,11 @@ class Vic3EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
             if (!showNodeBySettings(settings.attribute, definitionInfo.subtypes)) return false
             return true
         }
+    }
+
+    object Constants {
+        const val ID = "Vic3.EventTree"
+
+        val itemPropertyKeys = listOf("picture", "icon", "left_icon", "right_icon", "minor_left_icon", "minor_right_icon", "gui_window")
     }
 }

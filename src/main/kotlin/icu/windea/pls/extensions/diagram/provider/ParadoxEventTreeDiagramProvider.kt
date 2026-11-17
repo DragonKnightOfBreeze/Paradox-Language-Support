@@ -45,26 +45,6 @@ import javax.swing.JComponent
  * - 支持任何通用的图表操作。（例如，导出为图片）
  */
 abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : ParadoxDefinitionDiagramProvider(gameType) {
-    object Categories {
-        val Type = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.type"), ChronicleIcons.Nodes.Type, true, false)
-        val Properties = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.properties"), ChronicleIcons.Nodes.Property, true, false)
-        val PresentableName = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.presentableName"), ChronicleIcons.Nodes.Localisation, false, false)
-
-        val All = arrayOf(Type, Properties, PresentableName)
-    }
-
-    object Relations {
-        val Invoke = object : DiagramRelationshipInfoAdapter("INVOKE", DiagramLineType.SOLID, ChronicleDiagramBundle.message("eventTree.rel.invoke")) {
-            override fun getTargetArrow() = DELTA
-        }
-    }
-
-    object Items {
-        class Type(val text: String)
-        class Property(val text: SimpleColoredText)
-        class PresentableName(val text: String)
-    }
-
     private val _elementManager by lazy { ElementManager(this) }
 
     override fun createNodeContentManager() = NodeContentManager()
@@ -151,7 +131,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
     abstract class DataModel(
         project: Project,
         file: VirtualFile?, // umlFile
-        provider: ParadoxDefinitionDiagramProvider
+        provider: ParadoxDefinitionDiagramProvider,
     ) : ParadoxDefinitionDiagramProvider.DataModel(project, file, provider) {
         val definitionType = ParadoxDefinitionTypes.event
         private val nodeMap = mutableMapOf<ParadoxDefinitionElement, Node>()
@@ -263,5 +243,25 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
             val configGroup = ChronicleFacade.getConfigGroup(project, provider.gameType)
             return ChronicleModificationTrackers.scriptFileFromDefinitionTypes(configGroup, definitionType)
         }
+    }
+
+    object Categories {
+        val Type = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.type"), ChronicleIcons.Nodes.Type, true, false)
+        val Properties = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.properties"), ChronicleIcons.Nodes.Property, true, false)
+        val PresentableName = DiagramCategory(ChronicleDiagramBundle.lazyMessage("eventTree.category.presentableName"), ChronicleIcons.Nodes.Localisation, false, false)
+
+        val All = arrayOf(Type, Properties, PresentableName)
+    }
+
+    object Relations {
+        val Invoke = object : DiagramRelationshipInfoAdapter("INVOKE", DiagramLineType.SOLID, ChronicleDiagramBundle.message("eventTree.rel.invoke")) {
+            override fun getTargetArrow() = DELTA
+        }
+    }
+
+    object Items {
+        class Type(val text: String)
+        class Property(val text: SimpleColoredText)
+        class PresentableName(val text: String)
     }
 }

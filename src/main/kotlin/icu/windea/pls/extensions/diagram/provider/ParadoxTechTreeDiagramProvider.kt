@@ -55,35 +55,6 @@ import javax.swing.JComponent
  * - 支持任何通用的图表操作。（例如，导出为图片）
  */
 abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : ParadoxDefinitionDiagramProvider(gameType) {
-    object Categories {
-        val Type = DiagramCategory(ChronicleDiagramBundle.lazyMessage("techTree.category.type"), ChronicleIcons.Nodes.Type, true, false)
-        val Properties = DiagramCategory(ChronicleDiagramBundle.lazyMessage("techTree.category.properties"), ChronicleIcons.Nodes.Property, true, false)
-        val PresentableName = DiagramCategory(ChronicleDiagramBundle.lazyMessage("techTree.category.presentableName"), ChronicleIcons.Nodes.Localisation, false, false)
-        val Presentation = DiagramCategory(ChronicleDiagramBundle.lazyMessage("techTree.category.presentation"), ChronicleIcons.General.Presentation, false, false)
-
-        val All = arrayOf(Type, Properties, PresentableName, Presentation)
-    }
-
-    object Relations {
-        val Prerequisite = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID) {
-            override fun getTargetArrow() = DELTA
-        }
-
-        private val repeatCache = ConcurrentHashMap<String, DiagramRelationshipInfoAdapter>()
-        fun Repeat(label: String) = repeatCache.getOrPut(label) {
-            object : DiagramRelationshipInfoAdapter("REPEAT", DiagramLineType.DOTTED, label) {
-                override fun getTargetArrow() = DELTA
-            }
-        }
-    }
-
-    object Items {
-        class Type(val text: String)
-        class Property(val text: SimpleColoredText)
-        class PresentableName(val text: String)
-        class Presentation(val model: ParadoxDefinitionDiagramNodeModel)
-    }
-
     private val _elementManager by lazy { ElementManager(this) }
 
     override fun createNodeContentManager() = NodeContentManager()
@@ -389,5 +360,34 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
             val configGroup = ChronicleFacade.getConfigGroup(project, provider.gameType)
             return ChronicleModificationTrackers.scriptFileFromDefinitionTypes(configGroup, definitionType)
         }
+    }
+
+    object Categories {
+        val Type = DiagramCategory(ChronicleDiagramBundle.lazyMessage("techTree.category.type"), ChronicleIcons.Nodes.Type, true, false)
+        val Properties = DiagramCategory(ChronicleDiagramBundle.lazyMessage("techTree.category.properties"), ChronicleIcons.Nodes.Property, true, false)
+        val PresentableName = DiagramCategory(ChronicleDiagramBundle.lazyMessage("techTree.category.presentableName"), ChronicleIcons.Nodes.Localisation, false, false)
+        val Presentation = DiagramCategory(ChronicleDiagramBundle.lazyMessage("techTree.category.presentation"), ChronicleIcons.General.Presentation, false, false)
+
+        val All = arrayOf(Type, Properties, PresentableName, Presentation)
+    }
+
+    object Relations {
+        val Prerequisite = object : DiagramRelationshipInfoAdapter("PREREQUISITE", DiagramLineType.SOLID) {
+            override fun getTargetArrow() = DELTA
+        }
+
+        private val repeatCache = ConcurrentHashMap<String, DiagramRelationshipInfoAdapter>()
+        fun Repeat(label: String) = repeatCache.getOrPut(label) {
+            object : DiagramRelationshipInfoAdapter("REPEAT", DiagramLineType.DOTTED, label) {
+                override fun getTargetArrow() = DELTA
+            }
+        }
+    }
+
+    object Items {
+        class Type(val text: String)
+        class Property(val text: SimpleColoredText)
+        class PresentableName(val text: String)
+        class Presentation(val model: ParadoxDefinitionDiagramNodeModel)
     }
 }

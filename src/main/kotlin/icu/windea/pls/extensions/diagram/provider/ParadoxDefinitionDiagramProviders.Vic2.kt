@@ -13,14 +13,8 @@ import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.model.ParadoxGameType
 
-
 @ForGameType(ParadoxGameType.Vic2)
 class Vic2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Vic2) {
-    object Constants {
-        const val ID = "Vic2.EventTree"
-        val itemPropertyKeys = listOf("picture")
-    }
-
     override fun getID() = Constants.ID
 
     override fun getPresentableName() = ChronicleDiagramBundle.message("eventTree.name.vic2")
@@ -34,7 +28,7 @@ class Vic2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
     class DataModel(
         project: Project,
         file: VirtualFile?, // umlFile
-        override val provider: Vic2EventTreeDiagramProvider
+        override val provider: Vic2EventTreeDiagramProvider,
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
         override fun showNode(definition: ParadoxDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
             if (settings !is Vic2EventTreeDiagramSettings.State) return true
@@ -45,5 +39,10 @@ class Vic2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
             if (!showNodeBySettings(settings.attribute, definitionInfo.subtypes)) return false
             return true
         }
+    }
+
+    object Constants {
+        const val ID = "Vic2.EventTree"
+        val itemPropertyKeys = listOf("picture")
     }
 }

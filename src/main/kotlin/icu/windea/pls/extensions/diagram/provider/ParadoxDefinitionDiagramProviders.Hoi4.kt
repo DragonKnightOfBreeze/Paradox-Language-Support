@@ -15,11 +15,6 @@ import icu.windea.pls.model.ParadoxGameType
 
 @ForGameType(ParadoxGameType.Hoi4)
 class Hoi4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Hoi4) {
-    object Constants {
-        const val ID = "Hoi4.EventTree"
-        val itemPropertyKeys = listOf("picture")
-    }
-
     override fun getID() = Constants.ID
 
     override fun getPresentableName() = ChronicleDiagramBundle.message("eventTree.name.hoi4")
@@ -33,7 +28,7 @@ class Hoi4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
     class DataModel(
         project: Project,
         file: VirtualFile?, // umlFile
-        override val provider: Hoi4EventTreeDiagramProvider
+        override val provider: Hoi4EventTreeDiagramProvider,
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
         override fun showNode(definition: ParadoxDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
             if (settings !is Hoi4EventTreeDiagramSettings.State) return true
@@ -44,5 +39,11 @@ class Hoi4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGame
             if (!showNodeBySettings(settings.attribute, definitionInfo.subtypes)) return false
             return true
         }
+    }
+
+    object Constants {
+        const val ID = "Hoi4.EventTree"
+
+        val itemPropertyKeys = listOf("picture")
     }
 }
