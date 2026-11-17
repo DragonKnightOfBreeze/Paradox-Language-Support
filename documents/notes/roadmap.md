@@ -624,14 +624,21 @@
 
 #### 任务（次要）
 
-- [ ] P3 引入 `Options`：适用于多个通用基础设施层的服务。
-  - 例如 `JsonOptions` `MarkdownOptions` `DownloadOptions` `IoOptions` 等。
-  - 用于在合适的范围内控制底层实现，以及额外的处理逻辑，并提供默认选项。
-- [ ] P2 重构 `ImageDescriptor` 和相关代码。
-  - 参见：[ideas.md](ideas.md) 中关于合并 `ImageRenderRequest` / `ParadoxImageResolveResult` 的记录。
+- [x] P3 引入 `Options`：适用于多个通用基础设施层的服务。
+  - 落地 `JsonOptions`、`MarkdownOptions`、`IoOptions`（含正交可监视流 `MonitorableInputStream`/`OutputStream`），统一 `IoService`/`ArchiveService`/`DownloadService` 参数为 `options`，并为 `DownloadOptions` 与 `DownloadService` 补充默认 3 次重试、`.part` 原子落位及实时进度详情。
+  - 参见：[adr/io-and-download-options-unification.md](adr/io-and-download-options-unification.md)
+- [x] P2 重构 `ImageDescriptor` 和相关代码。
+  - 将语义层的 `ParadoxImageResolveResult` 与图片层的 `ImageRenderRequest` 统一收敛为 `ImageDescriptor`（区分 `Direct` / `Delegated` 策略），将 `canResolve`/`resolveUrl` 迁入 `ImageRenderService`，保持 `lang -> images` 单向依赖；同步完成 `CwtSeparatorType.DoubleEqual` 默认匹配影响评估（维持不默认硬过滤）。
+  - 参见：[adr/image-descriptor-unification.md](adr/image-descriptor-unification.md)
 - [ ] P2 评估和优化图片读取、渲染和解析时的缓存策略。
-- [ ] P3 重构和改进 `ConvertImageFormatAction`：使用协程、读写分离、避免冻结 EDT、支持指定目标图片格式，等等。
-- [ ] P3 重构和改进 diagramProvider 和相关代码：使用协程、预先加载数据、避免冻结 EDT、考虑提取 presentationData，等等。
+  - [ ] 避免每次物化资产时都实际创建图片/图标（级联衍生自图表与科技卡重构，需结合内存缓存、`Image`/`Icon` 复用与 HiDPI 适配统筹评估）。
+- [x] P3 重构和改进 `ConvertImageFormatAction`：使用协程、读写分离、避免冻结 EDT、支持指定目标图片格式，等等。
+  - 完成四阶段协程化分离（EDT 交互 → `readAction` 与冲突预问 → 无锁 `Dispatchers.IO` 经带目标后缀临时文件转码 → 短暂 `edtWriteAction` 落位），补齐 `PNG / JPG / GIF / DDS / TGA` 五格式动作，顺带修复 `ConvertImageFormatDialog` 文件名字段未赋值的历史 BUG，并补充端到端动作与线程锁测试。
+  - 参见：[adr/image-action-and-diagram-async-isolation.md](adr/image-action-and-diagram-async-isolation.md)
+- [x] P3 重构和改进 diagramProvider 和相关代码：使用协程、预先加载数据、避免冻结 EDT、考虑提取 presentationData，等等。
+  - 移除 `ParadoxDiagramDataModel.refreshDataModel()` 外层 `runSmartReadAction` 消除死锁根因；提取轻量 `ParadoxDefinitionDiagramNodeModel` 与 `StellarisTechnologyCardPresentationModel` / `Assets`，清零 `ElementManager` 与 `ColorManager` 读锁及 EDT 同步阻塞，并实现按需预物化与展示刷新合并；人工验证已确认不冻结 UI（Diagram 插件自身仍偶发微妙异常，留待版本收尾时一并审视）。
+  - 参见：[adr/image-action-and-diagram-async-isolation.md](adr/image-action-and-diagram-async-isolation.md)
+- [ ] P3 改进 GitHub 自动发布工作流（新增或拆分手动与条件式 Pre-release 自动发布流程，与插件市场正式发布解耦）。
 
 ## 按主题 {#by-topic}
 
@@ -796,6 +803,7 @@
   - 对于展示名字、相关本地化、相关图片，存在不同的适用目标和不同的来源策略，考虑提供对应的EP。
   - 相关代码应主要位于 `icu.windea.pls.lang.presentation`。
   - 考虑提供 manager，用于从各种目标获取展示名字、相关本地化、相关图片、等等。
+- [ ] P2 重构 `extensions.diagram`（后续版本）：将核心逻辑提取到语义层的 `lang.diagram`、`lang.graph` 等，`diagramProvider` 等尽可能仅保留作为门面和桥接。
 - [ ] P2 考虑规范化数据（data）的相关 API
   - 数据：接近原始状态的数据，适用于脚本/本地化/定义/等等，可通过属性委托和数据模型类等方式获取，通常是经过解析（`@sv`）和评估（`@[...]`）的。
   - 相关代码应主要位于 `icu.windea.pls.lang.data`。

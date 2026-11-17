@@ -9,9 +9,12 @@
 
 ## 3.0.6
 
-- [x] 修复作用域链接（如 `owner = { ... }`）会被误报为“匹配多个存在冲突的规则”的BUG：子句中的规则均为别名引用时，块内容无法参与区分 / Fix the bug where a scope link (e.g. `owner = { ... }`) was reported as a conflicting expression: the block content could not distinguish the clauses when all of their configs are alias references ([#284](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/284))
+- [x] 修复作用域链接（如 `owner = { ... }`）会被误报为“匹配多个存在冲突的规则”的BUG：子句中的规则均为别名引用时，块内容无法参与区分 / Fix the bug where a scope link (e.g., `owner = { ... }`) was reported as a conflicting expression: the block content could not distinguish the clauses when all of their configs are alias references ([#284](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/284))
 - [x] 修复别名规则声明处显式使用的 `==` 分隔符在内联后丢失的BUG，从而能够正确地检查比较运算符 / Fix the bug where the `==` separator explicitly used by an alias config was lost when inlining it, so that comparison operators can be checked correctly
-- [x] 修复 Victoria 3 本地化命令（如 Concept 数据函数）中使用引号转义修饰符 `|q` 时中断语法解析的BUG / Fix the bug where Victoria 3 localization commands (e.g. Concept data functions) broke syntax parsing when using the quote escape modifier `|q` ([#451](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/451))
+- [x] 修复 Victoria 3 本地化命令（如 Concept 数据函数）中使用引号转义修饰符 `|q` 时中断语法解析的BUG / Fix the bug where Victoria 3 localization commands (e.g., Concept data functions) broke syntax parsing when using the quote escape modifier `|q` ([#451](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/451))
+- [x] 扩展图片格式转换动作以支持转换为 `PNG`、`JPG`、`GIF`、`DDS` 与 `TGA`，并重构为基于协程的异步执行流程以防止冻结 IDE / Extend the convert-image-format actions to support `PNG`, `JPG`, `GIF`, `DDS`, and `TGA`, and refactor them into a coroutine-based asynchronous flow to avoid freezing the IDE
+- [x] 重构并优化事件树与科技树图表的数据加载和展示管线，在后台预加载节点展示模型并隔离图片物化阶段，大幅缓解打开或刷新图表时的 UI 冻结问题 / Refactor and optimize the data loading and presentation pipeline for event-tree and tech-tree diagrams by preloading node models and isolating image materialization in the background, significantly alleviating UI freezes
+- [x] 为外部工具下载等场景增加自动重试与实时速率/大小详情提示，并完善多项通用基础设施配置 / Add automatic retry and real-time speed/size details for downloads such as external tools, and improve various infrastructure options
 
 ## 3.0.5 - 2026-11-03
 
