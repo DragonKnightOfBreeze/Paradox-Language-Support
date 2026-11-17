@@ -389,4 +389,47 @@ tasks {
         group = "grammar kit"
         dependsOn("generateLexers", "generateParsers")
     }
+
+    register("generateReleaseNotes") {
+        group = "publishing"
+        description = "Generate GitHub Release Notes from CHANGELOG.md."
+
+        val changelogFile = layout.projectDirectory.file("CHANGELOG.md")
+        val pluginVersionProp = providers.gradleProperty("pluginVersion")
+        val repoUrlProp = providers.gradleProperty("pluginRepositoryUrl")
+        val releaseVersionProp = providers.gradleProperty("releaseVersion").orElse(pluginVersionProp)
+        val roadmapRefProp = providers.gradleProperty("roadmapRef").orElse(releaseVersionProp.map { "v$it" })
+        val extraNotesFileProp = providers.gradleProperty("extraNotesFile")
+        val outputFileProp = providers.gradleProperty("outputFile")
+
+        doLast {
+            val changelogText = changelogFile.asFile.readText()
+            val targetVersion = releaseVersionProp.get().removePrefix("v")
+            val roadmapRef = roadmapRefProp.get()
+            val repositoryUrl = repoUrlProp.get()
+            val extraNotes = extraNotesFileProp.orNull
+                ?.takeIf { it.isNotBlank() }
+                ?.let { file(it) }
+                ?.takeIf { it.isFile }
+                ?.readText()
+
+            val notes = ChangelogSupport.buildGitHubReleaseNotes(
+                fullChangelog = changelogText,
+                targetVersion = targetVersion,
+                repositoryUrl = repositoryUrl,
+                roadmapRef = roadmapRef,
+                extraNotes = extraNotes,
+            )
+
+            val outputPath = outputFileProp.orNull?.takeIf { it.isNotBlank() }
+            if (outputPath != null) {
+                val outFile = file(outputPath)
+                outFile.parentFile?.mkdirs()
+                outFile.writeText(notes + "\n")
+                logger.lifecycle("Generated release notes: ${outFile.absolutePath}")
+            } else {
+                println(notes)
+            }
+        }
+    }
 }
