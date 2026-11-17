@@ -4,9 +4,7 @@ import com.intellij.ui.SimpleColoredText
 import com.intellij.ui.SimpleTextAttributes
 import icu.windea.pls.extensions.diagram.provider.StellarisTechTreeDiagramProvider
 import icu.windea.pls.lang.presentation.StellarisTechnologyCardAssets
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
+import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -17,13 +15,15 @@ import javax.swing.ImageIcon
  * 轻量节点模型与科技树边框颜色的单元测试。
  *
  * @see ParadoxDefinitionDiagramNodeModel
- * @see StellarisTechTreeDiagramProvider.resolveNodeBorderColor
+ * @see StellarisTechTreeDiagramProvider.Factory.resolveNodeBorderColor
  */
 @RunWith(JUnit4::class)
 class ParadoxDiagramModelTest {
     @Test
     fun nodeModel_storesPreloadedData_andCachesCardAssets() {
+        @Suppress("DialogTitleCapitalization")
         val propertyText = SimpleColoredText("cost = 100", SimpleTextAttributes.REGULAR_ATTRIBUTES)
+
         val model = ParadoxDefinitionDiagramNodeModel(
             title = "tech_diagram_test",
             typeText = "technology",
@@ -47,22 +47,22 @@ class ParadoxDiagramModelTest {
 
     @Test
     fun nodeBorderColor_bySubtypes() {
-        val dangerousAndRare = StellarisTechTreeDiagramProvider.resolveNodeBorderColor(setOf("dangerous", "rare"), null)
+        val dangerousAndRare = StellarisTechTreeDiagramProvider.Factory.resolveNodeBorderColor(setOf("dangerous", "rare"), null)
         assertEquals(java.awt.Color.decode("#e8514f"), dangerousAndRare)
 
-        val dangerous = StellarisTechTreeDiagramProvider.resolveNodeBorderColor(setOf("dangerous"), null)
+        val dangerous = StellarisTechTreeDiagramProvider.Factory.resolveNodeBorderColor(setOf("dangerous"), null)
         assertEquals(java.awt.Color.decode("#e8514f"), dangerous)
 
-        val rare = StellarisTechTreeDiagramProvider.resolveNodeBorderColor(setOf("rare"), null)
+        val rare = StellarisTechTreeDiagramProvider.Factory.resolveNodeBorderColor(setOf("rare"), null)
         assertEquals(java.awt.Color.decode("#9743c4"), rare)
     }
 
     @Test
     fun nodeBorderColor_byArea() {
         // 未命中的子类型由研究领域决定颜色
-        assertEquals(java.awt.Color.decode("#2370af"), StellarisTechTreeDiagramProvider.resolveNodeBorderColor(emptySet(), "physics"))
-        assertEquals(java.awt.Color.decode("#47a05f"), StellarisTechTreeDiagramProvider.resolveNodeBorderColor(emptySet(), "society"))
-        assertEquals(java.awt.Color.decode("#fbaa29"), StellarisTechTreeDiagramProvider.resolveNodeBorderColor(emptySet(), "engineering"))
-        assertNull(StellarisTechTreeDiagramProvider.resolveNodeBorderColor(emptySet(), null))
+        assertEquals(java.awt.Color.decode("#2370af"), StellarisTechTreeDiagramProvider.Factory.resolveNodeBorderColor(emptySet(), "physics"))
+        assertEquals(java.awt.Color.decode("#47a05f"), StellarisTechTreeDiagramProvider.Factory.resolveNodeBorderColor(emptySet(), "society"))
+        assertEquals(java.awt.Color.decode("#fbaa29"), StellarisTechTreeDiagramProvider.Factory.resolveNodeBorderColor(emptySet(), "engineering"))
+        assertNull(StellarisTechTreeDiagramProvider.Factory.resolveNodeBorderColor(emptySet(), null))
     }
 }

@@ -4,7 +4,7 @@ import com.intellij.diagram.DiagramBuilder
 import com.intellij.diagram.DiagramDataKeys
 import com.intellij.diagram.DiagramDataModel
 import com.intellij.diagram.DiagramNode
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.runInEdt
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
@@ -97,9 +97,9 @@ abstract class ParadoxDiagramDataModel(
     fun schedulePresentationRefresh(builder: DiagramBuilder) {
         if (!presentationRefreshScheduled.compareAndSet(false, true)) return
         val project = builder.project
-        ApplicationManager.getApplication().invokeLater {
+        runInEdt action@{
             presentationRefreshScheduled.set(false)
-            if (disposed || project.isDisposed) return@invokeLater
+            if (disposed || project.isDisposed) return@action
             runCatching {
                 builder.queryUpdate().withPresentationUpdate().withAllNodeSizeUpdate().run()
             }

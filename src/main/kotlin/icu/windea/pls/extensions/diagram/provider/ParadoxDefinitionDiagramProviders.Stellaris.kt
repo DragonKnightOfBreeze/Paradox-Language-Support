@@ -64,7 +64,7 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
         val itemPropertyKeys_IN_DETAIL = listOf("category")
     }
 
-    companion object {
+    object Factory {
         /**
          * 基于预加载的科技领域和类型计算节点边框颜色。
          *
@@ -111,7 +111,7 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
             // 直接读取预加载的节点展示模型，无需读锁
             val element = node.identifyingElement as? PsiElement ?: return null
             val model = builder.getDiagramNodeModel(element) ?: return null
-            return resolveNodeBorderColor(model.subtypes, model.techData?.area)
+            return Factory.resolveNodeBorderColor(model.subtypes, model.techData?.area)
         }
     }
 
