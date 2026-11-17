@@ -14,6 +14,7 @@ import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.base.settings.ChronicleImageSettings
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.util.io.ImageIoService
 import icu.windea.pls.model.policies.ImageRenderFailurePolicy
@@ -36,6 +37,7 @@ import javax.swing.Icon
 import javax.swing.ImageIcon
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createDirectories
+import kotlin.io.path.exists
 import kotlin.io.path.isRegularFile
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.days
@@ -54,7 +56,7 @@ class ImageRenderService : Disposable {
         fun getInstance(): ImageRenderService = service()
     }
 
-    private val renderFutures = ConcurrentHashMap<ImageRenderRequest, CompletableFuture<Path?>>()
+    private val renderFutures = ConcurrentHashMap<ImageDescriptor, CompletableFuture<Path?>>()
     private val renderSession = ThreadLocal<ImageRenderSession?>()
 
     @Volatile
@@ -79,7 +81,7 @@ class ImageRenderService : Disposable {
      *
      * 注意：不能在 EDT 中调用；如果在 EDT 中调用，只会返回已有缓存或 `null`。
      */
-    fun requestImageRender(request: ImageRenderRequest, project: Project): Path? {
+    fun requestImageRender(request: ImageDescriptor, project: Project): Path? {
         if (project.isDisposed) return null
         getCachedImagePath(request)?.let { return it }
 
@@ -95,7 +97,7 @@ class ImageRenderService : Disposable {
     /**
      * 在后台请求渲染图片。相同请求会被合并。
      */
-    fun requestImageRenderAsync(request: ImageRenderRequest, project: Project): CompletableFuture<Path?> {
+    fun requestImageRenderAsync(request: ImageDescriptor, project: Project): CompletableFuture<Path?> {
         if (project.isDisposed) return CompletableFuture.completedFuture(null)
         getCachedImagePath(request)?.let { return CompletableFuture.completedFuture(it) }
 
@@ -123,7 +125,7 @@ class ImageRenderService : Disposable {
     /**
      * 同步渲染图片到目标缓存路径；如果目标已存在则直接返回。
      */
-    fun renderImage(request: ImageRenderRequest): Path {
+    fun renderImage(request: ImageDescriptor): Path {
         getCachedImagePath(request)?.let { return it }
         val sourcePath = request.sourcePath
         val targetPath = request.targetPath
@@ -153,7 +155,7 @@ class ImageRenderService : Disposable {
      * 该方法会读取图片的原始元数据、检查高度限制、按需渲染并解码目标图片。
      * 调用方应确保当前不在 EDT/readAction 中，并按需添加超时。
      */
-    fun createImage(request: ImageRenderRequest, heightLimit: Int? = null): Image? {
+    fun createImage(request: ImageDescriptor, heightLimit: Int? = null): Image? {
         val metadata = ImageMetadataService.getInstance().getMetadataOrNull(request.sourcePath) ?: return null
         if (heightLimit != null && metadata.height > heightLimit) return null
         val targetPath = renderImage(request)
@@ -167,7 +169,7 @@ class ImageRenderService : Disposable {
      * 该方法会读取图片的原始元数据、检查高度限制、按需渲染并解码目标图片。
      * 调用方应确保当前不在 EDT/readAction 中，并按需添加超时。
      */
-    fun createImageIcon(request: ImageRenderRequest, heightLimit: Int? = null): Icon? {
+    fun createImageIcon(request: ImageDescriptor, heightLimit: Int? = null): Icon? {
         val image = createImage(request, heightLimit) ?: return null
         val imageIcon = ImageIcon(image)
         return imageIcon
@@ -201,10 +203,55 @@ class ImageRenderService : Disposable {
     /**
      * 如果存在对应的本地缓存，则直接返回预期的目标路径。
      */
-    fun getCachedImagePath(request: ImageRenderRequest): Path? {
+    fun getCachedImagePath(request: ImageDescriptor): Path? {
         val targetPath = request.targetPath
         if (!targetPath.isRegularFile() || targetPath.fileSizeSafe() == 0L) return null
         return targetPath
+    }
+
+    /**
+     * 判断源图片是否可以解析（即存在且非空）。
+     */
+    fun canResolve(descriptor: ImageDescriptor): Boolean {
+        val sourcePath = descriptor.sourcePath
+        if (!(sourcePath.exists() && sourcePath.fileSizeSafe() > 0)) return false
+        return true
+    }
+
+    /**
+     * 解析得到图片的最终地址。
+     *
+     * 说明：
+     * - 如果存在当前渲染会话，则首先在其中记录渲染请求。
+     * - 如果不需要渲染，则直接返回源路径。
+     * - 如果存在目标路径对应的本地缓存，则直接返回目标路径。
+     * - 如果存在当前渲染会话，则直接返回目标路径。这适用于渲染快速文档等场景。
+     * - 否则，尝试同步获取或渲染目标图片。
+     * - 同步渲染失败时，按照设置中的失败策略返回目标路径、`null` 或占位图路径。
+     */
+    fun resolveUrl(descriptor: ImageDescriptor, project: Project): String? {
+        val session = currentRenderSession()
+
+        // 3.0.5 it's necessary to record render request first, or image policies may be not applied correctly
+        @Suppress("DeferredResultUnused") session?.launch(descriptor)
+
+        try {
+            if (!descriptor.renderRequired) return descriptor.sourcePath.absolutePathString()
+            val cachedPath = getCachedImagePath(descriptor)
+            if (cachedPath != null) return cachedPath.absolutePathString()
+            if (session != null) return descriptor.targetPath.absolutePathString()
+            return requestImageRender(descriptor, project)?.absolutePathString()
+        } catch (e: Exception) {
+            checkCancellation(e)
+            logger.warn("Render image failed. (source path: ${descriptor.sourcePath})", e)
+            return when (ChronicleImageSettings.getInstance().state.renderFailurePolicy) {
+                ImageRenderFailurePolicy.AcceptBroken -> descriptor.targetPath.absolutePathString()
+                ImageRenderFailurePolicy.RemoveImage -> null
+                ImageRenderFailurePolicy.Placeholder -> {
+                    runCatching { getPlaceholderImagePath().absolutePathString() }.getOrNull()
+                }
+            }
+        }
     }
 
     /**

@@ -8,9 +8,9 @@ import com.intellij.ui.ColorUtil
 import com.intellij.ui.SimpleColoredText
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.ui.JBUI
+import icu.windea.pls.images.ImageDescriptor
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.lang.psi.properties
-import icu.windea.pls.lang.resolve.ParadoxImageResolveResult
 import icu.windea.pls.lang.resolve.ParadoxImageService
 import icu.windea.pls.lang.search.ParadoxLocalisationSearch
 import icu.windea.pls.lang.search.util.contextSensitive
@@ -103,13 +103,13 @@ object ParadoxDefinitionPresentationUtil {
     }
 
     @Suppress("unused")
-    fun resolveIcon(ddsFile: PsiFile): ParadoxImageResolveResult? {
+    fun resolveIcon(ddsFile: PsiFile): ImageDescriptor? {
         val iconFile = ddsFile.virtualFile ?: return null
         val imageResolveResult = ParadoxImageService.resolveByFile(iconFile) ?: return null
         return imageResolveResult
     }
 
-    fun resolveIcon(definition: ParadoxDefinitionElement): ParadoxImageResolveResult? {
+    fun resolveIcon(definition: ParadoxDefinitionElement): ImageDescriptor? {
         val ddsFile = ParadoxDefinitionManager.getRelatedImages(definition, onlyOne = true, onlyPrimary = true).firstOrNull() ?: return null
         val iconFile = ddsFile.virtualFile ?: return null
         val imageResolveResult = ParadoxImageService.resolveByFile(iconFile) ?: return null
@@ -117,7 +117,7 @@ object ParadoxDefinitionPresentationUtil {
     }
 
     @Suppress("unused")
-    fun resolveIcon(definition: ParadoxDefinitionElement, ddsFile: PsiFile): ParadoxImageResolveResult? {
+    fun resolveIcon(definition: ParadoxDefinitionElement, ddsFile: PsiFile): ImageDescriptor? {
         val iconFile = ddsFile.virtualFile ?: return null
         val frameInfo = definition.getUserData(ParadoxDefinitionManager.Keys.imageFrameInfo)
         val imageResolveResult = ParadoxImageService.resolveByFile(iconFile, frameInfo) ?: return null

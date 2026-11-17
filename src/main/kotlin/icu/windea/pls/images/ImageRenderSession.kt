@@ -22,10 +22,10 @@ class ImageRenderSession(
 ) {
     // 3.0.5 统一使用 `ConcurrentLinkedQueue`，无锁且并发遍历绝对安全，以省去不必要的心智负担
     private val jobs = ConcurrentLinkedQueue<Deferred<Path?>>()
-    private val failedRequests = ConcurrentLinkedQueue<ImageRenderRequest>()
-    private val requests = ConcurrentLinkedQueue<ImageRenderRequest>()
+    private val failedRequests = ConcurrentLinkedQueue<ImageDescriptor>()
+    private val requests = ConcurrentLinkedQueue<ImageDescriptor>()
 
-    fun launch(request: ImageRenderRequest): Deferred<Path?> {
+    fun launch(request: ImageDescriptor): Deferred<Path?> {
         requests += request
         val job = scope.async {
             try {
@@ -42,7 +42,7 @@ class ImageRenderSession(
         return job
     }
 
-    private suspend fun renderImage(request: ImageRenderRequest): Path {
+    private suspend fun renderImage(request: ImageDescriptor): Path {
         return withContext(Dispatchers.IO) {
             coroutineToIndicator {
                 ImageRenderService.getInstance().renderImage(request)
@@ -54,11 +54,11 @@ class ImageRenderSession(
         return jobs.toList().awaitAll()
     }
 
-    fun requests(): List<ImageRenderRequest> {
+    fun requests(): List<ImageDescriptor> {
         return requests.toList()
     }
 
-    fun failedRequests(): List<ImageRenderRequest> {
+    fun failedRequests(): List<ImageDescriptor> {
         return failedRequests.toList()
     }
 

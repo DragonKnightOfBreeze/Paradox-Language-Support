@@ -5,7 +5,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.base.settings.ChronicleImageSettings
 import icu.windea.pls.core.util.ImageFrameInfo
-import icu.windea.pls.images.ImageRenderRequest
+import icu.windea.pls.images.ImageDescriptor
 import icu.windea.pls.images.ImageRenderService
 import icu.windea.pls.model.policies.ImageRenderFailurePolicy
 import icu.windea.pls.test.ChronicleTestScope
@@ -23,7 +23,7 @@ import kotlin.io.path.createDirectories
 
 /**
  * @see ParadoxImageService
- * @see ParadoxImageResolveResult
+ * @see ImageDescriptor
  */
 @RunWith(JUnit4::class)
 class ParadoxImageServiceTest : BasePlatformTestCase(), ChronicleTestScope {
@@ -124,7 +124,7 @@ class ParadoxImageServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     fun resolveUrl_noRenderRequired_test() {
         val source = root.resolve("no-render.png")
         writeImage(source, 10, 10)
-        val result = ParadoxImageResolveResult(source, source)
+        val result = ImageDescriptor(source, source)
         val url = result.resolveUrl(project)
         Assert.assertEquals(source.absolutePathString(), url)
     }
@@ -135,7 +135,7 @@ class ParadoxImageServiceTest : BasePlatformTestCase(), ChronicleTestScope {
         val target = root.resolve("cached-target.png")
         writeImage(source, 10, 10)
         writeImage(target, 10, 10)
-        val result = ParadoxImageResolveResult(source, target)
+        val result = ImageDescriptor(source, target)
         val url = result.resolveUrl(project)
         Assert.assertEquals(target.absolutePathString(), url)
     }
@@ -143,7 +143,7 @@ class ParadoxImageServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun resolveUrl_acceptBrokenFailurePolicy_test() {
         val request = createBrokenRequest("accept-broken")
-        val result = ParadoxImageResolveResult(request.sourcePath, request.targetPath)
+        val result = ImageDescriptor(request.sourcePath, request.targetPath)
 
         val url = withRenderFailurePolicy(ImageRenderFailurePolicy.AcceptBroken) {
             resolveUrlOnPooledThread(result)
@@ -155,7 +155,7 @@ class ParadoxImageServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun resolveUrl_removeImageFailurePolicy_test() {
         val request = createBrokenRequest("remove-image")
-        val result = ParadoxImageResolveResult(request.sourcePath, request.targetPath)
+        val result = ImageDescriptor(request.sourcePath, request.targetPath)
 
         val url = withRenderFailurePolicy(ImageRenderFailurePolicy.RemoveImage) {
             resolveUrlOnPooledThread(result)
@@ -167,7 +167,7 @@ class ParadoxImageServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     @Test
     fun resolveUrl_placeholderFailurePolicy_test() {
         val request = createBrokenRequest("placeholder")
-        val result = ParadoxImageResolveResult(request.sourcePath, request.targetPath)
+        val result = ImageDescriptor(request.sourcePath, request.targetPath)
 
         val url = withRenderFailurePolicy(ImageRenderFailurePolicy.Placeholder) {
             resolveUrlOnPooledThread(result)
@@ -177,15 +177,15 @@ class ParadoxImageServiceTest : BasePlatformTestCase(), ChronicleTestScope {
         Assert.assertTrue(Files.isRegularFile(ImageRenderService.getInstance().getPlaceholderImagePath()))
     }
 
-    private fun createBrokenRequest(name: String): ImageRenderRequest {
+    private fun createBrokenRequest(name: String): ImageDescriptor {
         val source = root.resolve("$name-source.png")
         val target = root.resolve("$name-target.png")
         Files.writeString(source, "not an image")
         Files.deleteIfExists(target)
-        return ImageRenderRequest(source, target)
+        return ImageDescriptor(source, target)
     }
 
-    private fun resolveUrlOnPooledThread(result: ParadoxImageResolveResult): String? {
+    private fun resolveUrlOnPooledThread(result: ImageDescriptor): String? {
         return ApplicationManager.getApplication()
             .executeOnPooledThread<String?> { result.resolveUrl(project) }
             .get()

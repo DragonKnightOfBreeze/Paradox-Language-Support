@@ -60,7 +60,7 @@ class ParadoxLocalisationIconHintsProvider : ParadoxHintsProvider() {
         val pointer = resolved?.createPointer(context.project)
         sink.addInlinePresentation(element.endOffset, smallInset = true) {
             // 点击可以导航到声明处（定义或图片）
-            add(AsyncIconPresentation(context, iconResolveResult.toRenderRequest(), maxHeight, pointer))
+            add(AsyncIconPresentation(context, iconResolveResult, maxHeight, pointer))
         }
     }
 }

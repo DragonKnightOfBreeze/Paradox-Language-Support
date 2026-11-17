@@ -11,8 +11,8 @@ import com.intellij.psi.SmartPsiElementPointer
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.settings.ChronicleImageSettings
 import icu.windea.pls.core.ui.UiService
+import icu.windea.pls.images.ImageDescriptor
 import icu.windea.pls.images.ImageRenderContext
-import icu.windea.pls.images.ImageRenderRequest
 import icu.windea.pls.images.ImageRenderService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,7 +35,7 @@ import kotlin.time.Duration.Companion.seconds
 @Suppress("UnstableApiUsage")
 class AsyncIconPresentation(
     private val context: ParadoxHintsContext,
-    private val request: ImageRenderRequest,
+    private val descriptor: ImageDescriptor,
     private val maxHeight: Int?,
     private val pointer: SmartPsiElementPointer<out PsiElement>?,
 ) : BasePresentation() {
@@ -62,7 +62,7 @@ class AsyncIconPresentation(
         return withTimeoutOrNull(timeout) {
             withContext(Dispatchers.IO) {
                 coroutineToIndicator {
-                    ImageRenderService.getInstance().createImageIcon(request, maxHeight)
+                    ImageRenderService.getInstance().createImageIcon(descriptor, maxHeight)
                 }
             }
         }
@@ -106,7 +106,7 @@ class AsyncIconPresentation(
     }
 
     override fun toString(): String {
-        return "AsyncIconPresentation(request=$request, loaded=${state != null})"
+        return "AsyncIconPresentation(descriptor=$descriptor, loaded=${state != null})"
     }
 
     private fun setState(icon: Icon?) {

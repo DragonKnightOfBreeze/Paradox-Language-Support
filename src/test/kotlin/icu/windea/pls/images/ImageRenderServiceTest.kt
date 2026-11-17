@@ -5,7 +5,6 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.base.settings.ChronicleImageSettings
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.toFileUrl
-import icu.windea.pls.lang.resolve.ParadoxImageResolveResult
 import icu.windea.pls.model.policies.ImageRenderFailurePolicy
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -42,7 +41,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         val target = root.resolve("scaling-target.png")
         writeImage(source, 100, 40)
 
-        val request = ImageRenderRequest(source, target)
+        val request = ImageDescriptor(source, target)
         val service = ImageRenderService.getInstance()
         val session = service.newRenderSession(this)
         session.launch(request).await()
@@ -59,7 +58,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         val target = root.resolve("scaling-large-target.png")
         writeImage(source, 100, 100)
 
-        val request = ImageRenderRequest(source, target)
+        val request = ImageDescriptor(source, target)
         val service = ImageRenderService.getInstance()
         val session = service.newRenderSession(this)
         session.launch(request).await()
@@ -70,6 +69,26 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         Assert.assertTrue(builder.content.contains("<img src=\"${target.absolutePathString().toFileUrl()}\"/>"))
     }
     @Test
+    fun descriptorStrategy_test() {
+        val source = root.resolve("strategy-source.png")
+        val target = root.resolve("strategy-target.png")
+        writeImage(source, 10, 10)
+
+        // 目标路径与源路径一致时，直接使用源图片
+        val direct = ImageDescriptor(source)
+        Assert.assertEquals(ImageStrategy.Direct, direct.strategy)
+        Assert.assertFalse(direct.renderRequired)
+        Assert.assertEquals("png", direct.sourceFormat)
+        Assert.assertEquals("png", direct.targetFormat)
+
+        // 目标路径与源路径不一致时，需要经由渲染管道派生
+        val delegated = ImageDescriptor(source, target)
+        Assert.assertEquals(ImageStrategy.Delegated, delegated.strategy)
+        Assert.assertTrue(delegated.renderRequired)
+        Assert.assertEquals("png", delegated.targetFormat)
+    }
+
+    @Test
     fun renderImage_test() {
         val dir = root
         val source = dir.resolve("source.png")
@@ -77,7 +96,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         Files.deleteIfExists(target)
         writeImage(source, 10, 10)
 
-        val request = ImageRenderRequest(source, target, maxWidth = 5, maxHeight = 5)
+        val request = ImageDescriptor(source, target, maxWidth = 5, maxHeight = 5)
         val service = ImageRenderService.getInstance()
         val result = service.renderImage(request)
 
@@ -97,7 +116,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         Files.deleteIfExists(target)
         writeImage(source, 10, 10)
 
-        val request = ImageRenderRequest(source, target)
+        val request = ImageDescriptor(source, target)
         val service = ImageRenderService.getInstance()
         Assert.assertNull(service.getCachedImagePath(request))
 
@@ -117,7 +136,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         val target = root.resolve("icon-target.png")
         writeImage(source, 10, 10)
 
-        val icon = ImageRenderService.getInstance().createImageIcon(ImageRenderRequest(source, target), heightLimit = 36)
+        val icon = ImageRenderService.getInstance().createImageIcon(ImageDescriptor(source, target), heightLimit = 36)
 
         Assert.assertNotNull(icon)
         Assert.assertEquals(10, icon!!.iconWidth)
@@ -130,7 +149,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         val target = root.resolve("icon-too-tall-target.png")
         writeImage(source, 10, 10)
 
-        Assert.assertNull(ImageRenderService.getInstance().createImageIcon(ImageRenderRequest(source, target), heightLimit = 5))
+        Assert.assertNull(ImageRenderService.getInstance().createImageIcon(ImageDescriptor(source, target), heightLimit = 5))
     }
 
     @Test
@@ -144,13 +163,13 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         val service = ImageRenderService.getInstance()
         val session = service.newRenderSession(this)
         val result = service.withRenderSession(session) {
-            ParadoxImageResolveResult(source, target).resolveUrl(project)
+            ImageDescriptor(source, target).resolveUrl(project)
         }
 
         Assert.assertEquals(target.absolutePathString(), result)
         Assert.assertEquals(listOf(target), session.awaitAll())
         Assert.assertTrue(Files.isRegularFile(target))
-        Assert.assertEquals(target, service.getCachedImagePath(ImageRenderRequest(source, target)))
+        Assert.assertEquals(target, service.getCachedImagePath(ImageDescriptor(source, target)))
     }
 
     @Test
@@ -205,13 +224,13 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         }
     }
 
-    private fun createBrokenRequest(name: String): ImageRenderRequest {
+    private fun createBrokenRequest(name: String): ImageDescriptor {
         val dir = root
         val source = dir.resolve("$name-source.png")
         val target = dir.resolve("$name-target.png")
         Files.write(source, "not an image".toByteArray())
         Files.deleteIfExists(target)
-        return ImageRenderRequest(source, target)
+        return ImageDescriptor(source, target)
     }
 
 

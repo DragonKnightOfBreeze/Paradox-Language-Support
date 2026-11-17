@@ -12,10 +12,10 @@ import icu.windea.pls.core.ui.resize
 import icu.windea.pls.core.ui.toLabel
 import icu.windea.pls.core.ui.withLocation
 import icu.windea.pls.ep.util.data.StellarisTechnologyData
+import icu.windea.pls.images.ImageDescriptor
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.getDefinitionData
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
-import icu.windea.pls.lang.resolve.ParadoxImageResolveResult
 import icu.windea.pls.lang.search.ParadoxDefinitionSearch
 import icu.windea.pls.lang.search.util.contextSensitive
 import icu.windea.pls.lang.util.ParadoxTextColorManager
@@ -73,10 +73,10 @@ class StellarisTechnologyCardBuilder(
     private var costNumber: Int = 0
     private var costColor: Color? = null
 
-    private lateinit var backgroundIconDescriptor: ParadoxImageResolveResult
-    private lateinit var bottomLineIconDescriptor: ParadoxImageResolveResult
-    private lateinit var iconDescriptor: ParadoxImageResolveResult
-    private var categoryIconDescriptor: ParadoxImageResolveResult? = null
+    private lateinit var backgroundIconDescriptor: ImageDescriptor
+    private lateinit var bottomLineIconDescriptor: ImageDescriptor
+    private lateinit var iconDescriptor: ImageDescriptor
+    private var categoryIconDescriptor: ImageDescriptor? = null
 
     private var icon: Icon? = null
     private var categoryIcon: Icon? = null
@@ -160,17 +160,17 @@ class StellarisTechnologyCardBuilder(
         return ParadoxTextColorManager.getInfo("G", definitionInfo.project, element)?.color // Green
     }
 
-    private fun getIcon(): ParadoxImageResolveResult? {
+    private fun getIcon(): ImageDescriptor? {
         return ParadoxDefinitionPresentationUtil.resolveIcon(element) ?: getUnknownIcon()
     }
 
-    private fun getUnknownIcon(): ParadoxImageResolveResult? {
+    private fun getUnknownIcon(): ImageDescriptor? {
         val selector = ParadoxDefinitionSearch.selector(definitionInfo.project, element).contextSensitive()
         val sprite = ParadoxDefinitionSearch.searchProperty("GFX_technology_unknown", ParadoxDefinitionTypes.sprite, selector).find() ?: return null
         return ParadoxDefinitionPresentationUtil.resolveIcon(sprite)
     }
 
-    private fun getBackgroundIcon(): ParadoxImageResolveResult? {
+    private fun getBackgroundIcon(): ImageDescriptor? {
         val area = definitionData.area ?: return null
         val types = definitionInfo.subtypes
         val spriteName = when {
@@ -184,7 +184,7 @@ class StellarisTechnologyCardBuilder(
         return ParadoxDefinitionPresentationUtil.resolveIcon(sprite)
     }
 
-    private fun getBottomLineIcon(): ParadoxImageResolveResult? {
+    private fun getBottomLineIcon(): ImageDescriptor? {
         val area = definitionData.area ?: return null
         val spriteName = "GFX_bottom_line_${area}"
         val selector = ParadoxDefinitionSearch.selector(definitionInfo.project, element).contextSensitive()
@@ -192,14 +192,14 @@ class StellarisTechnologyCardBuilder(
         return ParadoxDefinitionPresentationUtil.resolveIcon(sprite)
     }
 
-    private fun getCategoryIcon(): ParadoxImageResolveResult? {
+    private fun getCategoryIcon(): ImageDescriptor? {
         val category = definitionData.category?.firstOrNull() ?: return null
         val selector = ParadoxDefinitionSearch.selector(definitionInfo.project, element).contextSensitive()
         val categoryDef = ParadoxDefinitionSearch.searchProperty(category, ParadoxDefinitionTypes.technologyCategory, selector).find() ?: return null
         return ParadoxDefinitionPresentationUtil.resolveIcon(categoryDef)
     }
 
-    private fun getGatewayIcon(): ParadoxImageResolveResult? {
+    private fun getGatewayIcon(): ImageDescriptor? {
         val spriteName = "GFX_tech_gateway"
         val selector = ParadoxDefinitionSearch.selector(definitionInfo.project, element).contextSensitive()
         val sprite = ParadoxDefinitionSearch.searchProperty(spriteName, ParadoxDefinitionTypes.sprite, selector).find()
