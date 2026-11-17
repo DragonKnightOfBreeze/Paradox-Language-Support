@@ -1,0 +1,199 @@
+# GitHub Actions Workflow for creating or updating GitHub Releases (pre-releases & draft stable releases).
+# Intentionally decoupled from JetBrains Marketplace publishing in `release.yml`.
+
+name: GitHub Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. v3.0.6-dev or v3.0.6). Leave empty to use v<pluginVersion>."
+        required: false
+        default: ""
+        type: string
+      prerelease:
+        description: "Mark as pre-release (allows safely moving an existing pre-release tag)"
+        required: false
+        default: true
+        type: boolean
+      run_checks:
+        description: "Run check and verifyPlugin before packaging"
+        required: false
+        default: true
+        type: boolean
+      extra_notes:
+        description: "Optional additional Markdown notes appended to release body"
+        required: false
+        default: ""
+        type: string
+
+jobs:
+  release-github:
+    name: Build & Publish GitHub Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Maximize Build Space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+
+      - name: Fetch Sources
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: zulu
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6.4.1
+
+      - name: Set gradlew executable permission
+        run: chmod +x gradlew
+
+      - name: Resolve Tag & Safety Guard
+        id: meta
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          PLUGIN_VERSION="$(grep '^pluginVersion=' gradle.properties | cut -d'=' -f2- | tr -d '\r')"
+          RAW_TAG="${{ inputs.tag }}"
+          if [ -z "$RAW_TAG" ]; then
+            TAG="v${PLUGIN_VERSION}"
+          else
+            TAG="$RAW_TAG"
+          fi
+          TARGET_VERSION="${TAG#v}"
+          IS_PRERELEASE="${{ inputs.prerelease }}"
+
+          if [ "$IS_PRERELEASE" = "true" ]; then
+            ROADMAP_REF="${GITHUB_REF_NAME}"
+            DRAFT="false"
+          else
+            ROADMAP_REF="$TAG"
+            DRAFT="true"
+          fi
+
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "target_version=$TARGET_VERSION" >> "$GITHUB_OUTPUT"
+          echo "roadmap_ref=$ROADMAP_REF" >> "$GITHUB_OUTPUT"
+          echo "prerelease=$IS_PRERELEASE" >> "$GITHUB_OUTPUT"
+          echo "draft=$DRAFT" >> "$GITHUB_OUTPUT"
+
+          if RELEASE_JSON="$(gh release view "$TAG" --json isPrerelease,isDraft 2>/dev/null)"; then
+            EXISTING_PRERELEASE="$(echo "$RELEASE_JSON" | jq -r '.isPrerelease')"
+            EXISTING_DRAFT="$(echo "$RELEASE_JSON" | jq -r '.isDraft')"
+            echo "release_exists=true" >> "$GITHUB_OUTPUT"
+
+            if [ "$EXISTING_PRERELEASE" != "true" ] && [ "$EXISTING_DRAFT" != "true" ]; then
+              echo "::error::Refusing to overwrite an already published stable release ($TAG)."
+              exit 1
+            fi
+            if [ "$IS_PRERELEASE" != "true" ] && [ "$EXISTING_PRERELEASE" = "true" ]; then
+              echo "::error::Tag $TAG already belongs to a pre-release. Use a new tag for a stable release."
+              exit 1
+            fi
+          else
+            echo "release_exists=false" >> "$GITHUB_OUTPUT"
+            if [ "$IS_PRERELEASE" != "true" ] && git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+              echo "::error::Tag $TAG already exists on remote; refusing to overwrite stable tag."
+              exit 1
+            fi
+          fi
+
+      - name: Setup Plugin Verifier IDEs Cache
+        if: ${{ inputs.run_checks }}
+        uses: actions/cache@v6
+        with:
+          path: ~/.pluginVerifier/ides
+          key: plugin-verifier-${{ hashFiles('build/listProductsReleases.txt') }}
+
+      - name: Run Checks & Verify Plugin
+        if: ${{ inputs.run_checks }}
+        run: ./gradlew check verifyPlugin -Dplugin.verifier.home.dir=~/.pluginVerifier
+
+      - name: Build Plugin
+        run: ./gradlew buildPlugin
+
+      - name: Generate Release Notes
+        env:
+          EXTRA_NOTES: ${{ inputs.extra_notes }}
+        shell: bash
+        run: |
+          mkdir -p build
+          printf '%s' "$EXTRA_NOTES" > build/extra-notes.md
+          ./gradlew generateReleaseNotes \
+            -PreleaseVersion="${{ steps.meta.outputs.target_version }}" \
+            -ProadmapRef="${{ steps.meta.outputs.roadmap_ref }}" \
+            -PextraNotesFile="build/extra-notes.md" \
+            -PoutputFile="build/release-notes.md"
+
+      - name: Move/Create Tag & Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          TAG="${{ steps.meta.outputs.tag }}"
+          IS_PRERELEASE="${{ steps.meta.outputs.prerelease }}"
+          DRAFT="${{ steps.meta.outputs.draft }}"
+          RELEASE_EXISTS="${{ steps.meta.outputs.release_exists }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if [ "$IS_PRERELEASE" = "true" ]; then
+            git tag -fa "$TAG" -m "Pre-release $TAG"
+            git push origin "refs/tags/$TAG" --force
+          else
+            git tag -a "$TAG" -m "Release $TAG"
+            git push origin "refs/tags/$TAG"
+          fi
+
+          if [ "$RELEASE_EXISTS" = "true" ]; then
+            if [ "$IS_PRERELEASE" = "true" ]; then
+              gh release edit "$TAG" \
+                --title "$TAG" \
+                --notes-file build/release-notes.md \
+                --prerelease
+            else
+              gh release edit "$TAG" \
+                --title "$TAG" \
+                --notes-file build/release-notes.md \
+                --draft
+            fi
+            gh release upload "$TAG" ./build/distributions/*.zip --clobber
+          else
+            FLAGS=()
+            if [ "$IS_PRERELEASE" = "true" ]; then
+              FLAGS+=(--prerelease)
+            fi
+            if [ "$DRAFT" = "true" ]; then
+              FLAGS+=(--draft)
+            fi
+            gh release create "$TAG" ./build/distributions/*.zip \
+              --title "$TAG" \
+              --notes-file build/release-notes.md \
+              "${FLAGS[@]}"
+          fi
+
+          RELEASE_URL="$(gh release view "$TAG" --json url --jq '.url' 2>/dev/null || true)"
+          {
+            echo "### GitHub Release Summary"
+            echo "- **Tag**: \`$TAG\`"
+            echo "- **Pre-release**: \`$IS_PRERELEASE\`"
+            echo "- **Draft**: \`$DRAFT\`"
+            if [ -n "$RELEASE_URL" ]; then
+              echo "- **URL**: $RELEASE_URL"
+            fi
+            if [ "$DRAFT" = "true" ]; then
+              echo ""
+              echo "> Stable release created as **Draft**. Review it on GitHub and click **Publish release** to trigger JetBrains Marketplace publishing (\`release.yml\`)."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
