@@ -3,11 +3,14 @@
 package icu.windea.pls.core.util.net
 
 import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.platform.util.progress.RawProgressReporter
 import com.intellij.util.concurrency.AppExecutorUtil
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -18,38 +21,87 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardCopyOption
 import java.security.MessageDigest
 import java.time.Duration
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
+import kotlin.io.path.createDirectories
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.outputStream
 
 /**
  * 下载服务。
+ *
+ * 支持失败重试、临时文件落位以及 SHA-256 校验。
  */
 object DownloadService {
     private val logger = logger<DownloadService>()
 
+    private const val PROGRESS_REPORT_INTERVAL_MILLIS = 150L
+
     suspend fun download(
         uri: URI,
         targetPath: Path,
-        settings: DownloadOptions = DownloadOptions.DEFAULT,
+        options: DownloadOptions = DownloadOptions.DEFAULT,
         sha256: String? = null,
         rawReporter: RawProgressReporter? = null,
     ): DownloadResult {
+        targetPath.parent?.createDirectories()
+        val partPath = targetPath.resolveSibling("${targetPath.fileName}.part")
+        val totalAttempts = 1 + options.maxRetries.coerceAtLeast(0)
+        var attempt = 0
+        while (true) {
+            attempt++
+            try {
+                return downloadOnce(uri, targetPath, partPath, options, sha256, rawReporter)
+            } catch (e: ProcessCanceledException) {
+                partPath.deleteQuietly()
+                throw e
+            } catch (e: CancellationException) {
+                partPath.deleteQuietly()
+                throw e
+            } catch (e: IllegalArgumentException) {
+                partPath.deleteQuietly()
+                throw e
+            } catch (e: Throwable) {
+                partPath.deleteQuietly()
+                if (attempt >= totalAttempts || !isRetryable(e)) {
+                    // 确保不残留脏的 targetPath
+                    targetPath.deleteQuietly()
+                    throw e
+                }
+                rawReporter?.fraction(0.0)
+                rawReporter?.details("Retrying ($attempt/${options.maxRetries})...")
+                delay(options.retryDelay * attempt)
+            }
+        }
+    }
+
+    private suspend fun downloadOnce(
+        uri: URI,
+        targetPath: Path,
+        partPath: Path,
+        options: DownloadOptions,
+        sha256: String?,
+        rawReporter: RawProgressReporter?,
+    ): DownloadResult {
         val proxy = ProxyService.resolve(uri)
-        val client = createHttpClient(proxy, settings)
+        val client = createHttpClient(proxy, options)
         logger.info("Downloading $uri to $targetPath (proxy: ${ProxyService.describe(proxy)})")
         val request = HttpRequest.newBuilder(uri)
-            .header("User-Agent", settings.userAgent)
-            .timeout(Duration.ofMillis(settings.requestTimeout.inWholeMilliseconds))
+            .header("User-Agent", options.userAgent)
+            .timeout(Duration.ofMillis(options.requestTimeout.inWholeMilliseconds))
             .GET()
             .build()
         val response = withContext(Dispatchers.IO) { client.send(request, HttpResponse.BodyHandlers.ofInputStream()) }
-        if (response.statusCode() !in 200..299) {
-            throw IOException("Unexpected HTTP status code ${response.statusCode()} for $uri")
+        val statusCode = response.statusCode()
+        if (statusCode !in 200..299) {
+            runCatching { response.body().close() }
+            throw HttpStatusException(statusCode, "Unexpected HTTP status code $statusCode for $uri")
         }
         val contentLength = response.headers().firstValueAsLong("Content-Length").orElse(-1L)
 
@@ -57,12 +109,13 @@ object DownloadService {
         var downloaded = 0L
         val startedAt = System.nanoTime()
         val lastActivity = AtomicLong(startedAt)
+        val lastReportedAt = AtomicLong(startedAt)
         val body = response.body()
         val watchdog = AppExecutorUtil.getAppScheduledExecutorService().scheduleWithFixedDelay({
             val now = System.nanoTime()
             val elapsed = (now - startedAt) / 1_000_000
             val idle = (now - lastActivity.get()) / 1_000_000
-            if (elapsed >= settings.maxDuration.inWholeMilliseconds || idle >= settings.stallTimeout.inWholeMilliseconds) {
+            if (elapsed >= options.maxDuration.inWholeMilliseconds || idle >= options.stallTimeout.inWholeMilliseconds) {
                 runCatching { body.close() }
             }
         }, 5, 5, TimeUnit.SECONDS)
@@ -70,7 +123,7 @@ object DownloadService {
         try {
             withContext(Dispatchers.IO) {
                 body.buffered().use { input ->
-                    targetPath.outputStream().buffered().use { output ->
+                    partPath.outputStream().buffered().use { output ->
                         val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
                         while (true) {
                             currentCoroutineContext().ensureActive()
@@ -81,17 +134,21 @@ object DownloadService {
                             output.write(buffer, 0, length)
                             digest.update(buffer, 0, length)
                             downloaded += length
-                            if (contentLength > 0) {
-                                rawReporter?.fraction(downloaded.toDouble() / contentLength)
+                            val now = System.nanoTime()
+                            if ((now - lastReportedAt.get()) / 1_000_000 >= PROGRESS_REPORT_INTERVAL_MILLIS) {
+                                lastReportedAt.set(now)
+                                reportProgress(rawReporter, downloaded, contentLength, startedAt)
                             }
-                            checkDownloadSpeed(downloaded, startedAt, settings)
+                            checkDownloadSpeed(downloaded, startedAt, options)
                         }
+                        // 结束时刷新一次进度详情
+                        reportProgress(rawReporter, downloaded, contentLength, startedAt)
                     }
                 }
             }
             rawReporter?.fraction(1.0)
         } catch (e: Throwable) {
-            targetPath.deleteIfExists()
+            partPath.deleteQuietly()
             throw e
         } finally {
             watchdog.cancel(false)
@@ -103,36 +160,79 @@ object DownloadService {
 
         val actualSha256 = digest.digest().joinToString("") { "%02x".format(it) }
         if (sha256 != null && !actualSha256.equals(sha256, ignoreCase = true)) {
-            targetPath.deleteIfExists()
+            partPath.deleteQuietly()
             throw IOException("SHA-256 mismatch for $uri: expected=$sha256, actual=$actualSha256")
         }
+        Files.move(partPath, targetPath, StandardCopyOption.REPLACE_EXISTING)
         return DownloadResult(targetPath, downloaded, actualSha256)
     }
 
-    private fun checkDownloadSpeed(downloadedBytes: Long, startedAtNanos: Long, settings: DownloadOptions) {
+    private fun reportProgress(
+        rawReporter: RawProgressReporter?,
+        downloadedBytes: Long,
+        contentLength: Long,
+        startedAtNanos: Long,
+    ) {
+        if (rawReporter == null) return
         val elapsedMillis = (System.nanoTime() - startedAtNanos) / 1_000_000
-        if (elapsedMillis >= settings.maxDuration.inWholeMilliseconds) {
+        val speed = if (elapsedMillis > 0) downloadedBytes * 1000 / elapsedMillis else 0L
+        val details = if (contentLength > 0) {
+            rawReporter.fraction(downloadedBytes.toDouble() / contentLength)
+            "${formatBytes(downloadedBytes)} / ${formatBytes(contentLength)} (${formatBytes(speed)}/s)"
+        } else {
+            "${formatBytes(downloadedBytes)} (${formatBytes(speed)}/s)"
+        }
+        rawReporter.details(details)
+    }
+
+    private fun formatBytes(bytes: Long): String {
+        val megabytes = bytes / (1024.0 * 1024.0)
+        return if (megabytes >= 1.0) {
+            String.format(Locale.ROOT, "%.1f MB", megabytes)
+        } else {
+            String.format(Locale.ROOT, "%.0f KB", bytes / 1024.0)
+        }
+    }
+
+    private fun isRetryable(e: Throwable): Boolean {
+        if (e is HttpStatusException) {
+            val code = e.statusCode
+            // 不可恢复的 4xx（408/429 除外）不重试
+            return code !in 400..499 || code == 408 || code == 429
+        }
+        return true
+    }
+
+    private fun checkDownloadSpeed(downloadedBytes: Long, startedAtNanos: Long, options: DownloadOptions) {
+        val elapsedMillis = (System.nanoTime() - startedAtNanos) / 1_000_000
+        if (elapsedMillis >= options.maxDuration.inWholeMilliseconds) {
             throw IOException("Download took too long: ${elapsedMillis}ms, downloaded=$downloadedBytes")
         }
-        if (elapsedMillis < settings.minSpeedCheckDelay.inWholeMilliseconds) return
+        if (elapsedMillis < options.minSpeedCheckDelay.inWholeMilliseconds) return
         val speed = downloadedBytes * 1000 / elapsedMillis
-        if (speed < settings.minSpeedBytesPerSecond) {
+        if (speed < options.minSpeedBytesPerSecond) {
             throw IOException(
                 "Download is too slow: ${speed}B/s after ${elapsedMillis}ms" +
-                    " (threshold=${settings.minSpeedBytesPerSecond}B/s), downloaded=$downloadedBytes"
+                    " (threshold=${options.minSpeedBytesPerSecond}B/s), downloaded=$downloadedBytes"
             )
         }
     }
 
-    private fun createHttpClient(proxy: Proxy?, settings: DownloadOptions): HttpClient {
+    private fun createHttpClient(proxy: Proxy?, options: DownloadOptions): HttpClient {
         val builder = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofMillis(settings.connectTimeout.inWholeMilliseconds))
+            .connectTimeout(Duration.ofMillis(options.connectTimeout.inWholeMilliseconds))
             .followRedirects(HttpClient.Redirect.NORMAL)
         if (proxy != null) {
             builder.proxy(FixedProxySelector(proxy))
         }
         return builder.build()
     }
+
+    private fun Path.deleteQuietly() {
+        runCatching { deleteIfExists() }
+    }
+
+    private class HttpStatusException(val statusCode: Int, message: String) : IOException(message)
 
     private class FixedProxySelector(private val proxy: Proxy) : ProxySelector() {
         override fun select(uri: URI): List<Proxy> = listOf(proxy)
