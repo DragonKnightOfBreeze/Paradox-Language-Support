@@ -2,6 +2,7 @@ package icu.windea.pls.core.util.net
 
 import com.sun.net.httpserver.HttpExchange
 import com.sun.net.httpserver.HttpServer
+import icu.windea.pls.core.util.io.deleteQuietly
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Assume
@@ -29,7 +30,7 @@ class DownloadServiceTest  {
 
     @Before
     fun setUp() {
-        root.toFile().deleteRecursively()
+        root.deleteQuietly(recursive = true)
         root.createDirectories()
     }
 

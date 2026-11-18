@@ -8,7 +8,9 @@ import java.nio.file.Files
 import java.nio.file.LinkOption
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
+import kotlin.io.path.deleteIfExists
 import kotlin.io.path.deleteRecursively
+import kotlin.io.path.moveTo
 
 /** 将输入的字符串转为 [Path]。 */
 fun String.toPath(): Path = Path.of(this)
@@ -43,12 +45,12 @@ fun Path.moveToAtomically(target: Path, overwrite: Boolean = true): Path {
         arrayOf(StandardCopyOption.ATOMIC_MOVE)
     }
     try {
-        Files.move(this, target, *options)
+        moveTo(target, *options)
     } catch (_: AtomicMoveNotSupportedException) {
         if (overwrite) {
-            Files.move(this, target, StandardCopyOption.REPLACE_EXISTING)
+            moveTo(target, StandardCopyOption.REPLACE_EXISTING)
         } else {
-            Files.move(this, target)
+            moveTo(target)
         }
     }
     return target
@@ -62,7 +64,7 @@ fun Path.moveToAtomically(target: Path, overwrite: Boolean = true): Path {
  */
 fun Path.deleteQuietly(recursive: Boolean = false): Boolean {
     if (!recursive) {
-        return runCatching { Files.deleteIfExists(this) }.getOrDefault(false)
+        return runCatching { deleteIfExists() }.getOrDefault(false)
     }
     return runCatching {
         if (Files.exists(this, LinkOption.NOFOLLOW_LINKS)) {

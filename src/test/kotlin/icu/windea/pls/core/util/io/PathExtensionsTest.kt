@@ -16,7 +16,7 @@ class PathExtensionsTest {
 
     @Before
     fun doSetUp() {
-        root.toFile().deleteRecursively()
+        root.deleteQuietly(recursive = true)
         root.createDirectories()
     }
 

@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
+import icu.windea.pls.core.util.io.deleteQuietly
 import org.junit.Assert
 import org.junit.Assume
 import org.junit.Before
@@ -30,7 +31,7 @@ class ChronicleGitServiceTest : BasePlatformTestCase() {
     @Before
     fun doSetUp() {
         assumeGitAvailable()
-        root.toFile().deleteRecursively()
+        root.deleteQuietly(recursive = true)
         root.createDirectories()
     }
 

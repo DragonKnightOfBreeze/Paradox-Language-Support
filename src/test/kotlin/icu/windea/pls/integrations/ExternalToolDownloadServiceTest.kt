@@ -1,5 +1,6 @@
 package icu.windea.pls.integrations
 
+import icu.windea.pls.core.util.io.deleteQuietly
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -21,14 +22,14 @@ class ExternalToolDownloadServiceTest {
 
     @Before
     fun setUp() {
-        root.toFile().deleteRecursively()
+        root.deleteQuietly(recursive = true)
         root.createDirectories()
     }
 
     @Test
     fun check_nullOrMissing_test() {
         val dir = root.resolve("missing")
-        Files.deleteIfExists(dir)
+        dir.deleteIfExists()
         Assert.assertTrue(service.check(null))
         Assert.assertTrue(service.check(dir))
     }

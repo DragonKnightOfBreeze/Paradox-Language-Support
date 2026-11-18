@@ -19,6 +19,7 @@ import com.intellij.testFramework.PlatformTestUtil
 import com.intellij.testFramework.TestActionEvent
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.base.settings.ChronicleIntegrationSettings
+import icu.windea.pls.core.util.io.deleteQuietly
 import icu.windea.pls.images.ImageContext
 import icu.windea.pls.images.ImageSupport
 import icu.windea.pls.integrations.ExternalToolDownloadTestService
@@ -63,7 +64,7 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
 
     @Before
     fun setUpSettings() {
-        root.toFile().deleteRecursively()
+        root.deleteQuietly(recursive = true)
         root.createDirectories()
         // 注册内置的 DDS/TGA ImageIO SPI，确保测试不依赖插件启动生命周期
         ImageContext.init()

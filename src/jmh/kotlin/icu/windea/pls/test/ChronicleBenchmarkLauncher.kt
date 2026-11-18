@@ -13,6 +13,7 @@ import java.nio.file.Path
 import java.time.Instant
 import java.util.jar.JarFile
 import java.util.regex.Pattern
+import kotlin.io.path.deleteIfExists
 
 /**
  * 用于运行 JMH 基准测试的通用启动器。
@@ -161,8 +162,7 @@ object ChronicleBenchmarkLauncher {
         val reportDir = context.reportDir
         Files.createDirectories(reportDir)
         Files.list(reportDir).use { paths ->
-            paths.filter { it.fileName.toString().endsWith(".json") }
-                .forEach { Files.deleteIfExists(it) }
+            paths.filter { it.fileName.toString().endsWith(".json") }.forEach { it.deleteIfExists() }
         }
     }
 

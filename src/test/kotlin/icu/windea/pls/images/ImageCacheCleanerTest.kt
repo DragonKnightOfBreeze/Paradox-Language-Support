@@ -1,5 +1,6 @@
 package icu.windea.pls.images
 
+import icu.windea.pls.core.util.io.deleteQuietly
 import icu.windea.pls.model.policies.ImageCacheCleanupPolicy
 import org.junit.Assert
 import org.junit.Test
@@ -77,7 +78,7 @@ class ImageCacheCleanerTest {
     @Test
     fun cleanup_orphanTempFiles_test() {
         val dir = Path.of("build", "tmp", "image-cache-cleaner-orphan-temp-test")
-        dir.toFile().deleteRecursively()
+        dir.deleteQuietly(recursive = true)
         dir.createDirectories()
         val tempDir = dir.resolve("_tmp").also { it.createDirectories() }
         val oldFile = tempDir.resolve("old.png.part").also { Files.write(it, byteArrayOf(1)) }
@@ -96,7 +97,7 @@ class ImageCacheCleanerTest {
     @Test
     fun cleanup_removesEmptyDirectories_test() {
         val dir = Path.of("build", "tmp", "image-cache-cleaner-empty-dir-test")
-        dir.toFile().deleteRecursively()
+        dir.deleteQuietly(recursive = true)
         dir.createDirectories()
         val emptyDir = dir.resolve("empty").also { it.createDirectories() }
         val nestedDir = dir.resolve("nested").resolve("child").also { it.createDirectories() }
@@ -119,7 +120,7 @@ class ImageCacheCleanerTest {
     @Test
     fun cleanup_keepsPlaceholder_test() {
         val dir = Path.of("build", "tmp", "image-cache-cleaner-placeholder-test")
-        dir.toFile().deleteRecursively()
+        dir.deleteQuietly(recursive = true)
         dir.createDirectories()
         val placeholder = dir.resolve("_placeholder.png").also { Files.write(it, byteArrayOf(1)) }
         val oldFile = dir.resolve("old.png").also { Files.write(it, byteArrayOf(1)) }
@@ -138,7 +139,7 @@ class ImageCacheCleanerTest {
     @Test
     fun cleanup_toolDirectory_test() {
         val dir = Path.of("build", "tmp", "image-cache-cleaner-tool-dir-test")
-        dir.toFile().deleteRecursively()
+        dir.deleteQuietly(recursive = true)
         dir.createDirectories()
         val toolDir = dir.resolve("_tool").also { it.createDirectories() }
         val toolSubDir = toolDir.resolve("test").also { it.createDirectories() }

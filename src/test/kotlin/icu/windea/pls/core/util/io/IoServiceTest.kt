@@ -170,7 +170,7 @@ class IoServiceTest {
     @Test
     fun copyPath_test() {
         val dir = Path.of("build", "tmp", "io-service-test")
-        dir.toFile().deleteRecursively()
+        dir.deleteQuietly(recursive = true)
         val source = dir.resolve("source.txt")
         val target = dir.resolve("nested/target.txt")
         Files.createDirectories(source.parent)

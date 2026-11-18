@@ -2,6 +2,7 @@ package icu.windea.pls.integrations.images
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.util.io.ImageIoService
+import icu.windea.pls.core.util.io.deleteQuietly
 import icu.windea.pls.integrations.images.providers.CommandBasedImageToolProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -34,7 +35,7 @@ class CommandBasedImageToolProviderTest : BasePlatformTestCase() {
 
     @Before
     fun doSetUp() {
-        root.toFile().deleteRecursively()
+        root.deleteQuietly(recursive = true)
         tempDir = root.resolve("_tmp").also { it.createDirectories() }
         toolCacheDir = root.resolve("_tool").also { it.createDirectories() }
         provider = TestCommandBasedImageToolProvider(tempDir, toolCacheDir)
@@ -140,11 +141,9 @@ class CommandBasedImageToolProviderTest : BasePlatformTestCase() {
 
     private fun findCacheFile(): Path {
         val stream = Files.walk(toolCacheDir)
-        try {
+        stream.use { stream ->
             return stream.filter { it.isRegularFile() }.findFirst()
                 .orElseThrow { AssertionError("Cache file not found under $toolCacheDir") }
-        } finally {
-            stream.close()
         }
     }
 

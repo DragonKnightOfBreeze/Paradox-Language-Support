@@ -7,6 +7,7 @@ import icu.windea.pls.base.settings.ChronicleImageSettings
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.toFileUrl
 import icu.windea.pls.core.util.io.ImageIoService
+import icu.windea.pls.core.util.io.deleteQuietly
 import icu.windea.pls.model.policies.ImageRenderFailurePolicy
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -25,6 +26,7 @@ import javax.imageio.ImageIO
 import javax.swing.Icon
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createDirectories
+import kotlin.io.path.deleteIfExists
 
 /**
  * @see ImageRenderService
@@ -35,7 +37,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
 
     @Before
     fun doSetUp() {
-        root.toFile().deleteRecursively()
+        root.deleteQuietly(recursive = true)
         root.createDirectories()
         // 注册内置的 DDS/TGA ImageIO SPI，确保测试不依赖插件启动生命周期
         ImageContext.init()
@@ -116,7 +118,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         val dir = root
         val source = dir.resolve("source.png")
         val target = dir.resolve("target.png")
-        Files.deleteIfExists(target)
+        target.deleteIfExists()
         writeImage(source, 10, 10)
 
         val request = ImageDescriptor(source, target)
@@ -135,7 +137,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
     fun getCachedImagePath_brokenPngCache_isDeletedAndRebuilt_test() {
         val source = root.resolve("broken-cache-source.png")
         val target = root.resolve("broken-cache-target.png")
-        Files.deleteIfExists(target)
+        target.deleteIfExists()
         writeImage(source, 10, 10)
 
         // 写入有效 PNG 后截断末尾的 IEND 块，模拟损坏的缓存文件
@@ -200,7 +202,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
     fun renderImage_noPartFileLeft_test() {
         val source = root.resolve("part-source.png")
         val target = root.resolve("part-target.png")
-        Files.deleteIfExists(target)
+        target.deleteIfExists()
         writeImage(source, 10, 10)
 
         val request = ImageDescriptor(source, target)
@@ -218,7 +220,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         val dir = root
         val source = dir.resolve("request-source.png")
         val target = dir.resolve("request-target.png")
-        Files.deleteIfExists(target)
+        target.deleteIfExists()
         writeImage(source, 10, 10)
 
         val request = ImageDescriptor(source, target)
@@ -261,7 +263,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
     fun createImage_memoryCacheReuse_test() {
         val source = root.resolve("memory-source.png")
         val target = root.resolve("memory-target.png")
-        Files.deleteIfExists(target)
+        target.deleteIfExists()
         writeImage(source, 12, 12)
 
         val service = ImageRenderService.getInstance()
@@ -280,7 +282,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
     fun createImageIcon_memoryCacheReuse_test() {
         val source = root.resolve("memory-icon-source.png")
         val target = root.resolve("memory-icon-target.png")
-        Files.deleteIfExists(target)
+        target.deleteIfExists()
         writeImage(source, 12, 12)
 
         val service = ImageRenderService.getInstance()
@@ -319,7 +321,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
     fun createImageIcon_heightLimitAppliesOnCacheHit_test() {
         val source = root.resolve("icon-limit-source.png")
         val target = root.resolve("icon-limit-target.png")
-        Files.deleteIfExists(target)
+        target.deleteIfExists()
         writeImage(source, 10, 10)
 
         val service = ImageRenderService.getInstance()
@@ -337,7 +339,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
     fun createImageIcon_concurrentRequestsShareSameIcon_test() {
         val source = root.resolve("concurrent-icon-source.png")
         val target = root.resolve("concurrent-icon-target.png")
-        Files.deleteIfExists(target)
+        target.deleteIfExists()
         writeImage(source, 200, 200)
 
         val service = ImageRenderService.getInstance()
@@ -367,7 +369,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         val dir = root
         val source = dir.resolve("session-source.png")
         val target = dir.resolve("session-target.png")
-        Files.deleteIfExists(target)
+        target.deleteIfExists()
         writeImage(source, 10, 10)
 
         val service = ImageRenderService.getInstance()
@@ -439,7 +441,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         val source = dir.resolve("$name-source.png")
         val target = dir.resolve("$name-target.png")
         Files.write(source, "not an image".toByteArray())
-        Files.deleteIfExists(target)
+        target.deleteIfExists()
         return ImageDescriptor(source, target)
     }
 

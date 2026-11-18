@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.base.settings.ChronicleImageSettings
 import icu.windea.pls.core.util.ImageFrameInfo
+import icu.windea.pls.core.util.io.deleteQuietly
 import icu.windea.pls.images.ImageDescriptor
 import icu.windea.pls.images.ImageRenderService
 import icu.windea.pls.model.policies.ImageRenderFailurePolicy
@@ -20,6 +21,7 @@ import java.nio.file.Path
 import javax.imageio.ImageIO
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createDirectories
+import kotlin.io.path.deleteIfExists
 
 /**
  * @see ParadoxImageService
@@ -31,7 +33,7 @@ class ParadoxImageServiceTest : BasePlatformTestCase(), ChronicleTestScope {
 
     @Before
     fun doSetUp() {
-        root.toFile().deleteRecursively()
+        root.deleteQuietly(recursive = true)
         root.createDirectories()
         addAdditionalAllowedRoots(Path.of("src", "test", "testData"))
     }
@@ -173,7 +175,7 @@ class ParadoxImageServiceTest : BasePlatformTestCase(), ChronicleTestScope {
         val source = root.resolve("$name-source.png")
         val target = root.resolve("$name-target.png")
         Files.writeString(source, "not an image")
-        Files.deleteIfExists(target)
+        target.deleteIfExists()
         return ImageDescriptor(source, target)
     }
 

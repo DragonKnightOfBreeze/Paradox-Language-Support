@@ -1,6 +1,7 @@
 package icu.windea.pls.images
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import icu.windea.pls.core.util.io.deleteQuietly
 import icu.windea.pls.images.supports.DefaultImageSupport
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -11,6 +12,7 @@ import org.junit.runners.JUnit4
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
+import kotlin.io.path.deleteIfExists
 
 /**
  * @see ImageService
@@ -21,7 +23,7 @@ class ImageServiceTest : BasePlatformTestCase() {
 
     @Before
     fun doSetUp() {
-        root.toFile().deleteRecursively()
+        root.deleteQuietly(recursive = true)
         root.createDirectories()
         // 注册内置的 DDS/TGA ImageIO SPI，确保测试不依赖插件启动生命周期
         ImageContext.init()
@@ -31,7 +33,7 @@ class ImageServiceTest : BasePlatformTestCase() {
     fun convertImageFormat_pngToTga_test() = runBlocking {
         val source = Path.of("src/test/testData/images/mod_unknown.png")
         val target = root.resolve("mod_unknown.tga")
-        Files.deleteIfExists(target)
+        target.deleteIfExists()
 
         ImageService.getInstance().convertImageFormat(source, target, "png", "tga")
 
@@ -45,21 +47,21 @@ class ImageServiceTest : BasePlatformTestCase() {
         for (format in formats) {
             val source = Path.of("src/test/testData/images/mod_unknown.$format")
             val target = root.resolve("mod_unknown-from-$format.tga")
-            Files.deleteIfExists(target)
+            target.deleteIfExists()
 
-             service.convertImageFormat(source, target, format, "tga")
+            service.convertImageFormat(source, target, format, "tga")
 
             assertValidImage(target, source)
         }
     }
 
     @Test
-    fun convertImageFormat_roundTrip_test()  = runBlocking{
+    fun convertImageFormat_roundTrip_test() = runBlocking {
         val source = Path.of("src/test/testData/images/mod_unknown.png")
         val tga = root.resolve("round-trip.tga")
         val png = root.resolve("round-trip.png")
-        Files.deleteIfExists(tga)
-        Files.deleteIfExists(png)
+        tga.deleteIfExists()
+        png.deleteIfExists()
 
         val service = ImageService.getInstance()
         service.convertImageFormat(source, tga, "png", "tga")
@@ -73,7 +75,7 @@ class ImageServiceTest : BasePlatformTestCase() {
     fun defaultConvertImageFormat_jpgToPng_test() = runBlocking {
         val source = Path.of("src/test/testData/images/mod_unknown.jpg")
         val target = root.resolve("default-from-jpg.png")
-        Files.deleteIfExists(target)
+        target.deleteIfExists()
 
         DefaultImageSupport().convertImageFormat(source, target, "jpg", "png")
 
@@ -87,7 +89,7 @@ class ImageServiceTest : BasePlatformTestCase() {
         for (format in formats) {
             val source = Path.of("src/test/testData/images/mod_unknown.$format")
             val target = root.resolve("mod_unknown-from-$format.png")
-            Files.deleteIfExists(target)
+            target.deleteIfExists()
 
             service.convertImageFormat(source, target, format, "png")
 
