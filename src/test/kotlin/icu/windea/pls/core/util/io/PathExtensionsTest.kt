@@ -10,14 +10,6 @@ import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
 
-/**
- * @see toPath
- * @see toPathOrNull
- * @see parsePath
- * @see clean
- * @see moveToAtomically
- * @see deleteQuietly
- */
 @RunWith(JUnit4::class)
 class PathExtensionsTest {
     private val root = Path.of("build", "tmp", "path-extensions-test")

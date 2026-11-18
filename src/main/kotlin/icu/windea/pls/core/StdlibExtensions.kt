@@ -97,11 +97,11 @@ inline fun Collection<*>?.isNotNullOrEmpty(): Boolean {
 
 /** 如果当前布尔值为 `null` 或 `false`，则返回 `null`，否则返回自身。 */
 @Suppress("NOTHING_TO_INLINE")
-inline fun Boolean?.orNull(): Boolean? = takeIf { it == true }
+inline fun Boolean?.orNull(): Boolean? = this?.takeIf { it }
 
 /** 如果当前字符串为 `null` 或为空，则返回 `null`。否则返回自身。 */
 @Suppress("NOTHING_TO_INLINE")
-inline fun <T : CharSequence> T?.orNull(): T? = takeIf { !it.isNullOrEmpty() }
+inline fun <T : CharSequence> T?.orNull(): T? = this?.takeIf { it.isNotEmpty() }
 
 /** 判断是否以指定前缀/后缀包围（基于单个字符）。 */
 fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean = false): Boolean {
