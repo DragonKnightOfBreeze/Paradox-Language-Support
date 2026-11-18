@@ -638,7 +638,7 @@
 - [x] P3 重构和改进 diagramProvider 和相关代码：使用协程、预先加载数据、避免冻结 EDT、考虑提取 presentationData，等等。
   - 移除 `ParadoxDiagramDataModel.refreshDataModel()` 外层 `runSmartReadAction` 消除死锁根因；提取轻量 `ParadoxDefinitionDiagramNodeModel` 与 `StellarisTechnologyCardPresentationModel` / `Assets`，清零 `ElementManager` 与 `ColorManager` 读锁及 EDT 同步阻塞，并实现按需预物化与展示刷新合并；人工验证已确认不冻结 UI（Diagram 插件自身仍偶发微妙异常，留待版本收尾时一并审视）。
   - 参见：[adr/image-action-and-diagram-async-isolation.md](adr/image-action-and-diagram-async-isolation.md)
-- [ ] P3 改进 GitHub 自动发布工作流（新增或拆分手动与条件式 Pre-release 自动发布流程，与插件市场正式发布解耦）。
+- [x] P3 改进 GitHub 自动发布工作流（新增或拆分手动与条件式 Pre-release 自动发布流程，与插件市场正式发布解耦）。
 
 ## 按主题 {#by-topic}
 
