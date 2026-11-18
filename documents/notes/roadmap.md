@@ -597,7 +597,8 @@
 ### v3.0.6 {#v3-0-6}
 
 > - 开始日期：2026-11-04
-> - 状态：进行中
+> - 结束日期：2026-11-19
+> - 状态：已完成
 
 #### 概述
 
@@ -635,7 +636,7 @@
   - 落地：移除 `ImageDescriptor` 的 `maxWidth` / `maxHeight`；在 `ImageRenderService` 中引入按像素估算字节权重（32 MiB / 10m）的 `imageCache`、`iconCache`（2048 / 10m）与取消不连累的 Single-flight，并复用 `JBImageIcon`；元数据读取改为按需剪枝。磁盘缓存统一“随机临时文件 → PNG 头尾轻校验 → `ATOMIC_MOVE` 落位”，外部工具流式缓存放于 `images/_tool` 并以 SHA-256 + `Mutex` double-check 去重；仅 `Delegated` 缓存做超 1 天节流 Touch，清理器补充占位图保护、`_tool` 清理、`_tmp` 孤儿回收与空目录自底向上清除。
   - 参见：[adr/image-caching-and-deduplication.md](adr/image-caching-and-deduplication.md)
 - [x] P3 重构和改进 `ConvertImageFormatAction`：使用协程、读写分离、避免冻结 EDT、支持指定目标图片格式，等等。
-  - 完成四阶段协程化分离（EDT 交互 → `readAction` 与冲突预问 → 无锁 `Dispatchers.IO` 经带目标后缀临时文件转码 → 短暂 `edtWriteAction` 落位），补齐 `PNG / JPG / GIF / DDS / TGA` 五格式动作，顺带修复 `ConvertImageFormatDialog` 文件名字段未赋值的历史 BUG，并补充端到端动作与线程锁测试。
+  - 完成四阶段协程化分离（EDT 交互 → `readAction` 与冲突预问 → 无锁 `Dispatchers.IO` 经带目标后缀临时文件转码 → 短暂 `edtWriteAction` 落位），补齐 `PNG / JPG / GIF / DDS / TGA` 五格式动作，顺带修复 `ConvertImageFormatDialog` 文件名字段未赋值的历史 BUG，后续合并 5 个格式子动作为单一 `ConvertImageFormatAction`（在对话框中选择目标格式），并补充端到端动作与线程锁测试。
   - 参见：[adr/image-action-and-diagram-async-isolation.md](adr/image-action-and-diagram-async-isolation.md)
 - [x] P3 重构和改进 diagramProvider 和相关代码：使用协程、预先加载数据、避免冻结 EDT、考虑提取 presentationData，等等。
   - 移除 `ParadoxDiagramDataModel.refreshDataModel()` 外层 `runSmartReadAction` 消除死锁根因；提取轻量 `ParadoxDefinitionDiagramNodeModel` 与 `StellarisTechnologyCardPresentationModel` / `Assets`，清零 `ElementManager` 与 `ColorManager` 读锁及 EDT 同步阻塞，并实现按需预物化与展示刷新合并；人工验证已确认不冻结 UI（Diagram 插件自身仍偶发微妙异常，留待版本收尾时一并审视）。
