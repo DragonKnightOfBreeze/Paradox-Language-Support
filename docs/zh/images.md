@@ -89,12 +89,11 @@
 ## 图片格式转换 {#convert-image-format}
 
 <!-- @see icu.windea.pls.images.actions.ConvertImageFormatAction -->
-<!-- @see icu.windea.pls.images.actions.ConvertImageFormatActions -->
 <!-- @see icu.windea.pls.images.ImageService.convertImageFormat -->
 
 插件提供以下图片格式转换动作：
 
-- 将选中的图片转换为 PNG、DDS 或 TGA。
+- 将选中的图片转换为 PNG、JPG、GIF、DDS 或 TGA，目标格式在对话框中指定。
 - 在项目视图中选择多个图片进行批量转换。
 - 在转换前确认目标文件名和目标目录。
 - 对已存在的目标文件提供跳过、覆盖等选择。

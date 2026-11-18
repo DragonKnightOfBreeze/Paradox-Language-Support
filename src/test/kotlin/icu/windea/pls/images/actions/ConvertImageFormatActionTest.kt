@@ -1,5 +1,6 @@
 package icu.windea.pls.images.actions
 
+import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -47,7 +48,7 @@ import kotlin.io.path.isRegularFile
 
 /**
  * @see ConvertImageFormatAction
- * @see ConvertImageFormatActions
+ * @see ConvertImageFormatDialog
  */
 @RunWith(JUnit4::class)
 class ConvertImageFormatActionTest : BasePlatformTestCase() {
@@ -116,24 +117,27 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
     private fun assertMatrix(strategy: String, expectedSuccess: (sourceFormat: String, targetFormat: String) -> Boolean) {
         for (sourceFormat in formats) {
             for (targetFormat in formats) {
-                val action = TestTransientConvertImageFormatAction(targetFormat)
                 val sourcePath = prepareSource(sourceFormat)
                 val targetDirectoryPath = tempDir("matrix/$strategy/$sourceFormat-to-$targetFormat")
                 val targetFileName = "target.$targetFormat"
                 val targetPath = targetDirectoryPath.resolve(targetFileName).also { it.deleteIfExists() }
+                val action = TestConvertImageFormatAction()
+                action.configureOptions(targetFileName, psiDirectory(targetDirectoryPath), targetFormat.uppercase())
 
                 val sourceFile = psiFile(sourcePath)
-                val targetDirectory = psiDirectory(targetDirectoryPath)
-                val result = runCatching {
-                    runSuspending { action.convertImageFormat(sourceFile, targetDirectory, targetFileName) }
-                }
+                val result = runSuspending { action.convertSuspend(listOf(sourceFile), project) }
                 val expected = expectedSuccess(sourceFormat, targetFormat)
-                Assert.assertEquals("$strategy: $sourceFormat -> $targetFormat, error=${result.exceptionOrNull()}", expected, result.isSuccess)
+                val actual = result.failed.isEmpty() && result.added.size == 1
+                Assert.assertEquals(
+                    "$strategy: $sourceFormat -> $targetFormat, failed=${result.failed.map { it.name }}",
+                    expected,
+                    actual,
+                )
                 if (expected) {
-                    Assert.assertNotNull("$strategy: $sourceFormat -> $targetFormat", result.getOrNull())
                     Assert.assertTrue("Missing converted image: $targetPath", targetPath.isRegularFile())
                     Assert.assertTrue("Empty converted image: $targetPath", targetPath.fileSize() > 0)
                 } else {
+                    Assert.assertEquals("$strategy: $sourceFormat -> $targetFormat", 1, result.failed.size)
                     Assert.assertFalse("Unexpected converted image: $targetPath", targetPath.isRegularFile() && targetPath.fileSize() > 0)
                 }
             }
@@ -145,7 +149,6 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
     // region Action 可见性
 
     @Test
-    @Suppress("OverrideOnly")
     fun update_visibility_test() {
         val png = prepareSource("png", "update", "file.png")
         val jpg = prepareSource("jpg", "update", "file.jpg")
@@ -158,41 +161,22 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
             Files.writeString(it, "plain text")
         }
 
+        // 合并后的动作对任意图片文件均可用，不再按目标格式排除源格式
         val cases = listOf(
-            // PNG：源文件已经是 PNG 时禁用
-            Triple<AnAction, Path, Boolean>(ConvertImageFormatActions.Png(), png, false),
-            Triple(ConvertImageFormatActions.Png(), jpg, true),
-            Triple(ConvertImageFormatActions.Png(), jpeg, true),
-            Triple(ConvertImageFormatActions.Png(), gif, true),
-            Triple(ConvertImageFormatActions.Png(), dds, true),
-            Triple(ConvertImageFormatActions.Png(), tga, true),
-            Triple(ConvertImageFormatActions.Png(), txt, false),
-            // JPG：`.jpg` 和 `.jpeg` 均禁用
-            Triple(ConvertImageFormatActions.Jpg(), png, true),
-            Triple(ConvertImageFormatActions.Jpg(), jpg, false),
-            Triple(ConvertImageFormatActions.Jpg(), jpeg, false),
-            Triple(ConvertImageFormatActions.Jpg(), gif, true),
-            Triple(ConvertImageFormatActions.Jpg(), dds, true),
-            Triple(ConvertImageFormatActions.Jpg(), tga, true),
-            Triple(ConvertImageFormatActions.Jpg(), txt, false),
-            // GIF：源文件已经是 GIF 时禁用
-            Triple(ConvertImageFormatActions.Gif(), gif, false),
-            Triple(ConvertImageFormatActions.Gif(), png, true),
-            Triple(ConvertImageFormatActions.Gif(), txt, false),
-            // DDS：源文件已经是 DDS 时禁用
-            Triple(ConvertImageFormatActions.Dds(), dds, false),
-            Triple(ConvertImageFormatActions.Dds(), png, true),
-            Triple(ConvertImageFormatActions.Dds(), txt, false),
-            // TGA：源文件已经是 TGA 时禁用
-            Triple(ConvertImageFormatActions.Tga(), tga, false),
-            Triple(ConvertImageFormatActions.Tga(), png, true),
-            Triple(ConvertImageFormatActions.Tga(), txt, false),
+            png to true,
+            jpg to true,
+            jpeg to true,
+            gif to true,
+            dds to true,
+            tga to true,
+            txt to false,
         )
-        for ((action, path, expected) in cases) {
+        val action = ConvertImageFormatAction()
+        for ((path, expected) in cases) {
             val event = eventFor(action, listOf(path))
             action.update(event)
             Assert.assertEquals(
-                "Unexpected visibility for ${action.javaClass.simpleName} on ${path.fileName}",
+                "Unexpected visibility for ${path.fileName}",
                 expected,
                 event.presentation.isEnabledAndVisible,
             )
@@ -207,7 +191,7 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
     fun cancel_prompt_test() {
         val source = prepareSource("png", "cancel", "source.png")
         val targetDirectoryPath = tempDir("cancel-target")
-        val action = TestConvertImageFormatAction("PNG")
+        val action = TestConvertImageFormatAction()
 
         val event = eventFor(action, listOf(source))
         action.actionPerformed(event)
@@ -225,8 +209,8 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
         val source = prepareSource("png", "single", "mod_unknown.png")
         val targetDirectoryPath = tempDir("single-target")
         val targetDirectory = psiDirectory(targetDirectoryPath)
-        val action = TestConvertImageFormatAction("PNG")
-        action.configureOptions("renamed.png", targetDirectory)
+        val action = TestConvertImageFormatAction()
+        action.configureOptions("renamed.png", targetDirectory, "PNG")
 
         val event = eventFor(action, listOf(source))
         action.actionPerformed(event)
@@ -236,7 +220,6 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
         assertValidImage(targetPath, source)
         Assert.assertEquals("renamed.png", psiFile(targetPath).name)
         Assert.assertTrue("Prompt should be invoked", action.promptCalled)
-        Assert.assertEquals("mod_unknown.png", action.lastDefaultNewFileName)
         Assert.assertNull(action.failedFiles)
     }
 
@@ -247,8 +230,8 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
         val bad = batchDirectory.resolve("bad.png").also { Files.writeString(it, "not an image") }
         val targetDirectoryPath = tempDir("batch-target")
         val targetDirectory = psiDirectory(targetDirectoryPath)
-        val action = TestConvertImageFormatAction("JPG")
-        action.configureOptions(null, targetDirectory)
+        val action = TestConvertImageFormatAction()
+        action.configureOptions(null, targetDirectory, "JPG")
 
         val event = eventFor(action, listOf(good, bad))
         action.actionPerformed(event)
@@ -257,10 +240,10 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
         assertValidImage(targetDirectoryPath.resolve("good.jpg"), good)
         Assert.assertFalse("Broken image should not be converted", Files.exists(targetDirectoryPath.resolve("bad.jpg")))
         Assert.assertTrue("Prompt should be invoked", action.promptCalled)
-        Assert.assertNull("Batch conversion has no default file name", action.lastDefaultNewFileName)
         Assert.assertNotNull("Failure notification should be sent", action.failedFiles)
         Assert.assertEquals(1, action.failedFiles!!.size)
         Assert.assertEquals("bad.png", action.failedFiles!!.first().name)
+        Assert.assertEquals("JPG", action.failedTargetFormatName)
     }
 
     // endregion
@@ -273,8 +256,8 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
         val targetDirectoryPath = tempDir("conflict-skip-target")
         val existingTarget = targetDirectoryPath.resolve("target.png").also { writeImage(it, 11, 13, Color.GREEN.rgb) }
         val existingBytes = Files.readAllBytes(existingTarget)
-        val action = TestConvertImageFormatAction("PNG")
-        action.configureOptions("target.png", psiDirectory(targetDirectoryPath))
+        val action = TestConvertImageFormatAction()
+        action.configureOptions("target.png", psiDirectory(targetDirectoryPath), "PNG")
         action.configureOverwriteChoice { _, _ -> SkipOverwriteChoice.SKIP }
 
         val sourceFile = psiFile(source)
@@ -296,8 +279,8 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
         val targetB = targetDirectoryPath.resolve("b.png").also { writeImage(it, 17, 19, Color.BLUE.rgb) }
         val bytesA = Files.readAllBytes(targetA)
         val bytesB = Files.readAllBytes(targetB)
-        val action = TestConvertImageFormatAction("PNG")
-        action.configureOptions(null, psiDirectory(targetDirectoryPath))
+        val action = TestConvertImageFormatAction()
+        action.configureOptions(null, psiDirectory(targetDirectoryPath), "PNG")
         action.configureOverwriteChoice { _, _ -> SkipOverwriteChoice.SKIP_ALL }
 
         val sourceFileA = psiFile(sourceA)
@@ -318,8 +301,8 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
         val source = prepareSource("png", "conflict-overwrite", "source.png")
         val targetDirectoryPath = tempDir("conflict-overwrite-target")
         val existingTarget = targetDirectoryPath.resolve("target.png").also { writeImage(it, 11, 13, Color.GREEN.rgb) }
-        val action = TestConvertImageFormatAction("PNG")
-        action.configureOptions("target.png", psiDirectory(targetDirectoryPath))
+        val action = TestConvertImageFormatAction()
+        action.configureOptions("target.png", psiDirectory(targetDirectoryPath), "PNG")
         action.configureOverwriteChoice { _, _ -> SkipOverwriteChoice.OVERWRITE }
 
         val sourceFile = psiFile(source)
@@ -337,8 +320,8 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
         val targetDirectoryPath = tempDir("conflict-overwrite-all-target")
         val targetA = targetDirectoryPath.resolve("a.png").also { writeImage(it, 11, 13, Color.GREEN.rgb) }
         val targetB = targetDirectoryPath.resolve("b.png").also { writeImage(it, 17, 19, Color.BLUE.rgb) }
-        val action = TestConvertImageFormatAction("PNG")
-        action.configureOptions(null, psiDirectory(targetDirectoryPath))
+        val action = TestConvertImageFormatAction()
+        action.configureOptions(null, psiDirectory(targetDirectoryPath), "PNG")
         action.configureOverwriteChoice { _, _ -> SkipOverwriteChoice.OVERWRITE_ALL }
 
         val sourceFileA = psiFile(sourceA)
@@ -354,22 +337,37 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun overwrite_same_path_test() {
-        val directory = tempDir("self-overwrite")
-        val source = prepareSource("png", "self-overwrite", "self.png")
+    fun same_path_skipped_test() {
+        val source = prepareSource("png", "self-path", "self.png")
         val originalBytes = Files.readAllBytes(source)
-        val action = TestConvertImageFormatAction("PNG")
-        action.configureOptions("self.png", psiDirectory(directory))
+        val action = TestConvertImageFormatAction()
+        action.configureOptions("self.png", psiDirectory(source.parent), "PNG")
         action.configureOverwriteChoice { _, _ -> SkipOverwriteChoice.OVERWRITE }
 
         val sourceFile = psiFile(source)
         val result = runSuspending { action.convertSuspend(listOf(sourceFile), project) }
 
+        Assert.assertEquals(0, result.added.size)
+        Assert.assertEquals(0, result.failed.size)
+        Assert.assertArrayEquals("Same-path conversion must be skipped", originalBytes, Files.readAllBytes(source))
+        Assert.assertEquals(0, action.overwritePrompts.size)
+    }
+
+    @Test
+    fun same_format_different_path_copied_test() {
+        val source = prepareSource("png", "same-format", "source.png")
+        val targetDirectoryPath = tempDir("same-format-target")
+        val action = TestConvertImageFormatAction()
+        action.configureOptions("copy.png", psiDirectory(targetDirectoryPath), "PNG")
+
+        val sourceFile = psiFile(source)
+        val result = runSuspending { action.convertSuspend(listOf(sourceFile), project) }
+
+        val targetPath = targetDirectoryPath.resolve("copy.png")
         Assert.assertEquals(1, result.added.size)
         Assert.assertEquals(0, result.failed.size)
-        Assert.assertArrayEquals("Same-path conversion must not corrupt the file", originalBytes, Files.readAllBytes(source))
-        assertValidImage(source, source)
-        Assert.assertEquals(1, action.overwritePrompts.size)
+        Assert.assertArrayEquals("Same-format copy should preserve content", Files.readAllBytes(source), Files.readAllBytes(targetPath))
+        assertValidImage(targetPath, source)
     }
 
     // endregion
@@ -383,8 +381,8 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
 
         val source = prepareSource("png", "locks", "source.png")
         val targetDirectoryPath = tempDir("locks-target")
-        val action = TestConvertImageFormatAction("JPG")
-        action.configureOptions("target.jpg", psiDirectory(targetDirectoryPath))
+        val action = TestConvertImageFormatAction()
+        action.configureOptions("target.jpg", psiDirectory(targetDirectoryPath), "JPG")
 
         val sourceFile = psiFile(source)
         val result = runSuspending { action.convertSuspend(listOf(sourceFile), project) }
@@ -400,27 +398,67 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
 
     // endregion
 
-    // region 对话框校验
+    // region 对话框
 
     @Test
-    fun dialog_basic_validation_test() {
-        val source = prepareSource("png", "dialog", "source.png")
-        val file = psiFile(source)
-        var dialog: ConvertImageFormatDialog? = null
-        ApplicationManager.getApplication().invokeAndWait {
-            val newDialog = ConvertImageFormatDialog(listOf(file), project, "default.png", "PNG")
-            dialog = newDialog
-            newDialog.createCenterPanel()
-        }
+    fun dialog_default_target_format_test() {
+        val png = prepareSource("png", "dialog-default", "source.png")
+        val jpeg = prepareSource("jpg", "dialog-default", "source.jpeg")
+        val pngFile = psiFile(png)
+        val jpegFile = psiFile(jpeg)
 
-        val actual = requireNotNull(dialog)
-        Assert.assertEquals("default.png", actual.newFileName)
-        Assert.assertEquals(file.parent, actual.targetDirectory)
+        // 未记忆格式时默认为 PNG；源文件也是 PNG 时改用不同的格式
+        setRememberedTargetFormat(null)
+        val defaultDialog = createDialog(pngFile)
+        Assert.assertEquals("DDS", defaultDialog.targetFormatName)
+        Assert.assertEquals("source.dds", defaultDialog.newFileName)
+
+        // 记忆格式与源格式不同时，优先使用记忆格式
+        setRememberedTargetFormat("JPG")
+        Assert.assertEquals("JPG", createDialog(pngFile).targetFormatName)
+
+        // `.jpeg` 与 `JPG` 视为相同格式，此时回退到 PNG
+        setRememberedTargetFormat("JPG")
+        val jpegDialog = createDialog(jpegFile)
+        Assert.assertEquals("PNG", jpegDialog.targetFormatName)
+        Assert.assertEquals("source.png", jpegDialog.newFileName)
+    }
+
+    @Test
+    fun dialog_target_format_switch_updates_new_file_name_test() {
+        val source = prepareSource("png", "dialog-switch", "custom.name.png")
+        val file = psiFile(source)
+        setRememberedTargetFormat("PNG")
+        val dialog = createDialog(file)
+        Assert.assertEquals("DDS", dialog.targetFormatName)
+        Assert.assertEquals("custom.name.dds", dialog.newFileName)
+
+        ApplicationManager.getApplication().invokeAndWait { dialog.selectTargetFormat("JPG") }
+
+        Assert.assertEquals("JPG", dialog.targetFormatName)
+        Assert.assertEquals("custom.name.jpg", dialog.newFileName)
     }
 
     // endregion
 
     // region 辅助方法
+
+    private fun setRememberedTargetFormat(value: String?) {
+        val propertiesComponent = PropertiesComponent.getInstance(project)
+        if (value == null) {
+            propertiesComponent.unsetValue(targetFormatKey)
+        } else {
+            propertiesComponent.setValue(targetFormatKey, value)
+        }
+    }
+
+    private fun createDialog(file: PsiFile): ConvertImageFormatDialog {
+        var dialog: ConvertImageFormatDialog? = null
+        ApplicationManager.getApplication().invokeAndWait {
+            dialog = ConvertImageFormatDialog(listOf(file), project).also { it.createCenterPanel() }
+        }
+        return requireNotNull(dialog)
+    }
 
     private fun <T> runSuspending(block: suspend () -> T): T {
         val future = ApplicationManager.getApplication().executeOnPooledThread(Callable { runBlocking { block() } })
@@ -499,31 +537,27 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
 
     // region 测试用实现
 
-    /** 直接调用 [ConvertImageFormatAction.convertImageFormat] 的临时实现，用于策略矩阵测试。 */
-    private class TestTransientConvertImageFormatAction(targetFormatName: String) : ConvertImageFormatAction(targetFormatName)
-
     /** 可覆写交互钩子的测试实现，用于端到端 Action 测试。 */
-    private class TestConvertImageFormatAction(targetFormatName: String) : ConvertImageFormatAction(targetFormatName) {
+    private class TestConvertImageFormatAction : ConvertImageFormatAction() {
         private var options: ConversionOptions? = null
         private var overwriteChoiceProvider: (fileName: String, isBatch: Boolean) -> SkipOverwriteChoice = { _, _ -> SkipOverwriteChoice.OVERWRITE }
 
         var failedFiles: List<PsiFile>? = null
+        var failedTargetFormatName: String? = null
         val errorMessages = mutableListOf<String?>()
         val overwritePrompts = mutableListOf<Pair<String, Boolean>>()
         var promptCalled = false
-        var lastDefaultNewFileName: String? = null
 
-        fun configureOptions(newFileName: String?, targetDirectory: PsiDirectory) {
-            options = ConversionOptions(newFileName, targetDirectory)
+        fun configureOptions(newFileName: String?, targetDirectory: PsiDirectory, targetFormatName: String) {
+            options = ConversionOptions(newFileName, targetDirectory, targetFormatName)
         }
 
         fun configureOverwriteChoice(provider: (fileName: String, isBatch: Boolean) -> SkipOverwriteChoice) {
             overwriteChoiceProvider = provider
         }
 
-        override fun promptConversionOptions(files: List<PsiFile>, project: Project, defaultNewFileName: String?): ConversionOptions? {
+        override fun promptConversionOptions(files: List<PsiFile>, project: Project): ConversionOptions? {
             promptCalled = true
-            lastDefaultNewFileName = defaultNewFileName
             return options
         }
 
@@ -537,8 +571,9 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
             return overwriteChoiceProvider(fileName, isBatch)
         }
 
-        override suspend fun notifyFailed(project: Project, files: List<PsiFile>, failed: List<PsiFile>) {
+        override suspend fun notifyFailed(project: Project, files: List<PsiFile>, failed: List<PsiFile>, targetFormatName: String) {
             failedFiles = failed.toList()
+            failedTargetFormatName = targetFormatName
         }
 
         override suspend fun showErrorDialog(project: Project, message: String?) {
@@ -564,6 +599,7 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
             return false
         }
 
+        @Suppress("BlockingMethodInNonBlockingContext")
         override suspend fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String): Boolean {
             val application = ApplicationManager.getApplication()
             called = true
@@ -579,4 +615,8 @@ class ConvertImageFormatActionTest : BasePlatformTestCase() {
     }
 
     // endregion
+
+    companion object {
+        private const val targetFormatKey = "Pls.ConvertImageFormat.TARGET_FORMAT"
+    }
 }
