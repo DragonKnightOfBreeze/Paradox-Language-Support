@@ -136,6 +136,24 @@ class ImageCacheCleanerTest {
     }
 
     @Test
+    fun cleanup_toolDirectory_test() {
+        val dir = Path.of("build", "tmp", "image-cache-cleaner-tool-dir-test")
+        dir.toFile().deleteRecursively()
+        dir.createDirectories()
+        val toolDir = dir.resolve("_tool").also { it.createDirectories() }
+        val toolSubDir = toolDir.resolve("test").also { it.createDirectories() }
+        val oldFile = toolSubDir.resolve("old.png").also { Files.write(it, byteArrayOf(1)) }
+        Files.setLastModifiedTime(oldFile, FileTime.fromMillis(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(40)))
+
+        val deleted = ImageCacheCleaner(dir).cleanup(ImageCacheCleanupPolicy.ByTtl)
+
+        // `_tool` 子目录下的过期图片同样应被清理，但保留 `_tool` 根目录本身
+        Assert.assertEquals(1, deleted)
+        Assert.assertFalse(Files.exists(oldFile))
+        Assert.assertTrue(Files.isDirectory(toolDir))
+    }
+
+    @Test
     fun cleanup_none_test() {
         val dir = Path.of("build", "tmp", "image-cache-cleaner-none-test").also { it.createDirectories() }
         val file = dir.resolve("old.png")
