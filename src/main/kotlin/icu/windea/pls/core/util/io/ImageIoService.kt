@@ -1,6 +1,7 @@
 package icu.windea.pls.core.util.io
 
 import com.intellij.util.io.fileSizeSafe
+import icu.windea.pls.core.orNull
 import icu.windea.pls.core.util.ImageFrameInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -59,8 +60,8 @@ object ImageIoService {
         val size = path.fileSizeSafe()
         if (size <= 0L) return false
 
-        val actualFormat = format?.let { normalizeImageFormat(it) }?.takeIf { it.isNotEmpty() }
-            ?: path.fileName?.toString()?.substringAfterLast('.', "")?.takeIf { it.isNotEmpty() }
+        val actualFormat = format?.let { normalizeImageFormat(it) }?.orNull()
+            ?: path.fileName?.toString()?.substringAfterLast('.', "")?.orNull()
         if (!actualFormat.equals("png", ignoreCase = true)) return true
         if (size < PNG_MIN_FILE_SIZE) return false
 
@@ -75,7 +76,7 @@ object ImageIoService {
                 if (channel.readAt(trailer) != pngIendChunk.size) return false
                 trailer.array().contentEquals(pngIendChunk)
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             false
         }
     }

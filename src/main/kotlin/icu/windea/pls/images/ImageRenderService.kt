@@ -37,7 +37,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import java.nio.file.attribute.FileTime
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.CancellationException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
@@ -176,7 +176,6 @@ class ImageRenderService : Disposable {
         if (targetParent != null) targetParent.createDirectories()
 
         val partPath = targetPath.resolveSibling("${targetPath.fileName}.${UUID.randomUUID()}.part")
-        var moved = false
         try {
             ProgressManager.checkCanceled()
             val sourceImage = ImageIoService.readImage(sourcePath)
@@ -189,10 +188,9 @@ class ImageRenderService : Disposable {
                 throw IllegalStateException("Invalid image file after rendering: $partPath")
             }
             moveAtomically(partPath, targetPath)
-            moved = true
             return targetPath
         } catch (e: Throwable) {
-            if (!moved) runCatching { Files.deleteIfExists(targetPath) }
+            runCatching { Files.deleteIfExists(targetPath) }
             throw e
         } finally {
             runCatching { Files.deleteIfExists(partPath) }
@@ -207,7 +205,7 @@ class ImageRenderService : Disposable {
     private fun moveAtomically(partPath: Path, targetPath: Path) {
         try {
             Files.move(partPath, targetPath, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
-        } catch (e: AtomicMoveNotSupportedException) {
+        } catch (_: AtomicMoveNotSupportedException) {
             Files.move(partPath, targetPath, StandardCopyOption.REPLACE_EXISTING)
         }
     }

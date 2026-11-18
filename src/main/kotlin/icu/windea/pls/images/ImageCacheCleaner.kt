@@ -4,6 +4,7 @@ import com.intellij.openapi.diagnostic.logger
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.base.settings.ChronicleImageSettings
 import icu.windea.pls.model.policies.ImageCacheCleanupPolicy
+import org.apache.commons.io.file.PathUtils
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.extension
@@ -46,7 +47,7 @@ class ImageCacheCleaner(
         var deleted = cleanupOrphanTempFiles(tempPath)
 
         val entries = collectEntries(tempPath)
-        if (entries != null && entries.isNotEmpty()) {
+        if (!entries.isNullOrEmpty()) {
             deleted += cleanupEntries(entries, policy)
         }
 
@@ -148,7 +149,7 @@ class ImageCacheCleaner(
                 .sortedByDescending { it.nameCount }
             for (directory in directories) {
                 if (directory == imagesPath || directory == tempPath || directory == toolPath) continue
-                if (!isEmptyDirectory(directory)) continue
+                if (!PathUtils.isEmptyDirectory(directory)) continue
                 runCatching { Files.deleteIfExists(directory) }
             }
         } catch (e: Exception) {
@@ -164,20 +165,10 @@ class ImageCacheCleaner(
      */
     private fun walkAll(root: Path): List<Path> {
         val stream = Files.walk(root)
-        try {
+        stream.use { stream ->
             val paths = mutableListOf<Path>()
             stream.forEach { paths.add(it) }
             return paths
-        } finally {
-            stream.close()
-        }
-    }
-
-    private fun isEmptyDirectory(path: Path): Boolean {
-        return try {
-            Files.newDirectoryStream(path).use { stream -> !stream.iterator().hasNext() }
-        } catch (e: Exception) {
-            false
         }
     }
 
