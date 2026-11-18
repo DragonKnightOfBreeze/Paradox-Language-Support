@@ -5,6 +5,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.base.settings.ChronicleImageSettings
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.toFileUrl
+import icu.windea.pls.core.util.io.ImageIoService
 import icu.windea.pls.model.policies.ImageRenderFailurePolicy
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -15,6 +16,8 @@ import org.junit.runners.JUnit4
 import java.awt.image.BufferedImage
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.attribute.FileTime
+import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createDirectories
@@ -96,7 +99,7 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         Files.deleteIfExists(target)
         writeImage(source, 10, 10)
 
-        val request = ImageDescriptor(source, target, maxWidth = 5, maxHeight = 5)
+        val request = ImageDescriptor(source, target)
         val service = ImageRenderService.getInstance()
         val result = service.renderImage(request)
 
@@ -104,8 +107,90 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         Assert.assertTrue(Files.isRegularFile(target))
         Assert.assertEquals(target, service.getCachedImagePath(request))
         val metadata = ImageMetadataService.getInstance().getMetadata(target)
-        Assert.assertTrue(metadata.width <= 5)
-        Assert.assertTrue(metadata.height <= 5)
+        Assert.assertEquals(10, metadata.width)
+        Assert.assertEquals(10, metadata.height)
+    }
+
+    @Test
+    fun getCachedImagePath_brokenPngCache_isDeletedAndRebuilt_test() {
+        val source = root.resolve("broken-cache-source.png")
+        val target = root.resolve("broken-cache-target.png")
+        Files.deleteIfExists(target)
+        writeImage(source, 10, 10)
+
+        // 写入有效 PNG 后截断末尾的 IEND 块，模拟损坏的缓存文件
+        writeImage(target, 10, 10)
+        val bytes = Files.readAllBytes(target)
+        Assert.assertTrue(bytes.size > 24)
+        Files.write(target, bytes.copyOf(bytes.size - 12))
+
+        val request = ImageDescriptor(source, target)
+        val service = ImageRenderService.getInstance()
+
+        // 命中损坏缓存时应删除并返回 null
+        Assert.assertNull(service.getCachedImagePath(request))
+        Assert.assertFalse(Files.exists(target))
+
+        // 之后应能重新渲染出合法缓存
+        Assert.assertEquals(target, service.renderImage(request))
+        Assert.assertTrue(ImageIoService.isValidImageFile(target, "png"))
+    }
+
+    @Test
+    fun getCachedImagePath_delegatedTouch_test() {
+        val source = root.resolve("touch-source.png")
+        val target = root.resolve("touch-target.png")
+        writeImage(source, 10, 10)
+        writeImage(target, 10, 10)
+
+        val service = ImageRenderService.getInstance()
+        val request = ImageDescriptor(source, target)
+
+        // 超过 1 天：命中缓存时更新 mtime
+        val oldTime = FileTime.fromMillis(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(2))
+        Files.setLastModifiedTime(target, oldTime)
+        Assert.assertEquals(target, service.getCachedImagePath(request))
+        val touchedTime = Files.getLastModifiedTime(target).toMillis()
+        Assert.assertTrue(touchedTime > oldTime.toMillis())
+        Assert.assertTrue(touchedTime >= System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(1))
+
+        // 1 天内：不刷新 mtime
+        val recentTime = FileTime.fromMillis(System.currentTimeMillis() - TimeUnit.HOURS.toMillis(1))
+        Files.setLastModifiedTime(target, recentTime)
+        Assert.assertEquals(target, service.getCachedImagePath(request))
+        Assert.assertEquals(recentTime.toMillis(), Files.getLastModifiedTime(target).toMillis())
+    }
+
+    @Test
+    fun getCachedImagePath_directDoesNotTouch_test() {
+        val source = root.resolve("direct-source.png")
+        writeImage(source, 10, 10)
+        val oldTime = FileTime.fromMillis(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(40))
+        Files.setLastModifiedTime(source, oldTime)
+
+        val request = ImageDescriptor(source)
+        val service = ImageRenderService.getInstance()
+
+        Assert.assertEquals(source, service.getCachedImagePath(request))
+        // Direct 策略绝不修改源文件的 mtime
+        Assert.assertEquals(oldTime.toMillis(), Files.getLastModifiedTime(source).toMillis())
+    }
+
+    @Test
+    fun renderImage_noPartFileLeft_test() {
+        val source = root.resolve("part-source.png")
+        val target = root.resolve("part-target.png")
+        Files.deleteIfExists(target)
+        writeImage(source, 10, 10)
+
+        val request = ImageDescriptor(source, target)
+        val service = ImageRenderService.getInstance()
+        Assert.assertEquals(target, service.renderImage(request))
+
+        val partFileCount = Files.list(root).use { stream ->
+            stream.filter { it.fileName.toString().endsWith(".part") }.count()
+        }
+        Assert.assertEquals(0L, partFileCount)
     }
 
     @Test

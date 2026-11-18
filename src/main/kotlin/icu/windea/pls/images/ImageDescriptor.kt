@@ -10,10 +10,10 @@ import javax.swing.Icon
  * 图片处理策略。
  */
 enum class ImageStrategy {
-    /** 直接使用源图片，无需切分、缩放或格式转换。 */
+    /** 直接使用源图片，无需切分或格式转换。 */
     Direct,
 
-    /** 需要经由渲染管道派生到目标缓存路径（切分、缩放或格式转换）。 */
+    /** 需要经由渲染管道派生到目标缓存路径（切分或格式转换）。 */
     Delegated,
 }
 
@@ -27,15 +27,11 @@ enum class ImageStrategy {
  * @property sourcePath 源图片路径。
  * @property targetPath 渲染后的缓存路径；不需要渲染时等于 [sourcePath]。
  * @property frameInfo 实际生效的帧数信息，用于切分图片。
- * @property maxWidth 目标最大宽度；为空时不限制。
- * @property maxHeight 目标最大高度；为空时不限制。
  */
 data class ImageDescriptor(
     val sourcePath: Path,
     val targetPath: Path = sourcePath,
     val frameInfo: ImageFrameInfo? = null,
-    val maxWidth: Int? = null,
-    val maxHeight: Int? = null,
 ) {
     /**
      * 图片处理策略，由 [targetPath] 是否与 [sourcePath] 一致推导得到。
@@ -44,7 +40,7 @@ data class ImageDescriptor(
         get() = if (targetPath == sourcePath) ImageStrategy.Direct else ImageStrategy.Delegated
 
     /**
-     * 是否需要执行渲染（切分、缩放或格式转换）。
+     * 是否需要执行渲染（切分、格式转换）。
      */
     val renderRequired: Boolean
         get() = strategy == ImageStrategy.Delegated

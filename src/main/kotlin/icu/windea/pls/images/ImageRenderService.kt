@@ -27,8 +27,12 @@ import java.awt.AlphaComposite
 import java.awt.Color
 import java.awt.Image
 import java.awt.image.BufferedImage
+import java.nio.file.AtomicMoveNotSupportedException
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardCopyOption
+import java.nio.file.attribute.FileTime
+import java.util.UUID
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ScheduledFuture
@@ -124,6 +128,10 @@ class ImageRenderService : Disposable {
 
     /**
      * 同步渲染图片到目标缓存路径；如果目标已存在则直接返回。
+     *
+     * 备注：
+     * - 渲染结果会先写入同目录的 `.part` 临时文件，校验通过后再原子落位到目标路径。
+     * - 异常时不会留下残缺的目标文件，且无论成功与否都会清理临时文件。
      */
     fun renderImage(descriptor: ImageDescriptor): Path {
         getCachedImagePath(descriptor)?.let { return it }
@@ -133,19 +141,40 @@ class ImageRenderService : Disposable {
         val targetParent = targetPath.parent
         if (targetParent != null) targetParent.createDirectories()
 
+        val partPath = targetPath.resolveSibling("${targetPath.fileName}.${UUID.randomUUID()}.part")
+        var moved = false
         try {
             ProgressManager.checkCanceled()
             val sourceImage = ImageIoService.readImage(sourcePath)
             ProgressManager.checkCanceled()
-            val slicedImage = descriptor.frameInfo?.let { ImageIoService.sliceImage(sourceImage, it) } ?: sourceImage
-            val finalImage = ImageIoService.scaleImage(slicedImage, descriptor.maxWidth, descriptor.maxHeight)
+            val finalImage = descriptor.frameInfo?.let { ImageIoService.sliceImage(sourceImage, it) } ?: sourceImage
             ProgressManager.checkCanceled()
-            val written = ImageIoService.writeImage(finalImage, descriptor.targetFormat, targetPath)
+            val written = ImageIoService.writeImage(finalImage, descriptor.targetFormat, partPath)
             if (!written) throw IllegalStateException("No image writer found for format: ${descriptor.targetFormat}")
+            if (!ImageIoService.isValidImageFile(partPath, descriptor.targetFormat)) {
+                throw IllegalStateException("Invalid image file after rendering: $partPath")
+            }
+            moveAtomically(partPath, targetPath)
+            moved = true
             return targetPath
         } catch (e: Throwable) {
-            runCatching { Files.deleteIfExists(targetPath) }
+            if (!moved) runCatching { Files.deleteIfExists(targetPath) }
             throw e
+        } finally {
+            runCatching { Files.deleteIfExists(partPath) }
+        }
+    }
+
+    /**
+     * 将临时文件原子地移动到目标路径。
+     *
+     * 优先尝试 `ATOMIC_MOVE`；当文件系统不支持时回退为仅使用 `REPLACE_EXISTING`。
+     */
+    private fun moveAtomically(partPath: Path, targetPath: Path) {
+        try {
+            Files.move(partPath, targetPath, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
+        } catch (e: AtomicMoveNotSupportedException) {
+            Files.move(partPath, targetPath, StandardCopyOption.REPLACE_EXISTING)
         }
     }
 
@@ -154,13 +183,23 @@ class ImageRenderService : Disposable {
      *
      * 该方法会读取图片的原始元数据、检查高度限制、按需渲染并解码目标图片。
      * 调用方应确保当前不在 EDT/readAction 中，并按需添加超时。
+     *
+     * 备注：
+     * - 对于 `Delegated` 策略，如果缓存文件解码失败（但轻量校验通过），会删除损坏的缓存并重试一次。
      */
     fun createImage(descriptor: ImageDescriptor, heightLimit: Int? = null): Image? {
         val metadata = ImageMetadataService.getInstance().getMetadataOrNull(descriptor.sourcePath) ?: return null
         if (heightLimit != null && metadata.height > heightLimit) return null
         val targetPath = renderImage(descriptor)
-        val image = ImageIoService.readImage(targetPath)
-        return image
+        return try {
+            ImageIoService.readImage(targetPath)
+        } catch (e: Throwable) {
+            checkCancellation(e)
+            if (descriptor.strategy != ImageStrategy.Delegated) throw e
+            runCatching { Files.deleteIfExists(targetPath) }
+            val retriedPath = renderImage(descriptor)
+            ImageIoService.readImage(retriedPath)
+        }
     }
 
     /**
@@ -202,11 +241,36 @@ class ImageRenderService : Disposable {
 
     /**
      * 如果存在对应的本地缓存，则直接返回预期的目标路径。
+     *
+     * 备注：
+     * - 对 `Delegated` 策略且目标格式为 `png` 的缓存做头尾魔数校验，发现损坏文件时安全删除并返回 `null`。
+     * - 对 `Delegated` 策略命中缓存时，若缓存的修改时间距今超过 1 天，则更新其修改时间以实现节流 Touch。
+     * - 对 `Direct` 策略不会修改任何文件的修改时间。
      */
     fun getCachedImagePath(descriptor: ImageDescriptor): Path? {
         val targetPath = descriptor.targetPath
         if (!targetPath.isRegularFile() || targetPath.fileSizeSafe() == 0L) return null
+        if (descriptor.strategy == ImageStrategy.Delegated) {
+            if (!ImageIoService.isValidImageFile(targetPath, descriptor.targetFormat)) {
+                runCatching { Files.deleteIfExists(targetPath) }
+                return null
+            }
+            touchCacheFile(targetPath)
+        }
         return targetPath
+    }
+
+    /**
+     * 节流更新缓存的修改时间：仅当距上次修改超过 1 天时才刷新。
+     */
+    private fun touchCacheFile(path: Path) {
+        runCatching {
+            val now = System.currentTimeMillis()
+            val lastModified = Files.getLastModifiedTime(path).toMillis()
+            if (now - lastModified > 1.days.inWholeMilliseconds) {
+                Files.setLastModifiedTime(path, FileTime.fromMillis(now))
+            }
+        }
     }
 
     /**

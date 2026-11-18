@@ -1,5 +1,6 @@
 package icu.windea.pls.core.util.io
 
+import com.intellij.util.io.fileSizeSafe
 import icu.windea.pls.core.util.ImageFrameInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -8,16 +9,32 @@ import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.io.OutputStream
+import java.nio.ByteBuffer
+import java.nio.channels.SeekableByteChannel
+import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardOpenOption
 import javax.imageio.ImageIO
 import javax.imageio.ImageReader
 import kotlin.io.path.createDirectories
 import kotlin.io.path.inputStream
+import kotlin.io.path.isRegularFile
 import kotlin.io.path.outputStream
 import kotlin.math.min
 import kotlin.math.roundToInt
 
 object ImageIoService {
+    private const val PNG_MIN_FILE_SIZE = 24L
+
+    private val pngSignature = byteArrayOf(
+        0x89.toByte(), 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
+    )
+
+    private val pngIendChunk = byteArrayOf(
+        0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44,
+        0xAE.toByte(), 0x42, 0x60, 0x82.toByte(),
+    )
+
     fun isSameImageFormat(sourceFormat: String, targetFormat: String): Boolean {
         val sourceFormat = normalizeImageFormat(sourceFormat)
         val targetFormat = normalizeImageFormat(targetFormat)
@@ -26,6 +43,51 @@ object ImageIoService {
 
     fun normalizeImageFormat(sourceFormat: String): String {
         return sourceFormat.trim().removePrefix(".")
+    }
+
+    /**
+     * 轻量校验图片文件是否完整。
+     *
+     * 备注：
+     * - 先检查文件存在、为常规文件且非空。
+     * - 对于 PNG（由 [format] 或文件扩展名判定，忽略大小写），额外以 O(1) 的方式校验文件头尾的魔数：
+     *   前 8 字节应为 PNG 签名，最后 12 字节应为 PNG IEND 块。
+     * - 对于其他格式，仅检查文件存在且非空。
+     */
+    fun isValidImageFile(path: Path, format: String? = null): Boolean {
+        if (!path.isRegularFile()) return false
+        val size = path.fileSizeSafe()
+        if (size <= 0L) return false
+
+        val actualFormat = format?.let { normalizeImageFormat(it) }?.takeIf { it.isNotEmpty() }
+            ?: path.fileName?.toString()?.substringAfterLast('.', "")?.takeIf { it.isNotEmpty() }
+        if (!actualFormat.equals("png", ignoreCase = true)) return true
+        if (size < PNG_MIN_FILE_SIZE) return false
+
+        return try {
+            Files.newByteChannel(path, StandardOpenOption.READ).use { channel ->
+                val header = ByteBuffer.allocate(pngSignature.size)
+                if (channel.readAt(header) != pngSignature.size) return false
+                if (!header.array().contentEquals(pngSignature)) return false
+
+                channel.position(size - pngIendChunk.size)
+                val trailer = ByteBuffer.allocate(pngIendChunk.size)
+                if (channel.readAt(trailer) != pngIendChunk.size) return false
+                trailer.array().contentEquals(pngIendChunk)
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun SeekableByteChannel.readAt(buffer: ByteBuffer): Int {
+        var read = 0
+        while (buffer.hasRemaining()) {
+            val count = read(buffer)
+            if (count < 0) break
+            read += count
+        }
+        return read
     }
 
     /**
