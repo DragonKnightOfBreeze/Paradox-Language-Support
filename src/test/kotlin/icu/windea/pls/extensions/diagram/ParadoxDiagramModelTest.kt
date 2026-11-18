@@ -30,6 +30,7 @@ class ParadoxDiagramModelTest {
             presentableName = "Diagram Test Tech",
             subtypes = setOf("rare"),
             properties = listOf(ParadoxDiagramPropertyItem(propertyText)),
+            techArea = "physics",
         )
 
         assertEquals("tech_diagram_test", model.title)
@@ -38,6 +39,7 @@ class ParadoxDiagramModelTest {
         assertEquals(setOf("rare"), model.subtypes)
         assertEquals(1, model.properties.size)
         assertEquals(propertyText, model.properties.first().text)
+        assertEquals("physics", model.techArea)
         assertNull(model.cardAssets)
 
         val image = BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB)

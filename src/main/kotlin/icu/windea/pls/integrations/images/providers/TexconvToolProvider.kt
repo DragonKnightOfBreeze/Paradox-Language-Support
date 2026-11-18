@@ -50,22 +50,19 @@ class TexconvToolProvider : CommandBasedImageToolProvider() {
     /**
      * @param targetFormat 参见：[File and pixel format options](https://github.com/microsoft/DirectXTex/wiki/Texconv#file-and-pixel-format-options)
      */
-    override suspend fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
+    override suspend fun doConvertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
         val executablePath = getExecutablePath()
 
-        val tempParentPath = ChronicleDataPathService.getInstance().imagesTempPath
-        val outputDirectoryPath = targetDirectoryPath ?: tempParentPath
+        val outputDirectoryPath = targetPath.parent ?: throw IllegalStateException("Target path has no parent: $targetPath")
         outputDirectoryPath.createDirectories()
-        val outputFileName = path.nameWithoutExtension + "." + targetFormat
-        val outputPath = outputDirectoryPath.resolve(outputFileName)
+        // texconv 会根据输入文件名在输出目录下生成同名（不同扩展名）的文件
+        val outputPath = outputDirectoryPath.resolve(path.nameWithoutExtension + "." + targetFormat)
 
         convertImageFormatInternal(executablePath, path, outputDirectoryPath, outputPath, targetFormat)
 
-        val finalOutputPath = outputDirectoryPath.resolve(targetFileName ?: outputFileName)
-        if (finalOutputPath != outputPath) {
-            outputPath.moveTo(finalOutputPath, overwrite = true)
+        if (outputPath != targetPath) {
+            outputPath.moveTo(targetPath, overwrite = true)
         }
-        return finalOutputPath
     }
 
     private fun convertImageFormatInternal(executablePath: Path, path: Path, outputDirectoryPath: Path, outputPath: Path, targetFormat: String): ProcessOutput {

@@ -113,14 +113,6 @@ class ParadoxImageServiceTest : BasePlatformTestCase(), ChronicleTestScope {
     private fun findFile(path: Path) = VfsUtil.findFileByIoFile(path.toFile(), true) ?: error("Cannot find file: $path")
 
     @Test
-    fun canResolve_test() {
-        val imagePath = root.resolve("can-resolve.png")
-        writeImage(imagePath, 10, 10)
-        Assert.assertTrue(ParadoxImageService.canResolve(imagePath.absolutePathString()))
-        Assert.assertFalse(ParadoxImageService.canResolve(root.resolve("missing.png").absolutePathString()))
-    }
-
-    @Test
     fun resolveUrl_noRenderRequired_test() {
         val source = root.resolve("no-render.png")
         writeImage(source, 10, 10)

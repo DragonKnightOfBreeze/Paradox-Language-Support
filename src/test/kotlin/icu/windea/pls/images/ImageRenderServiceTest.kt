@@ -98,6 +98,20 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun canResolve_test() {
+        val imagePath = root.resolve("can-resolve.png")
+        writeImage(imagePath, 10, 10)
+        val service = ImageRenderService.getInstance()
+
+        Assert.assertTrue(service.canResolve(imagePath))
+        Assert.assertTrue(service.canResolve(imagePath.absolutePathString()))
+        Assert.assertTrue(service.canResolve(ImageDescriptor(imagePath)))
+        Assert.assertFalse(service.canResolve(root.resolve("missing.png")))
+        Assert.assertFalse(service.canResolve(root.resolve("missing.png").absolutePathString()))
+        Assert.assertFalse(service.canResolve(ImageDescriptor(root.resolve("missing.png"))))
+    }
+
+    @Test
     fun renderImage_test() {
         val dir = root
         val source = dir.resolve("source.png")

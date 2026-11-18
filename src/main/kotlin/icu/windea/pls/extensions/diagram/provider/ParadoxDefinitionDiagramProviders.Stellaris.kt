@@ -86,7 +86,7 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
             // 直接读取预加载的节点展示模型，无需读锁
             val element = node.identifyingElement as? PsiElement ?: return null
             val model = builder.getDiagramNodeModel(element) ?: return null
-            return Factory.resolveNodeBorderColor(model.subtypes, model.techData?.area)
+            return Factory.resolveNodeBorderColor(model.subtypes, model.techArea)
         }
     }
 

@@ -23,6 +23,7 @@ import icu.windea.pls.core.util.cache.CacheBuilder
 import icu.windea.pls.core.util.io.ImageIoService
 import icu.windea.pls.core.util.io.deleteQuietly
 import icu.windea.pls.core.util.io.moveToAtomically
+import icu.windea.pls.core.util.io.toPathOrNull
 import icu.windea.pls.model.policies.ImageRenderFailurePolicy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -430,9 +431,22 @@ class ImageRenderService : Disposable {
      * 判断源图片是否可以解析（即存在且非空）。
      */
     fun canResolve(descriptor: ImageDescriptor): Boolean {
-        val sourcePath = descriptor.sourcePath
-        if (!(sourcePath.exists() && sourcePath.fileSizeSafe() > 0)) return false
-        return true
+        return canResolve(descriptor.sourcePath)
+    }
+
+    /**
+     * 判断指定图片路径是否可以解析（即存在且非空）。
+     */
+    fun canResolve(path: Path): Boolean {
+        return path.exists() && path.fileSizeSafe() > 0
+    }
+
+    /**
+     * 判断指定图片 URL 是否可以解析（即路径存在且非空）。
+     */
+    fun canResolve(iconUrl: String): Boolean {
+        val iconPath = iconUrl.toPathOrNull() ?: return false
+        return canResolve(iconPath)
     }
 
     /**

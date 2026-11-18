@@ -30,7 +30,6 @@ import javax.imageio.ImageReadParam
 import javax.imageio.stream.ImageInputStream
 import kotlin.io.path.createDirectories
 import kotlin.io.path.inputStream
-import kotlin.io.path.name
 import kotlin.io.path.outputStream
 import kotlin.time.Duration.Companion.days
 
@@ -97,24 +96,21 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
                     decodeCachedImage(cachePath, targetFormat)?.let { return@withLock it }
 
                     val sourceTempPath = getTempDirectory().resolve("${UUID.randomUUID()}.$sourceFormat")
-                    var targetTempPath: Path? = null
+                    val targetTempPath = getTempDirectory().resolve("${UUID.randomUUID()}.$targetFormat")
                     try {
                         stream.seek(startPos)
                         sourceTempPath.outputStream().use { outputStream ->
                             IoService.copy(ImageInputStreamAdapter(stream), outputStream)
                         }
-                        val targetName = "${UUID.randomUUID()}.$targetFormat"
-                        val convertedPath = convertImageFormat(sourceTempPath, getTempDirectory(), targetName, sourceFormat, targetFormat)
-                        targetTempPath = convertedPath
-                        if (!ImageIoService.isValidImageFile(convertedPath, targetFormat)) {
-                            throw IllegalStateException("Invalid image file after conversion: $convertedPath")
+                        doConvertImageFormat(sourceTempPath, targetTempPath, sourceFormat, targetFormat)
+                        if (!ImageIoService.isValidImageFile(targetTempPath, targetFormat)) {
+                            throw IllegalStateException("Invalid image file after conversion: $targetTempPath")
                         }
-                        convertedPath.moveToAtomically(cachePath)
-                        targetTempPath = null // 已成功落位
+                        targetTempPath.moveToAtomically(cachePath)
                         cachePath.inputStream().use { inputStream -> ImageIoService.readImage(inputStream) }
                     } finally {
                         sourceTempPath.deleteQuietly() // 确保删除源临时文件
-                        targetTempPath?.deleteQuietly() // 确保删除未移动成功的临时输出文件
+                        targetTempPath.deleteQuietly() // 确保删除未移动成功的临时输出文件
                     }
                 }
             }
@@ -129,7 +125,7 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
         val sourceFormat = normalizeImageFormat(sourceFormat)
         val targetFormat = normalizeImageFormat(targetFormat)
         val sourceTempPath = getTempDirectory().resolve("${UUID.randomUUID()}.$sourceFormat")
-        var targetTempPath: Path? = null
+        val targetTempPath = getTempDirectory().resolve("${UUID.randomUUID()}.$targetFormat")
         try {
             // 边拷贝到源临时文件，边计算输入内容的 SHA-256
             val digest = MessageDigest.getInstance("SHA-256")
@@ -154,19 +150,16 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
                     path.inputStream().use { inputStream0 -> IoService.copy(inputStream0, outputStream) }
                     return@withLock
                 }
-                val targetName = "${UUID.randomUUID()}.$targetFormat"
-                val convertedPath = convertImageFormat(sourceTempPath, getTempDirectory(), targetName, sourceFormat, targetFormat)
-                targetTempPath = convertedPath
-                if (!ImageIoService.isValidImageFile(convertedPath, targetFormat)) {
-                    throw IllegalStateException("Invalid image file after conversion: $convertedPath")
+                doConvertImageFormat(sourceTempPath, targetTempPath, sourceFormat, targetFormat)
+                if (!ImageIoService.isValidImageFile(targetTempPath, targetFormat)) {
+                    throw IllegalStateException("Invalid image file after conversion: $targetTempPath")
                 }
-                convertedPath.moveToAtomically(cachePath)
-                targetTempPath = null // 已成功落位
+                targetTempPath.moveToAtomically(cachePath)
                 cachePath.inputStream().use { inputStream0 -> IoService.copy(inputStream0, outputStream) }
             }
         } finally {
             sourceTempPath.deleteQuietly() // 确保删除源临时文件
-            targetTempPath?.deleteQuietly() // 确保删除未移动成功的临时输出文件
+            targetTempPath.deleteQuietly() // 确保删除未移动成功的临时输出文件
         }
     }
 
@@ -176,7 +169,7 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
         if (ImageIoService.copyIfSameFormat(path, targetPath, sourceFormat, targetFormat)) return
         // implementation
         try {
-            convertImageFormat(path, targetPath.parent, targetPath.name, sourceFormat, targetFormat)
+            doConvertImageFormat(path, targetPath, sourceFormat, targetFormat)
         } catch (e: Exception) {
             targetPath.deleteQuietly()
             throw e
@@ -184,7 +177,7 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
     }
 
     @Throws(UnsupportedOperationException::class, ExecutionException::class, CancellationException::class, TimeoutException::class)
-    abstract suspend fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path
+    protected abstract suspend fun doConvertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String)
 
     private fun normalizeImageFormat(format: String): String {
         return ImageIoService.normalizeImageFormat(format).lowercase()

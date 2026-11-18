@@ -3,7 +3,6 @@ package icu.windea.pls.extensions.diagram
 import com.intellij.diagram.DiagramBuilder
 import com.intellij.psi.PsiElement
 import com.intellij.ui.SimpleColoredText
-import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.lang.presentation.StellarisTechnologyCardAssets
 import icu.windea.pls.lang.presentation.StellarisTechnologyCardPresentationModel
 import java.util.concurrent.atomic.AtomicBoolean
@@ -26,7 +25,7 @@ data class ParadoxDiagramPropertyItem(val text: SimpleColoredText)
  * @property presentableName 展示名字（通常来自本地化）。
  * @property subtypes 定义子类型，用于计算节点边框颜色。
  * @property properties 预加载的属性列表。
- * @property techData 科技数据（仅科技树节点）。
+ * @property techArea 科技领域（仅科技树节点）。
  * @property cardModel 科技卡呈现模型（仅科技树节点，纯数据，可在读锁阶段预加载）。
  */
 class ParadoxDefinitionDiagramNodeModel(
@@ -35,7 +34,7 @@ class ParadoxDefinitionDiagramNodeModel(
     val presentableName: String?,
     val subtypes: Set<String>,
     val properties: List<ParadoxDiagramPropertyItem>,
-    val techData: StellarisTechnologyData? = null,
+    val techArea: String? = null,
     val cardModel: StellarisTechnologyCardPresentationModel? = null,
 ) {
     /**

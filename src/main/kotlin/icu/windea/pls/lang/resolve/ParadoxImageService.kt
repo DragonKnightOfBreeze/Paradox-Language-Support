@@ -6,7 +6,6 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
-import com.intellij.util.io.fileSizeSafe
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.castOrNull
 import icu.windea.pls.core.checkCancellation
@@ -15,7 +14,6 @@ import icu.windea.pls.core.orAnonymous
 import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.core.toUUID
 import icu.windea.pls.core.util.ImageFrameInfo
-import icu.windea.pls.core.util.io.toPathOrNull
 import icu.windea.pls.images.ImageDescriptor
 import icu.windea.pls.images.ImageService
 import icu.windea.pls.lang.definitionInfo
@@ -29,7 +27,6 @@ import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
-import kotlin.io.path.exists
 
 object ParadoxImageService {
     private val logger = logger<ParadoxImageService>()
@@ -175,11 +172,5 @@ object ParadoxImageService {
         val modificationStamp = runCatching { Files.getLastModifiedTime(sourcePath).toMillis() }.getOrDefault(0L)
         val key = "$imageAbsPath|$size|$modificationStamp|${frameInfo.frame}|${frameInfo.frames}|png"
         return key.toUUID().toString()
-    }
-
-    fun canResolve(iconUrl: String): Boolean {
-        val iconFilePath = iconUrl.toPathOrNull() ?: return false
-        if (!(iconFilePath.exists() && iconFilePath.fileSizeSafe() > 0)) return false
-        return true
     }
 }

@@ -352,7 +352,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                 presentableName = ParadoxDefinitionPresentationUtil.getNameText(technology),
                 subtypes = definitionInfo?.subtypes?.toSet().orEmpty(),
                 properties = properties,
-                techData = techData,
+                techArea = techData?.area,
                 cardModel = cardModel,
             )
             putNodeModel(technology, model)

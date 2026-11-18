@@ -4,7 +4,6 @@ import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.util.SystemInfo
-import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
 import icu.windea.pls.core.util.io.parsePath
@@ -14,7 +13,6 @@ import java.nio.file.Path
 import java.util.concurrent.CancellationException
 import java.util.concurrent.TimeoutException
 import kotlin.io.path.createDirectories
-import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.notExists
 
 /**
@@ -57,18 +55,12 @@ class MagickToolProvider : CommandBasedImageToolProvider() {
     // 6. 添加水印：
     //    magick input.jpg watermark.png -gravity southeast -geometry +10+10 -composite output.jpg
 
-    override suspend fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
+    override suspend fun doConvertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
         val executablePath = getExecutablePath() ?: throw IllegalStateException("ImageMagick path is not configured or invalid")
 
-        val tempParentPath = ChronicleDataPathService.getInstance().imagesTempPath
-        val outputDirectoryPath = targetDirectoryPath ?: tempParentPath
-        outputDirectoryPath.createDirectories()
-        val outputFileName = targetFileName ?: (path.nameWithoutExtension + "." + targetFormat)
-        val outputPath = outputDirectoryPath.resolve(outputFileName)
+        targetPath.parent?.createDirectories()
 
-        convertImageFormatInternal(executablePath, path, outputPath)
-
-        return outputPath
+        convertImageFormatInternal(executablePath, path, targetPath)
     }
 
     private fun convertImageFormatInternal(executablePath: Path, path: Path, outputPath: Path) {

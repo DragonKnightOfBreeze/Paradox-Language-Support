@@ -21,8 +21,6 @@ import javax.imageio.ImageIO
 import javax.imageio.stream.MemoryCacheImageInputStream
 import kotlin.io.path.createDirectories
 import kotlin.io.path.isRegularFile
-import kotlin.io.path.name
-import kotlin.io.path.nameWithoutExtension
 
 /**
  * @see CommandBasedImageToolProvider
@@ -176,13 +174,10 @@ private class TestCommandBasedImageToolProvider(
 
     override fun getToolCacheDirectory(): Path = toolCacheDirectory
 
-    override suspend fun convertImageFormat(path: Path, targetDirectoryPath: Path?, targetFileName: String?, sourceFormat: String, targetFormat: String): Path {
+    override suspend fun doConvertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
         executionCount++
-        val outputDirectory = targetDirectoryPath ?: tempDirectory
-        outputDirectory.createDirectories()
-        val outputPath = outputDirectory.resolve(targetFileName ?: "${path.nameWithoutExtension}.$targetFormat")
-        writePng(outputPath)
-        return outputPath
+        targetPath.parent?.createDirectories()
+        writePng(targetPath)
     }
 
     private fun writePng(path: Path) {
