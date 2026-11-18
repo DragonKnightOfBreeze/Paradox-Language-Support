@@ -82,6 +82,7 @@
 - [统一 IO 与下载选项体系、引入可监视流及重试机制](adr/io-and-download-options-unification.md)
 - [统一 `ImageDescriptor` 模型并分离图片层与语义层职责](adr/image-descriptor-unification.md)
 - [图片格式转换动作协程化与图表读锁/IO/UI 三段隔离](adr/image-action-and-diagram-async-isolation.md)
+- [图片缓存策略优化、原子落位与去重复物化](adr/image-caching-and-deduplication.md)
 
 #### 插件基础设施
 

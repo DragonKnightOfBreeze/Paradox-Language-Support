@@ -15,6 +15,8 @@
 - [x] 扩展图片格式转换动作以支持转换为 `PNG`、`JPG`、`GIF`、`DDS` 与 `TGA`，并重构为基于协程的异步执行流程以防止冻结 IDE / Extend the convert-image-format actions to support `PNG`, `JPG`, `GIF`, `DDS`, and `TGA`, and refactor them into a coroutine-based asynchronous flow to avoid freezing the IDE
 - [x] 重构并优化事件树与科技树图表的数据加载和展示管线，在后台预加载节点展示模型并隔离图片物化阶段，大幅缓解打开或刷新图表时的 UI 冻结问题 / Refactor and optimize the data loading and presentation pipeline for event-tree and tech-tree diagrams by preloading node models and isolating image materialization in the background, significantly alleviating UI freezes
 - [x] 为外部工具下载等场景增加自动重试与实时速率/大小详情提示，并完善多项通用基础设施配置 / Add automatic retry and real-time speed/size details for downloads such as external tools, and improve various infrastructure options
+- [x] 优化图片渲染与外部工具流式读取的多级缓存策略：引入按像素权重有界的内存图片缓存与 `JBImageIcon` 复用以避免重复物化，并合并并发解码请求 / Improve the multi-level caching strategy for image rendering and external-tool stream reading: add a pixel-weighted bounded in-memory image cache and `JBImageIcon` reuse to avoid repeated materialization, and coalesce concurrent decode requests
+- [x] 图片磁盘缓存改为临时文件校验后原子落位，补充 PNG 完整性轻校验与运行期解码失败自愈，并增强清理器对占位图、工具缓存、孤儿临时文件与空目录的处理 / Write image disk caches to temporary files and move them atomically after validation, add lightweight PNG integrity checks and runtime decode-failure recovery, and enhance the cleaner for placeholders, tool caches, orphan temp files, and empty directories
 
 ## 3.0.5 - 2026-11-03
 
