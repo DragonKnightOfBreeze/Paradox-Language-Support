@@ -18,7 +18,7 @@ import kotlin.io.path.notExists
 /**
  * 参见：[Image Magick](https://www.imagemagick.org)
  */
-class MagickToolProvider : CommandBasedImageToolProvider() {
+class MagickToolProvider : CommandLineBasedImageToolProvider() {
     override val name = "magick"
 
     override fun isEnabled(): Boolean {

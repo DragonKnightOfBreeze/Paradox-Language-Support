@@ -3,7 +3,7 @@ package icu.windea.pls.integrations.images
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import icu.windea.pls.core.util.io.ImageIoService
 import icu.windea.pls.core.util.io.deleteQuietly
-import icu.windea.pls.integrations.images.providers.CommandBasedImageToolProvider
+import icu.windea.pls.integrations.images.providers.CommandLineBasedImageToolProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
@@ -24,21 +24,21 @@ import kotlin.io.path.createDirectories
 import kotlin.io.path.isRegularFile
 
 /**
- * @see CommandBasedImageToolProvider
+ * @see CommandLineBasedImageToolProvider
  */
 @RunWith(JUnit4::class)
-class CommandBasedImageToolProviderTest : BasePlatformTestCase() {
+class CommandLineBasedImageToolProviderTest : BasePlatformTestCase() {
     private val root = Path.of("build", "tmp", "command-based-image-tool-provider-test")
     private lateinit var tempDir: Path
     private lateinit var toolCacheDir: Path
-    private lateinit var provider: TestCommandBasedImageToolProvider
+    private lateinit var provider: TestCommandLineBasedImageToolProvider
 
     @Before
     fun doSetUp() {
         root.deleteQuietly(recursive = true)
         tempDir = root.resolve("_tmp").also { it.createDirectories() }
         toolCacheDir = root.resolve("_tool").also { it.createDirectories() }
-        provider = TestCommandBasedImageToolProvider(tempDir, toolCacheDir)
+        provider = TestCommandLineBasedImageToolProvider(tempDir, toolCacheDir)
     }
 
     @Test
@@ -153,10 +153,10 @@ class CommandBasedImageToolProviderTest : BasePlatformTestCase() {
     }
 }
 
-private class TestCommandBasedImageToolProvider(
+private class TestCommandLineBasedImageToolProvider(
     private val tempDirectory: Path,
     private val toolCacheDirectory: Path,
-) : CommandBasedImageToolProvider() {
+) : CommandLineBasedImageToolProvider() {
     override val name = "test"
 
     var executionCount = 0

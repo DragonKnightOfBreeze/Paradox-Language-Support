@@ -22,7 +22,7 @@ import kotlin.io.path.notExists
 /**
  * 参见：[Texconv · microsoft/DirectXTex Wiki](https://github.com/microsoft/DirectXTex/wiki/Texconv)
  */
-class TexconvToolProvider : CommandBasedImageToolProvider() {
+class TexconvToolProvider : CommandLineBasedImageToolProvider() {
     override val name = "texconv"
 
     override fun isEnabled(): Boolean {

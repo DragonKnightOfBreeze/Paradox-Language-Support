@@ -29,7 +29,7 @@ import kotlin.io.path.writeText
  *
  * 目前仅适用于模组目录。
  */
-abstract class TigerLintToolProvider : CommandBasedLintToolProvider() {
+abstract class TigerLintToolProvider : CommandLineBasedLintToolProvider() {
     abstract val forGameType: ParadoxGameType
     abstract val configuredExecutablePath: Path?
     abstract val configuredConfPath: Path?

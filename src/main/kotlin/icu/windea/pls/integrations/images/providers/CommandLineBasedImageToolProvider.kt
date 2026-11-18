@@ -41,7 +41,7 @@ import kotlin.time.Duration.Companion.days
  * - 缓存的写入遵循"临时文件校验 + 原子落位"，避免留下残缺的缓存文件。
  * - 显式指定落盘路径的 [convertImageFormat] 不会经过该隐式缓存。
  */
-abstract class CommandBasedImageToolProvider : ImageToolProvider {
+abstract class CommandLineBasedImageToolProvider : ImageToolProvider {
     private companion object {
         const val CACHE_BUFFER_SIZE = 8 * 1024
         val CACHE_TOUCH_INTERVAL = 1.days.inWholeMilliseconds

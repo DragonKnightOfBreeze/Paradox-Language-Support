@@ -9,7 +9,7 @@ import java.nio.file.Path
 import java.util.concurrent.CancellationException
 import java.util.concurrent.TimeoutException
 
-abstract class CommandBasedLintToolProvider : LintToolProvider {
+abstract class CommandLineBasedLintToolProvider : LintToolProvider {
     final override fun isAvailable(gameType: ParadoxGameType?): Boolean {
         return isEnabled() && isSupported(gameType) && isValid()
     }
