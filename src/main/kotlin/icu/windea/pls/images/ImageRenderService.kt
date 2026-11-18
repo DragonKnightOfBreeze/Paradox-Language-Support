@@ -81,54 +81,54 @@ class ImageRenderService : Disposable {
      *
      * 注意：不能在 EDT 中调用；如果在 EDT 中调用，只会返回已有缓存或 `null`。
      */
-    fun requestImageRender(request: ImageDescriptor, project: Project): Path? {
+    fun requestImageRender(descriptor: ImageDescriptor, project: Project): Path? {
         if (project.isDisposed) return null
-        getCachedImagePath(request)?.let { return it }
+        getCachedImagePath(descriptor)?.let { return it }
 
         val application = ApplicationManager.getApplication()
         if (application != null && application.isDispatchThread) {
-            logger.warn("Skip image rendering in EDT: ${request.sourcePath}")
+            logger.warn("Skip image rendering in EDT: ${descriptor.sourcePath}")
             return null
         }
 
-        return requestImageRenderAsync(request, project).get()
+        return requestImageRenderAsync(descriptor, project).get()
     }
 
     /**
      * 在后台请求渲染图片。相同请求会被合并。
      */
-    fun requestImageRenderAsync(request: ImageDescriptor, project: Project): CompletableFuture<Path?> {
+    fun requestImageRenderAsync(descriptor: ImageDescriptor, project: Project): CompletableFuture<Path?> {
         if (project.isDisposed) return CompletableFuture.completedFuture(null)
-        getCachedImagePath(request)?.let { return CompletableFuture.completedFuture(it) }
+        getCachedImagePath(descriptor)?.let { return CompletableFuture.completedFuture(it) }
 
-        renderFutures.get(request)?.let { return it }
+        renderFutures.get(descriptor)?.let { return it }
 
         val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         val job = coroutineScope.async {
             withBackgroundProgress(project, ChronicleBundle.message("image.render.progress.title"), cancellable = true) {
-                withContext(Dispatchers.IO) { renderImage(request) }
+                withContext(Dispatchers.IO) { renderImage(descriptor) }
             }
         }
         // Note that `runBlockingCancellable` relies on the job/indicator already present on the current thread,
         // and using it directly throws an exception at call sites without a progress context,
         // so we use `CompletableFuture` instead of `Deferred` here.
         val future = job.asCompletableFuture().thenApply { it } // use `Deferred.asCompletableFuture()` instead of manually construction
-        val existing = renderFutures.putIfAbsent(request, future)
+        val existing = renderFutures.putIfAbsent(descriptor, future)
         if (existing != null) {
             future.cancel(true)
             return existing
         }
-        future.whenComplete { _, _ -> renderFutures.remove(request, future) }
+        future.whenComplete { _, _ -> renderFutures.remove(descriptor, future) }
         return future
     }
 
     /**
      * 同步渲染图片到目标缓存路径；如果目标已存在则直接返回。
      */
-    fun renderImage(request: ImageDescriptor): Path {
-        getCachedImagePath(request)?.let { return it }
-        val sourcePath = request.sourcePath
-        val targetPath = request.targetPath
+    fun renderImage(descriptor: ImageDescriptor): Path {
+        getCachedImagePath(descriptor)?.let { return it }
+        val sourcePath = descriptor.sourcePath
+        val targetPath = descriptor.targetPath
         if (sourcePath == targetPath) return targetPath
         val targetParent = targetPath.parent
         if (targetParent != null) targetParent.createDirectories()
@@ -137,11 +137,11 @@ class ImageRenderService : Disposable {
             ProgressManager.checkCanceled()
             val sourceImage = ImageIoService.readImage(sourcePath)
             ProgressManager.checkCanceled()
-            val slicedImage = request.frameInfo?.let { ImageIoService.sliceImage(sourceImage, it) } ?: sourceImage
-            val finalImage = ImageIoService.scaleImage(slicedImage, request.maxWidth, request.maxHeight)
+            val slicedImage = descriptor.frameInfo?.let { ImageIoService.sliceImage(sourceImage, it) } ?: sourceImage
+            val finalImage = ImageIoService.scaleImage(slicedImage, descriptor.maxWidth, descriptor.maxHeight)
             ProgressManager.checkCanceled()
-            val written = ImageIoService.writeImage(finalImage, request.targetFormat, targetPath)
-            if (!written) throw IllegalStateException("No image writer found for format: ${request.targetFormat}")
+            val written = ImageIoService.writeImage(finalImage, descriptor.targetFormat, targetPath)
+            if (!written) throw IllegalStateException("No image writer found for format: ${descriptor.targetFormat}")
             return targetPath
         } catch (e: Throwable) {
             runCatching { Files.deleteIfExists(targetPath) }
@@ -155,10 +155,10 @@ class ImageRenderService : Disposable {
      * 该方法会读取图片的原始元数据、检查高度限制、按需渲染并解码目标图片。
      * 调用方应确保当前不在 EDT/readAction 中，并按需添加超时。
      */
-    fun createImage(request: ImageDescriptor, heightLimit: Int? = null): Image? {
-        val metadata = ImageMetadataService.getInstance().getMetadataOrNull(request.sourcePath) ?: return null
+    fun createImage(descriptor: ImageDescriptor, heightLimit: Int? = null): Image? {
+        val metadata = ImageMetadataService.getInstance().getMetadataOrNull(descriptor.sourcePath) ?: return null
         if (heightLimit != null && metadata.height > heightLimit) return null
-        val targetPath = renderImage(request)
+        val targetPath = renderImage(descriptor)
         val image = ImageIoService.readImage(targetPath)
         return image
     }
@@ -169,8 +169,8 @@ class ImageRenderService : Disposable {
      * 该方法会读取图片的原始元数据、检查高度限制、按需渲染并解码目标图片。
      * 调用方应确保当前不在 EDT/readAction 中，并按需添加超时。
      */
-    fun createImageIcon(request: ImageDescriptor, heightLimit: Int? = null): Icon? {
-        val image = createImage(request, heightLimit) ?: return null
+    fun createImageIcon(descriptor: ImageDescriptor, heightLimit: Int? = null): Icon? {
+        val image = createImage(descriptor, heightLimit) ?: return null
         val imageIcon = ImageIcon(image)
         return imageIcon
     }
@@ -203,8 +203,8 @@ class ImageRenderService : Disposable {
     /**
      * 如果存在对应的本地缓存，则直接返回预期的目标路径。
      */
-    fun getCachedImagePath(request: ImageDescriptor): Path? {
-        val targetPath = request.targetPath
+    fun getCachedImagePath(descriptor: ImageDescriptor): Path? {
+        val targetPath = descriptor.targetPath
         if (!targetPath.isRegularFile() || targetPath.fileSizeSafe() == 0L) return null
         return targetPath
     }

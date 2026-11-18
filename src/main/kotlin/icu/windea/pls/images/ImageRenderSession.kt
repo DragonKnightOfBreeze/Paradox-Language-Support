@@ -1,4 +1,4 @@
-package icu.windea.pls.images
+﻿package icu.windea.pls.images
 
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.coroutineToIndicator
@@ -23,18 +23,18 @@ class ImageRenderSession(
     // 3.0.5 统一使用 `ConcurrentLinkedQueue`，无锁且并发遍历绝对安全，以省去不必要的心智负担
     private val jobs = ConcurrentLinkedQueue<Deferred<Path?>>()
     private val failedRequests = ConcurrentLinkedQueue<ImageDescriptor>()
-    private val requests = ConcurrentLinkedQueue<ImageDescriptor>()
+    private val descriptors = ConcurrentLinkedQueue<ImageDescriptor>()
 
-    fun launch(request: ImageDescriptor): Deferred<Path?> {
-        requests += request
+    fun launch(descriptor: ImageDescriptor): Deferred<Path?> {
+        descriptors += descriptor
         val job = scope.async {
             try {
-                renderImage(request)
+                renderImage(descriptor)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                failedRequests += request
-                logger.warn("Render image for documentation session failed. (source path: ${request.sourcePath})", e)
+                failedRequests += descriptor
+                logger.warn("Render image for documentation session failed. (source path: ${descriptor.sourcePath})", e)
                 null
             }
         }
@@ -42,10 +42,10 @@ class ImageRenderSession(
         return job
     }
 
-    private suspend fun renderImage(request: ImageDescriptor): Path {
+    private suspend fun renderImage(descriptor: ImageDescriptor): Path {
         return withContext(Dispatchers.IO) {
             coroutineToIndicator {
-                ImageRenderService.getInstance().renderImage(request)
+                ImageRenderService.getInstance().renderImage(descriptor)
             }
         }
     }
@@ -55,7 +55,7 @@ class ImageRenderSession(
     }
 
     fun requests(): List<ImageDescriptor> {
-        return requests.toList()
+        return descriptors.toList()
     }
 
     fun failedRequests(): List<ImageDescriptor> {
