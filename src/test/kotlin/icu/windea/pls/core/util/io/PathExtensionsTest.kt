@@ -92,6 +92,7 @@ class PathExtensionsTest {
     fun deleteQuietly_missingFile_test() {
         val file = root.resolve("missing.txt")
 
+        // 路径不存在时应总是返回 `false`
         Assert.assertFalse(file.deleteQuietly())
         Assert.assertFalse(file.exists())
     }
@@ -110,8 +111,9 @@ class PathExtensionsTest {
     fun deleteQuietly_missingDirectoryWithRecursive_test() {
         val directory = root.resolve("missing-recursive")
 
-        // 路径不存在时视为已经清理完成
-        Assert.assertTrue(directory.deleteQuietly(recursive = true))
+        // 路径不存在时应总是返回 `false`
+        Assert.assertFalse(directory.deleteQuietly(recursive = true))
+        Assert.assertFalse(directory.exists())
     }
 
     @Test
