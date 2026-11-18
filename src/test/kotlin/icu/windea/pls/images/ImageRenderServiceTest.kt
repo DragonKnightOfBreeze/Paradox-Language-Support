@@ -2,6 +2,7 @@ package icu.windea.pls.images
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.util.ui.JBImageIcon
 import icu.windea.pls.base.settings.ChronicleImageSettings
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
 import icu.windea.pls.core.toFileUrl
@@ -17,8 +18,11 @@ import java.awt.image.BufferedImage
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.attribute.FileTime
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
+import javax.swing.Icon
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createDirectories
 
@@ -35,6 +39,8 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         root.createDirectories()
         // 注册内置的 DDS/TGA ImageIO SPI，确保测试不依赖插件启动生命周期
         ImageContext.init()
+        // 避免应用级服务的内存缓存跨测试互相影响
+        ImageRenderService.getInstance().invalidateMemoryCache()
     }
 
 
@@ -235,6 +241,111 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         writeImage(source, 10, 10)
 
         Assert.assertNull(ImageRenderService.getInstance().createImageIcon(ImageDescriptor(source, target), heightLimit = 5))
+    }
+
+    @Test
+    fun createImage_memoryCacheReuse_test() {
+        val source = root.resolve("memory-source.png")
+        val target = root.resolve("memory-target.png")
+        Files.deleteIfExists(target)
+        writeImage(source, 12, 12)
+
+        val service = ImageRenderService.getInstance()
+        val descriptor = ImageDescriptor(source, target)
+        val first = service.createImage(descriptor)
+        Assert.assertNotNull(first)
+        Assert.assertTrue(Files.isRegularFile(target))
+
+        // 删除目标缓存文件后，仍应直接从内存缓存命中同一实例
+        Files.delete(target)
+        val second = service.createImage(descriptor)
+        Assert.assertSame(first, second)
+    }
+
+    @Test
+    fun createImageIcon_memoryCacheReuse_test() {
+        val source = root.resolve("memory-icon-source.png")
+        val target = root.resolve("memory-icon-target.png")
+        Files.deleteIfExists(target)
+        writeImage(source, 12, 12)
+
+        val service = ImageRenderService.getInstance()
+        val descriptor = ImageDescriptor(source, target)
+        val first = service.createImageIcon(descriptor)
+        Assert.assertNotNull(first)
+        Assert.assertTrue(first is JBImageIcon)
+
+        // 删除目标缓存文件后，图片与图标都仍应命中内存缓存并复用同一实例
+        Files.delete(target)
+        val second = service.createImageIcon(descriptor)
+        Assert.assertSame(first, second)
+    }
+
+    @Test
+    fun createImage_sourceChangeInvalidatesCache_test() {
+        val source = root.resolve("invalidating-source.png")
+        writeImage(source, 10, 10)
+
+        val service = ImageRenderService.getInstance()
+        val descriptor = ImageDescriptor(source)
+        val first = service.createImage(descriptor)
+        Assert.assertNotNull(first)
+        Assert.assertEquals(10, first!!.getWidth(null))
+
+        // 变更源文件内容与修改时间后，缓存键应失效并重新解码出新实例
+        writeImage(source, 20, 20)
+        Files.setLastModifiedTime(source, FileTime.fromMillis(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(2)))
+        val second = service.createImage(descriptor)
+        Assert.assertNotSame(first, second)
+        Assert.assertNotNull(second)
+        Assert.assertEquals(20, second!!.getWidth(null))
+    }
+
+    @Test
+    fun createImageIcon_heightLimitAppliesOnCacheHit_test() {
+        val source = root.resolve("icon-limit-source.png")
+        val target = root.resolve("icon-limit-target.png")
+        Files.deleteIfExists(target)
+        writeImage(source, 10, 10)
+
+        val service = ImageRenderService.getInstance()
+        val descriptor = ImageDescriptor(source, target)
+        val icon = service.createImageIcon(descriptor)
+        Assert.assertNotNull(icon)
+
+        // 内存缓存命中时仍需遵守高度限制
+        Assert.assertNull(service.createImageIcon(descriptor, heightLimit = 5))
+        val reused = service.createImageIcon(descriptor, heightLimit = 20)
+        Assert.assertSame(icon, reused)
+    }
+
+    @Test
+    fun createImageIcon_concurrentRequestsShareSameIcon_test() {
+        val source = root.resolve("concurrent-icon-source.png")
+        val target = root.resolve("concurrent-icon-target.png")
+        Files.deleteIfExists(target)
+        writeImage(source, 200, 200)
+
+        val service = ImageRenderService.getInstance()
+        val descriptor = ImageDescriptor(source, target)
+        val threadCount = 8
+        val startLatch = CountDownLatch(1)
+        val executor = Executors.newFixedThreadPool(threadCount)
+        try {
+            val futures = (1..threadCount).map {
+                executor.submit<Icon?> {
+                    startLatch.await()
+                    service.createImageIcon(descriptor)
+                }
+            }
+            startLatch.countDown()
+            val icons = futures.map { it.get(30, TimeUnit.SECONDS) }
+            Assert.assertTrue(icons.all { it != null })
+            val first = icons.first()
+            icons.forEach { Assert.assertSame(first, it) }
+        } finally {
+            executor.shutdownNow()
+        }
     }
 
     @Test

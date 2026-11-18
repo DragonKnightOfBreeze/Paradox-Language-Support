@@ -16,6 +16,10 @@ import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.base.settings.ChronicleImageSettings
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
+import icu.windea.pls.core.runCatchingCancellable
+import icu.windea.pls.core.ui.toIcon
+import icu.windea.pls.core.util.ImageFrameInfo
+import icu.windea.pls.core.util.cache.CacheBuilder
 import icu.windea.pls.core.util.io.ImageIoService
 import icu.windea.pls.model.policies.ImageRenderFailurePolicy
 import kotlinx.coroutines.CoroutineScope
@@ -23,6 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.withContext
+import org.jetbrains.annotations.TestOnly
 import java.awt.AlphaComposite
 import java.awt.Color
 import java.awt.Image
@@ -33,12 +38,13 @@ import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import java.nio.file.attribute.FileTime
 import java.util.UUID
+import java.util.concurrent.CancellationException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ExecutionException
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import javax.swing.Icon
-import javax.swing.ImageIcon
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
@@ -60,8 +66,36 @@ class ImageRenderService : Disposable {
         fun getInstance(): ImageRenderService = service()
     }
 
+    /**
+     * 内存级图片/图标缓存键。
+     *
+     * 键中包含源文件的大小与修改时间，因此源文件变更后会自动失效；
+     * 目标路径只用于区分不同的渲染产物，不参与磁盘状态判断。
+     */
+    private data class ImageCacheKey(
+        val sourcePath: Path,
+        val sourceSize: Long,
+        val sourceModifiedAt: Long,
+        val targetPath: Path,
+        val frameInfo: ImageFrameInfo?,
+    )
+
     private val renderFutures = ConcurrentHashMap<ImageDescriptor, CompletableFuture<Path?>>()
+    private val imageFutures = ConcurrentHashMap<ImageCacheKey, CompletableFuture<Image?>>()
     private val renderSession = ThreadLocal<ImageRenderSession?>()
+
+    // 有界内存缓存：以解码后的图片/图标实例复用为主，因此不暴露任何配置项，直接写死合理常量
+    private val imageCache = CacheBuilder("expireAfterAccess=10m")
+        .maximumWeight(32L * 1024 * 1024)
+        .weigher<ImageCacheKey, Image> { _, image ->
+            val width = image.getWidth(null).coerceAtLeast(1).toLong()
+            val height = image.getHeight(null).coerceAtLeast(1).toLong()
+            (width * height * 4L).coerceIn(1L, Int.MAX_VALUE.toLong()).toInt()
+        }
+        .build<ImageCacheKey, Image>()
+
+    private val iconCache = CacheBuilder("maximumSize=2048,expireAfterAccess=10m")
+        .build<ImageCacheKey, Icon>()
 
     @Volatile
     private var cleanupFuture: ScheduledFuture<*>? = null
@@ -188,18 +222,8 @@ class ImageRenderService : Disposable {
      * - 对于 `Delegated` 策略，如果缓存文件解码失败（但轻量校验通过），会删除损坏的缓存并重试一次。
      */
     fun createImage(descriptor: ImageDescriptor, heightLimit: Int? = null): Image? {
-        val metadata = ImageMetadataService.getInstance().getMetadataOrNull(descriptor.sourcePath) ?: return null
-        if (heightLimit != null && metadata.height > heightLimit) return null
-        val targetPath = renderImage(descriptor)
-        return try {
-            ImageIoService.readImage(targetPath)
-        } catch (e: Throwable) {
-            checkCancellation(e)
-            if (descriptor.strategy != ImageStrategy.Delegated) throw e
-            runCatching { Files.deleteIfExists(targetPath) }
-            val retriedPath = renderImage(descriptor)
-            ImageIoService.readImage(retriedPath)
-        }
+        val key = createImageCacheKey(descriptor) ?: return null
+        return createImage(key, descriptor, heightLimit)
     }
 
     /**
@@ -209,9 +233,153 @@ class ImageRenderService : Disposable {
      * 调用方应确保当前不在 EDT/readAction 中，并按需添加超时。
      */
     fun createImageIcon(descriptor: ImageDescriptor, heightLimit: Int? = null): Icon? {
-        val image = createImage(descriptor, heightLimit) ?: return null
-        val imageIcon = ImageIcon(image)
-        return imageIcon
+        val key = createImageCacheKey(descriptor) ?: return null
+        val image = createImage(key, descriptor, heightLimit) ?: return null
+        // 复用同一个 `JBImageIcon` 实例，避免多张卡片重复创建图标对象
+        return iconCache.get(key) { image.toIcon() }
+    }
+
+    /**
+     * 构造内存缓存键。
+     *
+     * 如果源文件不存在、不是常规文件或为空，则快速返回 `null`（调用方随后直接返回 `null`）。
+     */
+    private fun createImageCacheKey(descriptor: ImageDescriptor): ImageCacheKey? {
+        val sourcePath = descriptor.sourcePath.toAbsolutePath().normalize()
+        if (!sourcePath.isRegularFile()) return null
+        val sourceSize = runCatchingCancellable { Files.size(sourcePath) }.getOrNull() ?: return null
+        if (sourceSize <= 0L) return null
+        val sourceModifiedAt = runCatchingCancellable { Files.getLastModifiedTime(sourcePath).toMillis() }.getOrNull() ?: return null
+        val targetPath = descriptor.targetPath.toAbsolutePath().normalize()
+        return ImageCacheKey(sourcePath, sourceSize, sourceModifiedAt, targetPath, descriptor.frameInfo)
+    }
+
+    private fun createImage(key: ImageCacheKey, descriptor: ImageDescriptor, heightLimit: Int?): Image? {
+        // 内存缓存命中：完全跳过元数据读取与磁盘读取
+        imageCache.getIfPresent(key)?.let { cachedImage -> return cachedImage.applyHeightLimit(heightLimit) }
+
+        // 元数据读取剪枝：仅在需要检查高度限制时才读取元数据
+        if (heightLimit != null) {
+            val metadata = ImageMetadataService.getInstance().getMetadataOrNull(descriptor.sourcePath) ?: return null
+            if (metadata.height > heightLimit) return null
+        }
+
+        val image = awaitOrDecodeImage(key, descriptor)
+        // 解码结果的高度对同一缓存键而言是恒定的，这里同时覆盖“缓存高度未知”的兜底场景
+        return image.applyHeightLimit(heightLimit)
+    }
+
+    /**
+     * 合并同一 [ImageCacheKey] 的并发解码工作（Single-flight）。
+     *
+     * 如果等待方收到前置请求抛出的取消异常，但当前线程自身并未被取消，
+     * 则独立降级执行一次，避免单个请求的取消连累其他正常并发请求。
+     */
+    private fun awaitOrDecodeImage(key: ImageCacheKey, descriptor: ImageDescriptor): Image? {
+        // 先尝试复用在途请求
+        imageFutures[key]?.let { existing ->
+            when (val result = awaitImageFuture(existing)) {
+                is ImageAwaitResult.Value -> return imageCache.getIfPresent(key) ?: result.image
+                // 当前线程未被取消：移除已取消的前置请求，随后独立降级执行一次
+                ImageAwaitResult.Retry -> imageFutures.remove(key, existing)
+            }
+        }
+
+        // 成为当前缓存键的渲染发起方
+        val future = CompletableFuture<Image?>()
+        val leader = imageFutures.putIfAbsent(key, future)
+        if (leader != null) {
+            // 期间已有其他线程成为发起方：再等待一次，不再继续重试
+            return when (val result = awaitImageFuture(leader)) {
+                is ImageAwaitResult.Value -> imageCache.getIfPresent(key) ?: result.image
+                ImageAwaitResult.Retry -> {
+                    imageFutures.remove(key, leader)
+                    null
+                }
+            }
+        }
+
+        try {
+            // 在真正解码前再次检查内存缓存，避免在竞争窗口内重复解码
+            imageCache.getIfPresent(key)?.let { image ->
+                future.complete(image)
+                return image
+            }
+            val image = decodeImage(descriptor, key)
+            future.complete(image)
+            return image
+        } catch (e: Throwable) {
+            future.completeExceptionally(e)
+            throw e
+        } finally {
+            imageFutures.remove(key, future)
+        }
+    }
+
+    private fun awaitImageFuture(future: CompletableFuture<Image?>): ImageAwaitResult {
+        return try {
+            ImageAwaitResult.Value(future.get())
+        } catch (e: InterruptedException) {
+            Thread.currentThread().interrupt()
+            throw e
+        } catch (e: ExecutionException) {
+            val cause = e.cause ?: e
+            if (cause.isCancellation()) {
+                if (isCurrentThreadCancelled()) throw cause
+                ImageAwaitResult.Retry
+            } else {
+                throw cause
+            }
+        } catch (e: CancellationException) {
+            if (isCurrentThreadCancelled()) throw e
+            ImageAwaitResult.Retry
+        }
+    }
+
+    private fun decodeImage(descriptor: ImageDescriptor, key: ImageCacheKey): Image {
+        val targetPath = renderImage(descriptor)
+        val image = try {
+            ImageIoService.readImage(targetPath)
+        } catch (e: Throwable) {
+            checkCancellation(e)
+            if (descriptor.strategy != ImageStrategy.Delegated) throw e
+            runCatching { Files.deleteIfExists(targetPath) }
+            val retriedPath = renderImage(descriptor)
+            ImageIoService.readImage(retriedPath)
+        }
+        imageCache.put(key, image)
+        return image
+    }
+
+    /**
+     * 检查当前线程自身是否确实被取消（而不是收到其他请求传播的取消异常）。
+     */
+    private fun isCurrentThreadCancelled(): Boolean {
+        // 这里只需要判断当前线程自身是否已被取消，不能直接调用 `ProgressManager.checkCanceled()`，
+        // 否则会把前置请求传播来的取消异常误判为当前线程的取消。
+        return ProgressManager.getInstance().progressIndicator?.isCanceled == true
+    }
+
+    private fun Throwable.isCancellation(): Boolean {
+        var current: Throwable? = this
+        while (current != null) {
+            if (current is CancellationException) return true
+            current = current.cause
+        }
+        return false
+    }
+
+    private fun Image?.applyHeightLimit(heightLimit: Int?): Image? {
+        val image = this ?: return null
+        if (heightLimit == null) return image
+        val height = image.getHeight(null)
+        if (height >= 0 && height > heightLimit) return null
+        return image
+    }
+
+    private sealed interface ImageAwaitResult {
+        data class Value(val image: Image?) : ImageAwaitResult
+        data object Retry : ImageAwaitResult
     }
 
     /**
@@ -353,10 +521,26 @@ class ImageRenderService : Disposable {
         for (request in session.requests()) {
             val targetPath = request.targetPath
             if (!targetPath.isRegularFile()) continue
-            val metadata = ImageMetadataService.getInstance().getMetadataOrNull(targetPath) ?: continue
-            if (metadata.height > textIconSizeLimit) continue
-            val width = (metadata.width * (textHeight.toDouble() / metadata.height)).roundToInt().coerceAtLeast(1)
-            builder.resizeImage(targetPath.absolutePathString(), width, textHeight)
+            // 优先读取内存缓存中的图像宽高，未命中时再回退到元数据读取
+            var width = 0
+            var height = 0
+            val cachedImage = createImageCacheKey(request)?.let { imageCache.getIfPresent(it) }
+            if (cachedImage != null) {
+                val cachedWidth = cachedImage.getWidth(null)
+                val cachedHeight = cachedImage.getHeight(null)
+                if (cachedWidth > 0 && cachedHeight > 0) {
+                    width = cachedWidth
+                    height = cachedHeight
+                }
+            }
+            if (height <= 0) {
+                val metadata = ImageMetadataService.getInstance().getMetadataOrNull(targetPath) ?: continue
+                width = metadata.width
+                height = metadata.height
+            }
+            if (height > textIconSizeLimit) continue
+            val scaledWidth = (width * (textHeight.toDouble() / height)).roundToInt().coerceAtLeast(1)
+            builder.resizeImage(targetPath.absolutePathString(), scaledWidth, textHeight)
         }
     }
 
@@ -379,11 +563,25 @@ class ImageRenderService : Disposable {
         }
     }
 
+    /**
+     * 清理内存级的图片/图标缓存，仅供测试使用。
+     */
+    @TestOnly
+    @Suppress("unused")
+    fun invalidateMemoryCache() {
+        imageCache.invalidateAll()
+        iconCache.invalidateAll()
+    }
+
     override fun dispose() {
         cleanupFuture?.cancel(false)
         cleanupFuture = null
         renderFutures.values.forEach { it.cancel(true) }
         renderFutures.clear()
+        imageFutures.values.forEach { it.cancel(true) }
+        imageFutures.clear()
+        imageCache.invalidateAll()
+        iconCache.invalidateAll()
         renderSession.remove()
     }
 }

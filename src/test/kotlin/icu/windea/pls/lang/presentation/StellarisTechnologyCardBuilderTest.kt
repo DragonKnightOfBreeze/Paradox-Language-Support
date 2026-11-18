@@ -23,6 +23,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertSame
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -92,6 +93,24 @@ class StellarisTechnologyCardBuilderTest : BasePlatformTestCase(), ChronicleTest
     }
 
     @Test
+    fun materializeAssets_sharedBackgroundImageIsReused() {
+        val file = setUpData()
+        val technology = selectScope { file.queryBy("tech_diagram_test").asProperty().one() }!!
+        val builder1 = StellarisTechnologyCardBuilder(technology, project)
+        val builder2 = StellarisTechnologyCardBuilder(technology, project)
+
+        val model1 = ReadAction.compute<StellarisTechnologyCardPresentationModel?, RuntimeException> { builder1.loadModel() }!!
+        val model2 = ReadAction.compute<StellarisTechnologyCardPresentationModel?, RuntimeException> { builder2.loadModel() }!!
+
+        val assets1 = materializeAssets(builder1, model1)!!
+        val assets2 = materializeAssets(builder2, model2)!!
+
+        // 多张卡片共用同一背景图描述符时应复用同一图片实例
+        assertNotNull(assets1.backgroundImage)
+        assertSame(assets1.backgroundImage, assets2.backgroundImage)
+    }
+
+    @Test
     fun loadModel_returnsNull_whenIconCannotResolve() {
         val file = setUpData()
         val technology = selectScope { file.queryBy("tech_diagram_missing_icon").asProperty().one() }!!
@@ -104,6 +123,17 @@ class StellarisTechnologyCardBuilderTest : BasePlatformTestCase(), ChronicleTest
     }
 
     // region Helpers
+
+    private fun materializeAssets(
+        builder: StellarisTechnologyCardBuilder,
+        model: StellarisTechnologyCardPresentationModel,
+    ): StellarisTechnologyCardAssets? {
+        return ApplicationManager.getApplication().executeOnPooledThread<StellarisTechnologyCardAssets?> {
+            ProgressManager.getInstance().runProcess<StellarisTechnologyCardAssets?>({
+                runBlockingCancellable { builder.materializeAssets(model) }
+            }, EmptyProgressIndicator())
+        }.get()
+    }
 
     private fun setUpData(): ParadoxScriptFile {
         // 使用真实本地文件系统的测试数据目录，使全部文件同处同一内容根且图片 VirtualFile 支持 `toNioPath()`
