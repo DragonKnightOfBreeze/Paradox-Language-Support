@@ -21,6 +21,8 @@ import icu.windea.pls.core.ui.toIcon
 import icu.windea.pls.core.util.ImageFrameInfo
 import icu.windea.pls.core.util.cache.CacheBuilder
 import icu.windea.pls.core.util.io.ImageIoService
+import icu.windea.pls.core.util.io.deleteQuietly
+import icu.windea.pls.core.util.io.moveToAtomically
 import icu.windea.pls.model.policies.ImageRenderFailurePolicy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,10 +34,8 @@ import java.awt.AlphaComposite
 import java.awt.Color
 import java.awt.Image
 import java.awt.image.BufferedImage
-import java.nio.file.AtomicMoveNotSupportedException
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardCopyOption
 import java.nio.file.attribute.FileTime
 import java.util.*
 import java.util.concurrent.CancellationException
@@ -187,26 +187,13 @@ class ImageRenderService : Disposable {
             if (!ImageIoService.isValidImageFile(partPath, descriptor.targetFormat)) {
                 throw IllegalStateException("Invalid image file after rendering: $partPath")
             }
-            moveAtomically(partPath, targetPath)
+            partPath.moveToAtomically(targetPath)
             return targetPath
         } catch (e: Throwable) {
-            runCatching { Files.deleteIfExists(targetPath) }
+            targetPath.deleteQuietly()
             throw e
         } finally {
-            runCatching { Files.deleteIfExists(partPath) }
-        }
-    }
-
-    /**
-     * 将临时文件原子地移动到目标路径。
-     *
-     * 优先尝试 `ATOMIC_MOVE`；当文件系统不支持时回退为仅使用 `REPLACE_EXISTING`。
-     */
-    private fun moveAtomically(partPath: Path, targetPath: Path) {
-        try {
-            Files.move(partPath, targetPath, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
-        } catch (_: AtomicMoveNotSupportedException) {
-            Files.move(partPath, targetPath, StandardCopyOption.REPLACE_EXISTING)
+            partPath.deleteQuietly()
         }
     }
 
@@ -341,7 +328,7 @@ class ImageRenderService : Disposable {
         } catch (e: Throwable) {
             checkCancellation(e)
             if (descriptor.strategy != ImageStrategy.Delegated) throw e
-            runCatching { Files.deleteIfExists(targetPath) }
+            targetPath.deleteQuietly()
             val retriedPath = renderImage(descriptor)
             ImageIoService.readImage(retriedPath)
         }
@@ -418,7 +405,7 @@ class ImageRenderService : Disposable {
         if (!targetPath.isRegularFile() || targetPath.fileSizeSafe() == 0L) return null
         if (descriptor.strategy == ImageStrategy.Delegated) {
             if (!ImageIoService.isValidImageFile(targetPath, descriptor.targetFormat)) {
-                runCatching { Files.deleteIfExists(targetPath) }
+                targetPath.deleteQuietly()
                 return null
             }
             touchCacheFile(targetPath)

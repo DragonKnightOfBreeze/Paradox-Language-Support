@@ -10,16 +10,16 @@ import icu.windea.pls.core.util.cache.CacheBuilder
 import icu.windea.pls.core.util.io.ImageInputStreamAdapter
 import icu.windea.pls.core.util.io.ImageIoService
 import icu.windea.pls.core.util.io.IoService
+import icu.windea.pls.core.util.io.deleteQuietly
+import icu.windea.pls.core.util.io.moveToAtomically
 import icu.windea.pls.integrations.images.ImageToolProvider
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.io.OutputStream
-import java.nio.file.AtomicMoveNotSupportedException
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardCopyOption
 import java.nio.file.attribute.FileTime
 import java.security.DigestOutputStream
 import java.security.MessageDigest
@@ -29,7 +29,6 @@ import java.util.concurrent.TimeoutException
 import javax.imageio.ImageReadParam
 import javax.imageio.stream.ImageInputStream
 import kotlin.io.path.createDirectories
-import kotlin.io.path.deleteIfExists
 import kotlin.io.path.inputStream
 import kotlin.io.path.name
 import kotlin.io.path.outputStream
@@ -110,12 +109,12 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
                         if (!ImageIoService.isValidImageFile(convertedPath, targetFormat)) {
                             throw IllegalStateException("Invalid image file after conversion: $convertedPath")
                         }
-                        moveAtomically(convertedPath, cachePath)
+                        convertedPath.moveToAtomically(cachePath)
                         targetTempPath = null // 已成功落位
                         cachePath.inputStream().use { inputStream -> ImageIoService.readImage(inputStream) }
                     } finally {
-                        runCatching { sourceTempPath.deleteIfExists() } // 确保删除源临时文件
-                        targetTempPath?.let { runCatching { it.deleteIfExists() } } // 确保删除未移动成功的临时输出文件
+                        sourceTempPath.deleteQuietly() // 确保删除源临时文件
+                        targetTempPath?.deleteQuietly() // 确保删除未移动成功的临时输出文件
                     }
                 }
             }
@@ -161,13 +160,13 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
                 if (!ImageIoService.isValidImageFile(convertedPath, targetFormat)) {
                     throw IllegalStateException("Invalid image file after conversion: $convertedPath")
                 }
-                moveAtomically(convertedPath, cachePath)
+                convertedPath.moveToAtomically(cachePath)
                 targetTempPath = null // 已成功落位
                 cachePath.inputStream().use { inputStream0 -> IoService.copy(inputStream0, outputStream) }
             }
         } finally {
-            runCatching { sourceTempPath.deleteIfExists() } // 确保删除源临时文件
-            targetTempPath?.let { runCatching { it.deleteIfExists() } } // 确保删除未移动成功的临时输出文件
+            sourceTempPath.deleteQuietly() // 确保删除源临时文件
+            targetTempPath?.deleteQuietly() // 确保删除未移动成功的临时输出文件
         }
     }
 
@@ -179,7 +178,7 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
         try {
             convertImageFormat(path, targetPath.parent, targetPath.name, sourceFormat, targetFormat)
         } catch (e: Exception) {
-            runCatching { targetPath.deleteIfExists() }
+            targetPath.deleteQuietly()
             throw e
         }
     }
@@ -212,7 +211,7 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
      */
     private fun getValidCachePath(cachePath: Path, targetFormat: String): Path? {
         if (!ImageIoService.isValidImageFile(cachePath, targetFormat)) {
-            runCatching { cachePath.deleteIfExists() }
+            cachePath.deleteQuietly()
             return null
         }
         touchCacheFile(cachePath)
@@ -225,7 +224,7 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
             path.inputStream().use { inputStream -> ImageIoService.readImage(inputStream) }
         } catch (e: Throwable) {
             checkCancellation(e)
-            runCatching { path.deleteIfExists() }
+            path.deleteQuietly()
             null
         }
     }
@@ -240,19 +239,6 @@ abstract class CommandBasedImageToolProvider : ImageToolProvider {
             if (now - lastModified > CACHE_TOUCH_INTERVAL) {
                 Files.setLastModifiedTime(path, FileTime.fromMillis(now))
             }
-        }
-    }
-
-    /**
-     * 将临时文件原子地移动到目标路径。
-     *
-     * 优先尝试 `ATOMIC_MOVE`；当文件系统不支持时回退为仅使用 `REPLACE_EXISTING`。
-     */
-    private fun moveAtomically(sourcePath: Path, targetPath: Path) {
-        try {
-            Files.move(sourcePath, targetPath, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING)
-        } catch (_: AtomicMoveNotSupportedException) {
-            Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING)
         }
     }
 

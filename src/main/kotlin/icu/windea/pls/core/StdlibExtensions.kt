@@ -95,13 +95,13 @@ inline fun Collection<*>?.isNotNullOrEmpty(): Boolean {
     return this != null && this.size != 0
 }
 
-/** 如果当前布尔值为 `false`，则返回 `null`，否则返回自身。 */
+/** 如果当前布尔值为 `null` 或 `false`，则返回 `null`，否则返回自身。 */
 @Suppress("NOTHING_TO_INLINE")
-inline fun Boolean.orNull() = takeIf { it }
+inline fun Boolean?.orNull(): Boolean? = takeIf { it == true }
 
-/** 如果当前字符串为空，则返回 `null`。否则返回自身。 */
+/** 如果当前字符串为 `null` 或为空，则返回 `null`。否则返回自身。 */
 @Suppress("NOTHING_TO_INLINE")
-inline fun <T : CharSequence> T.orNull() = takeIf { it.isNotEmpty() }
+inline fun <T : CharSequence> T?.orNull(): T? = takeIf { !it.isNullOrEmpty() }
 
 /** 判断是否以指定前缀/后缀包围（基于单个字符）。 */
 fun CharSequence.surroundsWith(prefix: Char, suffix: Char, ignoreCase: Boolean = false): Boolean {

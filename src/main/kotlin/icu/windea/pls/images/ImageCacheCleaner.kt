@@ -3,6 +3,7 @@ package icu.windea.pls.images
 import com.intellij.openapi.diagnostic.logger
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.base.settings.ChronicleImageSettings
+import icu.windea.pls.core.util.io.deleteQuietly
 import icu.windea.pls.model.policies.ImageCacheCleanupPolicy
 import org.apache.commons.io.file.PathUtils
 import java.nio.file.Files
@@ -63,7 +64,7 @@ class ImageCacheCleaner(
             val expireBefore = System.currentTimeMillis() - ttl.inWholeMilliseconds
             remaining.removeAll { entry ->
                 if (entry.modifiedAt >= expireBefore) return@removeAll false
-                val result = delete(entry.path)
+                val result = entry.path.deleteQuietly()
                 if (result) deleted++
                 result
             }
@@ -75,7 +76,7 @@ class ImageCacheCleaner(
                 val iterator = remaining.sortedBy { it.modifiedAt }.iterator()
                 while (iterator.hasNext() && (totalSize > maxSize || totalFiles > maxFiles)) {
                     val entry = iterator.next()
-                    if (delete(entry.path)) {
+                    if (entry.path.deleteQuietly()) {
                         deleted++
                         totalSize -= entry.size
                         totalFiles--
@@ -98,7 +99,7 @@ class ImageCacheCleaner(
             for (path in paths) {
                 val modifiedAt = runCatching { Files.getLastModifiedTime(path).toMillis() }.getOrNull() ?: continue
                 if (modifiedAt >= expireBefore) continue
-                if (delete(path)) deleted++
+                if (path.deleteQuietly()) deleted++
             }
             deleted
         } catch (e: Exception) {
@@ -132,10 +133,6 @@ class ImageCacheCleaner(
         return runCatching { Entry(path, Files.size(path), Files.getLastModifiedTime(path).toMillis()) }.getOrNull()
     }
 
-    private fun delete(path: Path): Boolean {
-        return runCatching { Files.deleteIfExists(path) }.getOrDefault(false)
-    }
-
     /**
      * 自底向上删除已清空的子目录。
      */
@@ -150,7 +147,7 @@ class ImageCacheCleaner(
             for (directory in directories) {
                 if (directory == imagesPath || directory == tempPath || directory == toolPath) continue
                 if (!PathUtils.isEmptyDirectory(directory)) continue
-                runCatching { Files.deleteIfExists(directory) }
+                directory.deleteQuietly()
             }
         } catch (e: Exception) {
             logger.warn("Failed to clean up empty image cache directories.", e)

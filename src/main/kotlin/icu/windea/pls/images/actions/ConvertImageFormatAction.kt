@@ -25,6 +25,7 @@ import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.core.util.io.deleteQuietly
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.images.ImageService
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +36,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import java.util.UUID
-import kotlin.io.path.deleteIfExists
 
 // com.intellij.refactoring.copy.CopyFilesOrDirectoriesHandler
 
@@ -218,7 +218,7 @@ abstract class ConvertImageFormatAction(
         return readAction {
             files.mapNotNull { file ->
                 val sourceVirtualFile = file.virtualFile ?: return@mapNotNull null
-                val sourceFormat = sourceVirtualFile.extension?.orNull() ?: return@mapNotNull null
+                val sourceFormat = sourceVirtualFile.extension.orNull() ?: return@mapNotNull null
                 val targetFileName = options.newFileName ?: getNewFileName(file.name)
                 val targetPath = targetDirectoryPath.resolve(targetFileName)
                 val existingTarget = targetDirectory.findFile(targetFileName)
@@ -311,7 +311,7 @@ abstract class ConvertImageFormatAction(
             checkCancellation(e)
             failed.add(task.sourceFile)
         } finally {
-            runCatching { tempPath.deleteIfExists() }
+            tempPath.deleteQuietly()
         }
     }
 
@@ -328,7 +328,7 @@ abstract class ConvertImageFormatAction(
      */
     internal suspend fun convertImageFormat(file: PsiFile, targetDirectory: PsiDirectory, targetFileName: String): PsiFile? {
         val sourceVirtualFile = file.virtualFile ?: return null
-        val sourceFormat = sourceVirtualFile.extension?.orNull() ?: return null
+        val sourceFormat = sourceVirtualFile.extension.orNull() ?: return null
         val targetFormat = targetFormatName.lowercase()
         val sourcePath = sourceVirtualFile.toNioPath()
         val targetPath = targetDirectory.virtualFile.toNioPath().resolve(targetFileName)
@@ -344,7 +344,7 @@ abstract class ConvertImageFormatAction(
                 targetPath.toVirtualFile(refreshIfNeed = true)?.toPsiFile(file.project)
             }
         } finally {
-            runCatching { tempPath.deleteIfExists() }
+            tempPath.deleteQuietly()
         }
     }
 }

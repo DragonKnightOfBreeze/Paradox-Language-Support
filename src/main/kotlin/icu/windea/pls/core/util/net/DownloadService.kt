@@ -7,11 +7,14 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.platform.util.progress.RawProgressReporter
 import com.intellij.util.concurrency.AppExecutorUtil
+import icu.windea.pls.core.util.io.deleteQuietly
+import icu.windea.pls.core.util.io.moveToAtomically
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.job
 import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.net.Proxy
@@ -21,16 +24,13 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
-import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardCopyOption
 import java.security.MessageDigest
 import java.time.Duration
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.io.path.createDirectories
-import kotlin.io.path.deleteIfExists
 import kotlin.io.path.outputStream
 
 /**
@@ -50,14 +50,15 @@ object DownloadService {
         sha256: String? = null,
         rawReporter: RawProgressReporter? = null,
     ): DownloadResult {
-        targetPath.parent?.createDirectories()
         val partPath = targetPath.resolveSibling("${targetPath.fileName}.part")
         val totalAttempts = 1 + options.maxRetries.coerceAtLeast(0)
         var attempt = 0
         while (true) {
             attempt++
             try {
-                return downloadOnce(uri, targetPath, partPath, options, sha256, rawReporter)
+                return withContext(Dispatchers.IO) {
+                    downloadOnce(uri, targetPath, partPath, options, sha256, rawReporter)
+                }
             } catch (e: ProcessCanceledException) {
                 partPath.deleteQuietly()
                 throw e
@@ -89,6 +90,7 @@ object DownloadService {
         sha256: String?,
         rawReporter: RawProgressReporter?,
     ): DownloadResult {
+        targetPath.parent?.createDirectories()
         val proxy = ProxyService.resolve(uri)
         val client = createHttpClient(proxy, options)
         logger.info("Downloading $uri to $targetPath (proxy: ${ProxyService.describe(proxy)})")
@@ -97,7 +99,7 @@ object DownloadService {
             .timeout(Duration.ofMillis(options.requestTimeout.inWholeMilliseconds))
             .GET()
             .build()
-        val response = withContext(Dispatchers.IO) { client.send(request, HttpResponse.BodyHandlers.ofInputStream()) }
+        val response = client.send(request, HttpResponse.BodyHandlers.ofInputStream())
         val statusCode = response.statusCode()
         if (statusCode !in 200..299) {
             runCatching { response.body().close() }
@@ -111,6 +113,10 @@ object DownloadService {
         val lastActivity = AtomicLong(startedAt)
         val lastReportedAt = AtomicLong(startedAt)
         val body = response.body()
+        // 协程被取消时立即关闭响应体，从而中断可能阻塞中的 `input.read`
+        val cancellationHandle = currentCoroutineContext().job.invokeOnCompletion { cause ->
+            if (cause != null) runCatching { body.close() }
+        }
         val watchdog = AppExecutorUtil.getAppScheduledExecutorService().scheduleWithFixedDelay({
             val now = System.nanoTime()
             val elapsed = (now - startedAt) / 1_000_000
@@ -121,29 +127,27 @@ object DownloadService {
         }, 5, 5, TimeUnit.SECONDS)
 
         try {
-            withContext(Dispatchers.IO) {
-                body.buffered().use { input ->
-                    partPath.outputStream().buffered().use { output ->
-                        val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
-                        while (true) {
-                            currentCoroutineContext().ensureActive()
-                            ProgressManager.checkCanceled()
-                            val length = input.read(buffer)
-                            if (length < 0) break
-                            lastActivity.set(System.nanoTime())
-                            output.write(buffer, 0, length)
-                            digest.update(buffer, 0, length)
-                            downloaded += length
-                            val now = System.nanoTime()
-                            if ((now - lastReportedAt.get()) / 1_000_000 >= PROGRESS_REPORT_INTERVAL_MILLIS) {
-                                lastReportedAt.set(now)
-                                reportProgress(rawReporter, downloaded, contentLength, startedAt)
-                            }
-                            checkDownloadSpeed(downloaded, startedAt, options)
+            body.buffered().use { input ->
+                partPath.outputStream().buffered().use { output ->
+                    val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+                    while (true) {
+                        currentCoroutineContext().ensureActive()
+                        ProgressManager.checkCanceled()
+                        val length = input.read(buffer)
+                        if (length < 0) break
+                        lastActivity.set(System.nanoTime())
+                        output.write(buffer, 0, length)
+                        digest.update(buffer, 0, length)
+                        downloaded += length
+                        val now = System.nanoTime()
+                        if ((now - lastReportedAt.get()) / 1_000_000 >= PROGRESS_REPORT_INTERVAL_MILLIS) {
+                            lastReportedAt.set(now)
+                            reportProgress(rawReporter, downloaded, contentLength, startedAt)
                         }
-                        // 结束时刷新一次进度详情
-                        reportProgress(rawReporter, downloaded, contentLength, startedAt)
+                        checkDownloadSpeed(downloaded, startedAt, options)
                     }
+                    // 结束时刷新一次进度详情
+                    reportProgress(rawReporter, downloaded, contentLength, startedAt)
                 }
             }
             rawReporter?.fraction(1.0)
@@ -152,6 +156,7 @@ object DownloadService {
             throw e
         } finally {
             watchdog.cancel(false)
+            cancellationHandle.dispose()
         }
 
         val elapsedMillis = (System.nanoTime() - startedAt) / 1_000_000
@@ -163,7 +168,7 @@ object DownloadService {
             partPath.deleteQuietly()
             throw IOException("SHA-256 mismatch for $uri: expected=$sha256, actual=$actualSha256")
         }
-        Files.move(partPath, targetPath, StandardCopyOption.REPLACE_EXISTING)
+        partPath.moveToAtomically(targetPath)
         return DownloadResult(targetPath, downloaded, actualSha256)
     }
 
@@ -226,10 +231,6 @@ object DownloadService {
             builder.proxy(FixedProxySelector(proxy))
         }
         return builder.build()
-    }
-
-    private fun Path.deleteQuietly() {
-        runCatching { deleteIfExists() }
     }
 
     private class HttpStatusException(val statusCode: Int, message: String) : IOException(message)
