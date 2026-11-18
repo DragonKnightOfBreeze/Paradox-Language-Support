@@ -10,9 +10,9 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.ui.ColorUtil
 import icu.windea.pls.base.annotations.ForGameType
-import icu.windea.pls.core.runSmartReadAction
 import icu.windea.pls.ep.util.data.StellarisTechnologyData
 import icu.windea.pls.extensions.diagram.ChronicleDiagramBundle
+import icu.windea.pls.extensions.diagram.getDiagramNodeModel
 import icu.windea.pls.extensions.diagram.settings.ParadoxDiagramSettings
 import icu.windea.pls.extensions.diagram.settings.StellarisEventTreeDiagramSettings
 import icu.windea.pls.extensions.diagram.settings.StellarisTechTreeDiagramSettings
@@ -24,11 +24,6 @@ import java.awt.Color
 
 @ForGameType(ParadoxGameType.Stellaris)
 class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Stellaris) {
-    object Constants {
-        const val ID = "Stellaris.EventTree"
-        val itemPropertyKeys = listOf("picture")
-    }
-
     override fun getID() = Constants.ID
 
     override fun getPresentableName() = ChronicleDiagramBundle.message("eventTree.name.stellaris")
@@ -42,7 +37,7 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
     class DataModel(
         project: Project,
         file: VirtualFile?, // umlFile
-        override val provider: StellarisEventTreeDiagramProvider
+        override val provider: StellarisEventTreeDiagramProvider,
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
         override fun showNode(definition: ParadoxDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
             if (settings !is StellarisEventTreeDiagramSettings.State) return true
@@ -54,16 +49,16 @@ class StellarisEventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(Parado
             return true
         }
     }
+
+    object Constants {
+        const val ID = "Stellaris.EventTree"
+
+        val itemPropertyKeys = listOf("picture")
+    }
 }
 
 @ForGameType(ParadoxGameType.Stellaris)
 class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxGameType.Stellaris) {
-    object Constants {
-        const val ID = "Stellaris.TechTree"
-        val itemPropertyKeys = listOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels")
-        val itemPropertyKeys_IN_DETAIL = listOf("category")
-    }
-
     private val _colorManager = ColorManager()
 
     override fun getID() = Constants.ID
@@ -76,7 +71,7 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
 
     override fun getDiagramSettings(project: Project) = project.service<StellarisTechTreeDiagramSettings>()
 
-    override fun getItemPropertyKeysInDetail() = Constants.itemPropertyKeys_IN_DETAIL
+    override fun getItemPropertyKeysInDetail() = Constants.itemPropertyKeysInDetail
 
     override fun getItemPropertyKeys() = Constants.itemPropertyKeys
 
@@ -84,31 +79,21 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
         override fun getNodeBorderColor(builder: DiagramBuilder, node: DiagramNode<*>?, isSelected: Boolean): Color {
             // 基于科技领域和类型
             if (node !is Node) return super.getNodeBorderColor(builder, node, isSelected)
-            return doGetNodeBorderColor(node) ?: super.getNodeBorderColor(builder, node, isSelected)
+            return doGetNodeBorderColor(builder, node) ?: super.getNodeBorderColor(builder, node, isSelected)
         }
 
-        private fun doGetNodeBorderColor(node: Node): Color? {
-            // 这里使用的颜色是来自灰机wiki的特殊字体颜色
-            // https://qunxing.huijiwiki.com/wiki/%E7%A7%91%E6%8A%80
-            val data = node.getUserData(Keys.nodeData) ?: return null
-            val definitionInfo = runSmartReadAction { node.definitionInfo } ?: return null
-            val types = definitionInfo.subtypes
-            return when {
-                types.contains("dangerous") && types.contains("rare") -> ColorUtil.fromHex("#e8514f")
-                types.contains("dangerous") -> ColorUtil.fromHex("#e8514f")
-                types.contains("rare") -> ColorUtil.fromHex("#9743c4")
-                data.area == "physics" -> ColorUtil.fromHex("#2370af")
-                data.area == "society" -> ColorUtil.fromHex("#47a05f")
-                data.area == "engineering" -> ColorUtil.fromHex("#fbaa29")
-                else -> null
-            }
+        private fun doGetNodeBorderColor(builder: DiagramBuilder, node: Node): Color? {
+            // 直接读取预加载的节点展示模型，无需读锁
+            val element = node.identifyingElement as? PsiElement ?: return null
+            val model = builder.getDiagramNodeModel(element) ?: return null
+            return Factory.resolveNodeBorderColor(model.subtypes, model.techArea)
         }
     }
 
     class DataModel(
         project: Project,
         file: VirtualFile?, // umlFile
-        override val provider: StellarisTechTreeDiagramProvider
+        override val provider: StellarisTechTreeDiagramProvider,
     ) : ParadoxTechTreeDiagramProvider.DataModel(project, file, provider) {
         override fun showNode(definition: ParadoxDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
             if (settings !is StellarisTechTreeDiagramSettings.State) return true
@@ -121,6 +106,33 @@ class StellarisTechTreeDiagramProvider : ParadoxTechTreeDiagramProvider(ParadoxG
             if (!showNodeBySettings(settings.category, data.category)) return false
             if (!showNodeBySettings(settings.attribute, definitionInfo.subtypes)) return false
             return true
+        }
+    }
+
+    object Constants {
+        const val ID = "Stellaris.TechTree"
+
+        val itemPropertyKeys = listOf("icon", "tier", "area", "category", "cost", "cost_per_level", "levels")
+        val itemPropertyKeysInDetail = listOf("category")
+    }
+
+    object Factory {
+        /**
+         * 基于预加载的科技领域和类型计算节点边框颜色。
+         *
+         * 这里使用的颜色是来自灰机wiki的特殊字体颜色：
+         * https://qunxing.huijiwiki.com/wiki/%E7%A7%91%E6%8A%80
+         */
+        fun resolveNodeBorderColor(subtypes: Set<String>, area: String?): Color? {
+            return when {
+                "dangerous" in subtypes && "rare" in subtypes -> ColorUtil.fromHex("#e8514f")
+                "dangerous" in subtypes -> ColorUtil.fromHex("#e8514f")
+                "rare" in subtypes -> ColorUtil.fromHex("#9743c4")
+                area == "physics" -> ColorUtil.fromHex("#2370af")
+                area == "society" -> ColorUtil.fromHex("#47a05f")
+                area == "engineering" -> ColorUtil.fromHex("#fbaa29")
+                else -> null
+            }
         }
     }
 }

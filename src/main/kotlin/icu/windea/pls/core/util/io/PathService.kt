@@ -44,7 +44,7 @@ object PathService {
     fun findExecutable(targetDirectory: Path, executableName: String): Path? {
         if (!targetDirectory.exists()) return null
         if (!targetDirectory.isDirectory()) return null
-        return targetDirectory.walk().find { it.isRegularFile() && it.name.equals(executableName, ignoreCase = true) }
+        return targetDirectory.walk().find { it.name.equals(executableName, ignoreCase = true) }
     }
 
     fun makeExecutable(path: Path) {

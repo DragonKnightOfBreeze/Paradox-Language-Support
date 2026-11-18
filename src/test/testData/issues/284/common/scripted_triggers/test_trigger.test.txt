@@ -21,3 +21,12 @@ test_trigger_scope_link_chained_last_static = {
         always = yes
     }
 }
+
+# scope link whose block also contains a nested trigger block
+test_trigger_scope_link_nested = {
+    owner = {
+        OR = {
+            always = yes
+        }
+    }
+}

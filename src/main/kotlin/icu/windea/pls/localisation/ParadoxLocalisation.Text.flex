@@ -125,7 +125,11 @@ import static icu.windea.pls.localisation.psi.ParadoxLocalisationElementTypes.*;
         return false;
     }
     private IElementType getFallbackToken() {
-        // fallback to `TEXT_TOKEN`, if necessary
+        // fallback to the token type valid in the current lexical state, if necessary
+        int state = yystate();
+        if (state == IN_COMMAND_TEXT) return COMMAND_TEXT_TOKEN;
+        if (state == IN_COMMAND_ARGUMENT) return ARGUMENT_TOKEN;
+        if (state == IN_CONCEPT_NAME) return CONCEPT_NAME_TOKEN;
         return TEXT_TOKEN;
     }
 
@@ -206,8 +210,8 @@ ArgumentToken = {ArgumentChar}+
 ColorfulTextCheck = §.?
 ColorToken = {IdentifierChar} // identifier char
 
-CommandTextChar = [^\[\]|&:\r\n] // `[]` within single quotes are not allowed?
-CommandTextBoundChar = [^\[\]|&:\s] // `[]` within single quotes are not allowed?
+CommandTextChar = [^\[\]|&:\$\r\n] // `[]` within single quotes are not allowed? `$` is excluded to avoid greedily consuming the parameter start marker
+CommandTextBoundChar = [^\[\]|&:\$\s] // `[]` within single quotes are not allowed? `$` is excluded to avoid greedily consuming the parameter start marker
 CommandTextToken = {CommandTextBoundChar}({CommandTextChar}*{CommandTextBoundChar})? // inner whitespaces are allowed
 
 ConceptNameChar = {IdentifierChar}|[:] // `:` is allowed additionally

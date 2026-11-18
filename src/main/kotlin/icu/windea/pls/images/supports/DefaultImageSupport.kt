@@ -1,12 +1,12 @@
 package icu.windea.pls.images.supports
 
 import icu.windea.pls.core.util.io.ImageIoService
+import icu.windea.pls.core.util.io.deleteQuietly
 import icu.windea.pls.images.ImageSupport
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
 import javax.imageio.ImageIO
-import kotlin.io.path.deleteIfExists
 
 /**
  * 基于 [TwelveMonkeys ImageIO](https://github.com/haraldk/TwelveMonkeys) 实现的图片支持。
@@ -33,7 +33,7 @@ class DefaultImageSupport : ImageSupport {
             ImageIoService.convertImageFormat(path, targetPath, targetFormat)
             return true
         } catch (e: Exception) {
-            runCatching { targetPath.deleteIfExists() }
+            targetPath.deleteQuietly()
             throw e
         }
     }

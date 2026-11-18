@@ -62,7 +62,7 @@ class ParadoxModifierIconHintsProvider : ParadoxHintsProvider() {
         val maxHeight = ChroniclePresentationSettings.getInstance().state.inlayTextIconHeightLimit
         sink.addInlinePresentation(element.endOffset, smallInset = true) {
             // 点击可以导航到声明处（图片）
-            add(AsyncIconPresentation(context, iconResolveResult.toRenderRequest(), maxHeight, pointer))
+            add(AsyncIconPresentation(context, iconResolveResult, maxHeight, pointer))
         }
     }
 }

@@ -1,6 +1,7 @@
 package icu.windea.pls.images.supports
 
 import icu.windea.pls.core.util.io.ImageIoService
+import icu.windea.pls.core.util.io.deleteQuietly
 import icu.windea.pls.images.ImageSupport
 import icu.windea.pls.integrations.images.ImageToolProvider
 import icu.windea.pls.integrations.images.ImageToolService
@@ -8,7 +9,6 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
 import javax.imageio.ImageIO
-import kotlin.io.path.deleteIfExists
 
 /**
  * 基于外部工具实现的图片支持。
@@ -35,7 +35,7 @@ class ToolBasedImageSupport : ImageSupport {
         try {
             return ImageToolService.getInstance().convertImageFormat(path, targetPath, sourceFormat, targetFormat)
         } catch (e: Exception) {
-            runCatching { targetPath.deleteIfExists() }
+            targetPath.deleteQuietly()
             throw e
         }
     }

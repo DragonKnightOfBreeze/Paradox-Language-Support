@@ -203,7 +203,7 @@ interface ChronicleTestScope {
      *
      * 说明：
      * - 使用注入的和内置的规则文件。
-     * - 通用的规则分组总是会被初始化。
+     * - 通用的内置规则分组（`core`）总是会被初始化。
      */
     fun initConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
         ParadoxAnalysisInjectionManager.useOnlyBuiltInAndInjectedConfigFiles(true)
@@ -216,7 +216,7 @@ interface ChronicleTestScope {
      *
      * 说明：
      * - 仅使用注入的规则文件。
-     * - 通用的规则分组总是会被初始化。
+     * - 通用的内置规则分组（`core`）总是会被初始化。
      */
     fun initInjectedConfigGroups(project: Project, vararg gameTypes: ParadoxGameType) {
         ParadoxAnalysisInjectionManager.useOnlyInjectedConfigFiles(true)

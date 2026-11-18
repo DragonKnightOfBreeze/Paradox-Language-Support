@@ -1,5 +1,6 @@
 package icu.windea.pls.images
 
+import icu.windea.pls.core.util.io.deleteQuietly
 import icu.windea.pls.model.policies.ImageCacheCleanupPolicy
 import org.junit.Assert
 import org.junit.Test
@@ -72,6 +73,85 @@ class ImageCacheCleanerTest {
         Assert.assertFalse(Files.exists(newFiles[0]))
         Assert.assertTrue(Files.exists(newFiles[1]))
         Assert.assertTrue(Files.exists(newFiles[2]))
+    }
+
+    @Test
+    fun cleanup_orphanTempFiles_test() {
+        val dir = Path.of("build", "tmp", "image-cache-cleaner-orphan-temp-test")
+        dir.deleteQuietly(recursive = true)
+        dir.createDirectories()
+        val tempDir = dir.resolve("_tmp").also { it.createDirectories() }
+        val oldFile = tempDir.resolve("old.png.part").also { Files.write(it, byteArrayOf(1)) }
+        val newFile = tempDir.resolve("new.png.part").also { Files.write(it, byteArrayOf(1)) }
+        val now = System.currentTimeMillis()
+        Files.setLastModifiedTime(oldFile, FileTime.fromMillis(now - TimeUnit.DAYS.toMillis(2)))
+        Files.setLastModifiedTime(newFile, FileTime.fromMillis(now))
+
+        val deleted = ImageCacheCleaner(dir).cleanup(ImageCacheCleanupPolicy.ByTtl)
+
+        Assert.assertTrue(deleted >= 1)
+        Assert.assertFalse(Files.exists(oldFile))
+        Assert.assertTrue(Files.exists(newFile))
+    }
+
+    @Test
+    fun cleanup_removesEmptyDirectories_test() {
+        val dir = Path.of("build", "tmp", "image-cache-cleaner-empty-dir-test")
+        dir.deleteQuietly(recursive = true)
+        dir.createDirectories()
+        val emptyDir = dir.resolve("empty").also { it.createDirectories() }
+        val nestedDir = dir.resolve("nested").resolve("child").also { it.createDirectories() }
+        val oldFile = nestedDir.resolve("old.png").also { Files.write(it, byteArrayOf(1)) }
+        Files.setLastModifiedTime(oldFile, FileTime.fromMillis(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(40)))
+        val tempDir = dir.resolve("_tmp").also { it.createDirectories() }
+        val toolDir = dir.resolve("_tool").also { it.createDirectories() }
+
+        ImageCacheCleaner(dir).cleanup(ImageCacheCleanupPolicy.ByTtl)
+
+        Assert.assertFalse(Files.exists(oldFile))
+        Assert.assertFalse(Files.exists(nestedDir))
+        Assert.assertFalse(Files.exists(emptyDir))
+        // 保留根目录以及 `_tmp`、`_tool` 目录本身
+        Assert.assertTrue(Files.isDirectory(dir))
+        Assert.assertTrue(Files.isDirectory(tempDir))
+        Assert.assertTrue(Files.isDirectory(toolDir))
+    }
+
+    @Test
+    fun cleanup_keepsPlaceholder_test() {
+        val dir = Path.of("build", "tmp", "image-cache-cleaner-placeholder-test")
+        dir.deleteQuietly(recursive = true)
+        dir.createDirectories()
+        val placeholder = dir.resolve("_placeholder.png").also { Files.write(it, byteArrayOf(1)) }
+        val oldFile = dir.resolve("old.png").also { Files.write(it, byteArrayOf(1)) }
+        val oldTime = FileTime.fromMillis(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(40))
+        Files.setLastModifiedTime(placeholder, oldTime)
+        Files.setLastModifiedTime(oldFile, oldTime)
+
+        val deleted = ImageCacheCleaner(dir).cleanup(ImageCacheCleanupPolicy.ByTtl)
+
+        // `_placeholder.png` 不会被清理
+        Assert.assertEquals(1, deleted)
+        Assert.assertTrue(Files.exists(placeholder))
+        Assert.assertFalse(Files.exists(oldFile))
+    }
+
+    @Test
+    fun cleanup_toolDirectory_test() {
+        val dir = Path.of("build", "tmp", "image-cache-cleaner-tool-dir-test")
+        dir.deleteQuietly(recursive = true)
+        dir.createDirectories()
+        val toolDir = dir.resolve("_tool").also { it.createDirectories() }
+        val toolSubDir = toolDir.resolve("test").also { it.createDirectories() }
+        val oldFile = toolSubDir.resolve("old.png").also { Files.write(it, byteArrayOf(1)) }
+        Files.setLastModifiedTime(oldFile, FileTime.fromMillis(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(40)))
+
+        val deleted = ImageCacheCleaner(dir).cleanup(ImageCacheCleanupPolicy.ByTtl)
+
+        // `_tool` 子目录下的过期图片同样应被清理，但保留 `_tool` 根目录本身
+        Assert.assertEquals(1, deleted)
+        Assert.assertFalse(Files.exists(oldFile))
+        Assert.assertTrue(Files.isDirectory(toolDir))
     }
 
     @Test

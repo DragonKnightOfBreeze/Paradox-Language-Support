@@ -11,6 +11,9 @@ lib
 tmp
 local.properties
 
+# excluded exploration workspace
+explonations/
+
 # excluded ai workflow files
 .opencode
 # opencode.json*

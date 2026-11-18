@@ -8,6 +8,9 @@ import java.io.OutputStream
 /** IO 中进行取消检查的默认字节阈值。 */
 const val IO_CANCELLATION_THRESHOLD = 64L * 1024
 
+/** IO 中报告进度的默认字节阈值。 */
+const val IO_MONITOR_THRESHOLD = 64L * 1024
+
 /** UTF-8 BOM（`EF BB BF`）。 */
 val UTF8_BOM = byteArrayOf(0xEF.toByte(), 0xBB.toByte(), 0xBF.toByte())
 
@@ -19,6 +22,24 @@ inline fun InputStream.asCancellable(threshold: Long = IO_CANCELLATION_THRESHOLD
 /** 将输出流包装为可取消的输出流（[CancellableOutputStream]）。 */
 inline fun OutputStream.asCancellable(threshold: Long = IO_CANCELLATION_THRESHOLD): CancellableOutputStream {
     return CancellableOutputStream(this, threshold)
+}
+
+/** 将输入流包装为可监视读取进度的输入流（[MonitorableInputStream]）。 */
+inline fun InputStream.asMonitorable(
+    totalBytes: Long = -1L,
+    threshold: Long = IO_MONITOR_THRESHOLD,
+    noinline listener: (bytesRead: Long, totalBytes: Long) -> Unit,
+): MonitorableInputStream {
+    return MonitorableInputStream(this, totalBytes, threshold, listener)
+}
+
+/** 将输出流包装为可监视写入进度的输出流（[MonitorableOutputStream]）。 */
+inline fun OutputStream.asMonitorable(
+    totalBytes: Long = -1L,
+    threshold: Long = IO_MONITOR_THRESHOLD,
+    noinline listener: (bytesWritten: Long, totalBytes: Long) -> Unit,
+): MonitorableOutputStream {
+    return MonitorableOutputStream(this, totalBytes, threshold, listener)
 }
 
 /**

@@ -7,6 +7,17 @@
 - [ ] 分析与优化完成项目分析后的性能和内存占用 / Analyze and optimize performance and memory after finishing project analysis
 - [ ] 完善测试用例 / Improve test cases
 
+## 3.0.6 - 2026-11-19
+
+- [x] 修复作用域链接（如 `owner = { ... }`）会被误报为“匹配多个存在冲突的规则”的BUG：子句中的规则均为别名引用时，块内容无法参与区分 / Fix the bug where a scope link (e.g., `owner = { ... }`) was reported as a conflicting expression: the block content could not distinguish the clauses when all of their configs are alias references ([#284](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/284))
+- [x] 修复别名规则声明处显式使用的 `==` 分隔符在内联后丢失的BUG，从而能够正确地检查比较运算符 / Fix the bug where the `==` separator explicitly used by an alias config was lost when inlining it, so that comparison operators can be checked correctly
+- [x] 修复 Victoria 3 本地化命令（如 Concept 数据函数）中使用引号转义修饰符 `|q` 时中断语法解析的BUG / Fix the bug where Victoria 3 localization commands (e.g., Concept data functions) broke syntax parsing when using the quote escape modifier `|q` ([#451](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/451))
+- [x] 扩展图片格式转换动作以支持转换为 `PNG`、`JPG`、`GIF`、`DDS` 与 `TGA`，并重构为基于协程的异步执行流程以防止冻结 IDE / Extend the convert-image-format actions to support `PNG`, `JPG`, `GIF`, `DDS`, and `TGA`, and refactor them into a coroutine-based asynchronous flow to avoid freezing the IDE
+- [x] 重构并优化事件树与科技树图表的数据加载和展示管线，在后台预加载节点展示模型并隔离图片物化阶段，大幅缓解打开或刷新图表时的 UI 冻结问题 / Refactor and optimize the data loading and presentation pipeline for event-tree and tech-tree diagrams by preloading node models and isolating image materialization in the background, significantly alleviating UI freezes
+- [x] 为外部工具下载等场景增加自动重试与实时速率/大小详情提示，并完善多项通用基础设施配置 / Add automatic retry and real-time speed/size details for downloads such as external tools, and improve various infrastructure options
+- [x] 优化图片渲染与外部工具流式读取的多级缓存策略：引入按像素权重有界的内存图片缓存与 `JBImageIcon` 复用以避免重复物化，并合并并发解码请求 / Improve the multi-level caching strategy for image rendering and external-tool stream reading: add a pixel-weighted bounded in-memory image cache and `JBImageIcon` reuse to avoid repeated materialization, and coalesce concurrent decode requests
+- [x] 图片磁盘缓存改为临时文件校验后原子落位，补充 PNG 完整性轻校验与运行期解码失败自愈，并增强清理器对占位图、工具缓存、孤儿临时文件与空目录的处理 / Write image disk caches to temporary files and move them atomically after validation, add lightweight PNG integrity checks and runtime decode-failure recovery, and enhance the cleaner for placeholders, tool caches, orphan temp files, and empty directories
+
 ## 3.0.5 - 2026-11-03
 
 - [x] 在快速文档中直接渲染片段的相关本地化 / Render related localisations directly in quick docs for snippets ([#432](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/432)) 
@@ -24,7 +35,7 @@
 - [x] Leading blank is not trimmed when rendering loc text in inlay hints & Log text is not recognized as loc text when containing commands ([#418](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/418))
 - [x] [Vic3] Plugin not correctly detecting used Parameters ([#429](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/429))
 - [x] [Vic3] Geographic region short keys and their iterators are broken ([#430](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/430))
-- [x] 初步支持片段匹配，新增数据类型 `DefinitionSnippet` 和 `LocalisationSnippet`，以匹配作为完整的定义引用或本地化引用的一部分的字符串（数据表达式示例：`<sprite>|GFX_$` `localisation|$_desc`） / Initial support for snippet matching, with new data types `DefinitionSnippet` and `LocalisationSnippet`, used to match strings that are part of a complete definition reference or localisation reference (data expression examples: `<sprite>|GFX_$` `localisation|$_desc`) ([#340](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/340) [#413](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/413))
+- [x] 初步支持片段匹配，新增数据类型 `DefinitionSnippet` 和 `LocalisationSnippet`，以匹配作为完整的定义引用或本地化引用的一部分的字符串（数据表达式示例：`<sprite>|GFX_$` `localisation|$_desc`） / Initial support for snippet matching, with new data types `DefinitionSnippet` and `LocalisationSnippet`, used to match strings that are part of a complete definition reference or localisation reference (data expression examples: `<sprite>|GFX_$` `localisation|$_desc`) ([#340](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/340), [#413](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/413))
 - [x] 完善规则匹配逻辑，新增数据类型 `WildcardAny` 和 `WildcardLiteral`，作为特殊变体，当匹配候选项过多，或者无法进一步确定时使用（数据表达式：`$$any` `$$literal`） / Refine the config matching logic by adding the new data types `WildcardAny` and `WildcardLiteral` as special variants, to be used when there are too many matching candidates or when no further determination can be made (data expressions: `$$any` `$$literal`)
 - [x] 整理和完善与规则匹配和数据类型相关的注释和文档 / Organize and improve the comments and documentation related to config matching and data types
 - [x] 将 JSON 序列化框架从 jackson 改为 kotlinx-serialization / Change the JSON serialization framework from jackson to kotlinx-serialization
@@ -286,7 +297,7 @@
 - [x] 优化：优化模组依赖的导入导出功能 / OP: Optimize the import & export feature for mod dependencies
 - [x] 优化：在某些情况下禁用脚本文件中的语言注入，避免意外的报错 / OP: Disable language injection in script files in some situations to avoid unexpected error reports
 - [x] 优化：规则的数据类型 `Int` 和 `Float` 支持开区间写法（如 `float(0..inf]`） / OP: config data type `Int` and `Float` can accept open range format (e.g., `float(0..inf]`)
-- [x] 优化：支持需要在匹配时先加上一组后缀的数据类型（如`"<sprite>|locked,unlocked"` `"localisation|_enemy"`） ([#162](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/162) [#193](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/193))
+- [x] 优化：支持需要在匹配时先加上一组后缀的数据类型（如`"<sprite>|locked,unlocked"` `"localisation|_enemy"`） ([#162](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/162), [#193](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/193))
 - [x] 修复：一些地方（如调用 Tiger 时）应使用最终的游戏类型与游戏目录 / FIX: Some locations (like when calling Tiger) should use the final game type and game directory.
 - [x] 修复：修复一些地方可能无法正确获取游戏类型，导致无法正确匹配与解析的问题 / FIX: Fixed an issue where some places may not be able to correctly obtain the game type, resulting in the inability to match and parse correctly
 - [x] 新功能：提供基于本地化文本片段的随处搜索 / NEW: Provide localisation text snippet based Search Everywhere

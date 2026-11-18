@@ -15,11 +15,6 @@ import icu.windea.pls.model.ParadoxGameType
 
 @ForGameType(ParadoxGameType.Ck2)
 class Ck2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Ck2) {
-    object Constants {
-        const val ID = "Ck2.EventTree"
-        val itemPropertyKeys = listOf("picture")
-    }
-
     override fun getID() = Constants.ID
 
     override fun getPresentableName() = ChronicleDiagramBundle.message("eventTree.name.ck2")
@@ -33,7 +28,7 @@ class Ck2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
     class DataModel(
         project: Project,
         file: VirtualFile?, // umlFile
-        override val provider: Ck2EventTreeDiagramProvider
+        override val provider: Ck2EventTreeDiagramProvider,
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
         override fun showNode(definition: ParadoxDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
             if (settings !is Ck2EventTreeDiagramSettings.State) return true
@@ -44,5 +39,11 @@ class Ck2EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
             if (!showNodeBySettings(settings.attribute, definitionInfo.subtypes)) return false
             return true
         }
+    }
+
+    object Constants {
+        const val ID = "Ck2.EventTree"
+
+        val itemPropertyKeys = listOf("picture")
     }
 }

@@ -75,9 +75,7 @@
 
     <group id="Pls.Images.ConvertGroup">
       <separator/>
-      <action id="Pls.ConvertImageFormatToPng" class="icu.windea.pls.images.actions.ConvertImageFormatActions$Png"/>
-      <action id="Pls.ConvertImageFormatToDds" class="icu.windea.pls.images.actions.ConvertImageFormatActions$Dds"/>
-      <action id="Pls.ConvertImageFormatToTga" class="icu.windea.pls.images.actions.ConvertImageFormatActions$Tga"/>
+      <action id="Pls.ConvertImageFormat" class="icu.windea.pls.images.actions.ConvertImageFormatAction"/>
       <separator/>
 
       <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>

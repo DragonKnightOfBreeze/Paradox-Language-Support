@@ -697,7 +697,8 @@ com.intellij.diagnostic.Freeze
   - 结论：不采用
 - [x] 对于 `ChronicleTigerLintAnnotator`，考虑结合实际的 UX 体验，评估是否需要加上 `runBlockingCancellable` + `withBlackgroundProgresss`
   - 结论：加上，因为检查结果的缓存失效时机并不是那么显而易见
-- [ ] `CommandBasedImageToolProvider.read` - 可能需要考虑如何进行有效的缓存
+- [x] `CommandBasedImageToolProvider.read` - 可能需要考虑如何进行有效的缓存
+  - 更新于：2026-11-19, v3.0.6-dev
 
 #### 2026-11-01 - step 8 & 9
 

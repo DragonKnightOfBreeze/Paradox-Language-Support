@@ -22,7 +22,7 @@ class PathServiceTest {
 
     @Before
     fun setUp() {
-        root.toFile().deleteRecursively()
+        root.deleteQuietly(recursive = true)
         root.createDirectories()
     }
 

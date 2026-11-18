@@ -67,7 +67,7 @@ class ExternalToolDownloadService {
                     DownloadService.download(
                         uri = URI(descriptor.url),
                         targetPath = downloadPath,
-                        settings = downloadOptions,
+                        options = downloadOptions,
                         sha256 = descriptor.sha256,
                         rawReporter = rawReporter,
                     )
@@ -80,7 +80,7 @@ class ExternalToolDownloadService {
                         archivePath = downloadPath,
                         targetDirectory = root,
                         type = descriptor.archiveType,
-                        settings = archiveOptions,
+                        options = archiveOptions,
                     )
                     val executable = PathService.findExecutable(root, descriptor.executableName)
                         ?: throw IllegalStateException("Executable ${descriptor.executableName} is missing after downloading ${descriptor.name}.")

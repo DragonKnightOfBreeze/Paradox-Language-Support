@@ -9,8 +9,10 @@ import icu.windea.pls.ChronicleDocBundle
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.isExactDigit
 import icu.windea.pls.lang.references.localisation.ParadoxLocalisationTextColorPsiReference
+import icu.windea.pls.lang.selectGameType
 import icu.windea.pls.localisation.psi.ParadoxLocalisationArgument
 import icu.windea.pls.localisation.psi.ParadoxLocalisationTextColorAwareElement
+import icu.windea.pls.model.ParadoxGameType
 
 object ParadoxLocalisationArgumentManager {
     fun getReferences(element: ParadoxLocalisationArgument): Array<out PsiReference> {
@@ -40,10 +42,10 @@ object ParadoxLocalisationArgumentManager {
     }
 
     fun getInfo(element: ParadoxLocalisationArgument): String {
-        return getFormattingTagInfos(element.text).joinToString("<br>")
+        return getFormattingTagInfos(element.text, selectGameType(element)).joinToString("<br>")
     }
 
-    fun getFormattingTagInfos(text: String): Set<String> {
+    fun getFormattingTagInfos(text: String, gameType: ParadoxGameType? = null): Set<String> {
         // https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/137
 
         if (text.isEmpty()) return emptySet()
@@ -73,6 +75,11 @@ object ParadoxLocalisationArgumentManager {
                 }
                 c == '-' -> {
                     set += ChronicleDocBundle.message("formattingTag.7")
+                }
+                c == 'q' || c == 'Q' -> {
+                    if (gameType == ParadoxGameType.Vic3) {
+                        set += ChronicleDocBundle.message("formattingTag.q")
+                    }
                 }
             }
             i++

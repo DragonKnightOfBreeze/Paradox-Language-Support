@@ -50,6 +50,7 @@
 - [字符边界相关](adr/localisation-syntax-character-edge-cases.md)
 - [字符串变体、标签与上下文标签](adr/localisation-syntax-grammatical.md)
 - [高级富文本](adr/localisation-syntax-advanced-rich-text.md)
+- [本地化命令的词法防御机制与边界保护](adr/localisation-command-lexical-defense.md)
 
 #### CSV 文件
 
@@ -78,6 +79,10 @@
 - [提供轻量化的推流（push stream）](adr/push-stream.md)
 - [优化命令行执行逻辑和图片处理逻辑](adr/command-line-and-image-processing-optimization.md)
 - [重构 JSON 服务，提供统一入口，额外兼容 UTF-8 BOM](adr/json-service-refactoring.md)
+- [统一 IO 与下载选项体系、引入可监视流及重试机制](adr/io-and-download-options-unification.md)
+- [统一 `ImageDescriptor` 模型并分离图片层与语义层职责](adr/image-descriptor-unification.md)
+- [图片格式转换动作协程化与图表读锁/IO/UI 三段隔离](adr/image-action-and-diagram-async-isolation.md)
+- [图片缓存策略优化、原子落位与去重复物化](adr/image-caching-and-deduplication.md)
 
 #### 插件基础设施
 
@@ -133,6 +138,7 @@
 - [[CK3/VIC3/EU5] 完善对标签集表达式（tagsExpression）的支持](adr/tags-expression-support.md)
 - [完善对 CSV 文件与 rowConfig 的支持](adr/csv-and-row-config-support.md)
 - [支持内联定义](adr/inline-definition.md)
+- [[VIC3/CK3] 本地化命令的高级复杂表达式与单引号字面量语义支持](adr/localisation-command-advanced-semantic-support.md)
 
 #### 语言功能支持
 

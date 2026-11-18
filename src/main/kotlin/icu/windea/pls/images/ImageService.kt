@@ -5,6 +5,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.fileTypes.FileType
 import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.util.io.ImageIoService
+import icu.windea.pls.core.util.io.deleteQuietly
 import icu.windea.pls.images.dds.DdsFileType
 import icu.windea.pls.images.tga.TgaFileType
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +14,6 @@ import org.intellij.images.fileTypes.impl.ImageFileType
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.file.Path
-import kotlin.io.path.deleteIfExists
 import kotlin.io.path.fileSize
 import kotlin.io.path.isRegularFile
 
@@ -95,7 +95,7 @@ class ImageService {
 
     private fun checkTargetPath(targetPath: Path): Boolean {
         if (targetPath.isRegularFile() && targetPath.fileSize() > 0) return true
-        runCatching { targetPath.deleteIfExists() }
+        targetPath.deleteQuietly()
         return false
     }
 

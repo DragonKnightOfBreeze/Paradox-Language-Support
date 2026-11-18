@@ -87,6 +87,31 @@ class IncorrectSyntaxInspectionTest : BasePlatformTestCase(), ChronicleTestScope
     }
 
     @Test
+    fun comparisonOperator_semantic_alias() {
+        // 别名规则声明处使用 == 分隔符，内联后比较运算符被允许 - 不应触发警告
+        // 别名规则声明处使用 = 分隔符，比较运算符不被允许 - 应触发警告
+
+        val tag = ChronicleEpBundle.message("incorrectSyntax.comparison.desc.2").toWarningTag()
+
+        val settings = ChronicleConfigSettings.getInstance().state.features
+        settings.checkComparisonOperators = true
+        try {
+            markFileInfo(ParadoxGameType.Stellaris, "common/test_entities/test.txt")
+            myFixture.configureByText("test.txt", """
+                test_entity_1 = {
+                    value_with_alias_double_equal = 5
+                    value_with_alias_double_equal != 5
+                    value_with_alias_equal = 5
+                    value_with_alias_equal ${tag.start}!=${tag.end} 5
+                }
+        """.trimIndent())
+            myFixture.checkHighlighting()
+        } finally {
+            settings.checkComparisonOperators = false
+        }
+    }
+
+    @Test
     fun safeAssignOperator() {
         markFileInfo(createRootInfo(ParadoxGameType.Core), "common/test/test.txt")
         myFixture.configureByText("test.txt", """

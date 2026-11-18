@@ -64,6 +64,17 @@ This project uses **Gradle** and the **IntelliJ Platform Gradle Plugin**.
 - Build the plugin ZIP: `./gradlew buildPlugin --no-daemon --console=plain`
 - Run tests: `./gradlew test --no-daemon --console=plain`
 
+### Generating lexer and parser (Grammar-Kit & JFlex)
+
+- The project registers named Gradle tasks for all grammars in `build.gradle.kts` (via `org.jetbrains.intellij.platform.grammarkit`). AI agents can run them directly from the CLI:
+  - `./gradlew generateGrammars --no-daemon --console=plain` - generate all lexers and parsers.
+  - `./gradlew generateLexers --no-daemon --console=plain` - generate all lexers only.
+  - `./gradlew generateParsers --no-daemon --console=plain` - generate all parsers only.
+- The official tasks `generateLexer` (`GenerateLexerTask`) and `generateParser` (`GenerateParserTask`) are still provided by the plugin, but their default instances are not bound to a single `sourceFile` in this multi-grammar project (Script, Localisation, CSV, CWT, etc.), so calling them directly fails with `property 'sourceFile' doesn't have a configured value`. Use the named or aggregate tasks above instead.
+- Alternative generation methods:
+  1. In the IDE, right-click a `.bnf` file and choose **Generate Parser Code**, or right-click a `.flex` file and choose **Run JFlex Generator**.
+  2. Use the standalone JFlex toolchain at the repository root: `java -jar jflex-1.10.17.jar --skel idea-flex.skeleton -d src/main/gen/<package_dir> <flex_file_path>`.
+
 ### Gradle execution environment
 
 - **Best practice**: run Gradle tasks (tests, builds, etc.) directly through the **agent's built-in shell**, appending `--no-daemon --console=plain`. This returns promptly and streams readable, complete output.
@@ -130,7 +141,7 @@ Key `ChronicleTestScope` methods:
 - `markRootDirectory(relPath)` / `markConfigDirectory(relPath)` inject the root/config directory path, relative to the test data directory (`src/test/testData`).
 - `createRootInfo(gameType, gameVersion = null)` builds an injected root info, optionally pinned to a specific game version - useful for testing version-gated behavior.
 - `markFileInfo(gameType or rootInfo, path, entry = "", group = null)` (for a file to be configured afterward, e.g. via `myFixture.configureByFile`) and `VirtualFile.injectFileInfo(...)` (for an already-existing `VirtualFile`) inject per-file metadata; both have an overload taking a pre-built `ParadoxRootInfo` (from `createRootInfo`) instead of a bare `gameType`.
-- `initConfigGroups(project, ...gameTypes)` initializes the required config groups for the specified game types. Use built-in and injected config files, and the general config group (`core`) is always initialized.
+- `initConfigGroups(project, ...gameTypes)` initializes the required config groups for the specified game types. Use built-in and injected config files, and the general built-in config group (`core`) is always initialized.
 
 Notes:
 - The marked config directory SHOULD NOT directly contain config files, place them in the `core` (or some game type id like `stellaris`, see `ParadoxGameType` for details about game types) subdirectory.
@@ -350,8 +361,7 @@ For the documents and examples, see:
 
 - Besides public reference documentation under `docs/`, there is also internal maintainer documentation under `documents/`, which involves various topics and scopes.
 - Maintainer documents are primarily written in Chinese with English kebab-case file paths.
-- Documents under `documents/notes/` must be entirely written by humans, in principle and in most situations.
-- Documents under `documents/ai-notes/` are written by AI agents, and are essentially archived as-is.
+- Maintainer documents are organized by **role rather than authorship**: `documents/notes/` and `documents/design/` hold authoritative, continuously maintained living specifications co-constructed by maintainers and AI agents; `documents/ai-notes/` holds historical archives retained as-is.
 
 ### Routing (on-demand reading)
 
@@ -363,7 +373,7 @@ Do not read the entire `documents/` directory at once, instead, read specific do
 - **Hard bug diagnostics & post-reports** (P1~Pnn): check `documents/notes/issues/` (see `documents/notes/issues.md`).
 - **Troubleshooting & environment workarounds**: check `documents/notes/solutions/` (see `documents/notes/solutions.md`).
 - **Performance & memory benchmarks**: check `documents/notes/analysis/` (see `documents/notes/analysis.md`).
-- **AI-generated notes**: check `documents/ai-notes/` (archived as-is; see `adr.md`, `solutions.md`, `analysis.md`, `reports.md`, etc.).
+- **Historical archives**: check `documents/ai-notes/` (retained as-is; see `adr.md`, `solutions.md`, `analysis.md`, `reports.md`, etc.).
 - **System design specs** (UI, colors, language abstractions): check `documents/design/` (see `documents/README.md`).
 
 ## Agent instructions (IMPORTANT)

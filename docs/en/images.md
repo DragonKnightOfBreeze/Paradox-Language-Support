@@ -89,12 +89,11 @@ Icons taller than `inlayTextIconHeightLimit` are not rendered.
 ## Image Format Conversion {#convert-image-format}
 
 <!-- @see icu.windea.pls.images.actions.ConvertImageFormatAction -->
-<!-- @see icu.windea.pls.images.actions.ConvertImageFormatActions -->
 <!-- @see icu.windea.pls.images.ImageService.convertImageFormat -->
 
-The plugin provides the following image format conversion actions:
+The plugin provides the following image format conversion action:
 
-- Convert selected images to PNG, DDS, or TGA.
+- Convert selected images to PNG, JPG, GIF, DDS, or TGA, with the target format selected in the dialog.
 - Select multiple images in the project view for batch conversion.
 - Confirm the target file name and target directory before conversion.
 - Choose to skip or overwrite existing target files.

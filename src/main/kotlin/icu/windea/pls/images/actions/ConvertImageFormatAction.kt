@@ -1,61 +1,61 @@
 package icu.windea.pls.images.actions
 
-import com.intellij.codeInspection.InspectionsBundle
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.ex.ApplicationManagerEx
-import com.intellij.openapi.progress.EmptyProgressIndicator
-import com.intellij.openapi.progress.ProcessCanceledException
-import com.intellij.openapi.progress.ProgressIndicator
-import com.intellij.openapi.progress.ProgressManager
-import com.intellij.openapi.progress.runBlockingCancellable
+import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.edtWriteAction
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.platform.util.progress.reportProgressScope
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
-import com.intellij.psi.impl.file.PsiDirectoryImpl
 import com.intellij.refactoring.SkipOverwriteChoice
 import com.intellij.refactoring.util.CommonRefactoringUtil
-import com.intellij.util.IncorrectOperationException
-import com.intellij.util.ThrowableRunnable
-import com.intellij.util.containers.MultiMap
 import icu.windea.pls.ChronicleBundle
+import icu.windea.pls.ChronicleFacade
+import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
-import icu.windea.pls.core.cast
-import icu.windea.pls.core.executeCommand
-import icu.windea.pls.core.executeWriteCommand
+import icu.windea.pls.core.checkCancellation
 import icu.windea.pls.core.orNull
-import icu.windea.pls.core.runCatchingCancellable
 import icu.windea.pls.core.toPsiFile
 import icu.windea.pls.core.toVirtualFile
+import icu.windea.pls.core.util.io.clean
+import icu.windea.pls.core.util.io.deleteQuietly
+import icu.windea.pls.core.util.io.moveToAtomically
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.images.ImageService
-import java.io.IOException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.nio.file.Path
-import java.util.concurrent.atomic.AtomicReference
-import java.util.function.Consumer
+import java.util.UUID
 
 // com.intellij.refactoring.copy.CopyFilesOrDirectoriesHandler
 
 /**
- * 将选中的图片转化为指定的图片格式，并保存到指定的路径。可以批量转化。
+ * 将选中的图片转换为指定的图片格式，并保存到指定的路径。可以批量转换。
+ *
+ * 目标格式由 [ConvertImageFormatDialog] 中的下拉框指定，支持 [supportedTargetFormatNames] 中列出的常见图片格式。
+ * 当目标路径与源路径相同时，该任务会被跳过，以避免无意义的自覆盖。
+ *
+ * 转换过程被拆分为读、写、UI 和 IO 四个独立阶段：
+ * 1. 在 EDT 中与用户交互，得到转换选项并检查目标目录是否可写。
+ * 2. 在 `readAction` 中收集转换任务，并预先询问同名目标文件的覆盖策略。
+ * 3. 在后台进度中，无锁地调用 [ImageService] 把图片转码到临时文件；仅最终落位和刷新 VFS 时才进入写操作。
+ * 4. 汇报失败项或未捕获的非取消异常。
  */
-@Suppress("UnstableApiUsage")
-abstract class ConvertImageFormatAction(
-    val targetFormatName: String,
-) : DumbAwareAction() {
+open class ConvertImageFormatAction : DumbAwareAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     protected open fun isAvailableForFile(file: VirtualFile): Boolean {
         return ImageService.getInstance().isImageFileType(file.fileType)
-    }
-
-    protected open fun getNewFileName(fileName: String): String {
-        return fileName.substringBeforeLast('.') + "." + targetFormatName.lowercase()
     }
 
     protected open fun findFiles(e: AnActionEvent): Sequence<VirtualFile> {
@@ -72,225 +72,274 @@ abstract class ConvertImageFormatAction(
         val project = e.project ?: return
         val files = findFiles(e).mapNotNull { it.toPsiFile(project) }.toList()
         if (files.isEmpty()) return
-        convert(files, project)
+        convertAsync(files, project)
     }
 
-    private fun convert(files: List<PsiFile>, project: Project) {
-        val defaultNewFileName = if (files.size == 1) getNewFileName(files.first().name) else null
+    /**
+     * 最近一次由 [actionPerformed] 发起的转换任务。仅用于测试等待任务结束。
+     */
+    internal var lastConversionJob: Job? = null
+        private set
 
-        val newFileName: String?
-        val targetDirectory: PsiDirectory?
-        val dialog = ConvertImageFormatDialog(files, project, defaultNewFileName, targetFormatName)
-        if (dialog.showAndGet()) {
-            newFileName = if (files.size == 1) dialog.newFileName else null
-            targetDirectory = dialog.targetDirectory
-        } else {
-            return
+    /**
+     * 在项目级别协程作用域中异步执行转换，便于测试等待任务结束。
+     */
+    internal fun convertAsync(files: List<PsiFile>, project: Project): Job {
+        val job = ChronicleFacade.getCoroutineScope(project).launch {
+            convertSuspend(files, project)
         }
-        if (targetDirectory != null) {
-            val title = ChronicleBundle.message("convertImageFormat.command.name", targetFormatName)
-            executeCommand(project, title) {
-                doConvert(files, newFileName, targetDirectory)
-            }
+        lastConversionJob = job
+        return job
+    }
+
+    /**
+     * 转换选项。当 [newFileName] 为 `null` 时，表示批量化转换，每个文件按 [getNewFileName] 规则生成目标文件名。
+     * [targetFormatName] 是用户在当前转换中指定的目标图片格式。
+     */
+    protected data class ConversionOptions(
+        val newFileName: String?,
+        val targetDirectory: PsiDirectory,
+        val targetFormatName: String,
+    )
+
+    /**
+     * 单个图片的转换任务。所有路径和格式在收集阶段（`readAction` 中）确定，后续阶段不再访问 PSI 结构。
+     */
+    private data class ConversionTask(
+        val sourceFile: PsiFile,
+        val sourcePath: Path,
+        val sourceFormat: String,
+        val targetFileName: String,
+        val targetPath: Path,
+        val existingTarget: PsiFile?,
+    )
+
+    /**
+     * 转换结果。[added] 是成功落位的文件，[failed] 是转码或落位失败的文件。
+     */
+    internal data class ConversionResult(
+        val added: List<PsiFile>,
+        val failed: List<PsiFile>,
+    )
+
+    /**
+     * 与用户交互，得到转换选项。默认在 EDT 中弹出 [ConvertImageFormatDialog]。
+     */
+    protected open fun promptConversionOptions(files: List<PsiFile>, project: Project): ConversionOptions? {
+        val dialog = ConvertImageFormatDialog(files, project)
+        if (!dialog.showAndGet()) return null
+        val newFileName = if (files.size == 1) dialog.newFileName else null
+        val targetDirectory = dialog.targetDirectory ?: return null
+        return ConversionOptions(newFileName, targetDirectory, dialog.targetFormatName)
+    }
+
+    /**
+     * 询问同名目标文件的覆盖策略。默认在 EDT 中调用 [SkipOverwriteChoice.askUser]。
+     *
+     * 备注：当用户直接关闭对话框时，SDK 会返回 [SkipOverwriteChoice.SKIP]，只跳过当前冲突项。
+     */
+    protected open suspend fun promptOverwriteChoice(
+        targetDirectory: PsiDirectory,
+        fileName: String,
+        title: String,
+        isBatch: Boolean,
+    ): SkipOverwriteChoice {
+        return onEdt { SkipOverwriteChoice.askUser(targetDirectory, fileName, title, isBatch) }
+    }
+
+    /**
+     * 汇报失败项。默认发送 Warning 通知。
+     */
+    protected open suspend fun notifyFailed(project: Project, files: List<PsiFile>, failed: List<PsiFile>, targetFormatName: String) {
+        val content = when {
+            failed.size == 1 -> ChronicleBundle.message("convertImageFormat.error.0", failed.first().virtualFile.presentableUrl, targetFormatName)
+            failed.size == files.size -> ChronicleBundle.message("convertImageFormat.error.1", targetFormatName)
+            else -> ChronicleBundle.message("convertImageFormat.error.2", targetFormatName)
+        }
+        onEdt {
+            val notification = ChronicleNotificationGroups.global().createNotification(content, NotificationType.WARNING)
+            notification.notify(project)
         }
     }
 
-    private fun doConvert(files: List<PsiFile>, newFileName: String?, targetDirectory: PsiDirectory) {
-        val project = targetDirectory.project
-        if (!CommonRefactoringUtil.checkReadOnlyStatus(project, setOf(targetDirectory), true)) {
-            return
-        }
+    /**
+     * 展示未捕获异常的错误对话框。默认在 EDT 中调用 [Messages.showErrorDialog]。
+     */
+    protected open suspend fun showErrorDialog(project: Project, message: String?) {
+        onEdt { Messages.showErrorDialog(project, message, ChronicleBundle.message("error.title")) }
+    }
+
+    /**
+     * 以协程方式执行完整的转换流程。
+     */
+    internal suspend fun convertSuspend(files: List<PsiFile>, project: Project): ConversionResult {
+        if (files.isEmpty()) return ConversionResult(emptyList(), emptyList())
+
+        // Stage 1: EDT 交互
+        val options = onEdt {
+            val promptOptions = promptConversionOptions(files, project) ?: return@onEdt null
+            if (!CommonRefactoringUtil.checkReadOnlyStatus(project, setOf(promptOptions.targetDirectory), true)) return@onEdt null
+            promptOptions
+        } ?: return ConversionResult(emptyList(), emptyList())
+        val targetDirectory = options.targetDirectory
+        val targetFormatName = options.targetFormatName
+
+        val title = ChronicleBundle.message("convertImageFormat.command.name", targetFormatName)
 
         try {
-            val title = ChronicleBundle.message("convertImageFormat.command.name", targetFormatName)
-            val choice = if (files.size > 1 || files[0].isDirectory) intArrayOf(-1) else null
+            // Stage 2: readAction 解析 + 冲突预询问
+            val tasks = collectConversionTasks(files, options, targetDirectory)
+            val tasksToRun = resolveOverwriteChoices(tasks, targetDirectory, title)
+
+            // Stage 3: 后台进度转码 + 短暂写操作落位
             val added = mutableListOf<PsiFile>()
             val failed = mutableListOf<PsiFile>()
-            save(files, newFileName, targetDirectory, choice, title, added, failed)
+            if (tasksToRun.isNotEmpty()) {
+                runConversionTasks(tasksToRun, targetFormatName, project, added, failed)
+            }
 
-            if (failed.isNotEmpty()) {
-                val content = when (failed.size) {
-                    1 -> ChronicleBundle.message("convertImageFormat.error.0", files.first().virtualFile.presentableUrl, targetFormatName)
-                    files.size -> ChronicleBundle.message("convertImageFormat.error.1", targetFormatName)
-                    else -> ChronicleBundle.message("convertImageFormat.error.2", targetFormatName)
+            // Stage 4: 结果汇报
+            if (failed.isNotEmpty()) notifyFailed(project, files, failed, targetFormatName)
+            return ConversionResult(added.toList(), failed.toList())
+        } catch (e: Exception) {
+            checkCancellation(e)
+            showErrorDialog(project, e.message)
+            return ConversionResult(emptyList(), emptyList())
+        }
+    }
+
+    private suspend fun collectConversionTasks(
+        files: List<PsiFile>,
+        options: ConversionOptions,
+        targetDirectory: PsiDirectory,
+    ): List<ConversionTask> {
+        val targetDirectoryPath = targetDirectory.virtualFile.toNioPath()
+        return readAction {
+            files.mapNotNull { file ->
+                val sourceVirtualFile = file.virtualFile ?: return@mapNotNull null
+                val sourceFormat = sourceVirtualFile.extension.orNull() ?: return@mapNotNull null
+                val targetFileName = options.newFileName ?: getNewFileName(file.name, options.targetFormatName)
+                val sourcePath = sourceVirtualFile.toNioPath()
+                val targetPath = targetDirectoryPath.resolve(targetFileName)
+                // 同路径时跳过，避免自覆盖或无意义的同路径拷贝
+                if (sourcePath.clean() == targetPath.clean()) return@mapNotNull null
+                val existingTarget = targetDirectory.findFile(targetFileName)
+                ConversionTask(
+                    sourceFile = file,
+                    sourcePath = sourcePath,
+                    sourceFormat = sourceFormat.lowercase(),
+                    targetFileName = targetFileName,
+                    targetPath = targetPath,
+                    existingTarget = existingTarget,
+                )
+            }
+        }
+    }
+
+    /**
+     * 按顺序询问所有冲突项。`SKIP_ALL` 只跳过剩余的冲突项，无冲突项仍然会被处理。
+     */
+    private suspend fun resolveOverwriteChoices(
+        tasks: List<ConversionTask>,
+        targetDirectory: PsiDirectory,
+        title: String,
+    ): List<ConversionTask> {
+        val isBatch = tasks.size > 1
+        val result = mutableListOf<ConversionTask>()
+        var defaultChoice: SkipOverwriteChoice? = null
+        for (task in tasks) {
+            if (task.existingTarget == null) {
+                result.add(task)
+                continue
+            }
+            val choice = defaultChoice ?: promptOverwriteChoice(targetDirectory, task.targetFileName, title, isBatch)
+            when (choice) {
+                SkipOverwriteChoice.OVERWRITE -> result.add(task)
+                SkipOverwriteChoice.OVERWRITE_ALL -> {
+                    defaultChoice = choice
+                    result.add(task)
                 }
-                val notification = ChronicleNotificationGroups.global().createNotification(content, NotificationType.WARNING)
-                notification.notify(project)
+
+                SkipOverwriteChoice.SKIP -> Unit
+                SkipOverwriteChoice.SKIP_ALL -> defaultChoice = choice
+            }
+        }
+        return result
+    }
+
+    private suspend fun runConversionTasks(
+        tasks: List<ConversionTask>,
+        targetFormatName: String,
+        project: Project,
+        added: MutableList<PsiFile>,
+        failed: MutableList<PsiFile>,
+    ) {
+        withBackgroundProgress(project, ChronicleBundle.message("convertImageFormat.progress.title"), cancellable = true) {
+            reportProgressScope(tasks.size) { reporter ->
+                for (task in tasks) {
+                    reporter.itemStep(task.sourceFile.name) {
+                        convertTask(task, targetFormatName, project, added, failed)
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun convertTask(
+        task: ConversionTask,
+        targetFormatName: String,
+        project: Project,
+        added: MutableList<PsiFile>,
+        failed: MutableList<PsiFile>,
+    ) {
+        val targetFormat = targetFormatName.lowercase()
+        // NOTE 临时文件必须保留目标扩展名，以确保 texconv、magick 等外部工具正确识别输出格式
+        val tempPath = ChronicleDataPathService.getInstance().imagesTempPath
+            .resolve("${UUID.randomUUID()}.$targetFormat")
+        try {
+            // 无锁、非 EDT 地执行转码和落位
+            withContext(Dispatchers.IO) {
+                ImageService.getInstance().convertImageFormat(task.sourcePath, tempPath, task.sourceFormat, targetFormat)
+                tempPath.moveToAtomically(task.targetPath, overwrite = true)
+            }
+            // 仅在刷新 VFS 并转换为 PSI 时进入写操作
+            val convertedFile = edtWriteAction {
+                task.targetPath.toVirtualFile(refreshIfNeed = true)?.toPsiFile(project)
+            }
+            if (convertedFile != null) {
+                added.add(convertedFile)
+            } else {
+                failed.add(task.sourceFile)
             }
         } catch (e: Exception) {
-            Messages.showErrorDialog(project, e.message, ChronicleBundle.message("error.title"))
-        }
-    }
-
-    private fun save(
-        files: List<PsiFile>,
-        newFileName: String?,
-        targetDirectory: PsiDirectory,
-        choice: IntArray?,
-        title: String,
-        added: MutableList<PsiFile>,
-        failed: MutableList<PsiFile>,
-    ) {
-        val project = targetDirectory.project
-        val existingFiles = MultiMap<PsiDirectory, PsiFile>()
-        val thrown = AtomicReference<Throwable>()
-        val action = Consumer { pi: ProgressIndicator? ->
-            try {
-                for (file in files) {
-                    doSave(file, newFileName, targetDirectory, added, failed, existingFiles, pi)
-                }
-            } catch (e: Exception) {
-                thrown.set(e)
-            }
-        }
-        executeCommand(project, title) {
-            ApplicationManagerEx.getApplicationEx().runWriteActionWithCancellableProgressInDispatchThread(title, project, null, action)
-        }
-        val throwable = thrown.get()
-        if (throwable is ProcessCanceledException) {
-            // process was canceled, don't proceed with existing files
-            return
-        }
-        rethrow(throwable)
-        handleExistingFiles(newFileName, targetDirectory, choice, title, existingFiles, added, failed)
-    }
-
-    private fun doSave(
-        file: PsiFile,
-        newFileName: String?,
-        targetDirectory: PsiDirectory,
-        added: MutableList<PsiFile>,
-        failed: MutableList<PsiFile>,
-        existingFiles: MultiMap<PsiDirectory, PsiFile>,
-        pi: ProgressIndicator?,
-    ) {
-        if (pi != null) {
-            pi.text2 = InspectionsBundle.message("processing.progress.text", file.name)
-        }
-
-        val fileName = newFileName ?: getNewFileName(file.name)
-        val existing = targetDirectory.findFile(fileName)
-        if (existing != null && existing != file) {
-            existingFiles.putValue(targetDirectory, file)
-            return
-        }
-
-        convertImageFormat(file, targetDirectory, fileName, added, failed)
-    }
-
-    private fun rethrow(throwable: Throwable?) {
-        if (throwable is IOException) {
-            throw throwable
-        } else if (throwable is IncorrectOperationException) {
-            throw throwable
-        } else if (throwable != null) {
-            throw IncorrectOperationException(throwable)
-        }
-    }
-
-    private fun handleExistingFiles(
-        newFileName: String?,
-        targetDirectory: PsiDirectory,
-        choice: IntArray?,
-        title: String,
-        existingFiles: MultiMap<PsiDirectory, PsiFile>,
-        added: MutableList<PsiFile>,
-        failed: MutableList<PsiFile>,
-    ) {
-        var defaultChoice = if (choice != null && choice[0] > -1) SkipOverwriteChoice.entries[choice[0]] else null
-        try {
-            defaultChoice = handleExistingFiles(defaultChoice, choice, newFileName, targetDirectory, title, existingFiles, added, failed, null)
+            checkCancellation(e)
+            failed.add(task.sourceFile)
         } finally {
-            if (choice != null && defaultChoice != null) {
-                choice[0] = defaultChoice.ordinal % 2
-            }
+            tempPath.deleteQuietly()
         }
     }
 
-    private fun handleExistingFiles(
-        defaultChoice: SkipOverwriteChoice?,
-        choice: IntArray?,
-        newFileName: String?,
-        targetDirectory: PsiDirectory,
-        title: String,
-        existingFiles: MultiMap<PsiDirectory, PsiFile>,
-        added: MutableList<PsiFile>,
-        failed: MutableList<PsiFile>,
-        pi: ProgressIndicator?,
-    ): SkipOverwriteChoice? {
-        for (tDirectory in existingFiles.keySet()) {
-            val replacementFiles = existingFiles[tDirectory]
-            val iterator = replacementFiles.iterator()
-            while (iterator.hasNext()) {
-                val replacement = iterator.next()
-                val fileName = newFileName ?: getNewFileName(replacement.name)
-                val existing = tDirectory.findFile(fileName) ?: continue
-                var userChoice = defaultChoice
-                val project = targetDirectory.project
-                if (userChoice == null) {
-                    userChoice = SkipOverwriteChoice.askUser(targetDirectory, fileName, title, choice != null)
-                    if (userChoice == SkipOverwriteChoice.SKIP_ALL) {
-                        return userChoice
-                    } else if (userChoice == SkipOverwriteChoice.OVERWRITE_ALL) {
-                        val r = Consumer { pi: ProgressIndicator? ->
-                            handleExistingFiles(SkipOverwriteChoice.OVERWRITE_ALL, choice, newFileName, targetDirectory, title, existingFiles, added, failed, pi)
-                        }
-                        executeCommand(project, title) {
-                            ApplicationManagerEx.getApplicationEx().runWriteActionWithCancellableProgressInDispatchThread(title, project, null, r)
-                        }
-                        return SkipOverwriteChoice.OVERWRITE_ALL
-                    }
-                }
-                iterator.remove()
-                val doCopy = ThrowableRunnable<RuntimeException> {
-                    if (pi != null) {
-                        pi.text2 = InspectionsBundle.message("processing.progress.text", existing.name)
-                    }
-                    existing.delete()
-                    convertImageFormat(replacement, targetDirectory, fileName, added, failed)
-                }
-                if (userChoice == SkipOverwriteChoice.OVERWRITE) {
-                    executeWriteCommand(project, title) { doCopy.run() }
-                } else if (userChoice == SkipOverwriteChoice.OVERWRITE_ALL) {
-                    doCopy.run()
-                }
-            }
-        }
-        return defaultChoice
+    /**
+     * 在 EDT 中执行交互表。已经处于 EDT 时直接执行，避免不必要的重新调度。
+     */
+    private suspend fun <T> onEdt(action: () -> T): T {
+        val application = ApplicationManager.getApplication()
+        return if (application.isDispatchThread) action() else withContext(Dispatchers.EDT) { action() }
     }
 
-    private fun convertImageFormat(file: PsiFile, targetDirectory: PsiDirectory, fileName: String, added: MutableList<PsiFile>, failed: MutableList<PsiFile>) {
-        targetDirectory.cast<PsiDirectoryImpl>().executeWithUpdatingAddedFilesDisabled<Throwable> action@{
-            val savedPsiFile = runCatchingCancellable { convertImageFormat(file, targetDirectory, fileName) }.getOrNull()
-            if (savedPsiFile != null) {
-                added.add(savedPsiFile)
-            } else {
-                failed.add(file)
-            }
-        }
-    }
+}
 
-    internal fun convertImageFormat(file: PsiFile, targetDirectory: PsiDirectory, targetFileName: String): PsiFile? {
-        val s = file.virtualFile ?: return null
-        val td = targetDirectory.virtualFile
-        val sf = s.extension?.orNull() ?: return null
-        val path = s.toNioPath()
-        val targetPath = td.toNioPath().resolve(targetFileName)
-        val sourceFormat = sf.lowercase()
-        val targetFormat = targetFormatName.lowercase()
-        convertImageFormat(path, targetPath, sourceFormat, targetFormat)
-        val t = targetPath.toVirtualFile(refreshIfNeed = true)
-        return t?.toPsiFile(file.project)
-    }
+/**
+ * 支持的目标图片格式。
+ */
+internal val supportedTargetFormatNames = listOf("PNG", "JPG", "GIF", "DDS", "TGA")
 
-    private fun convertImageFormat(path: Path, targetPath: Path, sourceFormat: String, targetFormat: String) {
-        // NOTE 3.0.5 外部图片工具不能在 EDT/readAction 中执行；当前动作通常运行在 EDT 中，因此必要时放到后台线程
-        ApplicationManager.getApplication().executeOnPooledThread {
-            ProgressManager.getInstance().runProcess({
-                runBlockingCancellable {
-                    ImageService.getInstance().convertImageFormat(path, targetPath, sourceFormat, targetFormat)
-                }
-            }, EmptyProgressIndicator())
-        }.get()
-    }
+/**
+ * 根据输入的源文件名和目标格式生成默认的目标文件名。
+ *
+ * 保留主文件名（包括其中的其他点号），并将扩展名替换为目标格式的小写形式；如果不存在扩展名，则直接追加。
+ */
+internal fun getNewFileName(fileName: String, targetFormatName: String): String {
+    val baseName = fileName.substringBeforeLast('.')
+    return "$baseName.${targetFormatName.lowercase()}"
 }

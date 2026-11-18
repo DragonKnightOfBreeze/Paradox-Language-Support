@@ -42,6 +42,7 @@
 - [在读操作中使用 `withModalProgress` 导致可能的死锁（`IllegalStateException`）](solutions/read-action-with-modal-progress-deadlock.md)
 - [插件 jar 内置规则文件更新后读取仍为旧内容](solutions/bundled-configs-in-jar-stale-content.md)
 - [何时优先使用 fastutil 中的集合](solutions/fastutil-collections-usage-guide.md)
+- [作用域链接被检查出“匹配多个存在冲突的规则”（子句规则的匹配逻辑未考虑子句内容）（2026-11-07）](solutions/conflicting-expression-false-positive-for-alias-clauses.md)
 
 ### 测试
 

@@ -15,11 +15,6 @@ import icu.windea.pls.model.ParadoxGameType
 
 @ForGameType(ParadoxGameType.Eu4)
 class Eu4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameType.Eu4) {
-    object Constants {
-        const val ID = "Eu4.EventTree"
-        val itemPropertyKeys = listOf("picture")
-    }
-
     override fun getID() = Constants.ID
 
     override fun getPresentableName() = ChronicleDiagramBundle.message("eventTree.name.eu4")
@@ -33,7 +28,7 @@ class Eu4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
     class DataModel(
         project: Project,
         file: VirtualFile?, // umlFile
-        override val provider: Eu4EventTreeDiagramProvider
+        override val provider: Eu4EventTreeDiagramProvider,
     ) : ParadoxEventTreeDiagramProvider.DataModel(project, file, provider) {
         override fun showNode(definition: ParadoxDefinitionElement, settings: ParadoxDiagramSettings.State): Boolean {
             if (settings !is Eu4EventTreeDiagramSettings.State) return true
@@ -44,5 +39,11 @@ class Eu4EventTreeDiagramProvider : ParadoxEventTreeDiagramProvider(ParadoxGameT
             if (!showNodeBySettings(settings.attribute, definitionInfo.subtypes)) return false
             return true
         }
+    }
+
+    object Constants {
+        const val ID = "Eu4.EventTree"
+
+        val itemPropertyKeys = listOf("picture")
     }
 }

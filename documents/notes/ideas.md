@@ -658,7 +658,7 @@
 - [x] P3 3.0.4 考虑将“优先级规则/priorityConfig”重命名为“覆盖规则/overrideConfig”，同步更改规则文件和文档
 - [x] P3 3.0.4 尝试确认各个游戏的各个目录的覆盖策略，更新 `00_overrides.cwt` 和 `overrides.cwt`，并在 `documents/ai_notes/domain` 中新增笔记（附带版本和日期的标注）
 - [ ] P3 考虑进一步完善 `ParadoxScriptExpressionBlockMatchOptimizer`
-- [ ] P3 考虑进一步完善 `ParadoxMatchResultProvider.forBlock`，或者直接将相关逻辑整合到 `ParadoxScriptExpressionBlockMatchOptimizer` 中
+- [ ] P3 考虑进一步完善 `ParadoxMatchResultFactory.forBlock`，或者直接将相关逻辑整合到 `ParadoxScriptExpressionBlockMatchOptimizer` 中
 
 ### 2026-10-07
 
@@ -800,3 +800,39 @@
   - 这里的选项应能在合适的范围内控制要使用的底层实现（参见 `MarkdownFlavourDescriptor`），并且可以控制额外的处理逻辑
   - 提供 `GFM` `CommonMark` 等默认选项
 - [ ] P3 `DownloadOptions`（以及未来可能的 `NetOptions` 等）应可以指定重试机制，并提供默认选项，例如默认重试3次
+
+### 2026-11-08
+
+- [ ] P3 让 `CwtSeparatorType.DoubleEqual`（在规则文件中显式使用 `==`，而非常规的 `=`）可以影响规则匹配
+  - 这已经可以影响代码检查，但未默认启用
+  - 需要评估是否默认启用
+
+## 2026-11-10
+
+- [ ] P3 为所有 scriptTextRenderer 添加配置项 depth 和 size
+- [ ] P3 为所有 csvTextRenderer 添加配置项 columnSize 和 rowSize
+- [ ] P3 renderer 的输入可以更加灵活，不仅限于 element/elements
+- [ ] P2 细化已有的代码检查（特别是 `IncorrectSyntaxInspection`）
+- [ ] P2 对于每种重要的代码检查，交由AI进行专项验证，生成带时间戳的评估报告
+- [ ] P2 从代码检查抽象出更灵活的代码检查服务，以驱动更灵活与详细的错误信息输出
+- [ ] P3 （探索）游戏错误日志检测 - `error.log`
+- [ ] P3 （探索）模组冲突检测
+- [ ] P3 （快速）基于 `ParadoxDefinitionInheritSupport` 提供对应的装订线图标
+  - [ ] 并且，考虑重构 EP 以支持双向导航
+
+## 2026-11-11
+
+- [ ] 3.0.6 初步提取出语义层通用的 `GraphModel` 以及相关的模型类、服务类、EP 等
+- [ ] 3.0.6 初步提取出语义层通用的 `PresentationModel` 以及相关的模型类、服务类、EP 等
+- [ ] 3.0.6 重构 `extensions.diagram`，提取出通用代码，解决 EDT/RWA 问题
+- [ ] 3.1.x 清理和优化AI模块，但保持MVP状态。
+
+## 2026-11-12
+
+- [ ] 3.1.0~ 完善 GitHub 工作流（Issue 模板、标签模板，等等）
+- [ ] 3.1.0~ 完善 AI 代理工作流（Issue/PR 监听、自动编写维护者文档，等等）
+
+## 2026-11-18
+
+- [ ] 3.1.x 暴露更多工具动作作为 run configuration
+- [ ] 3.1.x 重构 `extensions.diagram`：将核心逻辑提取到语义层的 `lang.diagram` `lang.graph` 等，`diagramProvider` 等尽可能仅保留作为门面和桥接

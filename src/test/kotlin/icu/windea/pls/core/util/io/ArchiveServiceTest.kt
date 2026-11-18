@@ -28,7 +28,7 @@ class ArchiveServiceTest {
 
     @Before
     fun setUp() {
-        root.toFile().deleteRecursively()
+        root.deleteQuietly(recursive = true)
         root.createDirectories()
     }
 

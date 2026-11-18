@@ -24,7 +24,7 @@ They record in-depth system design specifications, architecture decision records
 ```text
 documents/
 ├── design/                 # System design specifications (UI/visual system, language abstraction models, core subsystem design, etc.; living specifications)
-├── notes/                  # Maintainer notes (in principle must be written by humans; authoritative, continuously maintained)
+├── notes/                  # Living specs (authoritative, continuously maintained; human-AI co-constructed)
 │   ├── assets/             # Stack traces, thread dumps, and log attachments
 │   ├── adr.md              # Architecture Decision Record index
 │   ├── adr/                # Self-contained Architecture Decision Records (syntax parsing evolution, dependency framework replacement, rule extension, etc.)
@@ -38,7 +38,7 @@ documents/
 │   ├── roadmap.md          # Version development roadmap and TODO board
 │   ├── ideas.md            # Idea records and long-term inspiration pool
 │   └── cheatsheet.md       # Practical tips, live templates, and common regular expression quick-reference manual
-├── ai-notes/               # AI collaboration notes archive (archived as-is, no continuous maintenance obligation)
+├── ai-notes/               # Historical archive (retained as-is, no continuous maintenance obligation)
 │   ├── adr.md              # Architecture Decision Record index
 │   ├── adr/                # Self-contained Architecture Decision Records (syntax parsing evolution, dependency framework replacement, rule extension, etc.)
 │   ├── solutions.md        # Environment configuration and build pitfall-avoidance manual index
@@ -70,8 +70,8 @@ Following a human-AI co-construction principle: maintainers establish the princi
 
 ### 2. notes/ (Maintainer Notes)
 
-Knowledge base written, reviewed, and maintained by project maintainers.
-In principle and in most situations, documents here **must be written by humans** to ensure their authenticity, accuracy, and authority.
+Authoritative, continuously maintained knowledge base, co-constructed and reviewed by project maintainers and AI agents.
+The boundary with `ai-notes/` is defined by **role rather than authorship**: documents here are living specifications and sources of truth, not historical archives.
 
 The Architecture Decision Records (ADRs) here use a **self-contained RFC style** and may also include related content such as task lists, file and code locations, and reference links.
 
@@ -85,11 +85,11 @@ Key dashboards and companion index entry points:
 - [Solutions Index](notes/solutions.md) - Daily development configuration, environment proxy, and third-party library pitfall-avoidance guide
 - [Profiling and Memory Analysis Index](notes/analysis.md) - Long-term benchmark rounds for game directory indexing time and heap memory
 
-### 3. ai-notes/ (AI Collaboration Archive)
+### 3. ai-notes/ (Historical Archive)
 
-Knowledge base written by AI agents.
-Generally, documents here are **archived as-is**, and the related project state may change later, for example, the code locations and implementation details involved.
-As a low-psychological-barrier knowledge deposition area and disclaimer staging area, it does not need to and should not bear maintenance responsibility for staying synchronized with subsequent code in real time.
+Archive of records retained as-is from earlier development, troubleshooting, and collaboration.
+The categorization here is by **role rather than authorship**: these documents are historical archives, not living specifications, so the related project state may change later, for example, the code locations and implementation details involved.
+As a low-psychological-barrier knowledge deposition area and disclaimer staging area, it does not need to and should not bear maintenance responsibility for staying synchronized with subsequent code in real time. Authoritative, continuously maintained knowledge belongs under `notes/` and `design/`.
 
 The Architecture Decision Records (ADRs) here are relatively more oriented toward technical pre-research and architectural alternatives, and are often more detailed, containing more content to record and archive.
 

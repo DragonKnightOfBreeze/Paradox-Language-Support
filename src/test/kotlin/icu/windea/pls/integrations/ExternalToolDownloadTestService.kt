@@ -5,6 +5,8 @@ import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
 import icu.windea.pls.core.util.io.ArchiveType
+import icu.windea.pls.core.util.io.PathService
+import icu.windea.pls.core.util.io.deleteQuietly
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -13,11 +15,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.exists
-import kotlin.io.path.isDirectory
-import kotlin.io.path.isRegularFile
-import kotlin.io.path.name
 import kotlin.io.path.readText
-import kotlin.io.path.walk
 import kotlin.io.path.writeText
 
 /**
@@ -136,7 +134,7 @@ object ExternalToolDownloadTestService {
 
     suspend fun ensureToolSuspend(descriptor: ExternalToolDownloadDescriptor): Path {
         val targetDirectory = root.resolve(descriptor.name)
-        findExecutable(targetDirectory, descriptor.executableName)?.let {
+        PathService.findExecutable(targetDirectory, descriptor.executableName)?.let {
             if (isUpToDate(targetDirectory, descriptor)) {
                 println("[external-tools] Reuse ${descriptor.name}: $it")
                 return it
@@ -144,7 +142,7 @@ object ExternalToolDownloadTestService {
             println("[external-tools] Outdated ${descriptor.name} detected, removing: $targetDirectory")
         }
         return locks.getOrPut(descriptor.name) { Mutex() }.withLock {
-            findExecutable(targetDirectory, descriptor.executableName)?.let {
+            PathService.findExecutable(targetDirectory, descriptor.executableName)?.let {
                 if (isUpToDate(targetDirectory, descriptor)) {
                     println("[external-tools] Reuse ${descriptor.name}: $it")
                     return@withLock it
@@ -152,7 +150,7 @@ object ExternalToolDownloadTestService {
                 println("[external-tools] Outdated ${descriptor.name} detected, removing: $targetDirectory")
             }
             if (!ExternalToolDownloadService.getInstance().check(targetDirectory)) {
-                targetDirectory.toFile().deleteRecursively()
+                targetDirectory.deleteQuietly(recursive = true)
             }
             if (descriptor.archiveType == ArchiveType.SevenZip && SystemInfo.isWindows) {
                 val sevenZip = sevenZipR ?: error("7zr descriptor is missing")
@@ -199,11 +197,5 @@ object ExternalToolDownloadTestService {
             appendLine("sha256=${descriptor.sha256.orEmpty()}")
             appendLine("version=${descriptor.version.orEmpty()}")
         }
-    }
-
-    private fun findExecutable(targetDirectory: Path, executableName: String): Path? {
-        if (!targetDirectory.exists()) return null
-        if (!targetDirectory.isDirectory()) return null
-        return targetDirectory.walk().find { it.isRegularFile() && it.name.equals(executableName, ignoreCase = true) }
     }
 }

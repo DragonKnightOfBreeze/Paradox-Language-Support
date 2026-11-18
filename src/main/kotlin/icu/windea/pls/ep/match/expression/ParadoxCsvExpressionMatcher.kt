@@ -18,7 +18,7 @@ import icu.windea.pls.model.expressions.ParadoxExpression
 /**
  * 用于匹配 CSV 表达式与规则表达式。
  *
- * 注意：相比 [ParadoxCsvExpressionMatcher]，仅支持有限的 [CwtDataType]。
+ * 注意：相比 [ParadoxScriptExpressionMatcher]，仅支持有限的 [CwtDataType]。
  *
  * @see ParadoxExpression
  * @see CwtDataExpression

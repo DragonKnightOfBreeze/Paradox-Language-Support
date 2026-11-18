@@ -14,6 +14,8 @@ interface ChronicleDataPathService {
     val imagesPath: Path
     /** `{path}/images/_tmp` */
     val imagesTempPath: Path
+    /** `{path}/images/_tool` */
+    val imagesToolCachePath: Path
     /** `{path}/lintResults` */
     val lintResultsPath: Path
     /** `{path}/external-tools` */

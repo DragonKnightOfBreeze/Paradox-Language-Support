@@ -1,5 +1,6 @@
 package icu.windea.pls.base.data
 
+import icu.windea.pls.core.data.JsonOptions
 import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.core.toClasspathUrl
 
@@ -7,7 +8,7 @@ object ChronicleJsonService {
     private inline fun <reified T> getJsonDataFromClasspath(classpath: String): T {
         val url = classpath.toClasspathUrl()
         val inputStream = url.openStream()
-        return inputStream.use { JsonService.read<T>(it, json5 = true) }
+        return inputStream.use { JsonService.read<T>(it, options = JsonOptions.JSON5) }
     }
 
     val gameTypeMetadataList: List<ParadoxGameTypeMetadataJson>

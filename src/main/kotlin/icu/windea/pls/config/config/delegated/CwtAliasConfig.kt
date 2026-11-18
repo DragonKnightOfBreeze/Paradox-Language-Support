@@ -20,6 +20,7 @@ import icu.windea.pls.core.optimized
 import icu.windea.pls.core.orNull
 import icu.windea.pls.core.removeSurroundingOrNull
 import icu.windea.pls.cwt.psi.CwtProperty
+import icu.windea.pls.model.type.CwtSeparatorType
 
 /**
  * 别名规则。
@@ -69,6 +70,14 @@ interface CwtAliasConfig : CwtDelegatedConfig<CwtProperty, CwtPropertyConfig>, C
     val outputScope: String?
 
     val subNameExpression: CwtDataExpression
+
+    /**
+     * 别名规则声明处的属性分隔符。
+     *
+     * 通常为 `=`，但如果显式使用了 `==`，则表示匹配的脚本属性应使用比较运算符（而非赋值运算符）。
+     * 内联该别名规则时应当保留此分隔符，否则 `==` 的语义会丢失。
+     */
+    val separatorType: CwtSeparatorType get() = config.separatorType
 
     override val configType: CwtConfigType get() = CwtConfigTypes.Alias
     override val configExpression: CwtDataExpression get() = subNameExpression

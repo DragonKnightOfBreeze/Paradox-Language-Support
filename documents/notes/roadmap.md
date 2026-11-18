@@ -458,7 +458,7 @@
 
 #### 任务（主要）
 
-- [x] P1 初步支持片段匹配，新增数据类型 `DefinitionSnippet` 和 `LocalisationSnippet`，以匹配作为完整的定义引用或本地化引用的一部分的字符串（数据表达式示例：`<sprite>|GFX_$` `localisation|$_desc`） ([#340](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/340) [#413](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/413))
+- [x] P1 初步支持片段匹配，新增数据类型 `DefinitionSnippet` 和 `LocalisationSnippet`，以匹配作为完整的定义引用或本地化引用的一部分的字符串（数据表达式示例：`<sprite>|GFX_$` `localisation|$_desc`） ([#340](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/340), [#413](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/413))
   - 参见：[#snippet-match](#snippet-match)
   - 参见：[adr/snippet-match.md](adr/snippet-match.md)
 - [x] P2 完善规则匹配逻辑，新增数据类型 `WildcardAny` 和 `WildcardLiteral`，作为特殊变体，当匹配候选项过多，或者无法进一步确定时使用（数据表达式：`$$any` `$$literal`）
@@ -593,6 +593,56 @@
 - [x] P4 从 `CodeInjectorService` 分理出 `CodeInjectorLifecycleListener`
 - [x] P4 引入 `CancellableInputStream` 和 `CancellableOutputStream`
   - 可通过 `checker` 进行取消检查
+
+### v3.0.6 {#v3-0-6}
+
+> - 开始日期：2026-11-04
+> - 结束日期：2026-11-19
+> - 状态：已完成
+
+#### 概述
+
+核心的规则匹配逻辑的细节完善（BUG 修复），以及继续推进基础设施模块和图片处理模块的重构。
+
+#### 任务（主要）
+
+- [x] P1 修复作用域链接（如 `owner = { ... }`）会被误报为“匹配多个存在冲突的规则”的BUG ([#284](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/284))
+  - 触发条件：上游规则仓库（`cwtools-vic3-config`）新增了 `alias[trigger:scope_field] == { alias_name[arithmetic_operation] = alias_match_left[arithmetic_operation] }`，使得同一个作用域链接在触发器上下文中同时存在两个值为块的子句规则。
+  - 原因：`ParadoxMatchFactory.matchesBlock` 仅根据子句中的常量键（`CwtConfigManager.getWithinBlockKeys`）判断是否匹配。当子句中的规则全部是别名引用时，常量键为空，于是会认为任意块内容都能匹配，导致同一个表达式匹配到多个子句规则。
+  - 解决方案：无法根据常量键判断时，改为用块中的成员匹配子句规则，并且只接受可用作判断依据的匹配结果（排除通配符匹配、部分匹配和回退匹配）。空块的语义本身就是歧义的，仍然视为匹配。
+  - 补充测试（`Issue284Test`），同时修正 `Issue142Test` 中相关用例的预期（`var:test = { always = yes }` 的歧义可由块内容消解）。
+  - 参见：[ai-notes/solutions/conflicting-expression-false-positive-for-alias-clauses.md](../ai-notes/solutions/conflicting-expression-false-positive-for-alias-clauses.md)
+- [x] P2 修复别名规则声明处显式使用的 `==` 分隔符在内联后丢失的BUG
+  - 触发条件：以 `alias[trigger:some_clause] == { ... }` 的形式声明别名规则。`==` 表示匹配的脚本属性应使用比较运算符，而非赋值运算符。
+  - 原因：`CwtAliasConfig` 不暴露 `separatorType`，而 `CwtConfigInlineService.inlineAlias` 复制的是用法处（`alias_name[...] = alias_match_left[...]`）的分隔符，因此内联后的规则总是使用 `=`，`ParadoxSyntaxService.isComparisonOperatorValid` 无法对内联后的规则生效。
+  - 解决方案：`CwtAliasConfig` 暴露 `separatorType`（委托给底层的属性规则），内联时保留 `==`；其他情况仍沿用用法处的分隔符。
+  - 补充测试（`IncorrectSyntaxInspectionTest.comparisonOperator_semantic_alias`）。
+- [x] P2 修复 Victoria 3 本地化命令（如 `Concept` 数据函数）中使用引号转义修饰符 `|q` 时中断语法解析的BUG ([#451](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/451))
+  - 触发条件：在本地化命令（如 `[Concept('...','$loc_key|q$')]`）中，引用的本地化参数带有 `|q` 参数修饰符。
+  - 原因：`CommandTextChar` / `CommandTextBoundChar` 未排除 `$`，导致 `{CommandTextToken}` 因最长匹配吞入参数起始标记与名称，词法分析器未能进入 `IN_PARAMETER` 状态，随后 `|` 被误判为命令修饰符并连锁产生语法错误。此前命令内的普通参数也因此长期被扁平化为单一 `COMMAND_TEXT_TOKEN`。
+  - 解决方案：在 `ParadoxLocalisation.Text.flex` 中将 `$` 从命令文本字符集中排除，并使 `getFallbackToken()` 按当前词法状态返回合法 Token；补充回归测试与快照，确认命令内参数正确生成 `ParadoxLocalisationParameter` 子节点。
+  - 参见：[issues/issue-451-vic3-quote-escape-parser-break.md](issues/issue-451-vic3-quote-escape-parser-break.md)
+
+#### 任务（次要）
+
+- [x] P3 引入 `Options`：适用于多个通用基础设施层的服务。
+  - 落地 `JsonOptions`、`MarkdownOptions`、`IoOptions`（含正交可监视流 `MonitorableInputStream`/`OutputStream`），统一 `IoService`/`ArchiveService`/`DownloadService` 参数为 `options`，并为 `DownloadOptions` 与 `DownloadService` 补充默认 3 次重试、`.part` 原子落位及实时进度详情。
+  - 参见：[adr/io-and-download-options-unification.md](adr/io-and-download-options-unification.md)
+- [x] P2 重构 `ImageDescriptor` 和相关代码。
+  - 将语义层的 `ParadoxImageResolveResult` 与图片层的 `ImageRenderRequest` 统一收敛为 `ImageDescriptor`（区分 `Direct` / `Delegated` 策略），将 `canResolve`/`resolveUrl` 迁入 `ImageRenderService`，保持 `lang -> images` 单向依赖；同步完成 `CwtSeparatorType.DoubleEqual` 默认匹配影响评估（维持不默认硬过滤）。
+  - 参见：[adr/image-descriptor-unification.md](adr/image-descriptor-unification.md)
+- [x] P2 评估和优化图片读取、渲染和解析时的缓存策略。
+  - [x] 避免每次物化资产时都实际创建图片/图标（级联衍生自图表与科技卡重构，需结合内存缓存、`Image`/`Icon` 复用与 HiDPI 适配统筹评估）。
+  - 落地：移除 `ImageDescriptor` 的 `maxWidth` / `maxHeight`；在 `ImageRenderService` 中引入按像素估算字节权重（32 MiB / 10m）的 `imageCache`、`iconCache`（2048 / 10m）与取消不连累的 Single-flight，并复用 `JBImageIcon`；元数据读取改为按需剪枝。磁盘缓存统一“随机临时文件 → PNG 头尾轻校验 → `ATOMIC_MOVE` 落位”，外部工具流式缓存放于 `images/_tool` 并以 SHA-256 + `Mutex` double-check 去重；仅 `Delegated` 缓存做超 1 天节流 Touch，清理器补充占位图保护、`_tool` 清理、`_tmp` 孤儿回收与空目录自底向上清除。
+  - 参见：[adr/image-caching-and-deduplication.md](adr/image-caching-and-deduplication.md)
+- [x] P3 重构和改进 `ConvertImageFormatAction`：使用协程、读写分离、避免冻结 EDT、支持指定目标图片格式，等等。
+  - 完成四阶段协程化分离（EDT 交互 → `readAction` 与冲突预问 → 无锁 `Dispatchers.IO` 经带目标后缀临时文件转码 → 短暂 `edtWriteAction` 落位），补齐 `PNG / JPG / GIF / DDS / TGA` 五格式动作，顺带修复 `ConvertImageFormatDialog` 文件名字段未赋值的历史 BUG，后续合并 5 个格式子动作为单一 `ConvertImageFormatAction`（在对话框中选择目标格式），并补充端到端动作与线程锁测试。
+  - 参见：[adr/image-action-and-diagram-async-isolation.md](adr/image-action-and-diagram-async-isolation.md)
+- [x] P3 重构和改进 diagramProvider 和相关代码：使用协程、预先加载数据、避免冻结 EDT、考虑提取 presentationData，等等。
+  - 移除 `ParadoxDiagramDataModel.refreshDataModel()` 外层 `runSmartReadAction` 消除死锁根因；提取轻量 `ParadoxDefinitionDiagramNodeModel` 与 `StellarisTechnologyCardPresentationModel` / `Assets`，清零 `ElementManager` 与 `ColorManager` 读锁及 EDT 同步阻塞，并实现按需预物化与展示刷新合并；人工验证已确认不冻结 UI（Diagram 插件自身仍偶发微妙异常，留待版本收尾时一并审视）。
+  - 参见：[adr/image-action-and-diagram-async-isolation.md](adr/image-action-and-diagram-async-isolation.md)
+- [x] P3 改进 GitHub 自动发布工作流（新增或拆分手动与条件式 Pre-release 自动发布流程，与插件市场正式发布解耦）。
+- [x] P4 将 `CommandBased*` 重命名为 `CommandLineBased*`
 
 ## 按主题 {#by-topic}
 
@@ -757,6 +807,7 @@
   - 对于展示名字、相关本地化、相关图片，存在不同的适用目标和不同的来源策略，考虑提供对应的EP。
   - 相关代码应主要位于 `icu.windea.pls.lang.presentation`。
   - 考虑提供 manager，用于从各种目标获取展示名字、相关本地化、相关图片、等等。
+- [ ] P2 重构 `extensions.diagram`（后续版本）：将核心逻辑提取到语义层的 `lang.diagram`、`lang.graph` 等，`diagramProvider` 等尽可能仅保留作为门面和桥接。
 - [ ] P2 考虑规范化数据（data）的相关 API
   - 数据：接近原始状态的数据，适用于脚本/本地化/定义/等等，可通过属性委托和数据模型类等方式获取，通常是经过解析（`@sv`）和评估（`@[...]`）的。
   - 相关代码应主要位于 `icu.windea.pls.lang.data`。
@@ -801,6 +852,12 @@
 
 - [ ] P2/MS 重构复杂表达式的 API，尤其是解析逻辑与校验逻辑。考虑将相关代码移到 `icu.windea.pls.expression`
 - [ ] P2/MS 优化对复杂表达式的支持：优化对动态链接节点中传入的字面量的处理逻辑
+- [x] P2/MS 本地化命令的词法防御机制与边界保护
+  - 维持文法层作为坚固、宽容的 AST 容器，从 `CommandTextChar` 中排除 `$` 并增加状态感知 fallback 容错，彻底解决参数起始标记被贪婪吞噬的问题，为上层复杂表达式提供安全干净的输入。
+  - 参见：[adr/localisation-command-lexical-defense.md](adr/localisation-command-lexical-defense.md)
+- [ ] P2/MS [VIC3/CK3] 本地化命令的高级复杂表达式与单引号字面量语义支持
+  - 在复杂表达式层（而非底层 JFlex/BNF）对 Jomini 本地化数据函数（如 `Concept(...)`、`SelectLocalization(...)`、`AddTextIf(...)`）及其单引号字符串实参进行结构化建模，支持单引号内特殊字符词法隔离、Concept 强引用解析、参数签名代码补全与语法检查。
+  - 参见：[adr/localisation-command-advanced-semantic-support.md](adr/localisation-command-advanced-semantic-support.md)
 
 ### macro-explanation
 
