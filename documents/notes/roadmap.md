@@ -644,6 +644,18 @@
 - [x] P3 改进 GitHub 自动发布工作流（新增或拆分手动与条件式 Pre-release 自动发布流程，与插件市场正式发布解耦）。
 - [x] P4 将 `CommandBased*` 重命名为 `CommandLineBased*`
 
+### v3.1.0 {#v3-1-0}
+
+> - 开始日期：2026-11-19
+> - 结束日期：
+> - 状态：进行中
+
+#### 概述
+
+#### 任务（主要）
+
+#### 任务（次要）
+
 ## 按主题 {#by-topic}
 
 ### merged-index-optimization
