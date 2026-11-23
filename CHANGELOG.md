@@ -7,6 +7,10 @@
 - [ ] 分析与优化完成项目分析后的性能和内存占用 / Analyze and optimize performance and memory after finishing project analysis
 - [ ] 完善测试用例 / Improve test cases
 
+## 3.0.7 - 2026-11-24
+
+- [x] [stellaris] [inspection] 兼容 Stellaris 4.6+ 中 common/name_lists 脚本文件不再使用 UTF-8 BOM 的变更 / Compatible with the change in Stellaris 4.6+ that script files under common/name_lists no longer use UTF-8 BOM ([#456](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/456))
+
 ## 3.0.6 - 2026-11-19
 
 - [x] 修复作用域链接（如 `owner = { ... }`）会被误报为“匹配多个存在冲突的规则”的BUG：子句中的规则均为别名引用时，块内容无法参与区分 / Fix the bug where a scope link (e.g., `owner = { ... }`) was reported as a conflicting expression: the block content could not distinguish the clauses when all of their configs are alias references ([#284](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/284))
