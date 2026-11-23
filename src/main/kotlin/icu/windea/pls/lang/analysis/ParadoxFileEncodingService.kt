@@ -29,7 +29,14 @@ object ParadoxFileEncodingService {
             file is ParadoxScriptFile -> {
                 when {
                     // restricted
-                    gameType == ParadoxGameType.Stellaris -> path.matchesParent("common/name_lists")
+                    gameType == ParadoxGameType.Stellaris -> {
+                        if (path.matchesParent("common/name_lists")) {
+                            val gameVersion = fileInfo.gameVersion
+                            gameVersion != null && ParadoxGameManager.compareGameVersion(gameVersion, "4.6") < 0
+                        } else {
+                            false
+                        }
+                    }
                     // lenient
                     gameType matchesBy ParadoxGameTypeConstraint.JominiBased -> null
                     // lenient
