@@ -275,7 +275,7 @@ tasks {
     }
     jar {
         // Include project docs and license
-        from("README_zh.md", "README.md", "LICENSE")
+        from("README_zh.md", "README.md", "LICENSE", "NOTICE")
         // Exclude specific files
         excludesInJar.forEach { exclude(it) }
     }
