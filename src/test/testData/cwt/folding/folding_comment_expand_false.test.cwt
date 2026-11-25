@@ -2,4 +2,4 @@
 # comment block 2
 # comment block 3</fold>
 
-key = 2
+key = 2<caret>

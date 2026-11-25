@@ -206,10 +206,12 @@ class Issue385Test : BasePlatformTestCase(), ChronicleTestScope {
     }
 
     private fun configureModifierIcons() {
-        markFileInfo(ParadoxGameType.Stellaris, "gfx/interface/icons/modifiers/mod_weapon_ode_to_the_dragon_knight_magic_power_mult.dds")
+        // 263: copied binary files are no longer analyzed while the pending `markFileInfo` is active,
+        // so inject the file info onto the copied VirtualFile directly instead.
         myFixture.copyFileToProject("issues/385/gfx/interface/icons/modifiers/mod_weapon_ode_to_the_dragon_knight_magic_power_mult.dds")
-        markFileInfo(ParadoxGameType.Stellaris, "gfx/interface/icons/modifiers/mod_weapon_windea_long_sword_damage_mult.dd")
+            .injectFileInfo(ParadoxGameType.Stellaris, "gfx/interface/icons/modifiers/mod_weapon_ode_to_the_dragon_knight_magic_power_mult.dds")
         myFixture.copyFileToProject("issues/385/gfx/interface/icons/modifiers/mod_weapon_windea_long_sword_damage_mult.dds")
+            .injectFileInfo(ParadoxGameType.Stellaris, "gfx/interface/icons/modifiers/mod_weapon_windea_long_sword_damage_mult.dds")
     }
 
     private fun enableAllNeededInspections() {
