@@ -154,7 +154,7 @@ dependencies {
     // AI integration
 
     // LangChain4J - https://github.com/langchain4j/langchain4j
-    implementation("dev.langchain4j:langchain4j:1.22.0") {
+    implementation("dev.langchain4j:langchain4j:1.24.0") {
         exclude(group = "org.jspecify", module = "jspecify")
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
