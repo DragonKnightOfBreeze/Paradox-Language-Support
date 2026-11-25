@@ -149,7 +149,7 @@ dependencies {
     implementation("org.javassist:javassist:3.33.0-GA")
 
     // kotlinx-serialization - https://github.com/Kotlin/kotlinx.serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.13.0")
 
     // AI integration
 
@@ -249,14 +249,11 @@ kotlin {
             "-Xno-call-assertions", // disable not-null check to optimize performance
             "-Xno-receiver-assertions", // disable not-null check to optimize performance
             "-Xno-param-assertions", // disable not-null check to optimize performance
-            "-Xjvm-default=all",
-            "-Xinline-classes",
-            "-Xcontext-parameters",
-            "-Xannotation-default-target=param-property", // see: https://kotlinlang.org/docs/whatsnew22.html#new-defaulting-rules-for-use-site-annotation-targets
+            "-jvm-default=no-compatibility", // equivalent to the deprecated -Xjvm-default=all (default methods without compatibility bridges)
             "-XXLanguage:+MultiDollarInterpolation",
-            // "-Xwhen-expressions=indy", // see: https://kotlinlang.org/docs/whatsnew2220.html#kotlin-jvm-support-invokedynamic-with-when-expressions
-            // -Xname-based-destructuring=only-syntax //see: https://kotlinlang.org/docs/whatsnew2320.html#name-based-destructuring
-            // "-Xcollection-literals", // https://kotlinlang.org/docs/whatsnew24.html#support-for-collection-literals
+            "-Xwhen-expressions=indy", // see: https://kotlinlang.org/docs/whatsnew2220.html#kotlin-jvm-support-invokedynamic-with-when-expressions
+            "-Xname-based-destructuring=only-syntax", // see: https://kotlinlang.org/docs/whatsnew2320.html#name-based-destructuring
+            "-Xcollection-literals", // see: https://kotlinlang.org/docs/whatsnew24.html#support-for-collection-literals
         )
     }
 }
