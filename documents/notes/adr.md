@@ -32,6 +32,10 @@
 
 ### 构建
 
+#### 平台与语言基线
+
+- [升级平台基线至 IntelliJ IDEA 2026.3 与 Kotlin 2.4](adr/upgrade-platform-and-kotlin-baseline-263.md)
+
 #### 依赖
 
 - [将 JSON 序列化框架从 jackson 改为 kotlinx-serialization](adr/replace-jackson-with-kotlinx-serialization.md)
