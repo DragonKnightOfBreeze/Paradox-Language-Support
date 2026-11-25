@@ -147,6 +147,15 @@ If you use AI, please hold yourself to a few standards:
 - **Preserve conceptual consistency.** Match the existing naming conventions, package organization, domain terminology, and the established style of the surrounding code and docs. Consistency here is worth more than cleverness.
 - **Stay within accepted areas.** The same boundaries apply: AI does not make core-code changes acceptable. Use the discussion path for foundational areas.
 
+## Licensing and Contribution Terms
+
+- **Inbound = Outbound (GNU GPL-3.0)**:
+  By submitting a pull request to the plugin repository (this project), including code, documentation, scripts, and built-in core rules (`cwt/core/`), you agree that your contribution is licensed under the **GNU General Public License, version 3 (GPL-3.0-or-later)**.
+- **Author Attribution and Restrictions**:
+  All contributions are subject to the project's copyright notice and the terms outlined in [`NOTICE`](NOTICE) (including Section 7 terms regarding attribution preservation, integrity of modified works, and project name/trademark restrictions).
+- **Rules Repositories (`cwt/`) Boundary**:
+  Contributions intended for specific game rules under `cwt/cwtools-*-config` target their respective independent upstream repositories and are governed by their respective licenses (typically MIT).
+
 ## Submitting Changes
 
 - Open issues for bugs, feature requests, and proposals (especially for anything touching the core areas above).

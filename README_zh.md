@@ -215,6 +215,11 @@ Paradox Chronicle（曾用名：Paradox Language Support）是为 Paradox Intera
 
 ## 关于
 
+### 许可证
+
+Paradox Chronicle 采用 [GNU General Public License v3.0](LICENSE)（或更高版本）许可证开源。
+完整许可证文本参见 [`LICENSE`](LICENSE)，版权署名、GPL-3.0 第 7 条保留条款与第三方资源归属详见 [`NOTICE`](NOTICE)。
+
 ### Developed by
 
 **Windea** - The dragon knight who with the title of breeze.

@@ -214,6 +214,11 @@ These documents inevitably contain errors, shortcomings, missing details, and ar
 
 ## About
 
+### License
+
+Paradox Chronicle is licensed under the [GNU General Public License v3.0](LICENSE) (or later).
+See [`LICENSE`](LICENSE) for the full license text, and [`NOTICE`](NOTICE) for copyright attribution, Section 7 terms, and third-party notices.
+
 ### Developed by
 
 **Windea** - The dragon knight who with the title of breeze.
