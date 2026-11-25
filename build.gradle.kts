@@ -106,6 +106,7 @@ dependencies {
         testFramework(TestFrameworkType.Platform)
 
         bundledPlugins("com.intellij.platform.images")
+        bundledPlugins("com.intellij.modules.jna")
         bundledPlugins("com.intellij.modules.json")
         bundledPlugins("org.intellij.plugins.markdown")
         bundledPlugins("com.intellij.diagram")

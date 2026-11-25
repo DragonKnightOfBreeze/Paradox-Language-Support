@@ -15,7 +15,8 @@ val DefaultActionGroup.children: MutableList<AnAction> by memberProperty<Default
 
 val HierarchyBrowserBaseEx.project: Project by memberProperty<HierarchyBrowserBase, _>("myProject")
 
-val HierarchyBrowserBaseEx.element: PsiElement by memberProperty<HierarchyBrowserBaseEx, _>("hierarchyBase")
+val HierarchyBrowserBaseEx.element: PsiElement?
+    get() = memberFunction<HierarchyBrowserBaseEx>("getHierarchyBase").execute(this)
 
 val SearchRequestCollector.wordRequests: MutableList<PsiSearchRequest> by memberProperty<SearchRequestCollector, _>("myWordRequests")
 // val SearchRequestCollector.queryRequests: MutableList<QuerySearchRequest> by memberProperty<SearchRequestCollector, _>("myQueryRequests")

@@ -56,7 +56,7 @@ This project uses **Gradle** and the **IntelliJ Platform Gradle Plugin**.
 
 ### Requirements
 
-- JDK 21
+- JDK 25
 - Gradle wrapper
 
 ### Common commands

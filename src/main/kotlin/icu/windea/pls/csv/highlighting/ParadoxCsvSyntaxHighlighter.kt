@@ -16,7 +16,7 @@ import icu.windea.pls.csv.psi.ParadoxCsvElementTypes.*
 class ParadoxCsvSyntaxHighlighter(
     private val project: Project?
 ) : SyntaxHighlighter {
-    override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {
+    override fun getTokenHighlights(tokenType: IElementType): Array<out TextAttributesKey> {
         return when (tokenType) {
             SEPARATOR -> ParadoxCsvHighlighterColorSets.SEPARATOR
             COMMENT -> ParadoxCsvHighlighterColorSets.COMMENT

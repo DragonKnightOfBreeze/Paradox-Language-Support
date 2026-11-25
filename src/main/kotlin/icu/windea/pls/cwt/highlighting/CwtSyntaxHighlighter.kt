@@ -16,7 +16,7 @@ import icu.windea.pls.cwt.psi.CwtElementTypes.*
 class CwtSyntaxHighlighter(
     private val project: Project?
 ) : SyntaxHighlighter {
-    override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {
+    override fun getTokenHighlights(tokenType: IElementType): Array<out TextAttributesKey> {
         return when (tokenType) {
             LEFT_BRACE, RIGHT_BRACE -> CwtHighlighterColorSets.BRACES
             EQUAL_SIGN, NOT_EQUAL_SIGN, DOUBLE_EQUAL_SIGN -> CwtHighlighterColorSets.OPERATOR

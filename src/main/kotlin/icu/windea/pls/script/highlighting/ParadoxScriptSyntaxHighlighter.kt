@@ -16,7 +16,7 @@ import icu.windea.pls.script.psi.ParadoxScriptElementTypes.*
 class ParadoxScriptSyntaxHighlighter(
     private val project: Project?
 ) : SyntaxHighlighter {
-    override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {
+    override fun getTokenHighlights(tokenType: IElementType): Array<out TextAttributesKey> {
         return when (tokenType) {
             LEFT_BRACE, RIGHT_BRACE -> ParadoxScriptHighlighterColorSets.BRACES
             EQUAL_SIGN, NOT_EQUAL_SIGN, LE_SIGN, LT_SIGN, GE_SIGN, GT_SIGN -> ParadoxScriptHighlighterColorSets.OPERATOR

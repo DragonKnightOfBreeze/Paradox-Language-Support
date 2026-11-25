@@ -84,7 +84,7 @@ The trick is to extend rather than rewrite: follow existing reference points lik
 
 The project uses **Gradle** with the **IntelliJ Platform Gradle Plugin**.
 
-- Requirements: **JDK 21** (the build uses `kotlin.jvmToolchain(21)`) and the Gradle wrapper.
+- Requirements: **JDK 25** (the build uses `kotlin.jvmToolchain(25)`) and the Gradle wrapper.
 - Run the IDE for debugging: `./gradlew runIde`
 - Build the plugin ZIP: `./gradlew buildPlugin`
 - Run tests: `./gradlew test`

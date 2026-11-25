@@ -1,6 +1,6 @@
 package icu.windea.pls
 
-import com.intellij.ide.plugins.PluginManager
+import com.intellij.ide.plugins.PluginDetailsService
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.application.ApplicationManager
@@ -120,8 +120,7 @@ object ChronicleFacade {
      * 检查插件是否是开发中版本。
      */
     fun isDevVersion(): Boolean {
-        // NOTE 3.0.0 [compatibility] `PluginManager.findEnabledPlugin(PluginId)` is internal (but ignored) since IDEA-262
-        //  - Use `PluginDetailsService` instead
-        return PluginManager.getInstance().findEnabledPlugin(ChronicleConstants.pluginId)?.version?.endsWith("-dev") == true
+        // NOTE 3.1.0 `PluginManager.findEnabledPlugin(PluginId)` is internal since IDEA-262, use `PluginDetailsService` instead
+        return PluginDetailsService.getInstance().findDetails(ChronicleConstants.pluginId)?.version?.endsWith("-dev") == true
     }
 }

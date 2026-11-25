@@ -19,7 +19,7 @@ class ParadoxLocalisationSyntaxHighlighter(
     private val project: Project?,
     private val virtualFile: VirtualFile?,
 ) : SyntaxHighlighter {
-    override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {
+    override fun getTokenHighlights(tokenType: IElementType): Array<out TextAttributesKey> {
         return when (tokenType) {
             COLON -> ParadoxLocalisationHighlighterColorSets.OPERATOR
             PIPE, COMMA -> ParadoxLocalisationHighlighterColorSets.MARKER
