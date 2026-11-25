@@ -10,7 +10,7 @@
 - Always use `UTF-8` for script/loc/csv files
 - Always use `BOM` for loc files
 - Always use `NO BOM` for csv files
-- For Stellaris, Use `BOM` for script files under `common/name_list`, otherwise `NO BOM`
+- For Stellaris, Use `BOM` for script files under `common/name_lists` before 4.6, otherwise `NO BOM` (since 4.6, name_lists also requires `NO BOM`, see [#456](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/456))
 - For other game types, do not check bom for script files (maybe `BOM` or `NO BOM`, there is no ideal way to check)
 
 相关代码位置：

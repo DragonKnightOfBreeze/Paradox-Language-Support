@@ -656,6 +656,25 @@
 
 #### 任务（次要）
 
+### v3.0.7 {#v3-0-7}
+
+> - 开始日期：2026-11-24
+> - 结束日期：2026-11-24
+> - 状态：已完成
+
+#### 概述
+
+紧急修复版本。兼容 Stellaris 4.6+ 官方移除 `common/name_lists` 脚本文件的 UTF-8 BOM 后的编码规范变更。
+
+#### 任务（主要）
+
+- [x] P1 兼容 Stellaris 4.6+ 中 `common/name_lists` 脚本文件不再使用 UTF-8 BOM 的变更 ([#456](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/456))
+  - 触发条件：Stellaris 4.6.0 官方移除了全部 76 个 `common/name_lists/*.txt` 文件的 UTF-8 BOM；若文件中包含 BOM，游戏读取时会发生崩溃或解析错误。
+  - 原因：`ParadoxFileEncodingService.useBom()` 无条件要求 Stellaris 的 `common/name_lists` 文件使用 BOM，`ParadoxUtf8BomOptionProvider` 创建新文件时也会无条件附加 BOM。
+  - 解决方案：根据 `fileInfo.gameVersion` 判断：当游戏版本 `< 4.6` 时继续要求使用 BOM；当游戏版本 `>= 4.6` 或未指定时，要求使用 UTF-8 NO BOM。
+  - 补充测试（`Issue456Test`）并更新代码检查文案与 ADR。
+  - 参见：[adr/incorrect-file-encoding-inspection.md](adr/incorrect-file-encoding-inspection.md)
+
 ## 按主题 {#by-topic}
 
 ### merged-index-optimization

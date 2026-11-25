@@ -132,7 +132,7 @@ dependencies {
     testImplementation("org.opentest4j:opentest4j:1.3.0")
 
     // Caffeine - https://github.com/ben-manes/caffeine
-    implementation("com.github.ben-manes.caffeine:caffeine:3.3.0") {
+    implementation("com.github.ben-manes.caffeine:caffeine:3.3.1") {
         exclude(group = "com.google.errorprone", module = "error_prone_annotations")
         exclude(group = "org.jspecify", module = "jspecify")
     }
@@ -185,7 +185,7 @@ dependencies {
 
     // Compile only
 
-    compileOnly("com.google.errorprone:error_prone_annotations:2.50.0")
+    compileOnly("com.google.errorprone:error_prone_annotations:2.52.0")
     compileOnly("org.jspecify:jspecify:1.0.1")
     compileOnly("org.slf4j:slf4j-api:2.0.20")
     compileOnly("org.jetbrains:annotations:26.1.0") // https://github.com/JetBrains/java-annotations
