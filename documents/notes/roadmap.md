@@ -664,7 +664,15 @@
   - `build.gradle.kts` 将 `NOTICE` 打入分发包（已通过 `./gradlew jar` 构建与解包验证），同步更新 `README.md`、`README_zh.md` 与 `CONTRIBUTING.md`。
   - 规则子仓 `cwt/cwtools-*-config` 保持各自独立原许可（通常为 MIT），外部贡献遵循 Inbound = Outbound (GPL-3.0)。
   - 参见：[adr/switch-license-to-gpl-3.0.md](adr/switch-license-to-gpl-3.0.md)
-- [ ] P1 平台与 Kotlin 基线升级：IDEA 2026.3 (`263`) + Kotlin 2.4.21-RC + kotlinx-coroutines 1.11.0-intellij-1 + kotlinx-serialization
+- [x] P1 平台与 Kotlin 基线升级：IDEA 2026.3 (`263`) + Kotlin 2.4.21-RC + kotlinx-coroutines 1.11.0-intellij-1 + kotlinx-serialization
+  - 最低支持平台版本升级至 IDEA 2026.3 (`263`)，编译目标与运行环境提升至 JDK 25。
+  - Kotlin 升级至 `2.4.21-RC`，协程升级至 `1.11.0-intellij-1`，同步升级 `kotlinx-serialization` 与 `.idea/kotlinc.xml`。
+  - 适配 263 中 JNA 插件化分发，补充 `bundledPlugins("com.intellij.modules.jna")` 与 `plugin.xml` 声明。
+  - 清理 `252`–`262` 过渡性兼容分支与历史兜底逻辑（删除自制 `PathEnvironmentVariableUtil.kt`、清理 `SpecialUrlServiceImpl` 旧分支等）。
+  - 修复运行时与反射破坏（`HierarchyBrowserBaseEx` 反射安全化、语法高亮器参数收紧、折叠选区测试调整、测试虚拟文件映射）。
+  - 弃用与现代 API 迁移（`runReadActionBlocking`、`restart` reason、`isApplicableAsync`、`getBOMDecisionForNewUtf8File`、Caffeine `weakKeys`）。
+  - 全量 380 测试套件、3490 测试用例通过，插件分发包结构完好，Verifier 交由 CI 承接。
+  - 参见：[adr/upgrade-platform-and-kotlin-baseline-263.md](adr/upgrade-platform-and-kotlin-baseline-263.md)
 - [ ] P2 维护者文档架构重整与引导去重：废除 `ai-notes/` 实行生命周期管理，拆出测试与基准测试专册，消除 `AGENTS.md` 镜像冗余
 - [ ] P2 AI 协同工作流标准化与首批项目级 Skill 落地（`release`、`grammar-kit-codegen`、`issue-triage`）
 - [ ] P2 核心设计文档补充（PSI 接口规范等）与发版
