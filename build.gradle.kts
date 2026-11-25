@@ -193,7 +193,7 @@ dependencies {
     // Currently for reference only
 
     // byte-buddy - https://github.com/raphw/byte-buddy
-    testImplementation("net.bytebuddy:byte-buddy:1.18.16")
+    testImplementation("net.bytebuddy:byte-buddy:1.18.17")
     testImplementation("net.bytebuddy:byte-buddy-agent:1.18.17")
 
     // jte - https://github.com/casid/jte
