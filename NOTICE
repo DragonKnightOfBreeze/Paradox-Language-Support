@@ -1,0 +1,156 @@
+Paradox Chronicle
+Copyright (c) 2021-2026 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+========================================================================
+GNU General Public License v3.0 - Section 7 Additional Terms
+========================================================================
+
+Pursuant to Section 7 of the GNU General Public License, version 3, the
+following additional permissions and restrictions apply:
+
+1. Attribution and Copyright Notices (Section 7(b)):
+   You must preserve all original author copyright notices, attribution
+   notices, and authorship references in all copies or substantial
+   portions of the work, including user-facing dialogs, metadata,
+   and primary documentation.
+
+2. Integrity and Origin (Section 7(c)):
+   You must not misrepresent the origin of this material or any modified
+   version. Any modified versions must be prominently marked as altered
+   and differentiated from the original work, and must not be represented
+   as being authored by the original author(s).
+
+3. Trademark and Name Restrictions (Section 7(e)):
+   No trademark rights are granted. You may not use the project name
+   "Paradox Chronicle" (or "Paradox Language Support"), or the author
+   names/pseudonyms "DragonKnightOfBreeze" or "Windea" for publicity,
+   endorsement, or commercial advertising purposes without prior written
+   permission from the respective copyright holder.
+
+========================================================================
+Historical Licensing Notice
+========================================================================
+
+Versions of this project up to and including v3.0.7 were licensed and
+distributed under the MIT License:
+
+    Copyright (c) 2021-2026 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
+    and contributors.
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+Historical external contributions made prior to version 3.1.0 were licensed
+under the MIT License and are preserved in accordance with its terms.
+
+========================================================================
+Third-Party Software and Assets
+========================================================================
+
+This project includes or incorporates code, libraries, and assets from third
+parties under permissive licenses compatible with GNU GPL-3.0:
+
+1. IntelliJ Platform (JetBrains s.r.o.)
+   - Certain source files (including `src/main/kotlin/icu/windea/pls/lang/diff/actions/DocumentsSynchronizer.java`,
+     derived from `com.intellij.diff.actions.DocumentsSynchronizer`) are
+     Copyright 2000-2018 JetBrains s.r.o., licensed under the Apache License,
+     Version 2.0.
+   - Various icons under `src/main/resources/icons/` (including gutter icons,
+     semantic node icons, and new UI expui icons) are derived, adapted, or
+     recolored from IntelliJ Platform UI icons, Copyright 2000-2021 JetBrains
+     s.r.o., licensed under the Apache License, Version 2.0.
+
+   The Apache License, Version 2.0 may be obtained at:
+   http://www.apache.org/licenses/LICENSE-2.0
+
+2. Microsoft DirectXTex & texconv
+   - `src/main/resources/external-tools/texconv.exe` is a prebuilt binary of the
+     texconv utility from Microsoft's DirectXTex project.
+   - Copyright (c) Microsoft Corporation.
+   - Licensed under the MIT License:
+     <https://github.com/microsoft/DirectXTex>
+
+3. iTitus DDS Support
+   - DDS image header decoding logic incorporates concepts and structure from
+     iTitus/dds.
+   - Copyright (c) 2019-2023 iTitus.
+   - Licensed under the MIT License:
+     <https://github.com/iTitus/dds>
+
+4. TwelveMonkeys ImageIO
+   - Used for DDS and TGA image handling (`imageio-dds`, `imageio-tga`).
+   - Copyright (c) 2008-2024 Harald Kuhr.
+   - Licensed under the BSD 3-Clause License:
+     <https://github.com/haraldk/TwelveMonkeys>
+
+5. Javassist
+   - Copyright (c) 1999-2024 Shigeru Chiba.
+   - Multi-licensed under MPL 1.1, LGPL 2.1, and Apache License 2.0.
+   - For the purposes of distribution in this project, Javassist is used and
+     redistributed under the terms of the Apache License, Version 2.0.
+
+6. Other Runtime Dependencies
+   - Ben Manes Caffeine (Apache-2.0)
+   - Ktorm (Apache-2.0)
+   - LangChain4j and related libraries (Apache-2.0, MIT)
+   - SQLite JDBC & Native SQLite (Apache-2.0 / Public Domain)
+   - kotlinx-serialization (Apache-2.0)
+   - JTokkit (MIT)
+
+7. CWT Configuration Repositories (`cwt/`)
+   - The game-specific CWT configuration files under `cwt/cwtools-*-config`
+     are independent repositories developed and maintained upstream by the
+     CWTools community and contributors, licensed under the MIT License:
+     - cwtools-ck3-config: Copyright (c) 2020 cwtools
+     - cwtools-eu4-config: Copyright (c) 2018 tboby
+     - cwtools-eu5-config: Copyright (c) 2025 Chris Kaiser
+     - cwtools-hoi4-config: Copyright (c) 2018 tboby
+     - cwtools-stellaris-config: Copyright (c) 2018 tboby
+     - cwtools-vic2-config: Copyright (c) 2019 simsulla
+     - cwtools-vic3-config: Copyright (c) 2020 cwtools
+     - cwtools-ck2-config / cwtools-ir-config: Copyright (c) 2018 Thomas Boby / cwtools
+   - These configuration repositories maintain their respective independent
+     licenses and copyrights and are bundled as aggregate content.
+
+========================================================================
+Trademarks and Disclaimers
+========================================================================
+
+Paradox Interactive, Stellaris, Crusader Kings, Europa Universalis,
+Hearts of Iron, Imperator: Rome, Victoria, and related logos and marks are
+trademarks or registered trademarks of Paradox Interactive AB.
+
+Steam and the Steam logo are trademarks or registered trademarks of
+Valve Corporation.
+
+Paradox Chronicle is an independent community open-source project and is not
+affiliated with, endorsed by, sponsored by, or associated with Paradox
+Interactive AB or Valve Corporation.
