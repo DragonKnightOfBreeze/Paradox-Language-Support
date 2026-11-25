@@ -9,6 +9,8 @@
 
 ## 3.1.0
 
+- [x] 将插件主仓库许可证从 MIT 迁移至 GNU GPL-3.0，自此版本起生效 / Switch the plugin repository license from MIT to GNU GPL-3.0, effective from this version
+
 ## 3.0.7 - 2026-11-24
 
 - [x] [stellaris] [inspection] 兼容 Stellaris 4.6+ 中 common/name_lists 脚本文件不再使用 UTF-8 BOM 的变更 / Compatible with the change in Stellaris 4.6+ that script files under common/name_lists no longer use UTF-8 BOM ([#456](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/456))

@@ -649,12 +649,29 @@
 > - 开始日期：2026-11-19
 > - 结束日期：
 > - 状态：进行中
+> - 详细路线图参见：[roadmap/v3.1.0.md](roadmap/v3.1.0.md)
 
 #### 概述
 
+承前启后的“清场与换代”版本。确立许可证法权边界（MIT → GNU GPL-3.0）、升级平台与语言基线（IDEA 2026.3 + Kotlin 2.4）、重整维护者文档架构（废除 `ai-notes/` 双轨制，建立生命周期管理），并固化首批实用 AI Agent Skill。
+
 #### 任务（主要）
 
-#### 任务（次要）
+- [x] P1 将插件主仓库许可证从 MIT 迁移至 GNU GPL-3.0，并建立规范的版权审计与 `NOTICE` 署名架构
+  - 全量 Gradle 依赖与内置第三方代码/资源 GPL-3.0 兼容性审计通过，无冲突。
+  - 根目录替换标准官方 GNU GPL-3.0 原文（674 行标准文本，确保 GitHub、SPDX 正确识别）。
+  - 新增根目录 `NOTICE` 承载作者网名、首年版权年份、GPL-3.0 第 7 条附加条款（保留署名、反歪曲、反背书），集中登记第三方源码（`DocumentsSynchronizer.java`）、JetBrains Apache-2.0 图标派生声明与历史 MIT 贡献归属。
+  - `build.gradle.kts` 将 `NOTICE` 打入分发包（已通过 `./gradlew jar` 构建与解包验证），同步更新 `README.md`、`README_zh.md` 与 `CONTRIBUTING.md`。
+  - 规则子仓 `cwt/cwtools-*-config` 保持各自独立原许可（通常为 MIT），外部贡献遵循 Inbound = Outbound (GPL-3.0)。
+  - 参见：[adr/switch-license-to-gpl-3.0.md](adr/switch-license-to-gpl-3.0.md)
+- [ ] P1 平台与 Kotlin 基线升级：IDEA 2026.3 (`263`) + Kotlin 2.4.21-RC + kotlinx-coroutines 1.11.0-intellij-1 + kotlinx-serialization
+- [ ] P2 维护者文档架构重整与引导去重：废除 `ai-notes/` 实行生命周期管理，拆出测试与基准测试专册，消除 `AGENTS.md` 镜像冗余
+- [ ] P2 AI 协同工作流标准化与首批项目级 Skill 落地（`release`、`grammar-kit-codegen`、`issue-triage`）
+- [ ] P2 核心设计文档补充（PSI 接口规范等）与发版
+
+#### 任务（次要 / 弹性探索）
+
+- [ ] P3 `icu.windea.pls.ai` 模块轻量化瘦身（剥离 LangChain4J，自研极轻量 HTTP/SSE 客户端）
 
 ### v3.0.7 {#v3-0-7}
 
