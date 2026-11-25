@@ -1,5 +1,5 @@
 Paradox Chronicle
-Copyright (c) 2021-2026 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
+Copyright (c) 2021 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ following additional permissions and restrictions apply:
 Historical Licensing Notice
 ========================================================================
 
-Versions of this project up to and including v3.0.7 were licensed and
+Versions of this project prior to v3.1.0 were licensed and
 distributed under the MIT License:
 
     Copyright (c) 2021-2026 DragonKnightOfBreeze Windea <dk_breeze@qq.com>
@@ -68,7 +68,7 @@ distributed under the MIT License:
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 
-Historical external contributions made prior to version 3.1.0 were licensed
+Historical external contributions made prior to v3.1.0 were licensed
 under the MIT License and are preserved in accordance with its terms.
 
 ========================================================================
@@ -83,8 +83,7 @@ parties under permissive licenses compatible with GNU GPL-3.0:
      derived from `com.intellij.diff.actions.DocumentsSynchronizer`) are
      Copyright 2000-2018 JetBrains s.r.o., licensed under the Apache License,
      Version 2.0.
-   - Various icons under `src/main/resources/icons/` (including gutter icons,
-     semantic node icons, and new UI expui icons) are derived, adapted, or
+   - Various icons under `src/main/resources/icons/` are derived, adapted, or
      recolored from IntelliJ Platform UI icons, Copyright 2000-2021 JetBrains
      s.r.o., licensed under the Apache License, Version 2.0.
 
@@ -118,15 +117,12 @@ parties under permissive licenses compatible with GNU GPL-3.0:
      redistributed under the terms of the Apache License, Version 2.0.
 
 6. Other Runtime Dependencies
-   - Ben Manes Caffeine (Apache-2.0)
-   - Ktorm (Apache-2.0)
-   - LangChain4j and related libraries (Apache-2.0, MIT)
-   - SQLite JDBC & Native SQLite (Apache-2.0 / Public Domain)
-   - kotlinx-serialization (Apache-2.0)
-   - JTokkit (MIT)
+   - This plugin may distribute runtime dependencies licensed under permissive
+     open-source licenses (such as MIT). Please refer to their respective
+     artifacts, metadata, and POM definitions for individual license details.
 
-7. CWT Configuration Repositories (`cwt/`)
-   - The game-specific CWT configuration files under `cwt/cwtools-*-config`
+7. CWT Config Repositories (`cwt/`)
+   - The game-specific CWT config files under `cwt/cwtools-*-config`
      are independent repositories developed and maintained upstream by the
      CWTools community and contributors, licensed under the MIT License:
      - cwtools-ck3-config: Copyright (c) 2020 cwtools
@@ -137,7 +133,7 @@ parties under permissive licenses compatible with GNU GPL-3.0:
      - cwtools-vic2-config: Copyright (c) 2019 simsulla
      - cwtools-vic3-config: Copyright (c) 2020 cwtools
      - cwtools-ck2-config / cwtools-ir-config: Copyright (c) 2018 Thomas Boby / cwtools
-   - These configuration repositories maintain their respective independent
+   - These config repositories maintain their respective independent
      licenses and copyrights and are bundled as aggregate content.
 
 ========================================================================
