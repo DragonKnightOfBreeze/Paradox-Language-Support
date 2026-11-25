@@ -13,11 +13,11 @@
 - `src/main/resources/icons`
 - `src/main/resources/icons/expui`
 
-## 文件类型
+## 文件类型 (fileTypes)
 
 相关目录：
-- [src/main/resources/icons/fileTypes](/src/main/resources/icons/fileTypes)
-- [src/main/resources/icons/expui/fileTypes](/src/main/resources/icons/expui/fileTypes)
+- [src/main/resources/icons/fileTypes/](/src/main/resources/icons/fileTypes/)
+- [src/main/resources/icons/expui/fileTypes/](/src/main/resources/icons/expui/fileTypes/)
 
 说明：
 - 4种自定义DSL的文件类型图标：文件+扩展名标签 / 正方形+字母
@@ -30,14 +30,15 @@
 - `cwtConfig.svg` - 灰白色（`#9AA7B0`）+齿轮
 - `modDescriptor.svg` - 蓝色（`#5D8DC3`）+齿轮
 
-## 节点
+## 节点 (nodes)
 
 相关目录：
-- [src/main/resources/icons/nodes](/src/main/resources/icons/nodes)
-- [src/main/resources/icons/expui/nodes](/src/main/resources/icons/expui/nodes)
+- [src/main/resources/icons/nodes/](/src/main/resources/icons/nodes/)
+- [src/main/resources/icons/expui/nodes/](/src/main/resources/icons/expui/nodes/)
 
 说明：
-- 除了少数特例之外：形状+字母
+- 图标大小：16x16
+- 除了少数特例之外：形状+字
 - 绿色：注解、接口、特质、选项、作用域、链接、指令、宏等
 - 蓝色：类型、枚举、定义、语言环境等
 - 红色：方法、函数、本地化等
@@ -67,10 +68,10 @@
 - `type.svg` - 蓝色+圆形+T
 - `definitionGroup.svg` - 蓝色+花括号
 - `definition.svg` - 蓝色+圆形+D
-- `definitionSnippet.svg` - 蓝色+圆形+D - 抽象形式（参考自：abstractClass）
+- `definitionSnippet.svg` - 蓝色+圆形+D & 抽象形式（参考自：abstractClass）
 - `localisationGroup.svg` - 红色+花括号
 - `localisation.svg` - 红色+圆形+L
-- `localisationSnippet.svg` - 红色+圆形+L - 抽象形式（参考自：abstractMethod）
+- `localisationSnippet.svg` - 红色+圆形+L & 抽象形式（参考自：abstractMethod）
 - `defineNamespace.svg` - 橙色+花括号
 - `defineVariable.svg` - 橙色+圆形+D
 - `enumValue.svg` - 橙色+圆形+E
@@ -99,11 +100,16 @@
 - `shaderEffect.svg` - 红色+菱形+E
 - `meshLocator.svg` - 红色+菱形+L
 
-## 规则
+## 规则 (configs)
 
 相关目录：
-- [src/main/resources/icons/configs](/src/main/resources/icons/configs)
-- [src/main/resources/icons/expui/configs](/src/main/resources/icons/expui/configs)
+- [src/main/resources/icons/configs/](/src/main/resources/icons/configs/)
+- [src/main/resources/icons/expui/configs/](/src/main/resources/icons/expui/configs/)
+
+说明：
+- 图标大小：16x16
+- 除非另有说明，否则与节点图标的设计方案保持一致
+- 对于扩展规则，统一使用：灰白色（`#9AA7B0`）
 
 详情（标准规则）：
 - `type.svg` - 蓝色+圆形+T
@@ -141,3 +147,26 @@
 - `extendedComplexEnumValue.svg` - 灰白色（`#9AA7B0`）+正方形+E
 - `extendedDynamicValue.svg` - 灰白色（`#9AA7B0`）+正方形+V
 - `extendedInlineScript.svg` - 灰白色（`#9AA7B0`）+正方形+I
+
+## 装订线 (gutter)
+
+相关目录：
+- [src/main/resources/icons/gutter/](/src/main/resources/icons/gutter/)
+- [src/main/resources/icons/expui/gutter/](/src/main/resources/icons/expui/gutter/)
+
+说明：
+- 图标大小：14x14
+- 除非另有说明，否则与节点图标的设计方案保持一致
+
+详情：
+- `scriptedVariable.svg` - 紫色+圆形+V
+- `definition.svg` - 蓝色+圆形+D
+- `localisation.svg` - 红色+圆形+L
+- `relatedScriptedVariables.svg` - 紫色+圆形+V & 右下角的回形针
+- `relatedDefinitions.svg` - 蓝色+圆形+D & 右下角的回形针
+- `relatedLocalisations.svg` - 红色+圆形+L & 右下角的回形针
+- `relatedImages.svg` - Markdown 图片图标 & 右下角的回形针
+- `relatedDefinitionInjections.svg` - 蓝色+圆形+D - 切面形式（参考自：aroundAdvice） & 右下角的回形针
+- `inlineScripts.svg` - 脚本图标 & 右下角的回形针
+- `definitionInjections.svg` - 蓝色+圆形+D - 切面形式（参考自：aroundAdvice）
+- `definitionInjectionTargets.svg` - Rust 目标图标
