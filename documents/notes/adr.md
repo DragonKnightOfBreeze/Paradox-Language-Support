@@ -24,15 +24,17 @@
 
 ## 目录索引
 
+### 工程治理
+
+#### 许可证与合规
+
+- [将插件主仓许可证从 MIT 迁移至 GNU GPL-3.0](adr/switch-license-to-gpl-3.0.md)
+
 ### 构建
 
 #### 依赖
 
 - [将 JSON 序列化框架从 jackson 改为 kotlinx-serialization](adr/replace-jackson-with-kotlinx-serialization.md)
-
-#### 许可证与合规
-
-- [将插件主仓许可证从 MIT 迁移至 GNU GPL-3.0](adr/switch-license-to-gpl-3.0.md)
 
 ### 后端（语法支持）
 
