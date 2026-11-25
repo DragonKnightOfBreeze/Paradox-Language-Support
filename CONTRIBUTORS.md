@@ -17,8 +17,8 @@
 
 ## Community Supports
 
-- **[@TTFTCUTS](https://github.com/TTFTCUTS)** - Community support, community advocate, issue reporter, and active user.
 - **[@kaiser-chris](https://github.com/kaiser-chris)** - Community support, community advocate, issue reporter, and issue support.
+- **[@TTFTCUTS](https://github.com/TTFTCUTS)** - Community support, community advocate, issue reporter, and active user.
 - **[@Snowon-I](https://github.com/Snowon-I)** - Community support, community advocate, issue reporter, and issue support.
 - **[@robmart](https://github.com/robmart)** - Issue reporter.
 - **[@adriangaro](https://github.com/adriangaro)** - Issue reporter.
@@ -26,10 +26,12 @@
 
 ## Special Thanks
 
+- **[@kaiser-chris](https://github.com/kaiser-chris)** - For the brave exploration and practice, together with the great helps of community support.
 - **[@TTFTCUTS](https://github.com/TTFTCUTS)** - For the brave exploration and practice.
 - **[@NS9927](https://github.com/NS9927)** - For the brave exploration and practice.
-- **[@kaiser-chris](https://github.com/kaiser-chris)** - For the great helps of community support and config maintenance.
 - **[@tboby](https://github.com/tboby)** - [CWTools](https://github.com/cwtools/cwtools) author.
+- **[@bcssov](https://github.com/bcssov)** - [IronyModManager](https://github.com/bcssov/IronyModManager) author.
+- **[@amtep](https://github.com/amtep)** - [tiger](https://github.com/amtep/tiger) author.
 - **[@17blue17](https://github.com/17blue17)** - [CWTools](https://github.com/cwtools/cwtools) config maintenance and community support.
 
 ## Config Maintenance
@@ -43,7 +45,7 @@ The table below shows the current maintenance status for each supported game.
 | Stellaris             | [@Snowon-I](https://github.com/Snowon-I) [@Aeon-Industries](https://github.com/Aeon-Industries) [@yeager-j](https://github.com/yeager-j) | ✅ Actively maintained     |
 | Victoria 3            | [@kaiser-chris](https://github.com/kaiser-chris)                                                                                         | ✅ Actively maintained     |
 | Europa Universalis V  | [@kaiser-chris](https://github.com/kaiser-chris)                                                                                         | ✅ Actively maintained     |
-| Hearts of Iron IV     | [@NS9927](https://github.com/NS9927)                                                                                                     | ✅ Ongoing                 |
+| Hearts of Iron IV     | [@NS9927](https://github.com/NS9927)                                                                                                     | ✅ Actively maintained                 |
 | Crusader Kings III    | -                                                                                                                                        | ⚠️Not actively maintained |
 | Europa Universalis IV | -                                                                                                                                        | 📦 Legacy                  |
 | Imperator Rome        | -                                                                                                                                        | 📦 Legacy                  |
