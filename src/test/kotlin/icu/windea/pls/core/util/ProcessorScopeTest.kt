@@ -12,7 +12,7 @@ class ProcessorScopeTest {
 
     @Test
     fun findFrom_singleLambda_test() {
-        // 单 lambda（尾随）风格：predicate 使用默认值 { true }，类型由 @BuilderInference 推断
+        // 单 lambda（尾随）风格：predicate 使用默认值 { true }，类型由自动启用的 builder inference 推断
         val result = ProcessorScope.findFrom { listOf(1, 2, 3).forEach { process(it) } }
         Assert.assertEquals(3, result)
     }

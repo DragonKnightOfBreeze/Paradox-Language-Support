@@ -13,9 +13,9 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.toNioPathOrNull
 import com.intellij.psi.PsiFile
 import com.intellij.util.concurrency.annotations.RequiresReadLock
-import com.intellij.util.containers.CollectionFactory
 import icu.windea.pls.base.io.ChronicleGitService
 import icu.windea.pls.core.orNull
+import icu.windea.pls.core.util.cache.CacheBuilder
 import icu.windea.pls.core.substringInLast
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.cwt.CwtFileType
@@ -29,7 +29,7 @@ import kotlin.io.path.name
  */
 @Service(Service.Level.APP)
 class CwtConfigFileService : Disposable {
-    private val repoRoot2GameType: ConcurrentMap<VirtualFile, ParadoxGameType> = CollectionFactory.createConcurrentWeakIdentityMap()
+    private val repoRoot2GameType: ConcurrentMap<VirtualFile, ParadoxGameType> = CacheBuilder().weakKeys().build<VirtualFile, ParadoxGameType>().asMap()
 
     @RequiresReadLock(generateAssertion = false)
     fun getFilePath(file: PsiFile): String? {

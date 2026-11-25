@@ -86,7 +86,12 @@ fun Image.toIcon(): Icon {
  */
 fun JComponent.toImage(width: Int = this.width, height: Int = this.height, type: Int = BufferedImage.TYPE_INT_ARGB_PRE): Image {
     val image = UIUtil.createImage(this, width, height, type)
-    UIUtil.useSafely(image.graphics) { this.paint(it) }
+    val graphics = image.createGraphics()
+    try {
+        this.paint(graphics)
+    } finally {
+        graphics.dispose()
+    }
     return image
 }
 

@@ -20,7 +20,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.application.ReadAction
-import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
@@ -64,6 +64,7 @@ import com.intellij.util.Processor
 import com.intellij.util.Query
 import com.intellij.util.ThrowableRunnable
 import com.intellij.util.application
+import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.core.collections.forEachFast
 import icu.windea.pls.core.collections.toArray
 import icu.windea.pls.core.psi.PsiCompositeReference
@@ -75,6 +76,7 @@ import icu.windea.pls.core.util.io.toPathOrNull
 import icu.windea.pls.core.util.tupleOf
 import icu.windea.pls.core.util.values.singletonSetOrEmpty
 import icu.windea.pls.core.util.values.to
+import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.concurrency.CancellablePromise
 import org.jetbrains.concurrency.resolvedCancellablePromise
 import java.lang.reflect.InvocationTargetException
@@ -683,7 +685,7 @@ fun <T> runSmartReadAction(
         return task.call()
     } else if (application.isDispatchThread) {
         // #363 [RWA] cannot run non-blocking read actions in EDT
-        return runReadAction { task.call() }
+        return runReadActionBlocking { task.call() }
     }
     var action = ReadAction.nonBlocking(task)
     if (parentDisposable != null) action = action.expireWith(parentDisposable)
@@ -702,7 +704,7 @@ fun <T> runSmartReadAction(
         return task.call()
     } else if (application.isDispatchThread && !(inSmartMode && DumbService.isDumb(project) || withDocumentsCommitted)) {
         // #363 [RWA] cannot run non-blocking read actions on EDT (and it should be impossible to run in smart mode safely in EDT, so skip and expect throwing)
-        return runReadAction { task.call() }
+        return runReadActionBlocking { task.call() }
     }
     var action = ReadAction.nonBlocking(task)
     if (parentDisposable != null) action = action.expireWith(parentDisposable)
@@ -800,10 +802,13 @@ fun executeWriteCommand(
 
 // region EP Extensions
 
-// NOTE 3.0.0 [compatibility] `addExtensionPointListener(listener: ExtensionPointListener<T>)` is deprecated since IDEA-262
-//  - Pass CoroutineScope to addExtensionPointListener.
-inline fun <T : Any> ExtensionPointName<T>.addExtensionPointListener(crossinline action: (extension: T) -> Unit) {
-    addExtensionPointListener(object : ExtensionPointListener<T> {
+// NOTE 3.1.0 [compatibility] `addExtensionPointListener(listener: ExtensionPointListener<T>)` is deprecated since IDEA-262
+//  - Pass CoroutineScope to addExtensionPointListener. The listener lifetime follows the given scope.
+inline fun <T : Any> ExtensionPointName<T>.addExtensionPointListener(
+    coroutineScope: CoroutineScope,
+    crossinline action: (extension: T) -> Unit,
+) {
+    addExtensionPointListener(coroutineScope, object : ExtensionPointListener<T> {
         override fun extensionAdded(extension: T, pluginDescriptor: PluginDescriptor) {
             action(extension)
         }
@@ -812,6 +817,12 @@ inline fun <T : Any> ExtensionPointName<T>.addExtensionPointListener(crossinline
             action(extension)
         }
     })
+}
+
+// NOTE 3.1.0 [compatibility] The single-argument overload delegates to the application-level scope,
+//  which preserves the previous permanent-listener semantics.
+inline fun <T : Any> ExtensionPointName<T>.addExtensionPointListener(crossinline action: (extension: T) -> Unit) {
+    addExtensionPointListener(ChronicleFacade.getCoroutineScope(), action)
 }
 
 // endregion

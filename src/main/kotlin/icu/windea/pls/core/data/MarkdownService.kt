@@ -2,6 +2,7 @@ package icu.windea.pls.core.data
 
 import org.intellij.markdown.flavours.MarkdownFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator
+import org.intellij.markdown.parser.CancellationToken
 import org.intellij.markdown.parser.MarkdownParser
 import java.util.concurrent.ConcurrentHashMap
 
@@ -16,14 +17,14 @@ object MarkdownService {
     private val parsers = ConcurrentHashMap<MarkdownFlavourDescriptor, MarkdownParser>()
 
     private fun MarkdownOptions.resolveParser(): MarkdownParser {
-        return parsers.computeIfAbsent(flavour) { MarkdownParser(it) }
+        return parsers.computeIfAbsent(flavour) { MarkdownParser(it, cancellationToken = CancellationToken.NonCancellable) }
     }
 
     fun toHtml(markdownText: String, options: MarkdownOptions = MarkdownOptions.DEFAULT): String {
         val text = markdownText.resolveWithUtf8Bom(options)
         val flavour = options.flavour
         val parser = options.resolveParser()
-        val ast = parser.buildMarkdownTreeFromString(text)
+        val ast = parser.buildMarkdownTreeFromString(text as CharSequence)
         return HtmlGenerator(text, ast, flavour).generateHtml()
     }
 

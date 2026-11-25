@@ -61,8 +61,9 @@ class ProcessExecutorTest : BasePlatformTestCase() {
     }
 
     @Test
+    @Suppress("UnstableApiUsage") // `findFirst` is still marked as experimental on the platform side
     fun execute_git_smokeTest() {
-        Assume.assumeTrue("git is not available", PathEnvironmentVariableUtil.findInPath("git") != null)
+        Assume.assumeTrue("git is not available", PathEnvironmentVariableUtil.findFirst("git") != null)
 
         val output = ProcessExecutor(
             GeneralCommandLine("git", "--version").withCharset(Charsets.UTF_8)

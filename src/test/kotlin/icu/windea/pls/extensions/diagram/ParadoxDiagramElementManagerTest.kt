@@ -151,7 +151,7 @@ class ParadoxDiagramElementManagerTest : BasePlatformTestCase(), ChronicleTestSc
     private fun configureProperty(): ParadoxScriptProperty {
         markFileInfo(gameType, "common/diagram/test_events.txt")
         myFixture.configureByText("test_events.txt", "test_event = { }\n")
-        return ReadAction.compute<ParadoxScriptProperty, RuntimeException> {
+        return ReadAction.computeBlocking<ParadoxScriptProperty, RuntimeException> {
             PsiTreeUtil.findChildOfType(myFixture.file as ParadoxScriptFile, ParadoxScriptProperty::class.java)!!
         }
     }

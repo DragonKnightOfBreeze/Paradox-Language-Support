@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.usages
 
-import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.openapi.project.Project
 import com.intellij.usages.PsiElementUsageGroupBase
 import com.intellij.usages.Usage
@@ -65,7 +65,7 @@ private class ParadoxDefinitionUsageGroup(
     }
 
     private fun isSame(other: ParadoxDefinitionUsageGroup): Boolean {
-        return runReadAction { isValid && other.isValid && element.manager.areElementsEquivalent(element, other.element) }
+        return runReadActionBlocking { isValid && other.isValid && element.manager.areElementsEquivalent(element, other.element) }
     }
 
     override fun hashCode(): Int {

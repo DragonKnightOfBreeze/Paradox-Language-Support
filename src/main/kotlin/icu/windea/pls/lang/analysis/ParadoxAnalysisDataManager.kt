@@ -2,9 +2,9 @@ package icu.windea.pls.lang.analysis
 
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.util.containers.CollectionFactory
 import icu.windea.pls.config.config.delegated.CwtLocaleConfig
 import icu.windea.pls.core.util.KeyRegistry
+import icu.windea.pls.core.util.cache.CacheBuilder
 import icu.windea.pls.core.util.getValue
 import icu.windea.pls.core.util.provideDelegate
 import icu.windea.pls.core.util.registerKey
@@ -39,7 +39,7 @@ object ParadoxAnalysisDataManager {
         val injectedRootKeys by registerKey<List<String>>(this)
     }
 
-    val trackedFiles: ConcurrentMap<VirtualFile, Boolean> = CollectionFactory.createConcurrentWeakIdentityMap()
+    val trackedFiles: ConcurrentMap<VirtualFile, Boolean> = CacheBuilder().weakKeys().build<VirtualFile, Boolean>().asMap()
 
     /** 是否直接根据文件扩展名决定是否需要将文件类型重载为对应的文件类型（[ParadoxFileType]）。可用于集成测试。 */
     @Volatile var useDefaultFileExtensions: Boolean = false

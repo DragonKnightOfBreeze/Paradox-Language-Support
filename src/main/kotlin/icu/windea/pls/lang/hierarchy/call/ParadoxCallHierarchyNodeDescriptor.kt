@@ -5,7 +5,7 @@ import com.intellij.ide.hierarchy.HierarchyNodeDescriptor
 import com.intellij.openapi.editor.colors.EditorColors
 import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.editor.markup.TextAttributes
-import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.fileEditor.OpenFileDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ui.util.CompositeAppearance
 import com.intellij.openapi.util.Comparing
@@ -134,7 +134,7 @@ class ParadoxCallHierarchyNodeDescriptor(
         } else {
             val psiFile = callElement.containingFile
             if (psiFile?.virtualFile == null) return
-            FileEditorManager.getInstance(myProject).openFile(psiFile.virtualFile, requestFocus)
+            OpenFileDescriptor(myProject, psiFile.virtualFile).navigate(requestFocus)
         }
         val editor = PsiEditorUtil.findEditor(callElement)
         if (editor != null) {

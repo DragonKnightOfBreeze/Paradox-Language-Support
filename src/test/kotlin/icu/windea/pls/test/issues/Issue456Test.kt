@@ -2,6 +2,7 @@ package icu.windea.pls.test.issues
 
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.util.ThreeState
 import icu.windea.pls.core.vfs.VirtualFileBomService
 import icu.windea.pls.lang.ParadoxUtf8BomOptionProvider
 import icu.windea.pls.lang.analysis.ParadoxFileEncodingService
@@ -103,17 +104,17 @@ class Issue456Test : BasePlatformTestCase(), ChronicleTestScope {
         val rootInfo46 = createRootInfo(ParadoxGameType.Stellaris, "4.6")
         markFileInfo(rootInfo46, "common/name_lists/test46.txt")
         val file46 = myFixture.configureByText("test46.txt", "name_list = {}")
-        assertFalse(provider.shouldAddBOMForNewUtf8File(file46.virtualFile))
+        assertEquals(ThreeState.UNSURE, provider.getBOMDecisionForNewUtf8File(file46.virtualFile))
 
         val rootInfo45 = createRootInfo(ParadoxGameType.Stellaris, "4.5")
         markFileInfo(rootInfo45, "common/name_lists/test45.txt")
         val file45 = myFixture.configureByText("test45.txt", "name_list = {}")
-        assertTrue(provider.shouldAddBOMForNewUtf8File(file45.virtualFile))
+        assertEquals(ThreeState.YES, provider.getBOMDecisionForNewUtf8File(file45.virtualFile))
 
         val rootInfoDefault = createRootInfo(ParadoxGameType.Stellaris, null)
         markFileInfo(rootInfoDefault, "common/name_lists/test_default.txt")
         val fileDefault = myFixture.configureByText("test_default.txt", "name_list = {}")
-        assertFalse(provider.shouldAddBOMForNewUtf8File(fileDefault.virtualFile))
+        assertEquals(ThreeState.UNSURE, provider.getBOMDecisionForNewUtf8File(fileDefault.virtualFile))
     }
 
     @Test

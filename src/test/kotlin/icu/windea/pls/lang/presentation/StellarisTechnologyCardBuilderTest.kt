@@ -72,7 +72,7 @@ class StellarisTechnologyCardBuilderTest : BasePlatformTestCase(), ChronicleTest
         val builder = StellarisTechnologyCardBuilder(technology, project)
 
         // 阶段一：读锁阶段加载纯数据呈现模型
-        val model = ReadAction.compute<StellarisTechnologyCardPresentationModel?, RuntimeException> { builder.loadModel() }
+        val model = ReadAction.computeBlocking<StellarisTechnologyCardPresentationModel?, RuntimeException> { builder.loadModel() }
         assertNotNull(model)
         assertEquals("Diagram Test Tech", model!!.nameText)
         assertEquals(100, model.costNumber)
@@ -99,8 +99,8 @@ class StellarisTechnologyCardBuilderTest : BasePlatformTestCase(), ChronicleTest
         val builder1 = StellarisTechnologyCardBuilder(technology, project)
         val builder2 = StellarisTechnologyCardBuilder(technology, project)
 
-        val model1 = ReadAction.compute<StellarisTechnologyCardPresentationModel?, RuntimeException> { builder1.loadModel() }!!
-        val model2 = ReadAction.compute<StellarisTechnologyCardPresentationModel?, RuntimeException> { builder2.loadModel() }!!
+        val model1 = ReadAction.computeBlocking<StellarisTechnologyCardPresentationModel?, RuntimeException> { builder1.loadModel() }!!
+        val model2 = ReadAction.computeBlocking<StellarisTechnologyCardPresentationModel?, RuntimeException> { builder2.loadModel() }!!
 
         val assets1 = materializeAssets(builder1, model1)!!
         val assets2 = materializeAssets(builder2, model2)!!
@@ -116,7 +116,7 @@ class StellarisTechnologyCardBuilderTest : BasePlatformTestCase(), ChronicleTest
         val technology = selectScope { file.queryBy("tech_diagram_missing_icon").asProperty().one() }!!
         val builder = StellarisTechnologyCardBuilder(technology, project)
 
-        val model = ReadAction.compute<StellarisTechnologyCardPresentationModel?, RuntimeException> { builder.loadModel() }
+        val model = ReadAction.computeBlocking<StellarisTechnologyCardPresentationModel?, RuntimeException> { builder.loadModel() }
 
         // 关键图标无法解析时应安全降级为 null，而非抛出异常
         assertNull(model)
@@ -165,7 +165,7 @@ class StellarisTechnologyCardBuilderTest : BasePlatformTestCase(), ChronicleTest
         IndexingTestUtil.waitUntilIndexesAreReady(project)
 
         val techVFile = rootVFile.findFileByRelativePath("common/technology/00_technology.txt")!!
-        return ReadAction.compute<ParadoxScriptFile, RuntimeException> {
+        return ReadAction.computeBlocking<ParadoxScriptFile, RuntimeException> {
             PsiManager.getInstance(project).findFile(techVFile) as ParadoxScriptFile
         }
     }

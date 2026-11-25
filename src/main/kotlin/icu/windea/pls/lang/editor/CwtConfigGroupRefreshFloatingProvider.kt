@@ -21,9 +21,9 @@ import kotlinx.coroutines.withContext
 class CwtConfigGroupRefreshFloatingProvider : AbstractFloatingToolbarProvider("Pls.ConfigGroupRefreshActionGroup") {
     override val autoHideable = false
 
-    // NOTE 3.0.0 [compatibility] `FloatingToolbarProvider.isApplicable(DataContext)` is deprecated since IDEA-262
+    // NOTE 3.1.0 [compatibility] `FloatingToolbarProvider.isApplicable(DataContext)` is deprecated since IDEA-262
     //  - Use `isApplicableAsync` instead
-    override fun isApplicable(dataContext: DataContext): Boolean {
+    override suspend fun isApplicableAsync(dataContext: DataContext): Boolean {
         return isInsideMainEditor(dataContext)
     }
 

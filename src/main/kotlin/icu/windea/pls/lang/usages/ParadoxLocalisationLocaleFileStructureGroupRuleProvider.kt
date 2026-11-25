@@ -1,6 +1,6 @@
 package icu.windea.pls.lang.usages
 
-import com.intellij.openapi.application.runReadAction
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.openapi.project.Project
 import com.intellij.psi.util.parentOfType
 import com.intellij.usages.PsiElementUsageGroupBase
@@ -64,7 +64,7 @@ private class ParadoxLocalisationLocaleGroup(
     }
 
     private fun isSame(other: ParadoxLocalisationLocaleGroup): Boolean {
-        return runReadAction { isValid && other.isValid && element.manager.areElementsEquivalent(element, other.element) }
+        return runReadActionBlocking { isValid && other.isValid && element.manager.areElementsEquivalent(element, other.element) }
     }
 
     override fun hashCode(): Int {
