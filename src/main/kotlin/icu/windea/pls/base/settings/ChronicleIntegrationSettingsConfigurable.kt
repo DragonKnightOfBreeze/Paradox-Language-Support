@@ -221,7 +221,6 @@ class ChronicleIntegrationSettingsConfigurable : BoundConfigurable(ChronicleBase
             return builder.warning(ChronicleBaseBundle.message("settings.integrations.lint.tigerPath.invalid"))
         }
 
-        @Suppress("UNUSED_PARAMETER")
         fun validateTigerConfPath(builder: ValidationInfoBuilder, button: TextFieldWithBrowseButton, gameType: ParadoxGameType): ValidationInfo? {
             val path = button.text.parsePath() ?: return null
             val tool = LintToolProvider.EP_NAME.extensionList.findIsInstance<TigerLintToolProvider> { it.isAvailable(gameType) } ?: return null

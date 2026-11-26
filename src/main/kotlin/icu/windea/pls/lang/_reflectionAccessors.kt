@@ -15,8 +15,8 @@ val DefaultActionGroup.children: MutableList<AnAction> by memberProperty<Default
 
 val HierarchyBrowserBaseEx.project: Project by memberProperty<HierarchyBrowserBase, _>("myProject")
 
-val HierarchyBrowserBaseEx.element: PsiElement?
-    get() = memberFunction<HierarchyBrowserBaseEx>("getHierarchyBase").execute(this)
+// `AccessorProviderImpl#doFindReadAccessor` 在找不到同名属性后，会自动回退到同名的 getter，即 `getHierarchyBase()`。
+val HierarchyBrowserBaseEx.element: PsiElement? by memberProperty<HierarchyBrowserBaseEx, _>("hierarchyBase")
 
 val SearchRequestCollector.wordRequests: MutableList<PsiSearchRequest> by memberProperty<SearchRequestCollector, _>("myWordRequests")
 // val SearchRequestCollector.queryRequests: MutableList<QuerySearchRequest> by memberProperty<SearchRequestCollector, _>("myQueryRequests")
