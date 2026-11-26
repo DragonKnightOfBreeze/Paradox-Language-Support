@@ -398,9 +398,7 @@
 
     <languageStubDefinition language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.index.stubs.ParadoxScriptStubDefinition"/>
     <languageStubDefinition language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.index.stubs.ParadoxLocalisationStubDefinition"/>
-    <!--suppress PluginXmlValidity -->
     <stubElementRegistryExtension implementation="icu.windea.pls.lang.index.stubs.ParadoxScriptStubRegistry"/>
-    <!--suppress PluginXmlValidity -->
     <stubElementRegistryExtension implementation="icu.windea.pls.lang.index.stubs.ParadoxLocalisationStubRegistry"/>
 
     <stubIndex implementation="icu.windea.pls.lang.index.ParadoxScriptedVariableNameIndex"/>
@@ -466,13 +464,13 @@
   <extensions defaultExtensionNs="com.intellij">
     <customizableActionGroupProvider implementation="icu.windea.pls.lang.ui.floating.ParadoxLocalisationFloatingToolbarCustomizableGroupProvider"/>
 
-    <!--suppress PluginXmlValidity, UnstableExtensionsUsage -->
+    <!--suppress UnstableExtensionsUsage -->
     <lang.floatingToolbar language="CWT" minimal="true"/>
-    <!--suppress PluginXmlValidity, UnstableExtensionsUsage -->
+    <!--suppress UnstableExtensionsUsage -->
     <lang.floatingToolbar language="PARADOX_SCRIPT" minimal="true"/>
-    <!--suppress PluginXmlValidity, UnstableExtensionsUsage -->
+    <!--suppress UnstableExtensionsUsage -->
     <lang.floatingToolbar language="PARADOX_LOCALISATION" minimal="true" actionGroup="Pls.Localisation.Toolbar.Floating"/>
-    <!--suppress PluginXmlValidity, UnstableExtensionsUsage -->
+    <!--suppress UnstableExtensionsUsage -->
     <lang.floatingToolbar language="PARADOX_CSV" minimal="true"/>
   </extensions>
 

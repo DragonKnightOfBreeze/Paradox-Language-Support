@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package icu.windea.pls.lang.navigation
 
 import com.intellij.ide.actions.SearchEverywherePsiRenderer
