@@ -22,7 +22,7 @@ import icu.windea.pls.core.match.MatchService
 import icu.windea.pls.core.vfs.VirtualFileBomService
 import icu.windea.pls.core.vfs.VirtualFileService
 import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.lang.analysis.ParadoxFileEncodingService
+import icu.windea.pls.lang.vfs.ParadoxFileEncodingService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.fixes.ChangeFileEncodingFix
 import icu.windea.pls.lang.match.ParadoxConfigMatchService
@@ -58,7 +58,7 @@ object ParadoxFileInspectionService {
         val expectedCharset = ParadoxFileEncodingService.useCharset()
         val charset = virtualFile.charset
         val isValidCharset = charset == expectedCharset
-        val useBom = ParadoxFileEncodingService.useBom(file, fileInfo)
+        val useBom = ParadoxFileEncodingService.useBom(virtualFile, fileInfo)
         val hasBom = VirtualFileBomService.hasBom(virtualFile, VirtualFileBomService.utf8Bom)
         val isValidBom = useBom == null || useBom == hasBom
         if (isValidCharset && isValidBom) return

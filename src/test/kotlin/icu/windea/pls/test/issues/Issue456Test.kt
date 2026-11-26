@@ -4,8 +4,8 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.ThreeState
 import icu.windea.pls.core.vfs.VirtualFileBomService
-import icu.windea.pls.lang.ParadoxUtf8BomOptionProvider
-import icu.windea.pls.lang.analysis.ParadoxFileEncodingService
+import icu.windea.pls.lang.vfs.ParadoxUtf8BomOptionProvider
+import icu.windea.pls.lang.vfs.ParadoxFileEncodingService
 import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.inspections.script.common.IncorrectFileEncodingInspection
 import icu.windea.pls.model.ParadoxGameType
@@ -31,8 +31,8 @@ import org.junit.runners.JUnit4
  * - Check `gameVersion` against `"4.6"`: require BOM only when `gameVersion < 4.6`.
  * - For Stellaris >= 4.6 (or unspecified `gameVersion = null`), require UTF-8 NO BOM.
  *
- * @see icu.windea.pls.lang.analysis.ParadoxFileEncodingService
- * @see icu.windea.pls.lang.ParadoxUtf8BomOptionProvider
+ * @see icu.windea.pls.lang.vfs.ParadoxFileEncodingService
+ * @see icu.windea.pls.lang.vfs.ParadoxUtf8BomOptionProvider
  * @see icu.windea.pls.lang.inspections.script.common.IncorrectFileEncodingInspection
  */
 @RunWith(JUnit4::class)
@@ -58,7 +58,7 @@ class Issue456Test : BasePlatformTestCase(), ChronicleTestScope {
         val fileInfo = file.fileInfo
         assertNotNull(fileInfo)
         // Stellaris 4.6+ name_lists should NOT use BOM
-        val useBom = ParadoxFileEncodingService.useBom(file, fileInfo!!)
+        val useBom = ParadoxFileEncodingService.useBom(file.virtualFile, fileInfo!!)
         assertEquals(false, useBom)
     }
 
@@ -70,7 +70,7 @@ class Issue456Test : BasePlatformTestCase(), ChronicleTestScope {
         val fileInfo = file.fileInfo
         assertNotNull(fileInfo)
         // Stellaris < 4.6 name_lists should use BOM
-        val useBom = ParadoxFileEncodingService.useBom(file, fileInfo!!)
+        val useBom = ParadoxFileEncodingService.useBom(file.virtualFile, fileInfo!!)
         assertEquals(true, useBom)
     }
 
@@ -82,7 +82,7 @@ class Issue456Test : BasePlatformTestCase(), ChronicleTestScope {
         val fileInfo = file.fileInfo
         assertNotNull(fileInfo)
         // Default to latest (4.6+): should NOT use BOM
-        val useBom = ParadoxFileEncodingService.useBom(file, fileInfo!!)
+        val useBom = ParadoxFileEncodingService.useBom(file.virtualFile, fileInfo!!)
         assertEquals(false, useBom)
     }
 
@@ -93,7 +93,7 @@ class Issue456Test : BasePlatformTestCase(), ChronicleTestScope {
         val file = myFixture.configureByText("00_traits.txt", "trait = {}")
         val fileInfo = file.fileInfo
         assertNotNull(fileInfo)
-        val useBom = ParadoxFileEncodingService.useBom(file, fileInfo!!)
+        val useBom = ParadoxFileEncodingService.useBom(file.virtualFile, fileInfo!!)
         assertEquals(false, useBom)
     }
 
@@ -104,7 +104,8 @@ class Issue456Test : BasePlatformTestCase(), ChronicleTestScope {
         val rootInfo46 = createRootInfo(ParadoxGameType.Stellaris, "4.6")
         markFileInfo(rootInfo46, "common/name_lists/test46.txt")
         val file46 = myFixture.configureByText("test46.txt", "name_list = {}")
-        assertEquals(ThreeState.UNSURE, provider.getBOMDecisionForNewUtf8File(file46.virtualFile))
+        // 4.6+ name_lists must use UTF-8 NO BOM, so the provider should prohibit a BOM
+        assertEquals(ThreeState.NO, provider.getBOMDecisionForNewUtf8File(file46.virtualFile))
 
         val rootInfo45 = createRootInfo(ParadoxGameType.Stellaris, "4.5")
         markFileInfo(rootInfo45, "common/name_lists/test45.txt")
@@ -114,7 +115,8 @@ class Issue456Test : BasePlatformTestCase(), ChronicleTestScope {
         val rootInfoDefault = createRootInfo(ParadoxGameType.Stellaris, null)
         markFileInfo(rootInfoDefault, "common/name_lists/test_default.txt")
         val fileDefault = myFixture.configureByText("test_default.txt", "name_list = {}")
-        assertEquals(ThreeState.UNSURE, provider.getBOMDecisionForNewUtf8File(fileDefault.virtualFile))
+        // default (latest) behaves as 4.6+: UTF-8 NO BOM
+        assertEquals(ThreeState.NO, provider.getBOMDecisionForNewUtf8File(fileDefault.virtualFile))
     }
 
     @Test

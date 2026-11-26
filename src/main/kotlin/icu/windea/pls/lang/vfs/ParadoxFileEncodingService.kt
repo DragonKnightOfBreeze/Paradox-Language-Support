@@ -1,13 +1,12 @@
-package icu.windea.pls.lang.analysis
+package icu.windea.pls.lang.vfs
 
-import com.intellij.psi.PsiFile
-import icu.windea.pls.csv.psi.ParadoxCsvFile
-import icu.windea.pls.localisation.psi.ParadoxLocalisationFile
+import com.intellij.openapi.vfs.VirtualFile
+import icu.windea.pls.lang.analysis.ParadoxGameManager
+import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxFileInfo
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constraints.ParadoxGameTypeConstraint
 import icu.windea.pls.model.constraints.matchesBy
-import icu.windea.pls.script.psi.ParadoxScriptFile
 import java.nio.charset.Charset
 
 object ParadoxFileEncodingService {
@@ -20,13 +19,18 @@ object ParadoxFileEncodingService {
 
     /**
      * 检查当前文件 [file] 是否应当使用 BOM。如果返回 null，则表示不确定。
+     *
+     * 根据文件信息 [fileInfo] 的文件分组 [ParadoxFileInfo.group] 判断，而非 PSI 文件类型，
+     * 以便在尚无 PSI 的场景（如创建新文件时的 BOM 决策）中复用同一套逻辑。
+     * 参数 [file] 仅用于保持调用方的 API 对称性，实际决策只依赖 [fileInfo]。
      */
-    fun useBom(file: PsiFile, fileInfo: ParadoxFileInfo): Boolean? {
+    @Suppress("UNUSED_PARAMETER")
+    fun useBom(file: VirtualFile, fileInfo: ParadoxFileInfo): Boolean? {
         val gameType = fileInfo.gameType
         val path = fileInfo.path
-        return when {
+        return when (fileInfo.group) {
             // may be BOM or NO BOM
-            file is ParadoxScriptFile -> {
+            ParadoxFileGroup.Script -> {
                 when {
                     // restricted
                     gameType == ParadoxGameType.Stellaris -> {
@@ -44,9 +48,9 @@ object ParadoxFileEncodingService {
                 }
             }
             // always -> BOM
-            file is ParadoxLocalisationFile -> true
+            ParadoxFileGroup.Localisation -> true
             // other -> NO BOM
-            file is ParadoxCsvFile -> false
+            ParadoxFileGroup.Csv -> false
             else -> null
         }
     }

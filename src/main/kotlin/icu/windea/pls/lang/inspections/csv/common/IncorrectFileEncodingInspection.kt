@@ -30,7 +30,7 @@ import icu.windea.pls.lang.psi.ParadoxPsiFileMatchService
  *
  * @property ignoredFilePaths （配置项）需要忽略的文件路径。一组 ANT 路径模式，分号分隔，忽略大小写。
  *
- * @see icu.windea.pls.lang.ParadoxUtf8BomOptionProvider
+ * @see icu.windea.pls.lang.vfs.ParadoxUtf8BomOptionProvider
  */
 class IncorrectFileEncodingInspection : LocalInspectionTool(), DumbAware {
     @JvmField var ignoredFilePaths = ""
