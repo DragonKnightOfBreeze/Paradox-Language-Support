@@ -75,17 +75,15 @@ class ParadoxInlineMathExpressionEvaluatorWithSvTest : BasePlatformTestCase(), C
 
     @Test
     fun crossFileNotVisibleWithSv() {
-        val path = "common/evaluator_sv_cross_file_main.test.txt"
-        markFileInfo(ParadoxGameType.Stellaris, path)
+        markFileInfo(ParadoxGameType.Stellaris, "common/evaluator_sv_cross_file_main.test.txt")
         myFixture.configureByFile("features/evaluators/inline_math_sv_cross_file_main.test.txt")
-
-        val otherPath = "common/evaluator_sv_cross_file_other.test.txt"
-        markFileInfo(ParadoxGameType.Stellaris, otherPath)
-        myFixture.copyFileToProject("features/evaluators/inline_math_sv_cross_file_other.test.txt", otherPath)
 
         val file = myFixture.file as ParadoxScriptFile
         val map = toInlineMathMap(file)
         val evaluator = ParadoxInlineMathExpressionEvaluator()
+
+        markFileInfo(ParadoxGameType.Stellaris, "common/evaluator_sv_cross_file_other.test.txt")
+        myFixture.configureByFile("features/evaluators/inline_math_sv_cross_file_other.test.txt")
 
         assertResult(IllegalArgumentException::class.java) { evaluator.evaluate(map.getValue("k1")) }
     }
