@@ -1,4 +1,4 @@
-@file:Suppress("UnstableApiUsage", "unused")
+@file:Suppress("unused")
 
 package icu.windea.pls.inject.injectors
 
@@ -13,13 +13,12 @@ import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.lang.rootInfo
 import icu.windea.pls.model.ParadoxRootInfo
 
-/**
- * @see com.intellij.openapi.fileChooser.tree.FileRenderer
- * @see com.intellij.openapi.fileChooser.tree.FileRenderer.customize
- */
 @InjectionTarget("com.intellij.openapi.fileChooser.tree.FileRenderer")
 class FileRenderCodeInjector : CodeInjectorBase() {
     // 渲染文件节点时，为游戏或模组目录提供提供额外的信息文本
+
+    // see: com.intellij.openapi.fileChooser.tree.FileRenderer
+    // see: com.intellij.openapi.fileChooser.tree.FileRenderer.customize
 
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER, static = true)
     fun customize(renderer: SimpleColoredComponent, value: Any) {

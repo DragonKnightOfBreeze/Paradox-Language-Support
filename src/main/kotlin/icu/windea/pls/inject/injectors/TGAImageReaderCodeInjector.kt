@@ -9,12 +9,11 @@ import java.awt.image.BufferedImage
 import javax.imageio.ImageReadParam
 import javax.imageio.stream.ImageInputStream
 
-/**
- * @see com.twelvemonkeys.imageio.plugins.tga.TGAImageReader
- * @see com.twelvemonkeys.imageio.plugins.tga.TGAImageReader.read
- */
 @InjectionTarget("com.twelvemonkeys.imageio.plugins.tga.TGAImageReader", pluginId = "icu.windea.pls")
 class TGAImageReaderCodeInjector : CodeInjectorBase() {
+    // see: com.twelvemonkeys.imageio.plugins.tga.TGAImageReader
+    // see: com.twelvemonkeys.imageio.plugins.tga.TGAImageReader.read
+
     private val Any.imageInput: ImageInputStream? by memberProperty("imageInput", null)
 
     @InjectMethod(pointer = InjectMethod.Pointer.BEFORE)

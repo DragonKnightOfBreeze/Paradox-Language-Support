@@ -42,10 +42,12 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         putUserData(CodeInjectorContext.targetClassKey, null)
     }
 
+    @Suppress("JetBrainsInternalApiUsage")
     private fun isPluginEnabled(pluginId: PluginId): Boolean {
         return PluginManager.getInstance().findEnabledPlugin(pluginId) != null
     }
 
+    @Suppress("JetBrainsInternalApiUsage")
     private fun getPluginClassLoader(pluginId: PluginId): ClassLoader {
         // NOTE 3.0.0 [compatibility] `PluginManager.findEnabledPlugin(PluginId)` is internal (but ignored) since IDEA-262
         //  - Use `PluginDetailsService` instead (but by this way we cannot get the plugin class loader)

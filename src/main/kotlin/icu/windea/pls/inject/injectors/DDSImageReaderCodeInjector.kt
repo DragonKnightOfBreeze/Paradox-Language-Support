@@ -9,12 +9,11 @@ import java.awt.image.BufferedImage
 import javax.imageio.ImageReadParam
 import javax.imageio.stream.ImageInputStream
 
-/**
- * @see com.twelvemonkeys.imageio.plugins.dds.DDSImageReader
- * @see com.twelvemonkeys.imageio.plugins.dds.DDSImageReader.read
- */
 @InjectionTarget("com.twelvemonkeys.imageio.plugins.dds.DDSImageReader", pluginId = "icu.windea.pls")
 class DDSImageReaderCodeInjector : CodeInjectorBase() {
+    // see: com.twelvemonkeys.imageio.plugins.dds.DDSImageReader
+    // see: com.twelvemonkeys.imageio.plugins.dds.DDSImageReader.read
+
     private val Any.imageInput: ImageInputStream? by memberProperty("imageInput", null)
 
     @InjectMethod(pointer = InjectMethod.Pointer.BEFORE)

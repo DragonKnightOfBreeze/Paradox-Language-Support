@@ -1,4 +1,4 @@
-@file:Suppress("UnstableApiUsage", "unused")
+@file:Suppress("unused")
 
 package icu.windea.pls.inject.injectors
 
@@ -12,21 +12,23 @@ import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.inject.processors.InjectedFileProcessor
 
 /**
- * @see com.intellij.psi.impl.source.tree.injected.InjectionRegistrarImpl
- * @see com.intellij.psi.impl.source.tree.injected.InjectionRegistrarImpl.cacheEverything
  * @see icu.windea.pls.inject.processors.InjectedFileProcessor
  */
 @InjectionTarget("com.intellij.psi.impl.source.tree.injected.InjectionRegistrarImpl")
 class InjectionRegistrarImplCodeInjector : CodeInjectorBase() {
     // 用于在创建或者重新解析注入的PSI文件时，进行额外的处理
 
+    // see: com.intellij.psi.impl.source.tree.injected.InjectionRegistrarImpl
+    // see: com.intellij.psi.impl.source.tree.injected.InjectionRegistrarImpl.cacheEverything
+
+    @Suppress("TrailingComma")
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER, static = true)
     fun cacheEverything(
         place: Place,
         documentWindow: Any/* DocumentWindowImpl */,
         viewProvider: Any/* InjectedFileViewProvider */,
         psiFile: PsiFile,
-        @InjectReturnValue returnValue: Boolean
+        @InjectReturnValue returnValue: Boolean,
     ): Boolean {
         execute("cacheEverything") {
             InjectedFileProcessor.EP_NAME.extensionList.process { it.process(psiFile) }

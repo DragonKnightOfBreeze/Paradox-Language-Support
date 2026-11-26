@@ -13,13 +13,12 @@ import icu.windea.pls.inject.annotations.InjectReturnValue
 import icu.windea.pls.inject.annotations.InjectionTarget
 import icu.windea.pls.lang.references.paths.ParadoxPathReference
 
-/**
- * @see com.intellij.openapi.paths.PathReferenceManagerImpl
- * @see com.intellij.openapi.paths.PathReferenceManagerImpl.createReferences
- */
 @InjectionTarget("com.intellij.openapi.paths.PathReferenceManagerImpl")
 class PathReferenceManagerImplCodeInjector : CodeInjectorBase() {
     // 如果解析得到的路径引用中包含 `ParadoxPathReference`，则仅保留它
+
+    // see: com.intellij.openapi.paths.PathReferenceManagerImpl
+    // see: com.intellij.openapi.paths.PathReferenceManagerImpl.createReferences
 
     @InjectMethod(pointer = InjectMethod.Pointer.AFTER)
     fun createReferences(

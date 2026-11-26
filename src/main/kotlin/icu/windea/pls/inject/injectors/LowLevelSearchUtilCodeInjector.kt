@@ -8,10 +8,6 @@ import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectionTarget
 
-/**
- * @see com.intellij.psi.impl.search.LowLevelSearchUtil
- * @see com.intellij.psi.impl.search.LowLevelSearchUtil.checkJavaIdentifier
- */
 @InjectionTarget("com.intellij.psi.impl.search.LowLevelSearchUtil")
 class LowLevelSearchUtilCodeInjector : CodeInjectorBase() {
     // 重写 IDE 底层的检测字符串是否是标识符的代码逻辑，从而可以正确地查找特定类型的引用
@@ -19,6 +15,9 @@ class LowLevelSearchUtilCodeInjector : CodeInjectorBase() {
     // rewrite this method to be compatible with:
     // localisation colorful texts (e.g., `§Rsome text§!`)
     // localisation icons (e.g., `£unity£`)
+
+    // see: com.intellij.psi.impl.search.LowLevelSearchUtil
+    // see: com.intellij.psi.impl.search.LowLevelSearchUtil.checkJavaIdentifier
 
     @InjectMethod(static = true)
     fun checkJavaIdentifier(text: CharSequence, searcher: StringSearcher, index: Int): Boolean {

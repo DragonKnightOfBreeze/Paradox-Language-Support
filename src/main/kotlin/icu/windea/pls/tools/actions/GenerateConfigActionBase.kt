@@ -110,7 +110,7 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         }
     }
 
-    @Suppress("UnstableApiUsage")
+    @Suppress("JetBrainsInternalApiUsage")
     private fun showHintInToolWindow(
         project: Project,
         generator: CwtConfigGenerator,

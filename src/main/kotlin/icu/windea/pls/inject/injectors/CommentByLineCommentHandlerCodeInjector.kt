@@ -11,13 +11,12 @@ import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectionTarget
 
-/**
- * @see com.intellij.codeInsight.generation.CommentByLineCommentHandler
- * @see com.intellij.codeInsight.generation.CommentByLineCommentHandler.isLineCommented
- */
 @InjectionTarget("com.intellij.codeInsight.generation.CommentByLineCommentHandler")
 class CommentByLineCommentHandlerCodeInjector : CodeInjectorBase() {
     // 用于兼容 CWT 语言的各种注释（行注释 `# ...`，选项注释 `## ...`，文档注释 `### ...`）
+
+    // see: com.intellij.codeInsight.generation.CommentByLineCommentHandler
+    // see: com.intellij.codeInsight.generation.CommentByLineCommentHandler.isLineCommented
 
     private val Any.editor: Editor by memberProperty("editor", null)
 

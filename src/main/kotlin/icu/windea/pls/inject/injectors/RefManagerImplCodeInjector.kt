@@ -12,13 +12,12 @@ import icu.windea.pls.lang.fileInfo
 import icu.windea.pls.lang.injection.ParadoxLanguageInjectionManager
 import icu.windea.pls.lang.selectFile
 
-/**
- * @see com.intellij.codeInspection.reference.RefManagerImpl
- * @see com.intellij.codeInspection.reference.RefManagerImpl.getGroupName
- */
 @InjectionTarget("com.intellij.codeInspection.reference.RefManagerImpl")
 class RefManagerImplCodeInjector : CodeInjectorBase() {
     // 如果可行，让代码检查页面中的按目录分组选项按照相对于入口目录的路径分组，而非简单地按照目录名分组
+
+    // see: com.intellij.codeInspection.reference.RefManagerImpl
+    // see: com.intellij.codeInspection.reference.RefManagerImpl.getGroupName
 
     @InjectMethod(pointer = InjectMethod.Pointer.BEFORE)
     fun getGroupName(entity: RefElement): String? {

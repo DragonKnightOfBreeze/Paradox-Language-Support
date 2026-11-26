@@ -3,7 +3,7 @@ package icu.windea.pls.extensions.markdown.psi
 import com.intellij.model.Symbol
 import com.intellij.model.psi.ImplicitReferenceProvider
 import com.intellij.model.psi.PsiSymbolReference
-import com.intellij.model.psi.PsiSymbolService.*
+import com.intellij.model.psi.PsiSymbolService
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import icu.windea.pls.base.settings.ChronicleExtensionSettings
@@ -46,7 +46,7 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
         private val element: PsiElement,
         private val rangeInElement: TextRange? = null,
         val prefix: String,
-        val name: String
+        val name: String,
     ) : PsiSymbolReference {
         override fun getElement(): PsiElement {
             return element
@@ -56,6 +56,7 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
             return rangeInElement ?: TextRange(0, element.textLength)
         }
 
+        @Suppress("JetBrainsInternalApiUsage")
         override fun resolveReference(): Collection<Symbol> {
             // - 仅解析为单个符号
             // - 如果带有前缀 `@` ，则尝试解析为封装变量，否则尝试解析为定义或者本地化
@@ -65,20 +66,20 @@ class MarkdownInlineCodeReferenceProvider : ImplicitReferenceProvider {
                     if (!ParadoxNameValidators.checkScriptedVariableName(name)) return emptyList()
                     val selector = ParadoxScriptedVariableSearch.selector(element.project, element).contextSensitive()
                     val result = ParadoxScriptedVariableSearch.searchGlobal(name, selector).find() ?: return emptyList()
-                    return listOf(getInstance().asSymbol(result))
+                    return listOf(PsiSymbolService.getInstance().asSymbol(result))
                 }
                 prefix.isEmpty() -> {
                     run {
                         val selector = ParadoxDefinitionSearch.selector(element.project, element).contextSensitive()
                         val result = ParadoxDefinitionSearch.searchElement(name, null, selector).find() ?: return@run
-                        return listOf(getInstance().asSymbol(result))
+                        return listOf(PsiSymbolService.getInstance().asSymbol(result))
                     }
                     run {
                         if (!ParadoxNameValidators.checkLocalisationName(name)) return@run
                         val selector = ParadoxLocalisationSearch.selector(element.project, element).contextSensitive()
                             .preferLocale(ParadoxLocaleManager.getPreferredLocaleConfig())
                         val result = ParadoxLocalisationSearch.searchNormal(name, selector).find() ?: return@run
-                        return listOf(getInstance().asSymbol(result))
+                        return listOf(PsiSymbolService.getInstance().asSymbol(result))
                     }
                 }
             }

@@ -69,10 +69,14 @@
 
 - **保留 `icu.windea.pls.inject` 底层注入**：
   - 插件用于动态拦截与补丁扩展的代码注入框架直接依赖平台内部类，目前 JetBrains 官方尚未开放等效扩展点；
-  - 决策保留该子系统，统一使用 `@Suppress("InternalApiUsage")` 收敛警告，并在 Plugin Verifier 验证策略中对 `INTERNAL_API_USAGES` 维持明确豁免；
+  - 决策保留该子系统，统一使用 `@Suppress("JetBrainsInternalApiUsage")` 收敛警告，并在 Plugin Verifier 验证策略中对 `INTERNAL_API_USAGES` 维持明确豁免；
 - **Plugin Verifier 本地与 CI 分工**：
   - 确认本地执行 `./gradlew runPluginVerifier` 时，易因直连 JetBrains API 清单服务（AWS `3.169.121.43:443`）发生网络超时与 Socket 挂起；
   - 在全量单元测试与打包检验全部绿灯的前提下，遵照项目既定实践，将 Plugin Verifier 的全面兼容性扫描交由 GitHub Actions CI 承接。
+
+备注：
+- 必须改为使用 `@Suppress("JetBrainsInternalApiUsage")` 抑制，以往的 `@Suppress("UnstableApiUsage")` 不再有效。
+- 文档注释中对内部 API 的引用也会被包含在内。
 
 ## 实施与验证结果
 

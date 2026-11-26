@@ -1,4 +1,4 @@
-@file:Suppress("UnstableApiUsage", "unused")
+@file:Suppress("unused")
 
 package icu.windea.pls.inject.injectors
 
@@ -17,13 +17,12 @@ import icu.windea.pls.inject.CodeInjectorBase
 import icu.windea.pls.inject.annotations.InjectMethod
 import icu.windea.pls.inject.annotations.InjectionTarget
 
-/**
- * @see com.intellij.codeInsight.editorActions.LineCommentCopyPastePreProcessor
- * @see com.intellij.codeInsight.editorActions.LineCommentCopyPastePreProcessor.preprocessOnPaste
- */
 @InjectionTarget("com.intellij.codeInsight.editorActions.LineCommentCopyPastePreProcessor")
 class LineCommentCopyPastePreProcessorCodeInjector : CodeInjectorBase() {
     // 用于兼容 CWT 语言的各种注释（行注释 `# ...`，选项注释 `## ...`，文档注释 `### ...`）
+
+    // see: com.intellij.codeInsight.editorActions.LineCommentCopyPastePreProcessor
+    // see: com.intellij.codeInsight.editorActions.LineCommentCopyPastePreProcessor.preprocessOnPaste
 
     @InjectMethod
     fun preprocessOnPaste(project: Project, file: PsiFile, editor: Editor, text: String, rawText: RawText?): String {
