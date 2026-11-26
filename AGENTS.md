@@ -36,400 +36,134 @@ In addition to language features, the plugin also includes:
 ### Project structure (high level)
 
 - `README.md` and `README_zh.md`: overview and usage for this project.
-- `CONTRIBUTING.md`: guidance for contributors.
+- `CONTRIBUTING.md`: guidance for contributors (external PR & community perspective).
 - `AGENTS.md`: guidance for agents.
-- `agents/`: agent workflow files (commands, context, etc.).
-- `cwt/`: CWT config directories (core + per-game repositories).
-  - `cwt/README.md`: introduce to respective config repositories.
-- `docs/`: reference documentation (including language syntax reference, config format reference, etc.).
-  - `docs/README.md` and `docs/README_zh.md`: introduce to reference documentation (toc, routing, setup, etc.). 
-- `documents/`: maintainer documentation (including guidelines, roadmap, ADRs, design specs, etc.).
-  - `documents/README.md` and `documents/README_zh.md`: introduce to maintainer documentation (toc, routing, principles, etc.).
+- `agents/`: agent workflow files (commands, skills, etc.).
+- `cwt/`: CWT config directories (core + per-game repositories; see `cwt/README.md`).
+- `docs/`: end-user reference documentation (see `docs/README.md` and `docs/README_zh.md`).
+- `documents/`: maintainer documentation (see `documents/README.md` and `documents/README_zh.md`).
 - `src/main/kotlin/`, `src/main/java/`, `src/main/resources/`: plugin source.
-- `src/test/kotlin/`, `src/test/java/`, `src/test/resources/`: test codes and test resources.
-- `src/test/testData/`: test data files (e.g., test-specific config files and script files).
-- `src/main/resources/META-INF/plugin.xml`: plugin entry (registrations are split into `META-INF/*.xml`).
+- `src/test/kotlin/`, `src/test/java/`, `src/test/resources/`, `src/test/testData/`: tests and test data.
+- `src/jmh/kotlin/`: JMH microbenchmarks.
+- `src/main/resources/META-INF/plugin.xml`: plugin entry (registrations are split into `META-INF/chronicle-*.xml`).
 
 ## Setup and build commands
 
-This project uses **Gradle** and the **IntelliJ Platform Gradle Plugin**.
-
-### Requirements
-
-- JDK 25
-- Gradle wrapper
+This project uses **Gradle** and the **IntelliJ Platform Gradle Plugin** (**JDK 25** + Gradle wrapper).
 
 ### Common commands
 
 - Build the plugin ZIP: `./gradlew buildPlugin --no-daemon --console=plain`
-- Run tests: `./gradlew test --no-daemon --console=plain`
+- Run targeted tests: `./gradlew test --tests "<fully.qualified.TestClass>" --no-daemon --console=plain`
+- Run tests by keyword: `./gradlew test --tests "*SomeKeyword*" --no-daemon --console=plain`
+- Enable optional assume-gated tests: add `-Dchronicle.test.include.{ai,remote,local.env,config.generator,external.tools,all}=true`
+- Run JMH microbenchmarks: `./gradlew benchmark --no-daemon --console=plain` (or `--benchmarks=<pattern>`, `./gradlew benchmarkReport`)
+- Full `./gradlew test` takes tens of minutes; avoid running it casually during iterative development.
 
 ### Generating lexer and parser (Grammar-Kit & JFlex)
 
-- The project registers named Gradle tasks for all grammars in `build.gradle.kts` (via `org.jetbrains.intellij.platform.grammarkit`). AI agents can run them directly from the CLI:
+- Use the registered Gradle tasks in `build.gradle.kts` directly from the CLI:
   - `./gradlew generateGrammars --no-daemon --console=plain` - generate all lexers and parsers.
   - `./gradlew generateLexers --no-daemon --console=plain` - generate all lexers only.
   - `./gradlew generateParsers --no-daemon --console=plain` - generate all parsers only.
-- The official tasks `generateLexer` (`GenerateLexerTask`) and `generateParser` (`GenerateParserTask`) are still provided by the plugin, but their default instances are not bound to a single `sourceFile` in this multi-grammar project (Script, Localisation, CSV, CWT, etc.), so calling them directly fails with `property 'sourceFile' doesn't have a configured value`. Use the named or aggregate tasks above instead.
-- Alternative generation methods:
-  1. In the IDE, right-click a `.bnf` file and choose **Generate Parser Code**, or right-click a `.flex` file and choose **Run JFlex Generator**.
-  2. Use the standalone JFlex toolchain at the repository root: `java -jar jflex-1.10.17.jar --skel idea-flex.skeleton -d src/main/gen/<package_dir> <flex_file_path>`.
+- Do not invoke the unconfigured default `generateLexer` / `generateParser` tasks directly (they fail without a single `sourceFile`).
+- Alternative standalone JFlex CLI: `java -jar jflex-1.10.17.jar --skel idea-flex.skeleton -d src/main/gen/<package_dir> <flex_file_path>`.
 
 ### Gradle execution environment
 
-- **Best practice**: run Gradle tasks (tests, builds, etc.) directly through the **agent's built-in shell**, appending `--no-daemon --console=plain`. This returns promptly and streams readable, complete output.
-- **Always pass `--no-daemon`.** In the default daemon mode, the long-lived Gradle daemon inherits the agent shell's stdout/stderr, so output collection can stay blocked after the task itself has finished - the shell appears to hang (observed: no output for more than 10 minutes) even though the build already completed. `--console=plain` additionally keeps progress-control escape codes out of the captured output.
-- Always set a bounded timeout on shell Gradle calls. A timeout (or prolonged silence) is still **not**, by itself, evidence that the task failed - confirm through `build/test-results/**/*.xml` and `build/reports/**` before drawing conclusions.
-- Short Gradle queries such as `./gradlew help` or `./gradlew --status` follow the same rule: append `--no-daemon` where applicable and set a bounded timeout.
-- **Special scenarios** may call for IDEA Terminal or an IDEA Gradle Run Configuration instead, but mind their trade-offs: the MCP-captured output of IDEA Terminal can be truncated in the middle/end (read the result from the reports or the returned exit code), and a Gradle Run Configuration returns only an exit code with an empty `output` (read the result from the reports).
-- When diagnosing a suspected hang, first check existing Gradle/Java processes, then clean up only daemons created during the diagnosis. Never terminate other working processes. Do not leave long-lived child processes holding the agent-shell stdout/stderr.
+- **Best practice**: run Gradle tasks directly through the **agent's built-in shell**, appending `--no-daemon --console=plain` and a bounded timeout.
+- **Always pass `--no-daemon`.** Default daemon mode lets the long-lived daemon inherit stdout/stderr, making the shell appear to hang after the build already finished.
+- Confirm results via `build/test-results/**/*.xml` and `build/reports/**` rather than treating a shell timeout alone as failure.
+- When diagnosing a suspected hang, clean up only daemons spawned during diagnosis; never terminate unrelated processes.
 
 ### CWT config repositories
 
-The local config repos used are in the `cwt/<repoDir>` directory, and there are also some useful scripts in the `cwt/scripts` directory.
+Local config repos live in `cwt/<repoDir>` (utilities in `cwt/scripts/`). The plugin bundles configs under `config/<gameTypeId>`; when absent (e.g., CI), Gradle downloads ZIPs into `build/generated/cwt/<repoDir>`.
 
-The plugin bundles CWT configs into the plugin JAR under `config/<gameTypeId>`. If missing (common in CI), Gradle can download ZIPs and unzip them into `build/generated/cwt/<repoDir>`.
+## Architecture, conventions, and testing routing
 
-## Testing guidance
+All detailed conventions—module boundaries & dependency rules, `Service`/`Manager`/`Util` layering, naming, imports, KDoc comments, caching, indexing, terminology, testing (`ChronicleTestScope`, test DSLs, parsing/highlighting/regression/snapshot/assume tests), and JMH benchmarking vs. real profiling—are maintained in **`documents/notes/guidelines.md`** and its focused guides:
 
-### Principles and preferences
+- **Core architecture & coding conventions**: `documents/notes/guidelines.md`
+- **Testing guide**: `documents/notes/guidelines/testing.md`
+- **Benchmarking guide**: `documents/notes/guidelines/benchmarking.md`
 
-- Unit tests: for pure components/tools/extensions; usually no IntelliJ Platform API.
-- Integration tests: for PSI/index/query/semantic match and resolve/tool integrations; usually depend on the IntelliJ Platform API or another external integration.
-- Platform tests: aka integration tests depend on IntelliJ Platform API.
-- Tooling: JUnit4 + IntelliJ Platform test framework.
-- If a test class has one or a few specific targets (classes, methods, etc.), call it out in the class KDoc via `@see <target>`.
-- Group test cases with `// region ... // endregion` comments when a class has enough cases to split into modules.
-- Add short inline comments where useful to clarify edge cases, details, or expected results of a test case.
-- When a test is expected to pass, prefer running it at the default/warn log level (`--warn`) first; only drop to a more verbose log level if it actually fails.
+### Common code patterns (quick pointers)
 
-### Best practices
+- Coroutine scope / config group: `ChronicleFacade.getCoroutineScope(...)` / `ChronicleFacade.getConfigGroup(...)`.
+- Settings / options / capabilities: `...Settings` (platform service), `...Options` (immutable data class), `ChronicleCapabilities`.
+- Serialization / data formats: `JsonService`, `MarkdownService` (avoid bypassing them).
+- Config context & matched configs: `ParadoxConfigManager.getConfigContext(element)` and `ParadoxConfigManager.getConfigs(element, options)`.
+- Query & select APIs: `icu.windea.pls.config.select`, `icu.windea.pls.lang.select`, `ParadoxDefinitionSearch` (and sibling `Paradox...Search` classes).
+- Assume and search existing extensions (`icu.windea.pls.core`), components (`AntMatcher`, `QuotePattern`, `ProcessExecutor`), utilities (`Caches`, `RecursionGuard`), services, managers, and EPs before reinventing the wheel.
 
-- Prefer **targeted** test runs during development:
-  - `./gradlew test --tests "<fully.qualified.TestClass>" --no-daemon --console=plain`
-  - `./gradlew test --tests "*SomeKeyword*" --no-daemon --console=plain`
-- Prefer adding or updating tests when behavior changes:
-  - Unit tests for pure logic.
-  - Integration tests for syntax/semantic/PSI/index/config-driven logic.
-- A full `./gradlew test` run can take tens of minutes; don't run it casually during iterative development.
+### Language & config reference anchors
 
-### IntelliJ platform test patterns
-
-- **Parsing tests** (syntax/PSI snapshots): use `ParsingTestCase`, comparing the parsed tree output against a stored snapshot (e.g., `icu.windea.pls.script.ParadoxScriptParsingTest`).
-- **Fixture-based tests**: use `BasePlatformTestCase` + `myFixture.configureByText(fileName, text)` (preferred for simple cases) or `myFixture.configureByFile(filePath)` (for more complex, file-based cases).
-- **Highlighting tests** (annotators/inspections): build the text to check highlighting programmatically with the help of needed scope methods, then call `myFixture.checkHighlighting(...)`.
-
-### Test data conventions
-
-- Most platform/integration tests use test data under `src/test/testData`.
-- Recommended naming: in `snake_case`, with correct extension, and optionally with a `.{gameTypeId}` segment to pin a game type (e.g., `example.txt` `example.stellaris.yml`).
-- For `ParsingTestCase`-based tests, the input file is `<caseName>.test.txt` while the expected PSI-tree snapshot file is `<caseName>.txt` (no `.test.` segment).
-- Some feature tests provide a test-local `.config/` directory under test data to simulate config groups (e.g., `features/index/.config`, `features/inspections/.config`); config files must live in a subdirectory of `.config/` (e.g., `core/`, `stellaris/`), never directly inside it.
-- `src/test/testData/issues/` holds regression test data for GitHub-issue-specific tests (see `icu.windea.pls.test.issues.IssueNNNTest` below).
-- `src/test/testData/chronicle/` is a self-contained showcase "game/mod" content tree to simulates real game/mod content (see *Snapshot tests* below).
-
-### About test scope
-
-The plugin is config-driven. Many features (e.g., type inference, scope inference, macros) depend on **CWT config groups** and a simulated “game/mod context”.
-
-A set of scope methods, defined in interface `icu.windea.pls.test.ChronicleTestScope`, makes these tests deterministic. It's mixed into test classes via interface composition (not a shared base class): `class XxxTest : BasePlatformTestCase(), ChronicleTestScope`. There is no common `ChronicleBasePlatformTestCase`; only a few narrower abstract bases exist for specific test families (e.g., `ParadoxComplexExpressionTest`).
-
-Key `ChronicleTestScope` methods:
-- `findElementAtCaret()` / `findReferenceAtCaret()` are `CodeInsightTestFixture` extensions for caret-based lookups.
-- `addAdditionalAllowedRoots(...)` whitelists extra filesystem roots for VFS access checks (used e.g., to reach a real local Steam/game path in `ParadoxModImporterTest`).
-- `markIntegrationTest()` / `clearIntegrationTest()` toggle integration-test-only behavior (inferring file type and game type from file name) and clean up injected state.
-- `markRootDirectory(relPath)` / `markConfigDirectory(relPath)` inject the root/config directory path, relative to the test data directory (`src/test/testData`).
-- `createRootInfo(gameType, gameVersion = null)` builds an injected root info, optionally pinned to a specific game version - useful for testing version-gated behavior.
-- `markFileInfo(gameType or rootInfo, path, entry = "", group = null)` (for a file to be configured afterward, e.g. via `myFixture.configureByFile`) and `VirtualFile.injectFileInfo(...)` (for an already-existing `VirtualFile`) inject per-file metadata; both have an overload taking a pre-built `ParadoxRootInfo` (from `createRootInfo`) instead of a bare `gameType`.
-- `initConfigGroups(project, ...gameTypes)` initializes the required config groups for the specified game types. Use built-in and injected config files, and the general built-in config group (`core`) is always initialized.
-
-Notes:
-- The marked config directory SHOULD NOT directly contain config files, place them in the `core` (or some game type id like `stellaris`, see `ParadoxGameType` for details about game types) subdirectory.
-- The marked file path DO NOT start with `game/` (see `ParadoxGameTypeMetadata` for details about root directories VS entry directories).
-- Alignment between real file path and marked file path is not required.
-- If a config-driven test fails unexpectedly, first check whether `markRootDirectory(...)` was omitted (some caches are keyed at the root-directory level), the config files were not correctly injected, or the relevant config groups were not correctly loaded.
-
-For the showcase test demonstrating `ChronicleTestScope` usage, see `icu.windea.pls.test.chronicle.ChronicleHelloWorldTest`.
-
-### About test DSL
-
-Additionally, the plugin provides some DSLs for unit tests and platform tests, which can be used to write tests that are simpler and clearer.
-
-They are defined in package `icu.windea.pls.test.dsl`, with corresponding DSL marker annotations, scope objects and scope methods. These scope methods should be used on certain limited scope.
-
-Introduce to these DSLs:
-- `ExpectDsl.kt` can be used to write assertions in extension-function style, which will apply type convertion and Kotlin Contract when necessary. It's not forced at this moment.
-- `HighlightingDsl.kt` can be used to build text for checking highlighting in string-interpolation style, which are more readable and maintainable comparing to raw text or raw files. It's preferred at this moment.
-
-Examples:
-- `expectScope { result.expectNotNull().someMethodForNonNullType() }`
-- `expectScope { result.expectIs<SomeType>().someMethodForThisType() }`
-- `myFixture.configureByText("test.txt") { "${error(message)}key${errorEnd()} = value" }`
-
-For the showcase test demonstrating `ChronicleTestScope` usage in DSL-style, see `icu.windea.pls.test.chronicle.ChronicleHelloWorldDslTest`.
-
-### Snapshot tests
-
-Package `icu.windea.pls.test.chronicle` hosts a family of "snapshot" tests driven by the showcase content tree `src/test/testData/chronicle/`:
-
-- `ChronicleSnapshotTest`: abstract base providing `computeDataFilePaths()` over the `chronicle/` directory.
-- `ChronicleInspectionBasedSnapshotTest`: runs every bundled `LocalInspectionTool` (filtered to this plugin) over all files under `chronicle/` and asserts no warnings/errors are produced.
-- `ChronicleAnnotatedSnapshotTest`: renders script/CSV files via `ParadoxScriptTextAnnotatedRenderer` / `ParadoxCsvTextAnnotatedRenderer` and diffs the result against expected files under `chronicle/.annotated/**/*.annotated.*`.
-
-### Optional tests (assume-based, on-demand running)
-
-Some tests are intentionally **disabled by default** and only run when explicitly enabled via system properties, gated through `icu.windea.pls.test.ChronicleAssume` (each method wraps `org.junit.Assume.assumeTrue(...)`, so a gated-out test is reported as *skipped*, not *failed*). Flags are read by `icu.windea.pls.ChronicleCapabilities.Test` from system properties:
-
-| `ChronicleAssume` method   | System property                           | Category                                                                          |
-|----------------------------|-------------------------------------------|-----------------------------------------------------------------------------------|
-| `includeAi()`              | `chronicle.test.include.ai`               | AI-backed tests                                                                   |
-| `includeRemote()`          | `chronicle.test.include.remote`           | Tests requiring access remote network (e.g., `SpecialUrlServiceTest`)             |
-| `includeLocalEnv()`        | `chronicle.test.include.local.env`        | Tests requiring a real local game/mod environment (e.g., `ParadoxModImporterTest`) |
-| `includeConfigGenerator()` | `chronicle.test.include.config.generator` | Config generator tests (require local game dirs)                                  |
-| `includeExternalTools()`   | `chronicle.test.include.external.tools`   | External tool tests (require downloading)                                         |
-
-`chronicle.test.include.all` (checked via `includeAll()`) unconditionally enables every category above. Example: `./gradlew test -Dchronicle.test.include.local.env=true --no-daemon --console=plain`.
-
-### Benchmarks (JMH-based)
-
-Benchmarks are based on JMH and suitable for several performance-sensitive codes (and meanwhile, it is necessary to consider evaluating specific performance).
-
-- Benchmark codes are under `src/jmh/kotlin/`.
-- Benchmarks can be executed via `./gradlew benchmark` (optional parameter: `--benchmarks=<pattern>`).
-- Reports can be generated via `./gradlew benchmarkReport` (output directory: `documents/reports/benchmarks/{timestamp}/`).
-- See `icu.windea.pls.test.ChronicleBenchmarkLauncher` for more details (which is also under `src/jmh/kotlin/`).
-
-## Code architecture
-
-### Modules
-
-- `icu.windea.pls.core`: General infrastructure. Including common extensions, utilities and components for stdlib, platform and third-party libraries.
-- `icu.windea.pls.base`: Infrastructure for the plugin itself and platform integration. Including internal state management, external data processing, environment detection, high-level platform integration, etc.
-- `icu.windea.pls.cwt`: Infrastructure to support the CWT language. Usually semantic-free.
-- `icu.windea.pls.script`: Infrastructure to support the script language. Usually semantic-free.
-- `icu.windea.pls.localisation`: Infrastructure to support the localization language. Usually semantic-free.
-- `icu.windea.pls.csv`: Infrastructure to support the CSV language. Usually semantic-free.
-- `icu.windea.pls.images`: Infrastructure for image support. Including SPIs, editors, actions, rendering, metadata, etc.
-- `icu.windea.pls.config`: Infrastructure for the config system. Including config, config expression, config group, etc.
-- `icu.windea.pls.lang`: The semantic module. Including semantic matching, semantic resolution, language construct support, language feature support, domain-specific logic, etc.
-  - `match`: Semantic-level matching. Mainly based on indices, reference resolution, configs, and specific strategies.
-  - `resolve`: Semantic-level resolution. Mainly based on indices, reference resolution, configs, and specific strategies.
-  - `util`: High-level managers and special components.
-- `icu.windea.pls.extensions`: The extension module. Provides integrations and extensions to third-party plugins.
-  - `diagram`: For official Diagrams plugin. Provides addon diagram providers and settings.
-  - `json`: For official JSON plugin. Provides addon JSON schemas providers.
-  - `markdown`: For official Markdown plugin. Provides addon resolution and inspections.
-- `icu.windea.pls.integrations`: The integration module. Provides integrations to third-party tools.
-  - `images`: For external image tools (texconv and magick).
-  - `lints`: For external lint tools (tiger). Drives related external annotators and inspections.
-  - `translation`: For translation tools (Translation plugin). Drives related intentions and actions.
-- `icu.windea.pls.tools`: The tool module. Provides several bundled utilities and integrations (e.g., game launchers and config generators).
-- `icu.windea.pls.ep`: Various EP interfaces and implementations to provide language construct support, language feature support and several QoL features.
-
-### Notes
-
-Notes on `icu.windea.pls.config`:
-- This is where the infrastructure of the config system is stored, but not all code closely related to the config system. This means they usually not depends on game or mod files.
-- For logic such as config contexts, config matching, template resolution, and template matching, since they occur at semantic-level, is usually located in `lang.match` and `lang.resolve`.
-
-Notes on `icu.windea.pls.lang.match` and `icu.windea.pls.lang.resolve`:
-- `lang.match` and `lang.resolve` hold domain-specific, semantic-level matching and resolution logic, and are lower-level than `lang.util.*Manager`.
-- The latter is only extracted/refactored into the former when necessary, most of it can stay as-is.
-- Prefer calling EPs that involve matching/resolution logic only from here (typically in a `*Service`), not from an EP interface's companion object or a `*Manager`.
-
-Notes on `icu.windea.pls.config.manipulation` and `icu.windea.pls.lang.manipulation`:
-- These packages hold "manipulation"-focused services plus related model classes, enums, and extension methods.
-- The code here typically transforms or directly mutates the state of a target (a config object, PSI, etc.).
-- It can happen at several different stages/levels (building the resolution context, performing semantic resolution, invoking a language feature, etc.).
-- It also serves as infrastructure for parts of semantic resolution as well as some refactorings, intentions, and quick fixes.
-- Common manipulations include: transform, inline, merge, etc.
-
-Notes on `Service` vs `Manager` vs `Util`/`Factory`/`Builder`:
-- `Service`: lower-level, may include domain analysis/matching/resolution logic that's delegated to concrete EP implementations.
-- `Manager`: higher-level, exposes ready-to-use domain methods, which may depend on the corresponding `Service` methods.
-- `Util`/`Factory`/`Builder`: narrowly-scoped helper methods usable only for a specific component/feature, or only in a handful of specific scenarios.
-- `Service` and `Manager` don't need to be declared as IntelliJ services, they can be declared as plain Kotlin singleton objects if stateless.
-- Caching logic usually lives at the `Manager` level, codes at the `Service` level is usually a direct fetch/resolve without caching.
-
-## Coding conventions
-
-### Naming
-
-- Prefer using prefix for language and domain specific class names (e.g., `Cwt...` `Paradox...` `ParadoxScript...`).
-- prefer using verb form for actions and intentions (e.g., `CopyDefinitionNameIntention`).
-- Prefer word-based or prefix-based abbreviations (e.g., for `scopeContext`: `context`, `sc` or just `c` is good, `ctx` is bad).
-
-For more details, see: `agents/context/naming-conventions.md`
-
-### Importing
-
-- Prefer explicit imports for most packages.
-- Use wildcard imports (`*`) only for few special packages. For example, DSL-style packages (`com.intellij.ui.dsl`, etc.).
-- If a package has more than the limit of explicit imports (50), switch to using a star import.
-
-For more details, see: `agents/context/importing-conventions.md`
-
-### Comments
-
-- Write doc comments for Java and Kotlin in Chinese by default, unless explicitly requested, or need to be consistent with the context.
-- Write doc comments for other languages in English by default, unless explicitly requested, or need to be consistent with the context.
-- Write normal comments in Chinese or English, based on the context.
-- Prefer KDoc style for Kotlin.
-
-For more details, see: `agents/context/comment-conventions.md`
-
-### Caching
-
-- Prefer `icu.windea.pls.core.util.CachesKt.CacheBuilder` for caching (if `ConcurrentHashMap` it not enough).
-- Prefer `com.github.benmanes.caffeine.cache.Interner` for string interning.
-- Global caches in `icu.windea.pls.core`: usually strong values with size + TTL.
-- Very large caches (e.g., config objects): usually soft values.
-- IDE-lifecycle-tied caches: usually soft values.
-
-### Indexing
-
-- File-level analysis data (e.g., locale, file path): use `FileBasedIndex`.
-- Data depending on analysis data and/or PSI-structure, not depending on dynamic data (e.g., scripted variables, localisations): prefer `StubIndex`.
-- Data depending on PSI reference resolve results and/or config data (e.g., definitions, complex enums values): prefer `FileBasedIndex`.
-- For file indices that depend on resolved/matched member configs, prefer unifying via a merged index (e.g. `ParadoxMergedIndex`) for performance.
-- Compress serialized index data when necessary (e.g. via `readOrReadFrom` or `readIndexedStringList`).
-
-### Code guidance
-
-Follow the specifications below:
-- Get the coroutine scope: Use `ChronicleFacade.getCoroutineScope(project)` (or `ChronicleFacade.getCoroutineScope()` for application level).
-- Get the config group: Use `ChronicleFacade.getConfigGroup(project, gameType)` (or `ChronicleFacade.getConfigGroup(gameType)` for application level).
-- Introduce new settings, options and capabilities: Use `...Settings` (platform service), `...Options` (immutable data class) and `ChronicleCapabilities`, accordingly.
-- Handle data (JSON, Markdown, etc.): Use `JsonService`, `MarkdownService`, etc., uniformly.
-
-About general infrastructure:
-- Extension methods: `icu.windea.pls.core` provides many extension methods applicable to the standard library, platform, collections, concurrency, UI, etc. Such as `orNull()` `castOrNull` `runCatchingCancellable()`.
-- Components and strategies: `icu.windea.pls.core` provides many useful components and strategies, as well as corresponding services and extension methods. Such as `AntMatcher` `QuotePattern` `ProcessExecutor`.
-- Utilities: `icu.windea.pls.core.util` provides many useful utilities, services, and extension methods. Such as `Keys.kt` `KeyAccessors.kt` `Caches.kt` `SoftValue` `RecursionGuard`.
-
-About common code patterns:
-- Get the config context: Use `ParadoxConfigManager.getConfigContext(element)`.
-- Get the matched configs: Use `ParadoxConfigManager.getConfigs(element, options)`.
-- How to filter and query configs in config trees (e.g., query down, by path): Use the config select API (see `icu.windea.pls.config.select`).
-- How to filter and query members in script files (e.g., query down, query up, by path): Use the select API (see `icu.windea.pls.lang.select`).
-- How to search definitions (e.g., an event with specific event id): Use `ParadoxDefinitionSearch` (so do other `Paradox...Search`s).
-- How to check out domain or topic specific codes (e.g., definition, scope, recursion): Search declarations of`...Data`,  `...Info`, `...Util`, `...Service`, `...Manager` and so on.
-- How to check out provided features and domain entries: View relevant docs, check `plugin.xml` (and the including XML configuration files), or search relevant keywords.
-- Assume and search existing extensions, components, utils, services, managers, EPs, etc., before reinventing the wheel.
-
-## Domain terminology and guidance
-
-### Translation terms
-
-Prefer translate *config* to *规则*, and vice versa, if it specifically means *CWT* config.
-
-Here are some common terms:
-- scope → 作用域
-- modifier → 修正
-- trigger → 触发器
-- effect → 效果
-- scripted variable → 封装变量
-- scripted trigger → 封装触发器
-- scripted effect → 封装效果
-- on action → 动作触发
-- define → 定值
-- definition → 定义
-- localisation → 本地化
-
-For more details, see: `agents/context/translation-terms.md`
-
-### Language guidance
-
-For detailed language syntax and recommended examples, see:
-- `docs/en/ref-syntax.md`
-- `src/test/testData/cwt/example.test.cwt`
-- `src/test/testData/script/example.test.txt`
-- `src/test/testData/localisation/example.test.yml`
-- `src/test/testData/csv/example.test.csv`
-
-### Config system guidance
-
-For the documents and examples, see:
-- `docs/en/config.md` (the config system document)
-- `docs/en/ref-config-format.md` (the config format manual)
-- `cwt/cwtools-stellaris-config/` (the real-game config directory for Stellaris, also available for other game types)
-- `src/test/testData/` (there are also various test config files under the test data directory)
+- Syntax reference & examples: `docs/en/ref-syntax.md`, `src/test/testData/{cwt,script,localisation,csv}/example.test.*`.
+- Config system reference & examples: `docs/en/config.md`, `docs/en/ref-config-format.md`, `cwt/cwtools-stellaris-config/`, `src/test/testData/`.
 
 ## Maintainer documentation (IMPORTANT)
 
-### Introduce 
+### Lifecycle model
 
-- Besides public reference documentation under `docs/`, there is also internal maintainer documentation under `documents/`, which involves various topics and scopes.
-- Maintainer documents are primarily written in Chinese with English kebab-case file paths.
-- Maintainer documents are organized by **role rather than authorship**: `documents/notes/` and `documents/design/` hold authoritative, continuously maintained living specifications co-constructed by maintainers and AI agents; `documents/ai-notes/` holds historical archives retained as-is.
+- Internal maintainer documents under `documents/` are written primarily in Simplified Chinese with English kebab-case paths.
+- Documents are organized by **lifecycle and authority** rather than authorship:
+  - **Living specifications**: `documents/design/` and living handbooks/trackers under `documents/notes/` (`guidelines*`, `roadmap*`, `proposals*`, `ideas.md`, `cheatsheet.md`).
+  - **Immutable archives**: sealed historical slices under `documents/notes/` (`adr/`, `issues/`, `solutions/`, `analysis/`, `evaluations/`, `reports/`). Do not rewrite sealed archives merely to chase routine code renames.
 
 ### Routing (on-demand reading)
 
-Do not read the entire `documents/` directory at once, instead, read specific documents on demand when working on related tasks:
-- **Coding & architecture guidelines**: check `documents/notes/guidelines.md`.
-- **Roadmap & version status**: check `documents/notes/roadmap.md`.
-- **Ideas & brainstorming backlog**: check `documents/notes/ideas.md`.
-- **Architectural decisions (self-contained RFC-style)**: check `documents/notes/adr/` (see `documents/notes/adr.md`).
-- **Hard bug diagnostics & post-reports** (P1~Pnn): check `documents/notes/issues/` (see `documents/notes/issues.md`).
-- **Troubleshooting & environment workarounds**: check `documents/notes/solutions/` (see `documents/notes/solutions.md`).
-- **Performance & memory benchmarks**: check `documents/notes/analysis/` (see `documents/notes/analysis.md`).
-- **Historical archives**: check `documents/ai-notes/` (retained as-is; see `adr.md`, `solutions.md`, `analysis.md`, `reports.md`, etc.).
-- **System design specs** (UI, colors, language abstractions): check `documents/design/` (see `documents/README.md`).
+Do not read `documents/` wholesale; read on demand:
+- **Coding & architecture guidelines**: `documents/notes/guidelines.md`
+- **Testing & JMH benchmarking**: `documents/notes/guidelines/testing.md`, `documents/notes/guidelines/benchmarking.md`
+- **Roadmap & per-version plans**: `documents/notes/roadmap.md` (`documents/notes/roadmap/`)
+- **Unsettled proposals & cross-version blueprints**: `documents/notes/proposals.md` (`documents/notes/proposals/`)
+- **Ideas & brainstorming backlog**: `documents/notes/ideas.md`
+- **Accepted architectural decisions (ADRs)**: `documents/notes/adr.md` (`documents/notes/adr/`)
+- **Bug diagnostics & post-reports**: `documents/notes/issues.md` (`documents/notes/issues/`)
+- **Environment & build workarounds**: `documents/notes/solutions.md` (`documents/notes/solutions/`)
+- **Profiling, thread dumps & domain analyses**: `documents/notes/analysis.md` (`documents/notes/analysis/`)
+- **Evaluations & curated reports**: `documents/notes/evaluations.md`, `documents/notes/reports.md`
+- **System design specs**: `documents/README.md` (`documents/design/`)
 
 ## Agent instructions (IMPORTANT)
 
-### Communication
+### Communication & Markdown
 
-- Communicate with the maintainer in Chinese or English, depends on what language is used in the conversation. Note Chinese is usually used by the maintainer.
-- Write documents in Chinese or/and English, depending on the specific scenario. Note Chinese is usually used for maintainer documents.
-- Write doc comments and normal comments in Chinese or English, depending on previous requirements, or based on the context.
-
-### Markdown specifics
-
-- Prefer `-` for unordered lists.
-- Prefer `**bold**` for emphasis.
-- Prefer starting from `###` (H3) in responses (not in documents), unless there is a strong reason to use `#` and `##`.
+- Communicate in Chinese or English matching the conversation (the maintainer usually uses Chinese).
+- Write maintainer documents in Chinese unless context dictates English; match existing KDoc/comment language rules in `documents/notes/guidelines.md`.
+- Prefer `-` for unordered lists and `**bold**` for emphasis.
+- Prefer starting from `###` (H3) in conversational responses (does not constrain documents).
 
 ### IntelliJ plugin specifics
 
 - Many registrations live under `src/main/resources/META-INF/chronicle-*.xml` included by `plugin.xml`.
 - Optional dependencies (enabled only when present): Markdown, Diagrams (Ultimate), Translation plugin.
-- There is an internal code injection subsystem, avoid changing it casually unless you understand the impact.
+- Avoid changing the internal code injection subsystem (`icu.windea.pls.inject`) unless you fully understand the impact.
 
 ### Be smartly and lovely
 
-- **Keep conceptual consistency** during editing code, comments or documents, and even during thinking and discussing.
-- **Follow the best practice** for Kotlin programming and IntelliJ platform development.
-- Use available MCP tools smartly and flexibly.
-- Keep changes minimal and localized.
-- Add and/or update tests when feasible.
-- Run inspections and/or tests before finishing.
+- **Keep conceptual consistency** across code, comments, documents, and design discussions.
+- **Follow best practices** for Kotlin and IntelliJ Platform development.
+- Keep changes minimal and localized; add/update tests and run inspections/targeted tests before finishing.
 
 ## Tooling preferences (IMPORTANT)
 
 ### General operations
 
-- Prefer using built-in tools for plain file operations (e.g., read, write, edit, patch).
-- Prefer using built-in tools to execute commands for build tool operations (e.g., building, running tests).
-- Run Gradle tasks through the built-in shell with `--no-daemon --console=plain`.
+- Prefer built-in file tools for plain file operations and built-in shell with `--no-daemon --console=plain` for Gradle tasks.
 
 ### Search and navigation
 
-- **Always** prefer using MCP (intellij mcp or intellij-index mcp) for structured search, semantic search and code navigation over text-based search.
-- Use MCP to navigate to declarations, usages, implementations, super methods, type hierarchies, library sources, etc.
-- Use MCP to run code inspections before compilation, building, or running tests, if necessary.
-- Prefer MCP over built-in grep/glob/shell-based search in most cases. Only fall back to the latter when the target is trivial and unambiguous (e.g., locating a file by an exact name, matching a plain literal).
-- When MCP is unavailable or genuinely insufficient, say so explicitly before resorting to text-based search.
+- **Always** prefer **intellij** / **intellij-index** MCP tools for structured search, semantic search, and code navigation over plain text search.
+- Use MCP for declarations, usages, implementations, super methods, type hierarchies, library sources, and running code inspections before building/testing.
+- Fall back to text search only for trivial, unambiguous targets (exact file names or plain literals); state explicitly when MCP is unavailable or insufficient.
 
 ### Forbidden shortcuts
 
-- **Never** try to locate jars (IntelliJ Platform, dependencies, etc.) and decompile their contents via the built-in shell or any other command-line tooling.
-- Navigation to library sources, binary dependencies or decompiled code MUST go through MCP. If that is truly impossible, stop and report the limitation instead of improvising with shell-based decompilation.
+- **Never** locate or decompile library/platform JARs via shell commands; library sources and decompiled code MUST be inspected through MCP.
 
-### IntelliJ MCP server
+### MCP server priority
 
-IMPORTANT: When applicable, always prefer using built-in **intellij** MCP tools for IDE-driven actions and IDE-related actions.
-
-### IDE Index MCP server
-
-IMPORTANT: When applicable, always prefer using **intellij-index** MCP tools for code navigation, code refactoring, code inspections, etc.
+- **intellij** MCP: prefer for IDE-driven and IDE-related actions.
+- **intellij-index** MCP: prefer for code navigation, refactoring, and inspections.

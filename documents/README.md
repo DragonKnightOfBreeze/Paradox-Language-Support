@@ -11,91 +11,85 @@
 This directory stores public maintainer-facing documentation for **Paradox Chronicle**.
 
 Unlike the general documentation in the project root and the end-user-facing reference documentation site under `docs/`, the documents here are intended for **project maintainers and AI coding agents**.
-They record in-depth system design specifications, architecture decision records, troubleshooting logs, performance benchmark analyses, version roadmaps, etc.
+They record system design specifications, development guidelines, version roadmaps, proposals, architecture decision records, troubleshooting logs, evaluations, and performance analyses.
+
+### Lifecycle & Epistemic Principles
+
+Documents here are organized by **lifecycle and authority** rather than authorship (human-written vs. AI-generated):
+
+- **Living Specifications**: Authoritative, actively evolving documents maintained alongside the codebase (`design/`, `notes/guidelines*`, `notes/roadmap*`, `notes/proposals*`, `notes/ideas.md`, `notes/cheatsheet.md`).
+- **Immutable Archives**: Point-in-time historical snapshots sealed once closed or verified (`notes/adr/`, `notes/issues/`, `notes/solutions/`, `notes/analysis/`, `notes/evaluations/`, `notes/reports/`). Historical slices are not rewritten merely to chase routine code renames; when an architectural premise is overturned, a new ADR is added marking `Supersedes`.
+- **Epistemic Hierarchy**: Documentation captures intent, agreements, and historical context—never a "single source of truth". The verified codebase is a more reliable source of truth, which itself remains subject to IntelliJ Platform runtime behavior and Paradox game engine realities.
 
 ### Language & Naming Policy
 
-- **Content Language**: Primarily written in **Chinese**. This is to ensure cognitive density and precision of expression during single-core-maintainer work and to eliminate native-language conversion friction.
-- **Internationalization & Translation**: Non-Chinese-native readers or developers who are interested in consulting this documentation library are recommended to use modern translation engines or AI assistants (e.g., DeepL, ChatGPT) to assist their reading. If external English contributors supplement maintainer notes in the future, direct submission of English versions is fully supported and welcome.
-- **File System & Paths**: All file and directory names strictly follow **lowercase kebab-case English naming** (e.g., `snippet-match.md`, `roadmap.md`). This completely solves cross-platform filesystem compatibility, Git reference, and URL-encoding anchor-loss issues on the GitHub Web side.
+- **Content Language**: Primarily written in **Simplified Chinese** for cognitive density and precision during core maintenance. Non-Chinese readers are encouraged to use translation tools or AI assistants; English contributions to maintainer notes are also welcome.
+- **File System & Paths**: Strictly **lowercase kebab-case English naming** (e.g., `snippet-match.md`, `roadmap.md`) for cross-platform filesystem, Git reference, and GitHub Web anchor compatibility.
 
-## Directory Structure & Categorization Criteria
+---
+
+## Directory Structure
 
 ```text
 documents/
-├── design/                 # System design specifications (UI/visual system, language abstraction models, core subsystem design, etc.; living specifications)
-├── notes/                  # Living specs (authoritative, continuously maintained; human-AI co-constructed)
-│   ├── assets/             # Stack traces, thread dumps, and log attachments
-│   ├── adr.md              # Architecture Decision Record index
-│   ├── adr/                # Self-contained Architecture Decision Records (syntax parsing evolution, dependency framework replacement, rule extension, etc.)
-│   ├── issues.md           # Issue tracking and hard-problem analysis index
-│   ├── issues/             # Hard fault and anomaly diagnostic records (P1~Pnn, e.g., index conflicts, concurrency deadlocks, SOF, etc.)
+├── design/                 # Living system design specifications (UI, colors, language abstractions, etc.)
+├── notes/                  # Unified maintainer knowledge base (living specs & immutable archives)
+│   ├── guidelines.md       # Living coding, architecture, naming, and formatting conventions
+│   ├── guidelines/         # Focused testing & JMH benchmarking manuals
+│   ├── roadmap.md          # High-level version index & cross-version topic routing
+│   ├── roadmap/            # Per-version execution roadmaps and task checklists
+│   ├── proposals.md        # Living exploration sandbox & pre-decision blueprints index
+│   ├── proposals/          # Unsettled architectural proposals & cross-version blueprints
+│   ├── ideas.md            # Inspiration pool and long-term TODO items
+│   ├── cheatsheet.md       # Practical tips, live templates, and regex quick reference
+│   ├── adr.md              # Accepted/completed Architecture Decision Records index
+│   ├── adr/                # Sealed RFC-style ADRs
+│   ├── issues.md           # Issue tracking and hard-problem diagnostics index
+│   ├── issues/             # P1~Pnn & GitHub issue diagnostic case files
 │   ├── solutions.md        # Solutions and pitfall-avoidance guide index
-│   ├── solutions/          # Specific environment configuration, dependency conflict, and implementation trap handling solutions
-│   ├── analysis.md         # Long-term performance and memory benchmark analysis index
-│   ├── analysis/           # Long-term test round records of indexing throughput time and heap memory usage
-│   ├── guidelines.md       # Code conventions, module dependency constraints, and development agreements
-│   ├── roadmap.md          # Version development roadmap and TODO board
-│   ├── ideas.md            # Idea records and long-term inspiration pool
-│   └── cheatsheet.md       # Practical tips, live templates, and common regular expression quick-reference manual
-├── ai-notes/               # Historical archive (retained as-is, no continuous maintenance obligation)
-│   ├── adr.md              # Architecture Decision Record index
-│   ├── adr/                # Self-contained Architecture Decision Records (syntax parsing evolution, dependency framework replacement, rule extension, etc.)
-│   ├── solutions.md        # Environment configuration and build pitfall-avoidance manual index
-│   ├── solutions/          # Specific environment and build problem solutions
-│   ├── analysis.md         # Incident troubleshooting and mechanism analysis index
-│   ├── analysis/           # Troubleshooting snapshots and topic analyses of underlying domain mechanisms
-│   ├── reports.md          # Assessment and status report index
-│   ├── reports/            # Project complexity, code coverage, potential competitor mechanism comparison, and technology trend assessments
-│   ├── study.md            # Study notes index
-│   └── study/              # Study notes on related programming languages, frameworks, concepts, and technologies
-├── changelogs/             # Archived historical release changelogs
-└── reports/                # Statistics reports periodically generated by automated tools
+│   ├── solutions/          # Environment, build, dependency, and platform workarounds
+│   ├── analysis.md         # Profiling, incident snapshot, and mechanism analysis index
+│   ├── analysis/           # Performance/memory profiling rounds, thread dumps, and domain studies
+│   ├── evaluations.md      # Architectural & complexity evaluation index
+│   ├── evaluations/        # Point-in-time evaluation reports (complexity, memory, indexing gains)
+│   ├── reports.md          # Curated study/coverage reports index
+│   ├── reports/            # Curated technical & test-coverage reports
+│   └── assets/             # Stack traces, thread dumps, and log attachments
+├── changelogs/             # Archived historical release changelogs (0.x / 1.x)
+└── reports/                # Raw statistics and benchmark outputs generated by automated tools
 ```
 
-### 1. design/ (System Design Specifications)
+### 1. `design/` (System Design Specifications)
 
-Living design specifications for the plugin's top-level design, UI visual system, and core abstraction models.
-Following a human-AI co-construction principle: maintainers establish the principles, and AI assists in organizing and keeping them synchronized.
+Living design specifications for top-level design, visual systems, and core abstraction models:
 
-- [Icon Design](design/icon-design.md) - Icon definitions and color mappings for file types, AST syntax nodes, and rule elements
-- [Color Scheme](design/color-scheme.md) - Lexical and semantic highlighting color specifications for all supported languages
+- [Icon Design](design/icon-design.md) - Icon definitions and color mappings for file types, AST nodes, and config elements
+- [Color Scheme](design/color-scheme.md) - Lexical and semantic highlighting color specifications
 - [Prompt Template Engine](design/prompt-template-engine.md) - Built-in AI prompt template syntax, directives, and lifecycle
 - [Mod Import/Export](design/mod-import-export.md) - Mod dependency import/export architecture and format adaptors
-- [Language Abstractions](design/language-abstractions.md) - Abstraction model mappings between the grammar layer and semantic layer
-- [Terminology](design/terminology.md) - Core term English-Chinese mapping and standard naming
+- [Language Abstractions](design/language-abstractions.md) - Abstraction model mappings between grammar and semantic layers
+- [Terminology](design/terminology.md) - Core English-Chinese domain terminology
 - [Spellchecking](design/spellchecking.md) - Token splitting and grammar-level spellchecking
-- [Script Injection](design/script-injection.md) - Cross-language injection and dynamic rule context construction
-- [Tool Integration: Tiger](design/tool-integration-tiger.md) - ck3-tiger validator integration architecture
+- [Script Injection](design/script-injection.md) - Cross-language injection and dynamic config context construction
+- [Tool Integration: Tiger](design/tool-integration-tiger.md) - `ck3-tiger` validator integration architecture
 
-### 2. notes/ (Maintainer Notes)
+### 2. `notes/` (Maintainer Knowledge Base)
 
-Authoritative, continuously maintained knowledge base, co-constructed and reviewed by project maintainers and AI agents.
-The boundary with `ai-notes/` is defined by **role rather than authorship**: documents here are living specifications and sources of truth, not historical archives.
+#### Living Specifications
 
-The Architecture Decision Records (ADRs) here use a **self-contained RFC style** and may also include related content such as task lists, file and code locations, and reference links.
+- [Guidelines](notes/guidelines.md) - Code architecture conventions, module dependencies, naming, and style standards
+  - [Testing Guide](notes/guidelines/testing.md) - Unit tests, platform tests (`ChronicleTestScope`), test DSLs, snapshot & assume-gated tests
+  - [Benchmarking Guide](notes/guidelines/benchmarking.md) - JMH microbenchmarks and their boundary vs. real-world IDEA profiling
+- [Roadmap](notes/roadmap.md) - Per-version index (`notes/roadmap/`) and topic routing
+- [Proposals](notes/proposals.md) - Exploration sandbox and pre-decision blueprints (`notes/proposals/`)
+- [Ideas](notes/ideas.md) - Inspiration pool and unscheduled long-term ideas
+- [Cheatsheet](notes/cheatsheet.md) - Live templates, common regular expressions, and script quick reference
 
-Key dashboards and companion index entry points:
-- [Guidelines](notes/guidelines.md) - Code architecture conventions, module dependency constraints, and coding standards for the plugin
-- [Roadmap](notes/roadmap.md) - Version-by-version task plans, refactoring TODOs, and completed items
-- [Ideas](notes/ideas.md) - Inspiration pool and long-term TODO items recorded at any time
-- [Cheatsheet](notes/cheatsheet.md) - Live templates, common regular expressions, and script quick-reference manual
-- [Architecture Decision Records Index](notes/adr.md) - Categorized catalog and index of self-contained architectural decision records
-- [Issue Tracking Index](notes/issues.md) - Active debugging and GitHub TODO list, plus index of deep analyses for P1~Pnn hard problems
-- [Solutions Index](notes/solutions.md) - Daily development configuration, environment proxy, and third-party library pitfall-avoidance guide
-- [Profiling and Memory Analysis Index](notes/analysis.md) - Long-term benchmark rounds for game directory indexing time and heap memory
+#### Immutable Archives
 
-### 3. ai-notes/ (Historical Archive)
-
-Archive of records retained as-is from earlier development, troubleshooting, and collaboration.
-The categorization here is by **role rather than authorship**: these documents are historical archives, not living specifications, so the related project state may change later, for example, the code locations and implementation details involved.
-As a low-psychological-barrier knowledge deposition area and disclaimer staging area, it does not need to and should not bear maintenance responsibility for staying synchronized with subsequent code in real time. Authoritative, continuously maintained knowledge belongs under `notes/` and `design/`.
-
-The Architecture Decision Records (ADRs) here are relatively more oriented toward technical pre-research and architectural alternatives, and are often more detailed, containing more content to record and archive.
-
-Companion index entry points:
-- [Architecture Decision Records Index](ai-notes/adr.md) - Categorized catalog and index of self-contained architectural decision records
-- [Solutions and Pitfall-Avoidance Guide Index](ai-notes/solutions.md) - Environment configuration and build pitfall-avoidance manual
-- [Incident Diagnostics and Mechanism Analysis Index](ai-notes/analysis.md) - Incident troubleshooting and deep analyses of underlying mechanisms
-- [Assessment and Status Report Index](ai-notes/reports.md) - Self-evolution assessments, potential competitor mechanism comparisons, and technical research
-- [Technology and Concept Study Notes Index](ai-notes/study.md) - Study notes on related programming languages, frameworks, concepts, and technologies
+- [Architecture Decision Records](notes/adr.md) - Sealed RFC-style decisions (`notes/adr/`)
+- [Issue Diagnostics](notes/issues.md) - Active bug tracking and P1~Pnn / GitHub issue case files (`notes/issues/`)
+- [Solutions & Pitfalls](notes/solutions.md) - Environment, build, dependency, and platform workarounds (`notes/solutions/`)
+- [Analysis & Profiling](notes/analysis.md) - Long-term profiling rounds, thread dump diagnostics, and domain deep-dives (`notes/analysis/`)
+- [Evaluations](notes/evaluations.md) - Point-in-time complexity, memory, and optimization evaluations (`notes/evaluations/`)
+- [Reports](notes/reports.md) - Curated technical and test-coverage reports (`notes/reports/`, distinct from raw tool outputs in `reports/`)

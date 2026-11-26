@@ -36,8 +36,8 @@ Please read the relevant material before opening an issue or a pull request. A l
   - Built on VuePress 2, and provides documentation in both Chinese and English.
 - Maintainer documents (under `documents/`):
   - [`documents/README.md`](documents/README.md) and [`documents/README_zh.md`](documents/README_zh.md)
-  - Development guidelines: [`documents/notes/guidelines.md`](documents/notes/guidelines.md)
-  - Project roadmap: [`documents/notes/roadmap.md`](documents/notes/roadmap.md)
+  - Development guidelines: [`documents/notes/guidelines.md`](documents/notes/guidelines.md) (with [`testing.md`](documents/notes/guidelines/testing.md) and [`benchmarking.md`](documents/notes/guidelines/benchmarking.md))
+  - Project roadmap & proposals: [`documents/notes/roadmap.md`](documents/notes/roadmap.md) and [`documents/notes/proposals.md`](documents/notes/proposals.md)
   - Architecture decision records: [`documents/notes/adr.md`](documents/notes/adr.md)
   - Primarily written in Simplified Chinese for core maintenance efficiency.
   - Non-Chinese contributors are encouraged to use AI assistants or translation engines, while English contributions to maintainer notes are also welcome.

@@ -69,7 +69,7 @@
 - 为了优化编制和查询索引时的性能，有时需要直接传入 LighterAST，而非 PSI。
 - 主要基于索引、引用解析、规则以及特定策略。
 
-关于 `icu.windea.pls.config.manipulation` 和 `icu.winddea.pls.lang.manipulation`：
+关于 `icu.windea.pls.config.manipulation` 和 `icu.windea.pls.lang.manipulation`：
 
 - 这里用于存放强调“操作/manipulate”的服务，以及相关的模型类、枚举、扩展方法等。
 - 这里的代码通常会转换目标（规则对象、PSI）的状态，或者直接修改为需要的状态。
@@ -102,11 +102,12 @@
 - 显式导入适用于绝大多数情况。
 - 星号导入仅适用于少数特殊情况。例如，DSL 风格的包。
 - 如果同包的显式导入超过上限（50），改为使用星号导入。
+- 逻辑与结构优先于导入排序与清理；不因少量未排序或未使用的导入阻塞协作，但在使用 IDE 整理导入时应留意保留下述星号导入白名单。
 
 优先使用星号导入的包名（包含子包）：
 
 - `com.intellij.ui.dsl` - IntelliJ UI DSL
-- `icu.windea.pls.pls.test.dsl` - 测试 DSL
+- `icu.windea.pls.test.dsl` - 测试 DSL
 - `icu.windea.pls.lang.resolve.complexExpression.dsl` - 复杂表达式的 DSL
 - `icu.windea.pls.lang.resolve.complexExpression.nodes` - 复杂表达式节点
 - （待补充）
@@ -163,6 +164,22 @@
 
 ## 命名
 
+### 文件与符号命名
+
+| 类别 | 约定 | 示例 |
+| :--- | :--- | :--- |
+| 单类 / 单对象文件 | `PascalCase` | `ParadoxDefinitionManager.kt` |
+| 包级辅助文件 | `_types.kt`、`_accessors.kt`、`_models.kt` | `_types.kt` |
+| 类级辅助文件 | `SomeExtensions.kt`、`SomeAccessors.kt` | `ParadoxDefinitionExtensions.kt` |
+| EP 分组实现文件 | `SomeProviders.kt`、`SomeProviders.Category.kt` | `ParadoxHintTextProviders.kt` |
+| 类名 | `PascalCase`，按需加领域前缀（`Cwt`、`CwtConfig`、`Paradox`） | `ParadoxDefinitionInfo`、`CwtTypeConfig` |
+| 抽象类后缀 | `Base` | `ParadoxScriptExpressionSupportBase` |
+| Action / Intention / Inspection | 动词或形容词开头，不加领域前缀 | `CopyPathFromRootProvider`、`GoToPathAction` |
+| 函数与变量 | `camelCase` | `getInfo`、`resolveInfo` |
+| 常量 | `UPPER_SNAKE_CASE` | `EMPTY_OBJECT` |
+| 工厂方法 | `PascalCase()` | `SomeFactoryMethod()` |
+| 枚举值 | `PascalCase` 或 `UPPER_SNAKE_CASE`（无严格限定） | `Stellaris`、`GAME_TYPE` |
+
 ### 约定
 
 如何命名拥有特定用途的接口：
@@ -210,12 +227,23 @@
 
 ### 翻译
 
-领域相关：
+领域相关（常见词汇对照）：
 
-- 将 *define* 翻译为 *定值*。反之亦然。
-- 将 *definition* 翻译为 *定义*。反之亦然。
-- 将 *on action* 翻译为 *动作触发*。反之亦然。
-- 将 *scripted* 翻译为 *封装*。例如，将 *scripted trigger* 翻译为 *封装触发器*。反之亦然。
+- *config* → *规则*（特指 CWT 规则；反之亦然）
+- *scope* → *作用域*
+- *modifier* → *修正*
+- *trigger* → *触发器*
+- *effect* → *效果*
+- *scripted* → *封装*（例如：*scripted variable* → *封装变量*、*scripted trigger* → *封装触发器*、*scripted effect* → *封装效果*）
+- *script value* → *脚本值*
+- *game rule* → *游戏规则*
+- *define* → *定值*
+- *definition* → *定义*
+- *on action* → *动作触发*（推荐译法）
+- *localisation* → *本地化*
+- *event* → *事件*（*event namespace* → *事件命名空间*）
+- *sprite* → *精灵*
+- *macro* → *宏*（*inline script* → *内联脚本*、*definition injection* → *定义注入*）
 
 ### 选型
 
@@ -281,25 +309,6 @@
 - 如果存在，提交信息中应标出相关的 Issue（在概述文本的结尾，以 `(#1)` 的形式）。
 - 可以考虑在提交信息中标出相关的主题、领域、分类等（在概述文本的开始，以 `[fix]` `[refactor/match]` 的形式）。
 
-### 回归测试相关
-
-关于回归测试的文档注释：
-
-- 应使用英文编写。
-- 应包含以下部分：
-  - 指向问题的链接文本。
-  - 问题概述。
-  - 原因分析。以段落或列表的形式。
-  - 关键代码位置的引用。使用 fullQualifiedName。
-- 示例：`icu.windea.pls.test.issues.Issue430Test`
-
-关于回归测试的测试数据目录中的 `README.md`：
-
-- 只应包含以下部分：
-  - 指向问题的链接文本。
-  - 回归测试类的引用。以内联代码的形式使用 fullQualifiedName。
-- 示例：`src/test/testData/issues/430/README.md`
-
 ## 排序
 
 ### 模块相关
@@ -355,170 +364,12 @@
 - *文本图标/text icon* - 仅限基于 Jomini 的游戏类型。
 - *文本格式/text format* - 仅限基于 Jomini 的游戏类型。
 
-## 测试
+## 测试与基准测试
 
-### 概述
+测试与微基准测试规范已按专题拆分至独立专册：
 
-原则：
-
-- 单元测试：适用于组件/工具/扩展等的测试。通常不需要依赖 IntelliJ Platform API 或其他外部集成。
-- 集成测试：适用于 PSI/索引/查询器/语义匹配/语义解析/外部集成等的测试。通常需要依赖 IntelliJ Platform API 或其他外部集成。
-- 专门针对 IntelliJ Platform API 的集成测试，也被称为“平台测试”。
-- 如无特殊要求，使用 Kotlin 编写单元测试和集成测试。
-
-约定：
-
-- 如果一个测试类存在一个或一些确定的测试目标（而不是一个特定的主题，或者一些特定的扩展方法），应在测试类的文档注释中以 `@see TestTarget` 的形式标出。
-- 如果必要，在编写测试用例时，通过 `region...endregion` 注释对其进行分组。例如同一测试类中的测试用例足够多，或者可以分为多个模块的场合。
-- 如果必要，在编写测试用例时，通过额外的单行注释进行额外说明。例如，可以对测试用例的细节、边界情况、预期结果等进行说明。
-
-技术信息：
-
-- 工具链：Gradle + Kotlin + IntelliJ Platform API
-- 测试框架：JUnit4 + IntelliJ Platform 集成测试
-
-相关命令：
-
-- 全量测试：`./gradlew test`（这可能需要花费数十分钟，不推荐日常使用）
-- 针对特定测试类的测试：`./gradlew test --tests "fully.qualified.TestClass"`
-- 针对特定关键词的测试：`./gradlew test --tests "some.keyword.**"`
-
-### 平台测试
-
-平台测试用于验证包括语法、语义、语言构造、语言功能在内的，依赖 IntelliJ Platform API 的方方面面的功能。
-
-- 测试类通常继承自 `BasePlatformTestCase`。仅在少数情况下，继承自 `UsefulTestCase` 的其他子类。
-- 对于简单的场合，优先考虑使用 `myFixture.configureByText(fileName, text)`。这是更加清晰、更加直观的方式。
-- 对于复杂的场合，可以考虑使用 `myFixture.configureByFile(filePath)`。
-
-### 测试数据
-
-- 集成测试/平台测试的测试数据统一位于 `src/test/testData` 目录下。
-- 默认的，根据期望的文件类型，测试数据文件应分别使用 `.cwt` `.txt` `.yml` `.csv` 扩展名。例如 `test_entries.txt`。
-- 默认的，如果必要，将其中某个子目录的 `.config` 子目录作为规则目录。例如 `src/test/testData/features/index/.config`（而规则文件位于这个目录的 `core` 子目录中）。
-- 为了明确表明这是一个测试数据文件，可以在文件名中包含 `.test`。例如 `example.test.txt`。
-- 为了显式指定游戏类型，可以在文件名中包含 `.{gameTypeId}`。例如 `example.stellaris.txt`。
-- 对于脚本文件、本地化文件和 CSV 文件，需要在 `doSetUp()` 中调用 `markIntegrationTest()`，以从文件名推断文件类型和游戏类型。
-
-### 测试作用域
-
-对于平台测试，`ChronicleTestScope` 中提供了一组实用的作用域方法。
-其中包括一些相对通用的方法，以及另外一些领域特定的方法（用于注入上下文信息、处理规则数据等）。
-
-对 `ChronicleTestScope` 中的部分关键作用域方法的说明：
-
-- `markIntegrationTest()` - 启用仅用于平台测试的特殊行为。这会启用从文件名推断文件类型和游戏类型。
-- `clearIntegrationTest()` - 关闭仅用于平台测试的特殊行为。这会一并清空注入状态。
-- `markRootDirectory(relPath)` - 注入游戏或模组的根目录。传入的路径相对于测试数据目录（`src/test/testData`）。用于测试的游戏或模组文件通常不需要实际位于这个目录（或其子目录）中。
-- `markConfigDirectory(relPath)` - 注入规则目录。传入的路径相对于测试数据目录（`src/test/testData`）。规则文件应位于这个目录的特定子目录中（而不是直接位于这个目录中）。例如通用的规则文件应位于 `core` 子目录中，Stellaris 的规则文件应位于 `stellaris` 子目录中。参见 `ParadoxGameType`。
-- `createRootInfo(gameType, gameVersion)` - 创建注入的根信息。可用于额外指定游戏版本。
-- `markFileInfo(gameType, path, ...)` - （为后续配置的测试数据文件）注入文件信息。传入的路径相对于入口目录（其不一定同时是游戏或模组目录）。例如应直接传入 `events/test_events.txt`，而非传入 `game/events/test_events.txt`。参见 `ParadoxGameTypeMetadata`。
-- `VirtualFile.injectFileInfo(gameType, path, ...)` - （为当前的测试数据文件）注入文件信息。类似前者。
-- `initConfigGroups(project, ...gameTypes)` - 为指定的一组游戏类型初始化规则分组。使用注入的和内置的规则文件。通用的内置规则分组（`core`）总是会被初始化。
-
-对于需要注入上下文信息（如文件信息）或需要基于规则数据的平台测试：
-
-- 需要在 `doSetUp()` 中按需调用 `markRootDirectory()` `markConfigDirectory()` 和 `initConfigGroups()`，并在测试方法中按需调用 `markFileInfo()` 和 `injectFileInfo()`，以正确地注入需要的上下文信息。
-- 如果测试失败，需要考虑到这可能是由于未指定根目录（某些缓存位于根目录级别）、未正确注入规则文件、未加载规则分组等原因导致的。
-- 注入的文件路径（通过 `markFileInfo()` 或 `injectFileInfo()`）不需要与实际的文件路径对齐。例如，它们可以拥有不同的文件名，实际的文件也可以直接来自 `myFixture.configureByText(fileName, text)`。
-- 使用的测试数据文件（就真实游戏来说）不需要是实际可用的。例如，可以组合使用完全自定义的规则文件和脚本文件，只要符合格式和规范。
-
-参见：
-- `icu.windea.pls.test.ChronicleTestScope`
-- `icu.windea.pls.test.chronicle.ChronicleHelloWorldTest`
-
-### 测试 DSL
-
-对于单元测试和平台测试，`icu.windea.pls.test.dsl` 中提供了一些实用的 DSL，以及对应的作用域方法。
-
-关于 `ExpectDsl`：
-
-- 可以在 `expectScope {...}` 中，以扩展函数的格式进行断言。
-- 这些方法直接返回其接收者，并在必要时适用 kotlin Contract 以及更改返回类型。
-- 断言消息 `message` 通常作为最后一个可选的参数。
-
-关于 `HighlightingDsl`：
-
-- 可以在 `highlightingScope {...}` 中，以字符串插值的格式构建用于检查代码高亮结果的测试数据文本。
-- 这种方式相比直接使用原始文本或原始文件，更加可读和可维护。
-- 另外也提供了 `myFixture.configureByText(fileName) {...}` 和 `myFixture.createFile(fileName) {...}`。
-
-示例：
-- `expectScope { result.expectNotNull().someMethodForNonNullType() }`
-- `expectScope { result.expectIs<SomeType>().someMethodForThisType() }`
-- `myFixture.configureByText("test.txt") { "${error(message)}key${errorEnd} = value" }`
-
-参见：
-- `icu.windea.pls.test.dsl.ExpectDsl.kt`
-- `icu.windea.pls.test.dsl.HighlightingDsl.kt`
-- `icu.windea.pls.test.chronicle.ChronicleHelloWorldDslTest`
-
-### 解析测试
-
-解析测试（ParsingTestCase）用于验证各个自定义语言的词法分析和语法分析是否正确。各个测试数据文件都有一份对应的 PSI 树快照文件。
-
-示例：
-- `icu.windea.pls.script.ParadoxScriptParsingTest`
-
-### 高亮测试
-
-有些平台测试需要验证测试数据文件是否具有正确高亮，这些测试被称为“高亮测试”。例如针对注解器（annotators）和代码检查（codeInspections）的测试。
-
-- 对于简单的场合，优先考虑通过 `myFixture.configureByText(fileName, text)`，并在测试数据文本中结合使用需要的作用域方法，来编写测试用例。
-- 对于复杂的场合，可以考虑直接在对应的测试数据文本或测试数据文件中指定高亮信息（如 `<warning descr="...">target</warning>`），来编写测试用例。
-
-示例：
-- `icu.windea.pls.script.annotator.ParadoxScriptSyntaxAnnotatorTest`
-- `icu.windea.pls.lang.inspections.script.common.IncorrectSyntaxInspectionTest`
-
-### 回归测试
-
-回归测试是专门针对特定问题的测试，以避免日后的回归。对于具体的问题，最初不一定必然已经意味着某种回归，可能只是某种缺陷或意外行为。
-
-- 回归测试的测试类位于 `icu.windea.pls.test.issues` 目录下，例如 `Issue430Test`。然而，
-- 回归测试的测试数据目录位于 `src/test/testData/issues` 目录下，例如 `430`。然而，测试类与测试数据目录不一定一一对应，也可能仅存在测试类或者测试数据局目录。
-- 原则上，标记为回归（例如，带有标签 `regression` 的 GitHub Issue）的问题都应当编写对应的回归测试，并补充适当的笔记。
-
-### 快照测试
-
-插件的快照测试并不使用某个真实的游戏目录，或者组合使用某个真实的大型模组目录，作为测试数据来源。而是……
-
-参见：
-- `src/test/testData/chronicle/`
-- `icu.windea.pls.test.chronicle.ChronicleSnapshotTest`
-- `icu.windea.pls.test.chronicle.ChronicleInspectionBasedSnapshotTest`
-- `icu.windea.pls.test.chronicle.ChronicleAnnotatedSnapshotTest`
-
-### 受限测试
-
-部分测试是不会默认执行的。除了通过 `@Ignore` 直接忽略以外，更常见的方式是通过系统属性（system properties）显式启用。
-
-例如，`ParadoxModImporterTest` 依赖于本地化环境，因此仅在 `chronicle.test.include.all=true` 或 `chronicle.test.include.local.env=true` 时才会启用。
-
-参见：
-- `icu.windea.pls.test.ChronicleAssume`
-
-### 基准测试
-
-基准测试适用于一些性能敏感，并且需要考虑评估具体性能的代码（组件类、策略类、扩展方法等）。
-
-约定：
-- 基于 JMH 的基准测试类需要以 `Benchmark` 结尾，并位于 `src/jmh/kotlin` 目录下（而非常规的 `src/test/kotlin`）。
-- 用于验证基准测试相关行为（如缓存命中、淘汰、容量边界）的 JUnit 单元测试需要以 `BenchmarkTest` 结尾，并位于 `src/test/kotlin` 目录下。
-- 出于准确性等方面的考虑，基准测试需要基于 JMH（而非直接基于 `measureTimeMillis` 等来自标准库的方法）。
-
-执行方式：
-- 通过 `./gradlew benchmark` 执行（作为单独的 Gradle 任务）。
-- 可通过 `./gradlew benchmark --benchmarks=<pattern>` 按需指定要执行的基准测试
-  - 参数 `--benchmarks` 可以重复。
-  - 参数 `--benchmarks` 的值可以是类或方法的 fullQualifiedName/simpleName，其中也可以使用通配符 `?` `*` `**`。
-  - 无匹配项时任务会失败，并列出可用的基准测试。
-- 通过 `./gradlew benchmarkReport` 运行基准测试并输出带时间戳的报告；也可以先运行 `./gradlew benchmark`，再运行 `./gradlew benchmarkReport -x benchmark`。
-  - 包括原始的 JSON 报告文件，以及提取后 Markdown 报告文档（总结、元数据信息等）。
-  - 输出到 `documents/reports/benchmarks/{timestamp}/` 目录下。
-
-参见：
-- `icu.windea.pls.test.ChronicleBenchmarkLauncher` - 位于 `src/jmh/kotlin` 目录下
+- **常规测试与平台集成测试**：参见 [测试指南](guidelines/testing.md)（`ChronicleTestScope`、测试 DSL、解析/高亮/回归/快照/受限测试）。
+- **微基准测试（JMH）**：参见 [基准测试指南](guidelines/benchmarking.md)（`src/jmh/kotlin` 约定、防失真准则，以及 JMH 微基准与 IDEA Profiler 在“不能测量插件实际运行性能”上的定位边界）。
 
 ## UI
 
