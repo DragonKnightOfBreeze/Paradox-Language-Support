@@ -1,7 +1,9 @@
 package icu.windea.pls.core.util.io
 
 import icu.windea.pls.core.util.ImageFrameInfo
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -106,16 +108,17 @@ class ImageIoServiceTest {
 
     @Test
     fun copyIfSameFormat_test() = runBlocking {
-        val source = root.resolve("same-source.png")
-        val target = root.resolve("same-target.png")
-        val image = BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB)
-        ImageIO.write(image, "png", source.toFile())
+        withContext(Dispatchers.IO) {
+            val source = root.resolve("same-source.png")
+            val target = root.resolve("same-target.png")
+            val image = BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB)
+            ImageIO.write(image, "png", source.toFile())
 
-        Assert.assertFalse(ImageIoService.copyIfSameFormat(source, target, "png", "jpg"))
-        Assert.assertFalse(Files.exists(target))
+            Assert.assertFalse(ImageIoService.copyIfSameFormat(source, target, "png", "jpg"))
+            Assert.assertFalse(Files.exists(target))
 
-        Assert.assertTrue(ImageIoService.copyIfSameFormat(source, target, "png", ".PNG"))
-        Assert.assertTrue(Files.readAllBytes(target).contentEquals(source.readBytes()))
+            Assert.assertTrue(ImageIoService.copyIfSameFormat(source, target, "png", ".PNG"))
+            Assert.assertTrue(Files.readAllBytes(target).contentEquals(source.readBytes()))
+        }
     }
-
 }

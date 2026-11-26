@@ -24,14 +24,13 @@ class ParadoxMergedIndexType<T : ParadoxIndexInfo> private constructor(
         val key: String,
         val type: Class<T>,
     ) {
-        fun build(): ParadoxMergedIndexType<T> = ParadoxMergedIndexType(id, key, type).also { _entries[id] = it }
+        fun build(): ParadoxMergedIndexType<T> = ParadoxMergedIndexType(id, key, type).also { entries[id] = it }
     }
 
     companion object {
-        private val _entries = mutableMapOf<String, ParadoxMergedIndexType<*>>()
-
         @JvmStatic
-        val entries: Map<String, ParadoxMergedIndexType<*>> get() = _entries
+        val entries: Map<String, ParadoxMergedIndexType<*>>
+            field = mutableMapOf<String, ParadoxMergedIndexType<*>>()
 
         @JvmStatic
         fun <T : ParadoxIndexInfo> builder(id: String, key: String, type: Class<T>): Builder<T> = Builder(id, key, type)

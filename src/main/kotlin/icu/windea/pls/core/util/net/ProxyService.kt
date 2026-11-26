@@ -34,6 +34,7 @@ object ProxyService {
         return null
     }
 
+    @Suppress("HttpUrlsUsage")
     fun parse(value: String): Proxy? {
         val normalized = if (value.contains("://")) value else "http://$value"
         return runCatching {

@@ -38,7 +38,7 @@ class ImageToolService : Disposable {
         // implementation
         val tool = findTool() ?: return null // skip
         if (warnIfIncorrectContext(tool)) return null // skip
-        return with(tool) {
+        return context(tool) {
             doRead(imageIndex, param, stream, sourceFormat, targetFormat)
         }
     }
@@ -54,7 +54,7 @@ class ImageToolService : Disposable {
         // implementation
         val tool = findTool() ?: return false // skip
         if (warnIfIncorrectContext(tool)) return false // skip
-        return with(tool) {
+        return context(tool) {
             withContext(Dispatchers.IO) { doConvertImageFormat(inputStream, outputStream, sourceFormat, targetFormat) }
         }
     }
@@ -70,7 +70,7 @@ class ImageToolService : Disposable {
         // implementation
         val tool = findTool() ?: return false // skip
         if (warnIfIncorrectContext(tool)) return false // skip
-        return with(tool) {
+        return context(tool) {
             withContext(Dispatchers.IO) { doConvertImageFormat(path, targetPath, sourceFormat, targetFormat) }
         }
     }

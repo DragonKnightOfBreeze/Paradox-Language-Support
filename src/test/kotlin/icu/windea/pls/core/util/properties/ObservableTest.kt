@@ -7,7 +7,6 @@ import org.junit.Test
  * @see ObservableProperty
  */
 class ObservableTest {
-    @Suppress("ktPropBy")
     class Role(
         var name: String,
         val title: String,

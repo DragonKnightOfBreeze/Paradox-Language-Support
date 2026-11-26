@@ -141,7 +141,6 @@ class ImageFormatConversionTest : BasePlatformTestCase() {
         }
     }
 
-    @Suppress("UNUSED_PARAMETER")
     private fun isSupportedByDefault(sourceFormat: String, targetFormat: String): Boolean {
         // 同格式直接复制；默认实现没有 DDS 写入器
         return sourceFormat == targetFormat || targetFormat != "dds"

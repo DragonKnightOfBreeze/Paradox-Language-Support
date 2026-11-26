@@ -62,15 +62,13 @@ class CwtConfigType private constructor(
         fun icon(value: Icon) = apply { icon = value }
         fun description(value: String) = apply { description = value }
 
-        fun build(): CwtConfigType = CwtConfigType(id, isReference, category, prefix, icon, description).also { _entries[id] = it }
+        fun build(): CwtConfigType = CwtConfigType(id, isReference, category, prefix, icon, description).also { entries[id] = it }
         inline fun build(block: Builder.() -> Unit): CwtConfigType = also { block() }.build()
     }
 
     companion object {
-        private val _entries = mutableMapOf<String, CwtConfigType>()
-
         @JvmStatic
-        val entries: Map<String, CwtConfigType> get() = _entries
+        val entries: Map<String, CwtConfigType> field = mutableMapOf<String, CwtConfigType>()
 
         @JvmStatic
         fun builder(id: String): Builder = Builder(id)

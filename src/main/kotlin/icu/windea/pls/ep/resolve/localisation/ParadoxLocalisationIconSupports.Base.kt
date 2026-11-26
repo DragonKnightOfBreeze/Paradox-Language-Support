@@ -20,11 +20,10 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationIcon
 
 @Suppress("SameParameterValue")
 abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIconSupport {
-    private val _supports = mutableListOf<ParadoxLocalisationIconSupport>()
-
     // NOTE 3.0.1 nested composite supports are not supported atm
 
-    val supports: List<ParadoxLocalisationIconSupport> get() = _supports
+    val supports: List<ParadoxLocalisationIconSupport>
+        field = mutableListOf<ParadoxLocalisationIconSupport>()
 
     init {
         registerSupports()
@@ -39,7 +38,7 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
      * @see ParadoxDefinitionIndexConstraint.LocalisationIconResolvable
      */
     protected fun fromDefinition(definitionType: String) {
-        _supports += ParadoxDefinitionBasedLocalisationIconSupport(definitionType, { it }, { it })
+        supports += ParadoxDefinitionBasedLocalisationIconSupport(definitionType, { it }, { it })
     }
 
     /**
@@ -49,11 +48,11 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
      * @see ParadoxDefinitionIndexConstraint.LocalisationIconResolvable
      */
     protected fun fromDefinition(definitionType: String, definitionNameGetter: (name: String) -> String?, nameGetter: (definitionName: String) -> String?) {
-        _supports += ParadoxDefinitionBasedLocalisationIconSupport(definitionType, definitionNameGetter, nameGetter)
+        supports += ParadoxDefinitionBasedLocalisationIconSupport(definitionType, definitionNameGetter, nameGetter)
     }
 
     final override fun resolve(name: String, element: ParadoxLocalisationIcon, project: Project): PsiElement? {
-        _supports.forEachFast f@{ support ->
+        supports.forEachFast f@{ support ->
             if (support is ParadoxCompositeLocalisationIconSupport) return@f // skip
             ProgressManager.checkCanceled()
             support.resolve(name, element, project)?.let { return it }
@@ -62,7 +61,7 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
     }
 
     final override fun resolveAll(name: String, element: ParadoxLocalisationIcon, project: Project): Collection<PsiElement> {
-        _supports.forEachFast f@{ support ->
+        supports.forEachFast f@{ support ->
             if (support is ParadoxCompositeLocalisationIconSupport) return@f // skip
             ProgressManager.checkCanceled()
             support.resolveAll(name, element, project).orNull()?.let { return it }
@@ -71,7 +70,7 @@ abstract class ParadoxCompositeLocalisationIconSupport : ParadoxLocalisationIcon
     }
 
     final override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
-        _supports.forEachFast f@{ support ->
+        supports.forEachFast f@{ support ->
             if (support is ParadoxCompositeLocalisationIconSupport) return@f // skip
             ProgressManager.checkCanceled()
             support.complete(context, result)

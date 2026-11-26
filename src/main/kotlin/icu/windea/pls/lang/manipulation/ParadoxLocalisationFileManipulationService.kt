@@ -21,19 +21,19 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationPropertyList
 object ParadoxLocalisationFileManipulationService {
     fun localisations(file: PsiFile): WalkingSequence<ParadoxLocalisationProperty> {
         val context = WalkingContext()
-        val delegate = with(context) { buildLocalisations(file) }
+        val delegate = context(context) { buildLocalisations(file) }
         return WalkingSequence(delegate, context)
     }
 
     fun localisations(propertyList: ParadoxLocalisationPropertyList): WalkingSequence<ParadoxLocalisationProperty> {
         val context = WalkingContext()
-        val delegate = with(context) { buildLocalisations(propertyList) }
+        val delegate = context(context) { buildLocalisations(propertyList) }
         return WalkingSequence(delegate, context)
     }
 
     fun selectedLocalisations(editor: Editor, file: PsiFile): WalkingSequence<ParadoxLocalisationProperty> {
         val context = WalkingContext()
-        val delegate = with(context) { buildSelectedLocalisations(file, editor) }
+        val delegate = context(context) { buildSelectedLocalisations(file, editor) }
         return WalkingSequence(delegate, context)
     }
 

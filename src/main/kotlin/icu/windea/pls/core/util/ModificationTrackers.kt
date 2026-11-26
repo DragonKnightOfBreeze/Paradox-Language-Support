@@ -48,6 +48,6 @@ class ComputedModificationTracker(private val computable: () -> Any?) : SimpleMo
     }
 
     companion object {
-        @JvmField val NEVER_CHANGED = ComputedModificationTracker({ null })
+        @JvmField val NEVER_CHANGED = ComputedModificationTracker { null }
     }
 }

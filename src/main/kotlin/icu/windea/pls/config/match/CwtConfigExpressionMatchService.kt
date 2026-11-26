@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.config.match
 
 import icu.windea.pls.config.CwtDataTypeSets

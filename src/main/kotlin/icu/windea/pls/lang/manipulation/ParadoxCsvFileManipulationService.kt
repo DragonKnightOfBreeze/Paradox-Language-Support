@@ -27,7 +27,7 @@ object ParadoxCsvFileManipulationService {
      */
     fun selectedRows(editor: Editor, file: PsiFile): WalkingSequence<ParadoxCsvRow> {
         val context = WalkingContext()
-        val delegate = with(context) { buildSelectedRows(file, editor) }
+        val delegate = context(context) { buildSelectedRows(file, editor) }
         return WalkingSequence(delegate, context)
     }
 
@@ -76,7 +76,7 @@ object ParadoxCsvFileManipulationService {
      */
     fun selectedColumns(editor: Editor, file: PsiFile): WalkingSequence<ParadoxCsvColumn> {
         val context = WalkingContext()
-        val delegate = with(context) { buildSelectedColumns(file, editor) }
+        val delegate = context(context) { buildSelectedColumns(file, editor) }
         return WalkingSequence(delegate, context)
     }
 
@@ -148,7 +148,7 @@ object ParadoxCsvFileManipulationService {
      */
     fun columnsOfIndex(file: PsiFile, index: Int, includeHeaderColumn: Boolean = true): WalkingSequence<ParadoxCsvColumn> {
         val context = WalkingContext()
-        val delegate = with(context) { buildColumnsOfIndex(file, index, includeHeaderColumn) }
+        val delegate = context(context) { buildColumnsOfIndex(file, index, includeHeaderColumn) }
         return WalkingSequence(delegate, context)
     }
 

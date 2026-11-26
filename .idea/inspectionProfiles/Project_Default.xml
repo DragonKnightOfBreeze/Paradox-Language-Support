@@ -151,6 +151,7 @@
     <inspection_tool class="ReplacePutWithAssignment" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
     <inspection_tool class="ReplaceSubstringWithTake" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
     <inspection_tool class="SameReturnValue" enabled="true" level="TEXT ATTRIBUTES" enabled_by_default="true" editorAttributes="CONSIDERATION_ATTRIBUTES" />
+    <inspection_tool class="SvgPathDataShorten" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="TestCaseInProductCode" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="TestCaseWithNoTestMethods" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="TestInProductSource" enabled="true" level="WARNING" enabled_by_default="true" />
@@ -190,5 +191,8 @@
       </option>
     </inspection_tool>
     <inspection_tool class="WarningOnMainUnusedParameterMigration" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="ktInlineFunctionLeaksAnonymous" enabled="true" level="WEAK WARNING" enabled_by_default="true" editorAttributes="INFO_ATTRIBUTES" />
+    <inspection_tool class="ktNoinlineFunc" enabled="false" level="ERROR" enabled_by_default="false" editorAttributes="ERRORS_ATTRIBUTES" />
+    <inspection_tool class="ktPropBy" enabled="false" level="WEAK WARNING" enabled_by_default="false" editorAttributes="INFO_ATTRIBUTES" />
   </profile>
 </component>

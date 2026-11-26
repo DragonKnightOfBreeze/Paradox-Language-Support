@@ -7,6 +7,7 @@ import com.intellij.diagram.DiagramRelationshipInfoAdapter
 import com.intellij.diagram.presentation.DiagramLineType
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
 import com.intellij.openapi.vfs.VirtualFile
@@ -154,6 +155,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                     sReporter.nextStep(25, step2) {
                         reportProgressScope(size) { reporter ->
                             events.forEach { event ->
+                                checkCanceled()
                                 reporter.itemStep(step2) {
                                     readAction { createNode(event) }
                                 }
@@ -165,6 +167,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                     sReporter.nextStep(50, step3) {
                         reportProgressScope(size) { reporter ->
                             events.forEach { event ->
+                                checkCanceled()
                                 reporter.itemStep {
                                     readAction { createEdges(event) }
                                 }
@@ -176,6 +179,7 @@ abstract class ParadoxEventTreeDiagramProvider(gameType: ParadoxGameType) : Para
                     sReporter.nextStep(100, step4) {
                         reportProgressScope(size) { reporter ->
                             events.forEach { event ->
+                                checkCanceled()
                                 reporter.itemStep {
                                     readAction { preloadData(event) }
                                 }

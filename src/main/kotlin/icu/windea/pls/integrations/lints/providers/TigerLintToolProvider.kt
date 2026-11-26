@@ -3,7 +3,7 @@ package icu.windea.pls.integrations.lints.providers
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.ProcessOutput
-import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.checkCanceled
 import icu.windea.pls.core.data.JsonService
 import icu.windea.pls.core.execution.ExecutionTimeouts
 import icu.windea.pls.core.execution.ProcessExecutor
@@ -79,7 +79,7 @@ abstract class TigerLintToolProvider : CommandLineBasedLintToolProvider() {
         return TigerLintResult(request, items = items)
     }
 
-    private fun validateRootDirectoryInternal(request: TigerLintRequest): ProcessOutput {
+    private suspend fun validateRootDirectoryInternal(request: TigerLintRequest): ProcessOutput {
         val commands = buildList {
             add(request.executablePath.toString())
             add("--json")
@@ -97,13 +97,13 @@ abstract class TigerLintToolProvider : CommandLineBasedLintToolProvider() {
             .withWorkingDirectory(request.workingDirectory)
             .withCharset(Charsets.UTF_8)
 
-        ProgressManager.checkCanceled()
+        checkCanceled()
         val output = ProcessExecutor(commandLine)
             .withTimeout(ExecutionTimeouts.veryLong)
             .execute()
 
         if (output.isCancelled) {
-            ProgressManager.checkCanceled() // 如果的确被取消，则抛出 `ProcessCanceledException`
+            checkCanceled() // 如果的确被取消，则抛出 `CancellationException`
             val message = "Tiger command was cancelled." +
                 "\nCommand: ${commandLine.commandLineString}"
             throw CancellationException(message)

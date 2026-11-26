@@ -1,5 +1,3 @@
-@file:Suppress("unused", "CanBeParameter")
-
 package icu.windea.pls.core.accessor
 
 class AccessorObject(

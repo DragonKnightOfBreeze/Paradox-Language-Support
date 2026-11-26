@@ -48,7 +48,7 @@ abstract class ParadoxHintsProvider : InlayHintsProvider<ParadoxHintsSettings> {
                 // NOTE 这里需要尽可能返回 `true`，并不是注释所说的“返回 `false` 的话就不遍历子节点”
                 ProgressManager.checkCanceled()
                 try {
-                    with(context) {
+                    context(context) {
                         if (isPreview) {
                             collectForPreview(element, sink)
                         } else {

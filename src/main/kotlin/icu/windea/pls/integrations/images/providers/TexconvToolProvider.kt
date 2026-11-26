@@ -3,7 +3,7 @@ package icu.windea.pls.integrations.images.providers
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.ProcessOutput
-import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.checkCanceled
 import com.intellij.openapi.util.SystemInfo
 import icu.windea.pls.base.io.ChronicleDataPathService
 import icu.windea.pls.core.execution.ExecutionTimeouts
@@ -58,14 +58,14 @@ class TexconvToolProvider : CommandLineBasedImageToolProvider() {
         // texconv 会根据输入文件名在输出目录下生成同名（不同扩展名）的文件
         val outputPath = outputDirectoryPath.resolve(path.nameWithoutExtension + "." + targetFormat)
 
-        convertImageFormatInternal(executablePath, path, outputDirectoryPath, outputPath, targetFormat)
+        convertImageFormatInternal(executablePath, path, outputPath, outputDirectoryPath, targetFormat)
 
         if (outputPath != targetPath) {
             outputPath.moveTo(targetPath, overwrite = true)
         }
     }
 
-    private fun convertImageFormatInternal(executablePath: Path, path: Path, outputDirectoryPath: Path, outputPath: Path, targetFormat: String): ProcessOutput {
+    private suspend fun convertImageFormatInternal(executablePath: Path, path: Path, outputPath: Path, outputDirectoryPath: Path, targetFormat: String): ProcessOutput {
         val commands = listOf(
             executablePath.toString(),
             path.toString(),
@@ -77,11 +77,11 @@ class TexconvToolProvider : CommandLineBasedImageToolProvider() {
             .withWorkingDirectory(executablePath.parent)
             .withCharset(Charsets.UTF_8)
 
-        ProgressManager.checkCanceled()
+        checkCanceled()
         val output = ProcessExecutor(commandLine).withTimeout(ExecutionTimeouts.normal).execute()
 
         if (output.isCancelled) {
-            ProgressManager.checkCanceled() // 如果的确被取消，则抛出 `ProcessCanceledException`
+            checkCanceled() // 如果的确被取消，则抛出 `CancellationException`
             val message = "Failed to convert image: command was cancelled." +
                 "\nCommand: ${commandLine.commandLineString}"
             throw CancellationException(message)

@@ -1,5 +1,3 @@
-@file:Suppress("UnusedVariable")
-
 package icu.windea.pls.core.match.similarity
 
 import com.github.benmanes.caffeine.cache.Cache

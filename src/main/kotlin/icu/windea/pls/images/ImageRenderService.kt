@@ -6,6 +6,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.coroutineToIndicator
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.intellij.util.concurrency.AppExecutorUtil
@@ -145,7 +146,11 @@ class ImageRenderService : Disposable {
         val coroutineScope = ChronicleFacade.getCoroutineScope(project)
         val job = coroutineScope.async {
             withBackgroundProgress(project, ChronicleBundle.message("image.render.progress.title"), cancellable = true) {
-                withContext(Dispatchers.IO) { renderImage(descriptor) }
+                withContext(Dispatchers.IO) {
+                    coroutineToIndicator {
+                        renderImage(descriptor)
+                    }
+                }
             }
         }
         // Note that `runBlockingCancellable` relies on the job/indicator already present on the current thread,

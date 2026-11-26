@@ -17,7 +17,7 @@ import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 object ParadoxScriptFileManipulationService {
     fun members(element: ParadoxScriptMemberContext): WalkingSequence<ParadoxScriptMember> {
         val context = WalkingContext()
-        val delegate = with(context) { builderMembers(element) }
+        val delegate = context(context) { builderMembers(element) }
         return WalkingSequence(delegate, context)
     }
 

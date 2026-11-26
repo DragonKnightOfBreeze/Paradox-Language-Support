@@ -82,7 +82,7 @@ class TigerLintToolService : Disposable {
         val gameType = request.gameType
         val tool = findTool(gameType) ?: throw UnsupportedOperationException("Unsupported: Tiger lint tool is not available for ${gameType.id}.")
         warnIfIncorrectContext(tool)
-        return with(tool) {
+        return context(tool) {
             doValidateRootDirectory(request)
         }
     }

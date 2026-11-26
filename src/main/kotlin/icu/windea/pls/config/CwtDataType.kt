@@ -59,7 +59,7 @@ class CwtDataType private constructor(
     override fun toString() = "CwtDataType(id=$id)"
 
     class Builder(
-        private val id: String
+        private val id: String,
     ) {
         private var isReference: Boolean = false
         private var priority: Double? = null
@@ -69,15 +69,14 @@ class CwtDataType private constructor(
         fun withPriority(value: Double) = apply { priority = value }
         fun withPriority(value: (CwtDataExpression, CwtConfigGroup) -> Double) = apply { priorityProvider = value }
 
-        fun build(): CwtDataType = CwtDataType(id, isReference, priority, priorityProvider).also { _entries[id] = it }
+        fun build(): CwtDataType = CwtDataType(id, isReference, priority, priorityProvider).also { entries[id] = it }
         inline fun build(block: Builder.() -> Unit): CwtDataType = also { block() }.build()
     }
 
     companion object {
-        private val _entries = mutableMapOf<String, CwtDataType>()
-
         @JvmStatic
-        val entries: Map<String, CwtDataType> get() = _entries
+        val entries: Map<String, CwtDataType>
+            field = mutableMapOf<String, CwtDataType>()
 
         @JvmStatic
         fun builder(id: String): Builder = Builder(id)

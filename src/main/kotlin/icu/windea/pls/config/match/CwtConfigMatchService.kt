@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package icu.windea.pls.config.match
 
 import com.intellij.util.Processor

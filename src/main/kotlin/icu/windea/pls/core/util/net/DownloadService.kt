@@ -4,7 +4,7 @@ package icu.windea.pls.core.util.net
 
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProcessCanceledException
-import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.checkCanceled
 import com.intellij.platform.util.progress.RawProgressReporter
 import com.intellij.util.concurrency.AppExecutorUtil
 import icu.windea.pls.core.util.io.deleteQuietly
@@ -13,7 +13,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.job
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -27,7 +26,7 @@ import java.net.http.HttpResponse
 import java.nio.file.Path
 import java.security.MessageDigest
 import java.time.Duration
-import java.util.Locale
+import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.io.path.createDirectories
@@ -82,6 +81,7 @@ object DownloadService {
         }
     }
 
+    @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun downloadOnce(
         uri: URI,
         targetPath: Path,
@@ -90,6 +90,7 @@ object DownloadService {
         sha256: String?,
         rawReporter: RawProgressReporter?,
     ): DownloadResult {
+        checkCanceled()
         targetPath.parent?.createDirectories()
         val proxy = ProxyService.resolve(uri)
         val client = createHttpClient(proxy, options)
@@ -107,6 +108,7 @@ object DownloadService {
         }
         val contentLength = response.headers().firstValueAsLong("Content-Length").orElse(-1L)
 
+        checkCanceled()
         val digest = MessageDigest.getInstance("SHA-256")
         var downloaded = 0L
         val startedAt = System.nanoTime()
@@ -131,8 +133,7 @@ object DownloadService {
                 partPath.outputStream().buffered().use { output ->
                     val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
                     while (true) {
-                        currentCoroutineContext().ensureActive()
-                        ProgressManager.checkCanceled()
+                        checkCanceled()
                         val length = input.read(buffer)
                         if (length < 0) break
                         lastActivity.set(System.nanoTime())

@@ -12,8 +12,8 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.ide.progress.TaskCancellation
-import com.intellij.platform.ide.progress.runWithModalProgressBlocking
 import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.intellij.platform.ide.progress.withModalProgress
 import com.intellij.platform.util.coroutines.forEachConcurrent
 import com.intellij.platform.util.progress.reportProgress
 import com.intellij.util.application
@@ -213,7 +213,7 @@ class CwtConfigGroupService(private val project: Project = getDefaultProject()) 
         withContext(Dispatchers.EDT) {
             // 显示可以取消的模态进度条
             val title = ChronicleBundle.message("configGroup.refresh.builtin.progress.title")
-            runWithModalProgressBlocking(project, title) {
+            withModalProgress(project, title) {
                 files.forEach { file ->
                     VfsUtil.markDirtyAndRefresh(false, true, true, file)
                     logger.info("Refreshed built-in config files under '${file.canonicalPath}' for project '${project.name}'.")

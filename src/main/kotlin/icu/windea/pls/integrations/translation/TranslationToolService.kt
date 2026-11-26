@@ -23,7 +23,7 @@ class TranslationToolService : Disposable {
     @Throws(UnsupportedOperationException::class)
     suspend fun translate(text: String, sourceLocale: String?, targetLocale: String): String? {
         val tool = findTool() ?: throw UnsupportedOperationException("Unsupported: No available translation tool found.")
-        return with(tool) {
+        return context(tool) {
             doTranslate(text, sourceLocale, targetLocale)
         }
     }
@@ -32,7 +32,7 @@ class TranslationToolService : Disposable {
     @Throws(UnsupportedOperationException::class)
     suspend fun translate(text: String, sourceLocale: CwtLocaleConfig?, targetLocale: CwtLocaleConfig): String? {
         val tool = findTool() ?: throw UnsupportedOperationException("Unsupported: No available translation tool found.")
-        return with(tool) {
+        return context(tool) {
             doTranslate(text, sourceLocale, targetLocale)
         }
     }

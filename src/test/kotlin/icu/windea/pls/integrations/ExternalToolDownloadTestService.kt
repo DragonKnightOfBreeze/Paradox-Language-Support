@@ -7,9 +7,11 @@ import icu.windea.pls.core.execution.ProcessExecutor
 import icu.windea.pls.core.util.io.ArchiveType
 import icu.windea.pls.core.util.io.PathService
 import icu.windea.pls.core.util.io.deleteQuietly
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import org.junit.Assert
 import java.nio.file.Files
 import java.nio.file.Path
@@ -129,9 +131,14 @@ object ExternalToolDownloadTestService {
     private const val MARKER_FILE_NAME = ".downloaded-tool"
 
     fun ensureTool(descriptor: ExternalToolDownloadDescriptor): Path {
-        return runBlocking { ensureToolSuspend(descriptor) }
+        return runBlocking {
+            withContext(Dispatchers.IO) {
+                ensureToolSuspend(descriptor)
+            }
+        }
     }
 
+    @Suppress("BlockingMethodInNonBlockingContext")
     suspend fun ensureToolSuspend(descriptor: ExternalToolDownloadDescriptor): Path {
         val targetDirectory = root.resolve(descriptor.name)
         PathService.findExecutable(targetDirectory, descriptor.executableName)?.let {

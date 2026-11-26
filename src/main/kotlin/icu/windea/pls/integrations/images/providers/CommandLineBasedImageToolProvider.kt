@@ -13,8 +13,10 @@ import icu.windea.pls.core.util.io.IoService
 import icu.windea.pls.core.util.io.deleteQuietly
 import icu.windea.pls.core.util.io.moveToAtomically
 import icu.windea.pls.integrations.images.ImageToolProvider
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.io.OutputStream
@@ -90,27 +92,29 @@ abstract class CommandLineBasedImageToolProvider : ImageToolProvider {
 
         return ProgressManager.getInstance().runProcess<BufferedImage>({
             runBlockingCancellable {
-                val mutex = getCachePathMutex(cachePath)
-                mutex.withLock {
-                    // double-check：可能已被并发请求写入（此时无需落盘源临时文件）
-                    decodeCachedImage(cachePath, targetFormat)?.let { return@withLock it }
+                withContext(Dispatchers.IO) { // switch to `Dispatchers.IO` first
+                    val mutex = getCachePathMutex(cachePath)
+                    mutex.withLock {
+                        // double-check：可能已被并发请求写入（此时无需落盘源临时文件）
+                        decodeCachedImage(cachePath, targetFormat)?.let { return@withLock it }
 
-                    val sourceTempPath = getTempDirectory().resolve("${UUID.randomUUID()}.$sourceFormat")
-                    val targetTempPath = getTempDirectory().resolve("${UUID.randomUUID()}.$targetFormat")
-                    try {
-                        stream.seek(startPos)
-                        sourceTempPath.outputStream().use { outputStream ->
-                            IoService.copy(ImageInputStreamAdapter(stream), outputStream)
+                        val sourceTempPath = getTempDirectory().resolve("${UUID.randomUUID()}.$sourceFormat")
+                        val targetTempPath = getTempDirectory().resolve("${UUID.randomUUID()}.$targetFormat")
+                        try {
+                            stream.seek(startPos)
+                            sourceTempPath.outputStream().use { outputStream ->
+                                IoService.copy(ImageInputStreamAdapter(stream), outputStream)
+                            }
+                            doConvertImageFormat(sourceTempPath, targetTempPath, sourceFormat, targetFormat)
+                            if (!ImageIoService.isValidImageFile(targetTempPath, targetFormat)) {
+                                throw IllegalStateException("Invalid image file after conversion: $targetTempPath")
+                            }
+                            targetTempPath.moveToAtomically(cachePath)
+                            cachePath.inputStream().use { inputStream -> ImageIoService.readImage(inputStream) }
+                        } finally {
+                            sourceTempPath.deleteQuietly() // 确保删除源临时文件
+                            targetTempPath.deleteQuietly() // 确保删除未移动成功的临时输出文件
                         }
-                        doConvertImageFormat(sourceTempPath, targetTempPath, sourceFormat, targetFormat)
-                        if (!ImageIoService.isValidImageFile(targetTempPath, targetFormat)) {
-                            throw IllegalStateException("Invalid image file after conversion: $targetTempPath")
-                        }
-                        targetTempPath.moveToAtomically(cachePath)
-                        cachePath.inputStream().use { inputStream -> ImageIoService.readImage(inputStream) }
-                    } finally {
-                        sourceTempPath.deleteQuietly() // 确保删除源临时文件
-                        targetTempPath.deleteQuietly() // 确保删除未移动成功的临时输出文件
                     }
                 }
             }

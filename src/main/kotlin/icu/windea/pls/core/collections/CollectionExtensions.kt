@@ -70,7 +70,7 @@ inline fun <T, K, V, M : MutableMap<in K, in V>> Iterable<T>.associateByNotNullT
 
 /** 将类型为 [R] 且满足 [predicate] 的元素过滤为列表。 */
 inline fun <reified R> Iterable<*>.filterIsInstance(predicate: (R) -> Boolean): List<R> {
-    return filterIsInstanceTo(ArrayList<R>(), predicate)
+    return filterIsInstanceTo(ArrayList(), predicate)
 }
 
 /** 将类型为 [R] 且满足 [predicate] 的元素过滤到指定的 [destination]。 */

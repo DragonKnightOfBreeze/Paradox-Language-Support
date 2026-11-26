@@ -8,6 +8,8 @@ import com.intellij.diagram.presentation.DiagramLineType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.checkCanceled
+import com.intellij.openapi.progress.coroutineToIndicator
 import com.intellij.openapi.progress.runBlockingCancellable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.ModificationTracker
@@ -232,6 +234,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                     sReporter.nextStep(25, step2) {
                         reportProgressScope(size) { reporter ->
                             technologies.forEach { technology ->
+                                checkCanceled()
                                 reporter.itemStep(step2) {
                                     readAction { createNode(technology) }
                                 }
@@ -243,6 +246,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                     sReporter.nextStep(50, step3) {
                         reportProgressScope(size) { reporter ->
                             technologies.forEach { technology ->
+                                checkCanceled()
                                 reporter.itemStep {
                                     readAction { createEdges(technology) }
                                 }
@@ -254,6 +258,7 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                     sReporter.nextStep(if (showPresentation) 75 else 100, step4) {
                         reportProgressScope(size) { reporter ->
                             technologies.forEach { technology ->
+                                checkCanceled()
                                 reporter.itemStep {
                                     readAction { preloadData(technology) }
                                 }
@@ -268,20 +273,9 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                         sReporter.nextStep(100, step5) {
                             reportProgressScope(size) { reporter ->
                                 technologies.forEach { technology ->
+                                    checkCanceled()
                                     reporter.itemStep {
-                                        ProgressManager.checkCanceled()
-                                        val model = getNodeModel(technology) ?: return@itemStep
-                                        val cardModel = model.cardModel ?: return@itemStep
-                                        if (model.cardAssets != null) return@itemStep
-                                        val cardBuilder = StellarisTechnologyCardBuilder(technology, project)
-                                        val assets: StellarisTechnologyCardAssets? = runBlockingCancellable {
-                                            cardBuilder.materializeAssets(cardModel)
-                                        }
-                                        if (assets == null) {
-                                            model.cardAssetsFailed = true
-                                        } else {
-                                            model.cardAssets = assets
-                                        }
+                                        coroutineToIndicator { materializeAssets(technology) }
                                     }
                                 }
                             }
@@ -356,6 +350,22 @@ abstract class ParadoxTechTreeDiagramProvider(gameType: ParadoxGameType) : Parad
                 cardModel = cardModel,
             )
             putNodeModel(technology, model)
+        }
+
+        private fun materializeAssets(technology: ParadoxDefinitionElement) {
+            ProgressManager.checkCanceled()
+            val model = getNodeModel(technology) ?: return
+            val cardModel = model.cardModel ?: return
+            if (model.cardAssets != null) return
+            val cardBuilder = StellarisTechnologyCardBuilder(technology, project)
+            val assets: StellarisTechnologyCardAssets? = runBlockingCancellable {
+                cardBuilder.materializeAssets(cardModel)
+            }
+            if (assets == null) {
+                model.cardAssetsFailed = true
+            } else {
+                model.cardAssets = assets
+            }
         }
 
         override fun getModificationTracker(): ModificationTracker {

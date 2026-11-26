@@ -20,8 +20,8 @@ open class ObservableProperty<T, V>(
     @Volatile
     protected var value: Any? = EMPTY_OBJECT
 
-    @Suppress("UNCHECKED_CAST")
     /** 读取当前投影值，若源值发生变化则重新计算。 */
+    @Suppress("UNCHECKED_CAST")
     override fun getValue(thisRef: Any?, property: KProperty<*>): V {
         val newTargetValue = target.get()
         if (value === EMPTY_OBJECT) {
