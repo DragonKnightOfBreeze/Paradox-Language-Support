@@ -65,14 +65,10 @@ object ParadoxExpressionManager {
      * - 快速判断，不检查携带参数后的语法是否合法。
      * - 仅接受长度大于 2 的字符串。
      */
-    fun isParameterized(text: String, conditionBlock: Boolean = true, full: Boolean = false): Boolean {
+    fun isParameterized(text: String, conditionBlock: Boolean = true): Boolean {
         // 快速判断，不检测带参数后的语法是否合法
         val length = text.length
         if (length < 2) return false
-        if (full) {
-            // `$PARAM$` - 仅限：高级插值语法 A
-            return text[0] == '$' && text.indexOf('$', 1).let { c -> c == length - 1 && !text.isEscapedCharAt(c) }
-        }
         // `a_$PARAM$_b` - 高级插值语法 A
         // `a_[[PARAM]b]_c` - 高级插值语法 B
         for ((i, c) in text.withIndex()) {

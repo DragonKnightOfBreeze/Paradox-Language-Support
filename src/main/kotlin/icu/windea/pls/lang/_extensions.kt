@@ -83,8 +83,8 @@ inline fun <reified T : ParadoxDefinitionPresentation> ParadoxDefinitionElement.
 // region Expression Extensions
 
 /** @see ParadoxExpressionManager.isParameterized */
-fun String.isParameterized(conditionBlock: Boolean = true, full: Boolean = false): Boolean {
-    return ParadoxExpressionManager.isParameterized(this, conditionBlock, full)
+fun String.isParameterized(conditionBlock: Boolean = true): Boolean {
+    return ParadoxExpressionManager.isParameterized(this, conditionBlock)
 }
 
 /** @see ParadoxExpressionManager.isFullParameterized */

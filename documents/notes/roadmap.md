@@ -680,6 +680,7 @@
 #### 任务（次要 / 弹性探索）
 
 - [ ] P3 `icu.windea.pls.ai` 模块轻量化瘦身（剥离 LangChain4J，自研极轻量 HTTP/SSE 客户端）
+- [x] P4 移除 `ParadoxExpressionManager.isParameterized` 的未使用的参数 `full`
 
 ### v3.0.7 {#v3-0-7}
 
