@@ -73,9 +73,9 @@ inline fun CharSequence?.isNotNullOrEmpty(): Boolean {
     return this != null && this.length != 0
 }
 
+/** 判断可空数组是否非空。 */
 @OptIn(ExperimentalContracts::class)
 @Suppress("NOTHING_TO_INLINE", "ReplaceSizeCheckWithIsNotEmpty")
-/** 判断可空数组是否非空。 */
 inline fun Array<*>?.isNotNullOrEmpty(): Boolean {
     contract {
         returns(true) implies (this@isNotNullOrEmpty != null)

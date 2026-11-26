@@ -62,6 +62,7 @@ import com.intellij.psi.util.siblings
 import com.intellij.psi.util.startOffset
 import com.intellij.util.Processor
 import com.intellij.util.Query
+import com.intellij.util.ThreeState
 import com.intellij.util.ThrowableRunnable
 import com.intellij.util.application
 import icu.windea.pls.ChronicleFacade
@@ -87,6 +88,14 @@ import java.util.concurrent.Executor
 import kotlin.reflect.KProperty
 
 // region Common Extensions
+
+fun Boolean.toThreeState(): ThreeState {
+    return if (this) ThreeState.YES else ThreeState.NO
+}
+
+fun Boolean?.toThreeState(): ThreeState {
+    return if (this == null) ThreeState.UNSURE else if (this) ThreeState.YES else ThreeState.NO
+}
 
 inline fun <T : Any> Ref<T?>.mergeValue(value: T?, mergeAction: (T, T) -> T?): Boolean {
     val oldValue = this.get()

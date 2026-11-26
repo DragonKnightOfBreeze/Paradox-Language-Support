@@ -25,7 +25,6 @@ import kotlinx.coroutines.coroutineScope
  * @see ParadoxDocumentationService
  * @see ParadoxQuickDocTextProvider
  */
-@Suppress("UnstableApiUsage")
 class ParadoxDocumentationTarget(
     val element: PsiElement,
     val originalElement: PsiElement?,

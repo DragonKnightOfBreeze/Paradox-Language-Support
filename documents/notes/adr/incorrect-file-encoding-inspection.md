@@ -14,7 +14,7 @@
 - For other game types, do not check bom for script files (maybe `BOM` or `NO BOM`, there is no ideal way to check)
 
 相关代码位置：
-- `icu.windea.pls.lang.analysis.ParadoxFileEncodingService`
+- `icu.windea.pls.lang.vfs.ParadoxFileEncodingService`
 - `icu.windea.pls.lang.inspections.ParadoxFileInspectionService`
 - `icu.windea.pls.lang.inspections.script.common.IncorrectFileEncodingInspection`
 - `icu.windea.pls.lang.inspections.localisation.common.IncorrectFileEncodingInspection`

@@ -22,7 +22,6 @@ import kotlinx.coroutines.coroutineScope
 /**
  * @see CwtDocumentationManager
  */
-@Suppress("UnstableApiUsage")
 class CwtDocumentationTarget(
     val element: PsiElement,
     val originalElement: PsiElement?,
