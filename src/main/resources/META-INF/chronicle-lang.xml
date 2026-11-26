@@ -263,20 +263,34 @@
         implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxDefinitionReferenceInfoSettingsProvider"
         providerId="paradox.csv.definitionReferenceInfo"/>
 
+    <!--suppress UnstableExtensionsUsage -->
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxScriptedVariableHintTextHintsProvider"/>
+    <!--suppress UnstableExtensionsUsage -->
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionHintTextHintsProvider"/>
+    <!--suppress UnstableExtensionsUsage -->
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDefinitionReferenceHintTextHintsProvider"/>
+    <!--suppress UnstableExtensionsUsage -->
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxLocalisationReferenceHintsProvider"/>
+    <!--suppress UnstableExtensionsUsage -->
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxModifierIconHintsProvider"/>
+    <!--suppress UnstableExtensionsUsage -->
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxModifierPresentableNameHintsProvider"/>
+    <!--suppress UnstableExtensionsUsage -->
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxComplexEnumValueHintTextHintsProvider"/>
+    <!--suppress UnstableExtensionsUsage -->
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxDynamicValueHintTextHintsProvider"/>
+    <!--suppress UnstableExtensionsUsage -->
     <codeInsight.inlayProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.hints.script.ParadoxScopeContextInfoHintsProvider"/>
+    <!--suppress UnstableExtensionsUsage -->
     <codeInsight.inlayProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationIconHintsProvider"/>
+    <!--suppress UnstableExtensionsUsage -->
     <codeInsight.inlayProvider language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.lang.codeInsight.hints.localisation.ParadoxLocalisationReferenceHintsProvider"
                                settingsKeyId="paradox.localisation.localisationReference" isEnabledByDefault="false"/>
+    <!--suppress UnstableExtensionsUsage -->
     <codeInsight.inlayProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxDefinitionReferenceHintTextHintsProvider"/>
+    <!--suppress UnstableExtensionsUsage -->
     <codeInsight.inlayProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxComplexEnumValueHintTextHintsProvider"/>
+    <!--suppress UnstableExtensionsUsage -->
     <codeInsight.inlayProvider language="PARADOX_CSV" implementationClass="icu.windea.pls.lang.codeInsight.hints.csv.ParadoxDynamicValueHintTextHintsProvider"/>
 
     <codeInsight.lineMarkerProvider language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.codeInsight.markers.script.ParadoxScriptedVariableLineMarkerProvider"/>
@@ -342,6 +356,8 @@
     <gotoSymbolContributor implementation="icu.windea.pls.lang.navigation.ParadoxLocalisationChooseByNameContributor"/>
     <gotoSymbolContributor implementation="icu.windea.pls.lang.navigation.ParadoxSyncedLocalisationChooseByNameContributor"/>
 
+    <!-- Migration to `SeItemsProviderFactory` is deferred: on the 263 baseline that API is still `@ApiStatus.Experimental`, so keep the legacy `searchEverywhereContributor` for now. -->
+    <!--suppress PluginXmlValidity -->
     <searchEverywhereContributor implementation="icu.windea.pls.lang.navigation.ParadoxTargetByTextSearchContributor$Factory"/>
 
     <lang.refactoringSupport language="PARADOX" implementationClass="icu.windea.pls.lang.refactoring.ParadoxRefactoringSupportProvider"/>
@@ -450,13 +466,13 @@
   <extensions defaultExtensionNs="com.intellij">
     <customizableActionGroupProvider implementation="icu.windea.pls.lang.ui.floating.ParadoxLocalisationFloatingToolbarCustomizableGroupProvider"/>
 
-    <!--suppress PluginXmlValidity -->
+    <!--suppress PluginXmlValidity, UnstableExtensionsUsage -->
     <lang.floatingToolbar language="CWT" minimal="true"/>
-    <!--suppress PluginXmlValidity -->
+    <!--suppress PluginXmlValidity, UnstableExtensionsUsage -->
     <lang.floatingToolbar language="PARADOX_SCRIPT" minimal="true"/>
-    <!--suppress PluginXmlValidity -->
+    <!--suppress PluginXmlValidity, UnstableExtensionsUsage -->
     <lang.floatingToolbar language="PARADOX_LOCALISATION" minimal="true" actionGroup="Pls.Localisation.Toolbar.Floating"/>
-    <!--suppress PluginXmlValidity -->
+    <!--suppress PluginXmlValidity, UnstableExtensionsUsage -->
     <lang.floatingToolbar language="PARADOX_CSV" minimal="true"/>
   </extensions>
 

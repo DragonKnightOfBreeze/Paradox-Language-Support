@@ -36,7 +36,8 @@
     <extendWordSelectionHandler implementation="icu.windea.pls.script.editor.wordSelection.ParadoxScriptInlineMathWordSelectionHandler"/>
     <basicWordSelectionFilter implementation="icu.windea.pls.script.editor.wordSelection.ParadoxScriptWordSelectionFilter"/>
 
-    <colorSettingsPage implementation="icu.windea.pls.script.highlighting.ParadoxScriptColorSettingsPage"/>
+    <colorSettings implementation="icu.windea.pls.script.highlighting.ParadoxScriptColorSettingsPage"
+                   bundle="messages.ChronicleBundle" key="script.color.settings.displayName" id="paradox.script"/>
     <lang.syntaxHighlighterFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.highlighting.ParadoxScriptSyntaxHighlighterFactory"/>
 
     <lang.psiStructureViewFactory language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.script.structureView.ParadoxScriptStructureViewFactory"/>

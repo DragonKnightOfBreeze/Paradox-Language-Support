@@ -353,38 +353,42 @@ tasks {
     lexerTasks.forEach { (taskName, sourcePath) ->
         register<GenerateLexerTask>(taskName) {
             group = "grammar kit"
+            description = "Generate the lexer for ${sourcePath.substringAfterLast('/')}."
             sourceFile.set(file(sourcePath))
             targetRootOutputDir.set(file("src/main/gen"))
             purgeOldFiles.set(false)
             skeleton.set(file("idea-flex.skeleton"))
-            classpath = classpath + configurations[Configurations.INTELLIJ_PLATFORM_JFLEX]
+            classpath += configurations[Configurations.INTELLIJ_PLATFORM_JFLEX]
         }
     }
     parserTasks.forEach { (taskName, sourcePath, outputPaths) ->
         val (pathToParser, pathToPsiRoot) = outputPaths
         register<GenerateParserTask>(taskName) {
             group = "grammar kit"
+            description = "Generate the parser for ${sourcePath.substringAfterLast('/')}."
             sourceFile.set(file(sourcePath))
             targetRootOutputDir.set(file("src/main/gen"))
             purgeOldFiles.set(false)
             this.pathToParser.set(pathToParser)
             this.pathToPsiRoot.set(pathToPsiRoot)
-            classpath = classpath +
-                configurations[Configurations.INTELLIJ_PLATFORM_GRAMMAR_KIT] +
+            classpath += configurations[Configurations.INTELLIJ_PLATFORM_GRAMMAR_KIT] +
                 configurations[Configurations.INTELLIJ_PLATFORM_CLASSPATH]
         }
     }
 
     register("generateLexers") {
         group = "grammar kit"
+        description = "Generate all lexers."
         dependsOn(lexerTasks.map { it.first })
     }
     register("generateParsers") {
         group = "grammar kit"
+        description = "Generate all parsers."
         dependsOn(parserTasks.map { it.first })
     }
     register("generateGrammars") {
         group = "grammar kit"
+        description = "Generate all lexers and parsers."
         dependsOn("generateLexers", "generateParsers")
     }
 

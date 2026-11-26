@@ -17,7 +17,8 @@
     <lang.quoteHandler language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.editor.ParadoxCsvQuoteHandler"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.csv.editor.wordSelection.ParadoxCsvQuoteAwareWordSelectionHandler"/>
 
-    <colorSettingsPage implementation="icu.windea.pls.csv.highlighting.ParadoxCsvColorSettingsPage"/>
+    <colorSettings implementation="icu.windea.pls.csv.highlighting.ParadoxCsvColorSettingsPage"
+                   bundle="messages.ChronicleBundle" key="csv.color.settings.displayName" id="paradox.csv"/>
     <lang.syntaxHighlighterFactory language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.highlighting.ParadoxCsvSyntaxHighlighterFactory"/>
     <annotator language="PARADOX_CSV" implementationClass="icu.windea.pls.csv.highlighting.ParadoxCsvHighlightingAnnotator"/>
 

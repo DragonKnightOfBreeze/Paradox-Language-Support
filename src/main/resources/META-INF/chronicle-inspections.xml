@@ -2,15 +2,15 @@
   <resource-bundle>messages.ChronicleBundle</resource-bundle>
 
   <extensions defaultExtensionNs="com.intellij">
-    <!--suppress PluginXmlValidity -->
+    <!--suppress PluginXmlValidity, UnstableExtensionsUsage -->
     <inspection.basicVisitor class="icu.windea.pls.core.psi.PsiFileOnlyVisitor"/>
-    <!--suppress PluginXmlValidity -->
+    <!--suppress PluginXmlValidity, UnstableExtensionsUsage -->
     <inspection.basicVisitor class="icu.windea.pls.script.psi.ParadoxScriptVisitor"/>
-    <!--suppress PluginXmlValidity -->
+    <!--suppress PluginXmlValidity, UnstableExtensionsUsage -->
     <inspection.basicVisitor class="icu.windea.pls.localisation.psi.ParadoxLocalisationVisitor"/>
-    <!--suppress PluginXmlValidity -->
+    <!--suppress PluginXmlValidity, UnstableExtensionsUsage -->
     <inspection.basicVisitor class="icu.windea.pls.csv.psi.ParadoxCsvVisitor"/>
-    <!--suppress PluginXmlValidity -->
+    <!--suppress PluginXmlValidity, UnstableExtensionsUsage -->
     <inspection.basicVisitor class="icu.windea.pls.lang.psi.ParadoxPsiElementVisitor"/>
 
     <lang.inspectionSuppressor language="PARADOX_SCRIPT" implementationClass="icu.windea.pls.lang.inspections.suppress.ParadoxScriptInspectionSuppressor"/>

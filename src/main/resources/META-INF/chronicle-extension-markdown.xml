@@ -1,5 +1,6 @@
 <idea-plugin>
   <extensions defaultExtensionNs="com.intellij">
+    <!--suppress UnstableExtensionsUsage -->
     <psi.implicitReferenceProvider implementation="icu.windea.pls.extensions.markdown.psi.MarkdownInlineCodeReferenceProvider"/>
 
     <localInspection language="Markdown" shortName="ChronicleMarkdownUnresolvedReferenceLink"

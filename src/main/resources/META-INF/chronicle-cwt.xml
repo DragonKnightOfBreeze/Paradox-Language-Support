@@ -30,7 +30,8 @@
     <extendWordSelectionHandler implementation="icu.windea.pls.cwt.editor.worldSelection.CwtBlockWordSelectionHandler"/>
     <basicWordSelectionFilter implementation="icu.windea.pls.cwt.editor.worldSelection.CwtWordSelectionFilter"/>
 
-    <colorSettingsPage implementation="icu.windea.pls.cwt.highlighting.CwtColorSettingsPage"/>
+    <colorSettings implementation="icu.windea.pls.cwt.highlighting.CwtColorSettingsPage"
+                   bundle="messages.ChronicleBundle" key="cwt.settings.name" id="paradox.cwt"/>
     <lang.syntaxHighlighterFactory language="CWT" implementationClass="icu.windea.pls.cwt.highlighting.CwtSyntaxHighlighterFactory"/>
 
     <lang.psiStructureViewFactory language="CWT" implementationClass="icu.windea.pls.cwt.structureView.CwtStructureViewFactory"/>

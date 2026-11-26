@@ -12,7 +12,7 @@
   <!-- Dependencies of the guide book -->
   <depends>com.intellij.modules.lang</depends>
   <depends>com.intellij.platform.images</depends>
-  <depends optional="true">com.intellij.modules.jna</depends>
+  <depends optional="true" config-file="chronicle-extension-jna.xml">com.intellij.modules.jna</depends>
   <depends optional="true" config-file="chronicle-extension-json.xml">com.intellij.modules.json</depends>
   <depends optional="true" config-file="chronicle-extension-markdown.xml">org.intellij.plugins.markdown</depends>
   <depends optional="true" config-file="chronicle-extension-diagram.xml">com.intellij.diagram</depends>

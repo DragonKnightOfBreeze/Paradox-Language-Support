@@ -27,7 +27,8 @@
     <extendWordSelectionHandler implementation="icu.windea.pls.localisation.editor.wordSelection.ParadoxLocalisationQuoteAwareWordSelectionHandler"/>
     <extendWordSelectionHandler implementation="icu.windea.pls.localisation.editor.wordSelection.ParadoxLocalisationPropertyWordSelectionHandler"/>
 
-    <colorSettingsPage implementation="icu.windea.pls.localisation.highlighting.ParadoxLocalisationColorSettingsPage"/>
+    <colorSettings implementation="icu.windea.pls.localisation.highlighting.ParadoxLocalisationColorSettingsPage"
+                   bundle="messages.ChronicleBundle" key="localisation.color.settings.displayName" id="paradox.localisation"/>
     <lang.syntaxHighlighterFactory language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.highlighting.ParadoxLocalisationSyntaxHighlighterFactory"/>
 
     <lang.psiStructureViewFactory language="PARADOX_LOCALISATION" implementationClass="icu.windea.pls.localisation.structureView.ParadoxLocalisationStructureViewFactory"/>
