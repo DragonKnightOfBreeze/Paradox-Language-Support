@@ -38,7 +38,7 @@ In addition to language features, the plugin also includes:
 - `README.md` and `README_zh.md`: overview and usage for this project.
 - `CONTRIBUTING.md`: guidance for contributors (external PR & community perspective).
 - `AGENTS.md`: guidance for agents.
-- `agents/`: agent workflow files (commands, skills, etc.).
+- `.agents/`: agent workflow files (e.g., commands, skills).
 - `cwt/`: CWT config directories (core and per-game repositories, see `cwt/README.md`).
 - `docs/`: end-user reference documentation (see `docs/README.md` and `docs/README_zh.md`).
 - `documents/`: maintainer documentation (see `documents/README.md` and `documents/README_zh.md`).
