@@ -477,13 +477,13 @@
   <!-- registry keys -->
   <extensions defaultExtensionNs="com.intellij">
     <!-- Note that HTML is not available in registry key descriptions -->
-    <registryKey key="chronicle.settings.presentableTextLimit" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="chronicle.settings.maxImageSizeForQuickDoc" defaultValue="300" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="chronicle.settings.localisationTextFontSizeForQuickDoc" defaultValue="18" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="chronicle.settings.textIconSizeLimitForQuickDoc" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="chronicle.settings.localisationLengthLimitForInlay" defaultValue="60" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="chronicle.settings.iconHeightLimitForInlay" defaultValue="36" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
-    <registryKey key="chronicle.settings.defaultScriptedVariableName" defaultValue="var" description="See PlsInternalSettings on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="chronicle.settings.presentableTextLimit" defaultValue="36" description="See `ChronicleInternalSettings` on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="chronicle.settings.maxImageSizeForQuickDoc" defaultValue="300" description="See `ChronicleInternalSettings` on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="chronicle.settings.localisationTextFontSizeForQuickDoc" defaultValue="18" description="See `ChronicleInternalSettings` on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="chronicle.settings.textIconSizeLimitForQuickDoc" defaultValue="36" description="See `ChronicleInternalSettings` on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="chronicle.settings.localisationLengthLimitForInlay" defaultValue="60" description="See `ChronicleInternalSettings` on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="chronicle.settings.iconHeightLimitForInlay" defaultValue="36" description="See `ChronicleInternalSettings` on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
+    <registryKey key="chronicle.settings.defaultScriptedVariableName" defaultValue="var" description="See `ChronicleInternalSettings` on https://github.com/DragonKnightOfBreeze/Paradox-Language-Support"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">
