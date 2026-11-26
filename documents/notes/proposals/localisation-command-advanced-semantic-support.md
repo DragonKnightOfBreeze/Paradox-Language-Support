@@ -69,7 +69,7 @@ PSI / AST 语法层 (BNF & Lexer) ── 保持稳定扁平
 
 ## 参考与关联
 
-- 词法防御决策：[documents/notes/adr/localisation-command-lexical-defense.md](localisation-command-lexical-defense.md)
+- 词法防御决策：[documents/notes/adr/localisation-command-lexical-defense.md](../adr/localisation-command-lexical-defense.md)
 - 工作区边界评估：`documents/notes/evaluations/vic3-localisation-single-quote-boundary-evaluation.md`
 - 关联 Issue：[#137](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/137)、[#451](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/451)
 - 关联里程碑：Milestone 14 (`complex-expression-refactors`)

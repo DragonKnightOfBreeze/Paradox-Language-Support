@@ -4,7 +4,7 @@
 
 本目录存放插件的自包含架构决策档案（RFC-style ADRs）。
 
-记录技术选型、依赖替换、语言文法与语义支持、规则系统模型扩展，以及未来平台多进程或异步化模型等架构演进的决策因果。文档通常自包含：背景与问题分析、决策方案、关键代码位置、使用说明与实施任务清单。一经实施即封存，永不过期。
+记录技术选型、依赖替换、语言文法与语义支持、规则系统模型扩展，以及未来平台多进程或异步化模型等架构演进的决策因果。文档通常自包含：背景与问题分析、决策方案、关键代码位置、使用说明与实施任务清单。一经实施即封存，历史切片不再追随后续代码微调（仅被推翻时另立新 ADR 并标注 `Supersedes`）。尚未真正落定的探索蓝图与待定提案见 [proposals.md](proposals.md)。
 
 ## 备注
 
@@ -40,6 +40,10 @@
 
 - [将 JSON 序列化框架从 jackson 改为 kotlinx-serialization](adr/replace-jackson-with-kotlinx-serialization.md)
 
+#### 构建逻辑与工程实践
+
+- [重构 `build.gradle.kts`：构建逻辑的封装与约定](adr/refactor-build-gradle-kts.md)
+
 ### 后端（语法支持）
 
 #### 通用
@@ -50,7 +54,6 @@
 - [引号相关](adr/script-syntax-quotes.md)
 - [字符边界相关](adr/script-syntax-character-edge-cases.md)
 - [条件化块相关](adr/script-syntax-conditional-blocks.md)
-- [高级插值](adr/script-syntax-advanced-interpolations.md)
 - [未整理](adr/script-syntax-misc.md)
 
 #### 本地化文件
@@ -59,7 +62,6 @@
 - [引号相关](adr/localisation-syntax-quotes.md)
 - [字符边界相关](adr/localisation-syntax-character-edge-cases.md)
 - [字符串变体、标签与上下文标签](adr/localisation-syntax-grammatical.md)
-- [高级富文本](adr/localisation-syntax-advanced-rich-text.md)
 - [本地化命令的词法防御机制与边界保护](adr/localisation-command-lexical-defense.md)
 
 #### CSV 文件
@@ -88,6 +90,7 @@
 - [颜色处理](adr/color-pattern.md)
 - [提供轻量化的推流（push stream）](adr/push-stream.md)
 - [优化命令行执行逻辑和图片处理逻辑](adr/command-line-and-image-processing-optimization.md)
+- [命令行执行与图片处理优化：最终总结](adr/command-line-and-image-processing-optimization-summary.md)
 - [重构 JSON 服务，提供统一入口，额外兼容 UTF-8 BOM](adr/json-service-refactoring.md)
 - [统一 IO 与下载选项体系、引入可监视流及重试机制](adr/io-and-download-options-unification.md)
 - [统一 `ImageDescriptor` 模型并分离图片层与语义层职责](adr/image-descriptor-unification.md)
@@ -118,11 +121,6 @@
 - [关于作为通配策略的数据类型的相关重构](adr/wildcard-data-types.md)
 - [支持位置感知的数据类型](adr/location-aware-data-types.md)
 - [支持片段匹配](adr/snippet-match.md)
-- [支持匹配带前缀标签的脚本表达式](adr/prefix-tag-match.md)
-
-#### 索引
-
-- [为合并索引引入线程本地的上下文](adr/merged-index-thread-context.md)
 
 #### 分析
 
@@ -137,7 +135,6 @@
 
 - [完善作用域的匹配和合并逻辑，兼容并集作用域](adr/union-scopes.md)
 - [引入 `ParadoxAnnotatedData`](adr/annotated-data-api.md)
-- [引入 `ParadoxData` 和 `ParadoxDataSource`](adr/data-api.md)
 - [重构 service/manager 层的 relatedItems/presentableItems 相关的方法](adr/related-items-and-presentable-items.md)
 
 #### 语言构造支持
@@ -147,8 +144,6 @@
 - [[CK3/VIC3/EU5] 完善对定值引用表达式（defineReferenceExpression）和数组定值表达式（arrayDefineReferenceExpression）的支持](adr/define-reference-expression-support.md)
 - [[CK3/VIC3/EU5] 完善对标签集表达式（tagsExpression）的支持](adr/tags-expression-support.md)
 - [完善对 CSV 文件与 rowConfig 的支持](adr/csv-and-row-config-support.md)
-- [支持内联定义](adr/inline-definition.md)
-- [[VIC3/CK3] 本地化命令的高级复杂表达式与单引号字面量语义支持](adr/localisation-command-advanced-semantic-support.md)
 
 #### 语言功能支持
 

@@ -29,3 +29,8 @@
 - [ ] `icu.windea.pls.model.data.ParadoxDataSource`
 - [ ] `icu.windea.pls.model.lang.ParadoxDataFactory`
 - [ ] `icu.windea.pls.model.lang.ParadoxDataImpls.kt` - 一组预定义且按需提供的模型实现
+
+早期补充思路（原 `api-refactors` 主题，供收敛参考）：
+
+- 数据应是接近原始状态的结构化数据，适用于脚本/本地化/定义等，可通过属性委托或数据模型类获取，通常是经过解析（`@sv`）和评估（`@[...]`）的；相关逻辑主要位于 `icu.windea.pls.lang.data`。
+- 考虑提供 `dataManager` / `dataResolver`、`ParadoxDataManager`（从表达式模型或 PSI 转换为指定类型的数据）及未来的 `ParadoxJsonDataManager`；考虑移除已有的 `dataProvider` EP（改由直接新增数据模型类扩展，按需仅提供特定游戏类型与定义类型的模型实现）。

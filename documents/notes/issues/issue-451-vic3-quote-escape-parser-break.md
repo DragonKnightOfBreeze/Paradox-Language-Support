@@ -198,4 +198,4 @@ c == 'q' || c == 'Q' -> {
 - 关联 Issue：https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/451
 - 前置 Issue：https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/137
 - 词法防御决策：[documents/notes/adr/localisation-command-lexical-defense.md](../adr/localisation-command-lexical-defense.md)
-- 进阶语义决策：[documents/notes/adr/localisation-command-advanced-semantic-support.md](../adr/localisation-command-advanced-semantic-support.md)
+- 进阶语义提案：[documents/notes/proposals/localisation-command-advanced-semantic-support.md](../proposals/localisation-command-advanced-semantic-support.md)

@@ -94,9 +94,9 @@ IDEA 2025.2 引入了新的 `NestedLocksThreadingSupport` 读写许可调度（�
 
 ## 四、相关上下文
 
-- [P18（问题追踪）](../../notes/issues/p18-startup-freeze-profiling.md)：本问题的记录入口，含 profiling 数据与初步结论。
-- [P3（问题追踪）](../../notes/issues/p03-inline-script-injection-freeze.md)：此前类似问题，结论同样源于锁行为差异（`LoadingCache.get`/`getOrPut` 等）。
-- [P17（问题追踪）](../../notes/issues/p17-cannot-find-scheme-islands-dark.md)：同为 IDEA 版本兼容性问题的参照（IDE 2025.2 报错、2026.2.1 不复现，结论"可忽略"）。
+- [P18（问题追踪）](../issues/p18-startup-freeze-profiling.md)：本问题的记录入口，含 profiling 数据与初步结论。
+- [P3（问题追踪）](../issues/p03-inline-script-injection-freeze.md)：此前类似问题，结论同样源于锁行为差异（`LoadingCache.get`/`getOrPut` 等）。
+- [P17（问题追踪）](../issues/p17-cannot-find-scheme-islands-dark.md)：同为 IDEA 版本兼容性问题的参照（IDE 2025.2 报错、2026.2.1 不复现，结论"可忽略"）。
 - 相关代码位置：
   - `icu.windea.pls.config.configGroup.CwtConfigGroupService`（`initConfigGroupsAsync`、`processConfigGroups`，CwtConfigGroupService.kt:79）
   - `icu.windea.pls.ep.config.configGroup.CwtFileBasedConfigGroupProcessor`（逐文件 `readAction`，CwtConfigGroupProcessors.FileBased.kt:115）

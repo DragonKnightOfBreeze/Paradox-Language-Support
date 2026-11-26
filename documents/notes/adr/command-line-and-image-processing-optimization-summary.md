@@ -17,7 +17,7 @@
 - 补充图片 IO、外部工具和设置相关的测试；
 - 清理不再需要的渲染策略和重复设置。
 
-人工编写的 ADR 位于 [`documents/notes/adr/command-line-and-image-processing-optimization.md`](../../notes/adr/command-line-and-image-processing-optimization.md)。本文以最终状态为主，补充实现细节、备选方案和后续可评估事项。
+主体 ADR 位于 [`documents/notes/adr/command-line-and-image-processing-optimization.md`](command-line-and-image-processing-optimization.md)。本文以最终状态为主，补充实现细节、备选方案和后续可评估事项。
 
 ## 最终目标
 
@@ -213,8 +213,8 @@
   - 外部工具下载失败或超时。
 - `DownloadServiceTest` 已通过 `Assume` 在检测到系统代理时跳过本地下载测试。
 - 具体代理排查与 Gradle/JVM 信任库问题另见：
-  - [`documents/ai-notes/solutions/download-service-system-proxy.md`](../solutions/download-service-system-proxy.md)
-  - [`documents/ai-notes/solutions/gradle-download-ssl-handshake-failure.md`](../solutions/gradle-download-ssl-handshake-failure.md)
+  - [`documents/notes/solutions/download-service-system-proxy.md`](../solutions/download-service-system-proxy.md)
+  - [`documents/notes/solutions/gradle-download-ssl-handshake-failure.md`](../solutions/gradle-download-ssl-handshake-failure.md)
 
 ## 备选方案
 

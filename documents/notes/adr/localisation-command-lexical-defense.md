@@ -64,4 +64,4 @@ some_loc_key: "Some text about this [Concept('concept_gate_magic_ethic','$concep
 ## 参考与关联
 
 - 案卷档案：[documents/notes/issues/issue-451-vic3-quote-escape-parser-break.md](../issues/issue-451-vic3-quote-escape-parser-break.md)
-- 进阶语义决策：[documents/notes/adr/localisation-command-advanced-semantic-support.md](localisation-command-advanced-semantic-support.md)
+- 进阶语义提案：[documents/notes/proposals/localisation-command-advanced-semantic-support.md](../proposals/localisation-command-advanced-semantic-support.md)

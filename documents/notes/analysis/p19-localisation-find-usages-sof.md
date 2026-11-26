@@ -74,8 +74,8 @@ ParadoxLocalisationFindUsagesProvider.getType (kt:28)
 
 ## 四、相关上下文
 
-- [P19（问题追踪）](../../notes/issues/p19-localisation-find-usages-sof.md)：本问题的记录入口。
-- [P17](../../notes/issues/p17-cannot-find-scheme-islands-dark.md)、[P18](../../notes/issues/p18-startup-freeze-profiling.md)：同为"IDEA 2025.2 特有、2026.2.1 不复现"的版本兼容性问题的参照。
+- [P19（问题追踪）](../issues/p19-localisation-find-usages-sof.md)：本问题的记录入口。
+- [P17](../issues/p17-cannot-find-scheme-islands-dark.md)、[P18](../issues/p18-startup-freeze-profiling.md)：同为"IDEA 2025.2 特有、2026.2.1 不复现"的版本兼容性问题的参照。
 - 相关代码位置：
   - `icu.windea.pls.localisation.findUsages.ParadoxLocalisationFindUsagesProvider`（`getType`/`getDescriptiveName`/`getNodeText` 委托 `ElementDescriptionUtil`，ParadoxLocalisationFindUsagesProvider.kt:28/32/36）
   - `icu.windea.pls.localisation.findUsages.ParadoxLocalisationElementDescriptionProvider`（仅覆盖 property）

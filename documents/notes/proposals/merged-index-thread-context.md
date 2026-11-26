@@ -18,3 +18,10 @@
 - [x] `icu.windea.pls.lang.index.ParadoxMergedIndexService`
 - [x] `icu.windea.pls.lang.index.ParadoxMergedIndexContext`
 - [ ] `icu.windea.pls.lang.index.ParadoxMergedIndexThreadContext`
+
+细分任务（来自原主题规划）：
+
+- [ ] P1 优化：引入 `ParadoxMergedIndexThreadContext`，以在构建合并索引时，避免不必要的对常规缓存的访问（`configContext` / `configs` / `definitionInfo` 等）
+- [ ] P1 优化：引入 `ParadoxMergedIndexThreadContext`，以在构建合并索引时，避免不必要的计算（`memberPath` / `rootKeys`）
+
+参见：[performance-profiling.md#a7](../analysis/performance-profiling.md#a7)

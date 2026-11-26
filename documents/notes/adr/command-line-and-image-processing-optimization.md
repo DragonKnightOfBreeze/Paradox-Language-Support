@@ -4,7 +4,7 @@
 > - 版本：v3.0.5
 > - 日期：2026-10-27 ~ 2026-11-03
 > - 状态：已完成（告一段落）
-> - 另见：`documents/notes/adr/command-line-and-image-processing-optimization.md`
+> - 另见：[命令行执行与图片处理优化：最终总结](command-line-and-image-processing-optimization-summary.md)
 
 ## 说明
 

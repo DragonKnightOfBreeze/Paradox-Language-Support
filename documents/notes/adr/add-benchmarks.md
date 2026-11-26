@@ -110,9 +110,9 @@ allOpen {
   - 搁置：涉及多种复杂场景，考虑根据日后的 profiling 来分析对比更真实的性能表现
 - [x] P4 执行已有的所有基准测试，输出报告，并编写分析笔记
   - [x] 输出报告到 `documents/reports/benchmarks/{timestamp}/`，并且保留在仓库中，作为归档
-  - [x] 编写分析笔记 `documents/ai-notes/analysis/benchmarks-3.0.5.md`
+  - [x] 编写分析笔记 `documents/notes/analysis/benchmarks-3.0.5.md`
 - [x] P4 更新相关的文档和笔记
-  - [x] 编写学习笔记 `documents/ai-notes/study/study-jmh.md`
+  - [x] 编写学习笔记 `study-jmh.md`（后于 v3.1.0 抽离并归入 `documents/notes/guidelines/benchmarking.md`）
   - [x] 更新 `documents/notes/guidelines.md`
   - [x] 更新 `documents/notes/adr.md` + 补充 `documents/notes/adr/add-benchmarks.md`
 
@@ -198,8 +198,8 @@ allOpen {
 
 ### 相关笔记
 
-- [x] `documents/ai-notes/analysis/benchmarks-3.0.5.md` - 分析笔记
-- [x] `documents/ai-notes/study/study-jmh.md` - 学习笔记
+- [x] `documents/notes/analysis/benchmarks-3.0.5.md` - 分析笔记
+- [x] `documents/notes/guidelines/benchmarking.md` - 基准测试指南（含原 `study-jmh.md` 实战要点）
 - [x] `documents/notes/adr/add-benchmarks.md` - ADR
 - [x] `documents/notes/guidelines.md` - 其中的相关章节
 - [x] `AGENTS.md` - 受限测试的相关章节 & 补充基准测试的相关章节

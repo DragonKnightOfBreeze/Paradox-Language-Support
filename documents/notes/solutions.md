@@ -25,10 +25,18 @@
 ### 构建
 
 - [依赖处理](solutions/dependency-handling.md)
+- [`verifyPluginSignature` 显示 `NO-SOURCE`（未找到可校验的签名包）](solutions/gradle-verify-plugin-signature-show-no-source.md)
+- [`signPlugin` 抛出 NPE：`PrivateKeyUtils.loadKeyPair`（密钥/证书内容格式不正确）](solutions/gradle-sign-plugin-npe.md)
+- [Gradle Download 插件下载失败：`SSLHandshakeException / PKIX path building failed`](solutions/gradle-download-ssl-handshake-failure.md)
+- [平台不再提供 Jackson 导致 IDEA 2026.3 EAP 兼容性问题（迁移到 kotlinx-serialization）（2026-09-30）](solutions/jackson-removal-in-idea-2026-3-eap.md)
+- [`StatefulPresentation` 被标记为内部 API 导致 IDEA 2026.3 兼容性问题（改用 `BasePresentation` 自定义实现）（2026-11-03）](solutions/stateful-presentation-internal-in-idea-2026-3.md)
 
 ### 前端（参考文档）
 
 - [如何为 gradlew 配置代理](solutions/gradle-proxy-setup.md)
+- [VuePress `docs:dev` 启动失败（Vite 7 与 Node 版本不兼容，crypto.hash is not a function）](solutions/vuepress-vite-crypto-hash-failure.md)
+- [nvm use 后 node -v 仍输出旧版本（NVM_SYMLINK 非符号链接导致）](solutions/nvm-symlink-node-version-issue.md)
+- [Prism 自定义语法（SSR 扩展，避免 window.Prism 依赖）](solutions/prism-custom-syntax-ssr.md)
 
 ### 后端（语法支持）
 
@@ -41,6 +49,11 @@
 - [规则数据可能会被不定期清空的问题](solutions/config-cache-eviction.md)
 - [jackson 解析 json 失败的问题](solutions/jackson-json-parsing-failure.md)
 - [对于 non-declarative 的内嵌提示，使用 `psiSingleReference` 不会自动更改配色](solutions/inlay-hint-psi-single-reference-colors.md)
+- [`ProfilesSettings` 持久化迁移到 SQLite（`Ktorm` + `DbBackedStateMap`）（2025-08-31）](solutions/profiles-settings-sqlite-migration.md)
+- [在读操作中使用 `withModalProgress` 导致可能的死锁（`IllegalStateException`）](solutions/read-action-with-modal-progress-deadlock.md)
+- [插件 jar 内置规则文件更新后读取仍为旧内容](solutions/bundled-configs-in-jar-stale-content.md)
+- [何时优先使用 fastutil 中的集合](solutions/fastutil-collections-usage-guide.md)
+- [作用域链接被检查出“匹配多个存在冲突的规则”（子句规则的匹配逻辑未考虑子句内容）（2026-11-07）](solutions/conflicting-expression-false-positive-for-alias-clauses.md)
 
 ### 测试
 
@@ -48,3 +61,8 @@
 - [按条件忽略的测试被不正确地忽略了](solutions/conditional-tests-ignored.md)
 - [需要在单元测试（集成测试）中加载并获取规则数据](solutions/load-configs-in-tests.md)
 - [测试代码补全时的注意事项](solutions/testing-code-completion-notes.md)
+- [Gradle + JUnit4 测试无法读取 -D 系统属性](solutions/gradle-junit4-system-properties.md)
+
+### 网络与外部工具
+
+- [本地下载测试受系统代理影响](solutions/download-service-system-proxy.md)
