@@ -45,16 +45,20 @@ data class ParadoxDefinitionInfo(
 
     /** @see ParadoxDefinitionManager.getMemberPath */
     val memberPath: ParadoxMemberPath = ParadoxDefinitionManager.getMemberPath(this)
+
+    // NOTE `element` 在构造完成后才由 `ParadoxDefinitionService` 赋值，
+    // 因此依赖子类型的属性不能在这里立即初始化，否则会基于空的 `element` 解析出空的子类型，
+    // 进而丢失声明在子类型下的本地化与图片。
     /** @see ParadoxDefinitionManager.getRelatedLocalisationInfos */
-    val localisations: List<RelatedLocalisationInfo> = ParadoxDefinitionManager.getRelatedLocalisationInfos(this)
+    val localisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getRelatedLocalisationInfos(this)
     /** @see ParadoxDefinitionManager.getRelatedImageInfos */
-    val images: List<RelatedImageInfo> = ParadoxDefinitionManager.getRelatedImageInfos(this)
+    val images: List<RelatedImageInfo> get() = ParadoxDefinitionManager.getRelatedImageInfos(this)
     /** @see ParadoxDefinitionManager.getModifierInfos */
-    val modifiers: List<ModifierInfo> = ParadoxDefinitionManager.getModifierInfos(this)
+    val modifiers: List<ModifierInfo> get() = ParadoxDefinitionManager.getModifierInfos(this)
     /** @see ParadoxDefinitionManager.getPrimaryRelatedLocalisationInfos */
-    val primaryLocalisations: List<RelatedLocalisationInfo> = ParadoxDefinitionManager.getPrimaryRelatedLocalisationInfos(this)
+    val primaryLocalisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedLocalisationInfos(this)
     /** @see ParadoxDefinitionManager.getPrimaryRelatedImageInfos */
-    val primaryImages: List<RelatedImageInfo> = ParadoxDefinitionManager.getPrimaryRelatedImageInfos(this)
+    val primaryImages: List<RelatedImageInfo> get() = ParadoxDefinitionManager.getPrimaryRelatedImageInfos(this)
 
     /** @see ParadoxDefinitionManager.getSubtypeConfigs */
     override fun getSubtypeConfigs(options: ParadoxMatchOptions?): List<CwtSubtypeConfig> = ParadoxDefinitionManager.getSubtypeConfigs(this, options)
