@@ -28,6 +28,7 @@ import icu.windea.pls.model.ParadoxGameType
  * 每个数据类型对应规则表达式中一种特定的取值形态，决定了规则表达式如何从字符串解析，以及如何与脚本表达式匹配。
  *
  * @see CwtDataType
+ * @see CwtDataTypePriorities
  */
 @Suppress("unused")
 object CwtDataTypes {
@@ -46,7 +47,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val Any = CwtDataType.builder("Any").build {
-        withPriority(1.0) // very low
+        withPriority(CwtDataTypePriorities.ANY) // very low
     }
     /**
      * 字面量类型。
@@ -60,7 +61,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val Literal = CwtDataType.builder("Literal").build {
-        withPriority(6.0) // very low
+        withPriority(CwtDataTypePriorities.LITERAL) // very low
     }
     /**
      * 通配形式的任意类型。
@@ -76,7 +77,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val WildcardAny = CwtDataType.builder("WildcardAny").build {
-        withPriority(2.0) // very low (higher than normal form)
+        withPriority(CwtDataTypePriorities.WILDCARD_ANY) // very low (higher than normal form)
     }
     /**
      * 通配形式的字面量类型。
@@ -92,7 +93,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val WildcardLiteral = CwtDataType.builder("WildcardLiteral").build {
-        withPriority(7.0) // very low (higher than normal form)
+        withPriority(CwtDataTypePriorities.WILDCARD_LITERAL) // very low (higher than normal form)
     }
     /**
      * 布尔类型。
@@ -110,7 +111,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：兼容。
      */
     val Bool = CwtDataType.builder("Bool").build {
-        withPriority(100.0) // very high (higher than 90)
+        withPriority(CwtDataTypePriorities.BOOL) // very high (higher than 90)
     }
     /**
      * 整数类型。
@@ -134,7 +135,7 @@ object CwtDataTypes {
      * @see IntRangeInfo
      */
     val Int = CwtDataType.builder("Int").build {
-        withPriority(90.0) // very high
+        withPriority(CwtDataTypePriorities.HIGH) // very high
     }
     /**
      * 浮点数类型。
@@ -158,7 +159,7 @@ object CwtDataTypes {
      * @see FloatRangeInfo
      */
     val Float = CwtDataType.builder("Float").build {
-        withPriority(90.0) // very high
+        withPriority(CwtDataTypePriorities.HIGH) // very high
     }
     /**
      * 标量类型。
@@ -174,7 +175,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
      */
     val Scalar = CwtDataType.builder("Scalar").build {
-        withPriority(9.0) // very low (lower than 10)
+        withPriority(CwtDataTypePriorities.SCALAR) // very low (lower than 10)
     }
     /**
      * 颜色字段类型。
@@ -189,7 +190,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：兼容。
      */
     val ColorField = CwtDataType.builder("ColorField").build {
-        withPriority(90.0) // very high
+        withPriority(CwtDataTypePriorities.HIGH) // very high
     }
     /**
      * 块类型。
@@ -202,7 +203,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：兼容。
      */
     val Block = CwtDataType.builder("Block").build {
-        withPriority(1000.0) // highest
+        withPriority(CwtDataTypePriorities.HIGHEST) // highest
     }
 
     // endregion
@@ -220,7 +221,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：兼容。
      */
     val PercentageField = CwtDataType.builder("PercentageField").build {
-        withPriority(90.0) // very high
+        withPriority(CwtDataTypePriorities.HIGH) // very high
     }
     /**
      * 整数百分比字段类型。
@@ -233,7 +234,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val IntPercentageField = CwtDataType.builder("IntPercentageField").build {
-        withPriority(90.0) // very high
+        withPriority(CwtDataTypePriorities.HIGH) // very high
     }
     /**
      * 日期字段类型。
@@ -247,7 +248,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
      */
     val DateField = CwtDataType.builder("DateField").build {
-        withPriority(90.0)
+        withPriority(CwtDataTypePriorities.HIGH)
     }
 
     // endregion
@@ -274,7 +275,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：兼容。
      */
     val Definition = CwtDataType.builder("Definition").reference().build {
-        withPriority(70.0)
+        withPriority(CwtDataTypePriorities.DEFINITION)
     }
     /**
      * 本地化引用类型。
@@ -289,7 +290,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：兼容。
      */
     val Localisation = CwtDataType.builder("Localisation").reference().build {
-        withPriority(60.0)
+        withPriority(CwtDataTypePriorities.REFERENCE)
     }
     /**
      * 同步本地化引用类型。
@@ -303,7 +304,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：兼容。
      */
     val SyncedLocalisation = CwtDataType.builder("SyncedLocalisation").reference().build {
-        withPriority(60.0)
+        withPriority(CwtDataTypePriorities.REFERENCE)
     }
     /**
      * 内联本地化引用类型。
@@ -316,7 +317,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：兼容。
      */
     val InlineLocalisation = CwtDataType.builder("InlineLocalisation").reference().build {
-        withPriority(60.0)
+        withPriority(CwtDataTypePriorities.REFERENCE)
     }
     /**
      * 修正引用类型。
@@ -330,7 +331,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：兼容。
      */
     val Modifier = CwtDataType.builder("Modifier").reference().build {
-        withPriority(75.0) // higher than Definition
+        withPriority(CwtDataTypePriorities.MODIFIER) // higher than Definition
     }
 
     /**
@@ -346,10 +347,10 @@ object CwtDataTypes {
      */
     val EnumValue = CwtDataType.builder("EnumValue").reference().build {
         withPriority { configExpression, configGroup ->
-            val enumName = configExpression.metadata.value ?: return@withPriority 0.0 // unexpected
-            if (configGroup.enums.containsKey(enumName)) return@withPriority 80.0
-            if (configGroup.complexEnums.containsKey(enumName)) return@withPriority 45.0
-            0.0 // unexpected
+            val enumName = configExpression.metadata.value ?: return@withPriority CwtDataTypePriorities.DEFAULT // unexpected
+            if (configGroup.enums.containsKey(enumName)) return@withPriority CwtDataTypePriorities.ENUM_VALUE
+            if (configGroup.complexEnums.containsKey(enumName)) return@withPriority CwtDataTypePriorities.COMPLEX_ENUM_VALUE
+            CwtDataTypePriorities.DEFAULT // unexpected
         }
     }
 
@@ -367,7 +368,7 @@ object CwtDataTypes {
      * @see ParadoxDynamicValueExpression
      */
     val Value = CwtDataType.builder("Value").reference().build {
-        withPriority(30.0)
+        withPriority(CwtDataTypePriorities.DYNAMIC_VALUE)
     }
     /**
      * 动态值写入类型。
@@ -383,7 +384,7 @@ object CwtDataTypes {
      * @see ParadoxDynamicValueExpression
      */
     val ValueSet = CwtDataType.builder("ValueSet").reference().build {
-        withPriority(30.0)
+        withPriority(CwtDataTypePriorities.DYNAMIC_VALUE)
     }
     /**
      * 动态值类型。
@@ -399,7 +400,7 @@ object CwtDataTypes {
      * @see ParadoxDynamicValueExpression
      */
     val DynamicValue = CwtDataType.builder("DynamicValue").reference().build {
-        withPriority(30.0)
+        withPriority(CwtDataTypePriorities.DYNAMIC_VALUE)
     }
 
     /**
@@ -416,7 +417,7 @@ object CwtDataTypes {
      * @see CwtScopeConfig
      */
     val ScopeField = CwtDataType.builder("ScopeField").reference().build {
-        withPriority(40.0)
+        withPriority(CwtDataTypePriorities.SCOPE)
     }
     /**
      * 作用域类型。
@@ -433,7 +434,7 @@ object CwtDataTypes {
      * @see CwtScopeConfig
      */
     val Scope = CwtDataType.builder("Scope").reference().build {
-        withPriority(40.0)
+        withPriority(CwtDataTypePriorities.SCOPE)
     }
     /**
      * 作用域组类型。
@@ -449,7 +450,7 @@ object CwtDataTypes {
      * @see CwtScopeGroupConfig
      */
     val ScopeGroup = CwtDataType.builder("ScopeGroup").reference().build {
-        withPriority(40.0)
+        withPriority(CwtDataTypePriorities.SCOPE)
     }
 
     /**
@@ -470,7 +471,7 @@ object CwtDataTypes {
      * @see FloatRangeInfo
      */
     val ValueField = CwtDataType.builder("ValueField").reference().build {
-        withPriority(35.0)
+        withPriority(CwtDataTypePriorities.VALUE_FIELD)
     }
     /**
      * 整数值字段类型。
@@ -490,7 +491,7 @@ object CwtDataTypes {
      * @see IntRangeInfo
      */
     val IntValueField = CwtDataType.builder("IntValueField").reference().build {
-        withPriority(35.0)
+        withPriority(CwtDataTypePriorities.VALUE_FIELD)
     }
 
     /**
@@ -514,7 +515,7 @@ object CwtDataTypes {
      * @see FloatRangeInfo
      */
     val VariableField = CwtDataType.builder("VariableField").reference().build {
-        withPriority(35.0)
+        withPriority(CwtDataTypePriorities.VALUE_FIELD)
     }
     /**
      * 整数变量字段类型。
@@ -537,7 +538,7 @@ object CwtDataTypes {
      * @see IntRangeInfo
      */
     val IntVariableField = CwtDataType.builder("IntVariableField").reference().build {
-        withPriority(35.0)
+        withPriority(CwtDataTypePriorities.VALUE_FIELD)
     }
 
     /**
@@ -555,7 +556,7 @@ object CwtDataTypes {
      * @since 2.1.1
      */
     val Command = CwtDataType.builder("Command").reference().build {
-        withPriority(35.0)
+        withPriority(CwtDataTypePriorities.VALUE_FIELD)
     }
     /**
      * 脚本值引用表达式类型。
@@ -571,7 +572,7 @@ object CwtDataTypes {
      * @since 2.1.10
      */
     val ScriptValueReference = CwtDataType.builder("ScriptValueReference").reference().build {
-        withPriority(60.0)
+        withPriority(CwtDataTypePriorities.REFERENCE)
     }
     /**
      * 定值引用表达式类型。
@@ -587,7 +588,7 @@ object CwtDataTypes {
      * @since 2.1.10
      */
     val DefineReference = CwtDataType.builder("DefineReference").reference().build {
-        withPriority(60.0)
+        withPriority(CwtDataTypePriorities.REFERENCE)
     }
     /**
      * 数组定值引用表达式类型。
@@ -603,7 +604,7 @@ object CwtDataTypes {
      * @since 2.1.10
      */
     val ArrayDefineReference = CwtDataType.builder("ArrayDefineReference").reference().build {
-        withPriority(60.0)
+        withPriority(CwtDataTypePriorities.REFERENCE)
     }
     /**
      * 标签集表达式类型。
@@ -621,7 +622,7 @@ object CwtDataTypes {
      * @since 2.1.10
      */
     val Tags = CwtDataType.builder("Tags").reference().build {
-        withPriority(60.0)
+        withPriority(CwtDataTypePriorities.REFERENCE)
     }
     /**
      * 数据库对象表达式类型。
@@ -637,7 +638,7 @@ object CwtDataTypes {
      * @since 1.3.9
      */
     val DatabaseObject = CwtDataType.builder("DatabaseObject").reference().build {
-        withPriority(60.0)
+        withPriority(CwtDataTypePriorities.REFERENCE)
     }
     /**
      * 命名格式表达式类型。
@@ -653,7 +654,7 @@ object CwtDataTypes {
      * @see ParadoxNameFormatExpression
      */
     val NameFormat = CwtDataType.builder("NameFormat").reference().build {
-        withPriority(60.0)
+        withPriority(CwtDataTypePriorities.REFERENCE)
     }
 
     /**
@@ -669,7 +670,7 @@ object CwtDataTypes {
      */
     @ForGameType(ParadoxGameType.Stellaris)
     val TechnologyWithLevel = CwtDataType.builder("TechnologyWithLevel").reference().build {
-        withPriority(69.0) // lower than Definition
+        withPriority(CwtDataTypePriorities.TECHNOLOGY_WITH_LEVEL) // lower than Definition
     }
 
     /**
@@ -683,7 +684,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val Parameter = CwtDataType.builder("Parameter").reference().build {
-        withPriority(10.0)
+        withPriority(CwtDataTypePriorities.PARAMETER_REFERENCE)
     }
     /**
      * 参数值类型。
@@ -696,7 +697,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val ParameterValue = CwtDataType.builder("ParameterValue").reference().build {
-        withPriority(90.0) // same to Scalar
+        withPriority(CwtDataTypePriorities.HIGH) // same to Scalar
     }
     /**
      * 本地化参数名类型。
@@ -709,7 +710,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val LocalisationParameter = CwtDataType.builder("LocalisationParameter").reference().build {
-        withPriority(10.0)
+        withPriority(CwtDataTypePriorities.PARAMETER_REFERENCE)
     }
 
     /**
@@ -729,7 +730,7 @@ object CwtDataTypes {
         // NOTE 3.0.5 #430 a template expression is more specific than a bare definition reference
         // (e.g., `alias[trigger:any_state_in_<geographic_region_short_key>]` should be preferred over `alias[trigger:<script_value>]`),
         // so its priority should be higher than `Definition` (70.0)
-        withPriority(72.0)
+        withPriority(CwtDataTypePriorities.TEMPLATE)
     }
 
     /**
@@ -756,7 +757,7 @@ object CwtDataTypes {
      */
     // #162 #193 #340 #413
     val DefinitionSnippet = CwtDataType.builder("DefinitionSnippet").reference().build {
-        withPriority(65.0) // for templates and snippets
+        withPriority(CwtDataTypePriorities.SNIPPET) // for templates and snippets
     }
 
     /**
@@ -782,7 +783,7 @@ object CwtDataTypes {
      */
     // #162 #193 #340 #413
     val LocalisationSnippet = CwtDataType.builder("LocalisationSnippet").reference().build {
-        withPriority(65.0) // for templates and snippets
+        withPriority(CwtDataTypePriorities.SNIPPET) // for templates and snippets
     }
 
     // endregion
@@ -806,7 +807,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：兼容。
      */
     val Icon = CwtDataType.builder("Icon").reference().build {
-        withPriority(50.0)
+        withPriority(CwtDataTypePriorities.PATH_REFERENCE)
     }
     /**
      * 文件路径类型。
@@ -826,7 +827,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：部分兼容。插件进行了额外的扩展和改进。
      */
     val FilePath = CwtDataType.builder("FilePath").reference().build {
-        withPriority(50.0)
+        withPriority(CwtDataTypePriorities.PATH_REFERENCE)
     }
     /**
      * 文件名类型。
@@ -846,7 +847,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val FileName = CwtDataType.builder("FileName").reference().build {
-        withPriority(50.0)
+        withPriority(CwtDataTypePriorities.PATH_REFERENCE)
     }
     /**
      * 绝对文件路径类型。
@@ -860,7 +861,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
      */
     val AbsoluteFilePath = CwtDataType.builder("AbsoluteFilePath").reference().build {
-        withPriority(50.0)
+        withPriority(CwtDataTypePriorities.PATH_REFERENCE)
     }
 
     // endregion
@@ -883,7 +884,7 @@ object CwtDataTypes {
      * @since 2.1.9
      */
     val ShaderEffect = CwtDataType.builder("ShaderEffect").reference().build {
-        withPriority(20.0)
+        withPriority(CwtDataTypePriorities.EXTERNAL_REFERENCE)
     }
     /**
      * 网格定位器类型。
@@ -901,7 +902,7 @@ object CwtDataTypes {
      * @since 2.1.9
      */
     val MeshLocator = CwtDataType.builder("MeshLocator").reference().build {
-        withPriority(20.0)
+        withPriority(CwtDataTypePriorities.EXTERNAL_REFERENCE)
     }
 
     // endregion
@@ -984,7 +985,7 @@ object CwtDataTypes {
      * > CWTools 兼容性：兼容。
      */
     val Constant = CwtDataType.builder("Constant").build {
-        withPriority(1000.0) // highest
+        withPriority(CwtDataTypePriorities.HIGHEST) // highest
     }
     /**
      * GLOB 模式类型。可以感知模式（表达式包含某种模式字符串）的数据类型之一。

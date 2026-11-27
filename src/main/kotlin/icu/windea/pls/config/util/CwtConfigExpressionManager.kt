@@ -1,5 +1,6 @@
 package icu.windea.pls.config.util
 
+import icu.windea.pls.config.CwtDataTypePriorities
 import icu.windea.pls.config.CwtDataTypes
 import icu.windea.pls.config.configExpression.CwtDataExpression
 import icu.windea.pls.config.configExpression.CwtLocalisationLocationExpression
@@ -14,7 +15,7 @@ import icu.windea.pls.core.collections.forEachFast
 object CwtConfigExpressionManager {
     fun getPriority(configExpression: CwtDataExpression, configGroup: CwtConfigGroup): Double {
         val dataType = configExpression.type
-        return dataType.priority ?: dataType.priorityProvider?.invoke(configExpression, configGroup) ?: 0.0
+        return dataType.priority ?: dataType.priorityProvider?.invoke(configExpression, configGroup) ?: CwtDataTypePriorities.DEFAULT
     }
 
     fun resolvePlaceholder(locationExpression: CwtLocationExpression, name: String): String? {
