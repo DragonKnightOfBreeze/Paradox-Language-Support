@@ -83,6 +83,17 @@ abstract class MarkdownTestBase : BasePlatformTestCase(), ChronicleTestScope {
         return vFile
     }
 
+    /**
+     * 准备解析内联代码目标所需的通用测试数据（定义、本地化、封装变量）。
+     */
+    protected fun prepareInlineCodeTargets() {
+        copyFixture("common/characters/00_characters.txt")
+        copyFixture("localisation/main_l_english.yml")
+        copyFixture("localisation/main_l_simp_chinese.yml")
+        addScriptedVariableFile("common/scripted_variables/00_test.txt", "@greeting = \"hello\"")
+        IndexingTestUtil.waitUntilIndexesAreReady(project)
+    }
+
     protected fun configureMarkdown(text: String, path: String = "common/tests/test.md"): PsiFile {
         val vFile = myFixture.addFileToProject(path, text).virtualFile
         vFile.injectFileInfo(gameType, path, group = ParadoxFileGroup.Other)

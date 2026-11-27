@@ -53,6 +53,22 @@ class MarkdownCodeFenceInjectedFileProcessorTest : MarkdownTestBase() {
         assertNull(ParadoxAnalysisInjectionManager.getInjectedFileInfo(injectedFile.virtualFile))
     }
 
+    @Test
+    fun testProcess_doesNothingWithoutPathInfo() {
+        configureMarkdown(
+            """
+            ```PARADOX_SCRIPT
+            namespace = hello_world
+            ```
+            """.trimIndent()
+        )
+
+        val injectedFile = findInjectedFile()
+        MarkdownCodeFenceInjectedFileProcessor().process(injectedFile)
+
+        assertNull(ParadoxAnalysisInjectionManager.getInjectedFileInfo(injectedFile.virtualFile))
+    }
+
     private fun configureScriptCodeFence() {
         configureMarkdown(
             """

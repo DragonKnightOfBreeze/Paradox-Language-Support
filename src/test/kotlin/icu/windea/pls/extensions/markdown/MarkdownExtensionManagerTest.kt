@@ -3,11 +3,17 @@
 package icu.windea.pls.extensions.markdown
 
 import com.intellij.lang.injection.InjectedLanguageManager
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiManager
+import com.intellij.psi.util.PsiTreeUtil
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
+import icu.windea.pls.lang.psi.ParadoxDefinitionElement
+import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
 import icu.windea.pls.model.ParadoxFileGroup
 import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.ParadoxRootInfo
+import icu.windea.pls.script.psi.ParadoxScriptScriptedVariable
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -206,6 +212,163 @@ class MarkdownExtensionManagerTest : MarkdownTestBase() {
     }
 
     // endregion
+
+    // region resolveInfoFromInlineCode
+
+    @Test
+    fun testResolveInfoFromInlineCode_plainName() {
+        configureMarkdown("`foo`")
+
+        val info = MarkdownExtensionManager.resolveInfoFromInlineCode(findCodeSpan())
+        assertNotNull(info)
+        assertEquals("", info!!.prefix)
+        assertEquals("foo", info.name)
+        assertEquals(1, info.rangeInElement.startOffset)
+        assertEquals(4, info.rangeInElement.endOffset)
+    }
+
+    @Test
+    fun testResolveInfoFromInlineCode_scriptedVariablePrefix() {
+        configureMarkdown("`@greeting`")
+
+        val info = MarkdownExtensionManager.resolveInfoFromInlineCode(findCodeSpan())
+        assertNotNull(info)
+        assertEquals("@", info!!.prefix)
+        assertEquals("greeting", info.name)
+        assertEquals(2, info.rangeInElement.startOffset)
+        assertEquals(10, info.rangeInElement.endOffset)
+    }
+
+    @Test
+    fun testResolveInfoFromInlineCode_blankContent() {
+        configureMarkdown("` `")
+
+        assertNull(MarkdownExtensionManager.resolveInfoFromInlineCode(findCodeSpan()))
+    }
+
+    @Test
+    fun testResolveInfoFromInlineCode_nameWithBlank() {
+        configureMarkdown("`foo bar`")
+
+        assertNull(MarkdownExtensionManager.resolveInfoFromInlineCode(findCodeSpan()))
+    }
+
+    @Test
+    fun testResolveInfoFromInlineCode_notCodeSpan() {
+        configureMarkdown("plain text")
+
+        assertNull(MarkdownExtensionManager.resolveInfoFromInlineCode(myFixture.file))
+    }
+
+    // endregion
+
+    // region resolveTargetFromInlineCode
+
+    @Test
+    fun testResolveTargetFromInlineCode_scriptedVariable() {
+        prepareInlineCodeTargets()
+        configureMarkdown("`@greeting`")
+
+        val target = MarkdownExtensionManager.resolveTargetFromInlineCode(findCodeSpan(), "@", "greeting")
+        assertTrue(target is ParadoxScriptScriptedVariable)
+        assertEquals("greeting", (target as ParadoxScriptScriptedVariable).name)
+    }
+
+    @Test
+    fun testResolveTargetFromInlineCode_definition() {
+        prepareInlineCodeTargets()
+        configureMarkdown("`windea`")
+
+        val target = MarkdownExtensionManager.resolveTargetFromInlineCode(findCodeSpan(), "", "windea")
+        assertTrue(target is ParadoxDefinitionElement)
+        assertEquals("windea", (target as ParadoxDefinitionElement).name)
+    }
+
+    @Test
+    fun testResolveTargetFromInlineCode_localisation() {
+        prepareInlineCodeTargets()
+        configureMarkdown("`title_windea`")
+
+        val target = MarkdownExtensionManager.resolveTargetFromInlineCode(findCodeSpan(), "", "title_windea")
+        assertTrue(target is ParadoxLocalisationProperty)
+        assertEquals("title_windea", (target as ParadoxLocalisationProperty).name)
+    }
+
+    @Test
+    fun testResolveTargetFromInlineCode_invalidScriptedVariableName() {
+        prepareInlineCodeTargets()
+        configureMarkdown("`@greeting`")
+
+        assertNull(MarkdownExtensionManager.resolveTargetFromInlineCode(findCodeSpan(), "@", "foo-bar"))
+    }
+
+    @Test
+    fun testResolveTargetFromInlineCode_invalidLocalisationName() {
+        prepareInlineCodeTargets()
+        configureMarkdown("`windea`")
+
+        assertNull(MarkdownExtensionManager.resolveTargetFromInlineCode(findCodeSpan(), "", "windea!"))
+    }
+
+    @Test
+    fun testResolveTargetFromInlineCode_unsupportedPrefix() {
+        prepareInlineCodeTargets()
+        configureMarkdown("`windea`")
+
+        assertNull(MarkdownExtensionManager.resolveTargetFromInlineCode(findCodeSpan(), "x", "windea"))
+    }
+
+    @Test
+    fun testResolveTargetFromInlineCode_unresolvedName() {
+        prepareInlineCodeTargets()
+        configureMarkdown("`missing_name`")
+
+        assertNull(MarkdownExtensionManager.resolveTargetFromInlineCode(findCodeSpan(), "", "missing_name"))
+    }
+
+    // endregion
+
+    // region resolveTargetNameFromInlineCode
+
+    @Test
+    fun testResolveTargetNameFromInlineCode_scriptedVariable() {
+        val target = findElement(
+            addScriptedVariableFile("common/scripted_variables/00_test_2.txt", "@farewell = \"bye\""),
+            ParadoxScriptScriptedVariable::class.java
+        )
+
+        assertEquals("farewell", MarkdownExtensionManager.resolveTargetNameFromInlineCode(target))
+    }
+
+    @Test
+    fun testResolveTargetNameFromInlineCode_definition() {
+        val target = findElement(copyFixture("common/characters/00_characters.txt"), ParadoxDefinitionElement::class.java)
+
+        assertEquals("windea", MarkdownExtensionManager.resolveTargetNameFromInlineCode(target))
+    }
+
+    @Test
+    fun testResolveTargetNameFromInlineCode_localisation() {
+        val target = findElement(copyFixture("localisation/main_l_english.yml"), ParadoxLocalisationProperty::class.java)
+
+        assertEquals("name_windea", MarkdownExtensionManager.resolveTargetNameFromInlineCode(target))
+    }
+
+    @Test
+    fun testResolveTargetNameFromInlineCode_otherNamedElement() {
+        val file = myFixture.addFileToProject("common/tests/plain.txt", "content").virtualFile
+        val target = PsiManager.getInstance(project).findFile(file) ?: error("Expected a PSI file")
+
+        assertEquals("plain.txt", MarkdownExtensionManager.resolveTargetNameFromInlineCode(target))
+    }
+
+    // endregion
+
+    private fun <T : com.intellij.psi.PsiElement> findElement(file: VirtualFile, type: Class<T>): T {
+        val psiFile = PsiManager.getInstance(project).findFile(file) ?: error("Expected a PSI file")
+        return PsiTreeUtil.findChildOfType(psiFile, type)
+            ?: error("Expected an element of ${type.simpleName} in ${file.path}")
+    }
 
     private fun configureCodeFence(languageInfo: String, content: String = "namespace = test") {
         configureMarkdown(

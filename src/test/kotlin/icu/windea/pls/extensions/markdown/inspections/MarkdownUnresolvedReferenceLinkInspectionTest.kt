@@ -31,6 +31,14 @@ class MarkdownUnresolvedReferenceLinkInspectionTest : MarkdownTestBase() {
     }
 
     @Test
+    fun testInspection_ignoresNonParadoxLinks() {
+        myFixture.enableInspections(MarkdownUnresolvedReferenceLinkInspection::class.java)
+        configureMarkdown("[file](other.md)")
+
+        myFixture.checkHighlighting()
+    }
+
+    @Test
     fun testInspection_disabledBySettings() {
         copyFixture("localisation/main_l_english.yml")
         IndexingTestUtil.waitUntilIndexesAreReady(project)
