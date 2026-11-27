@@ -41,10 +41,11 @@
 | **mod source** | **模组来源** | 模组的物理存储来源，区分为本地目录、Steam 创意工坊与 Paradox Mods。 |
 | **root info** | **根信息（游戏或模组信息）** | 插件内部用于描述游戏安装目录或模组根目录元数据的 `ParadoxRootInfo`。 |
 | **file info** | **文件信息** | 插件内部用于描述特定文件在游戏或模组目录层级中相对位置的 `ParadoxFileInfo`。 |
-| **file group** | **文件分组** | 用于根据目录特征（如 `common`、`events`、`localisation`）对文件进行归类的枚举。 |
-| **entry** | **入口（目录）** | 模组或游戏覆盖规则中的基准目录层级（如根目录、子目录入口）。 |
-| **member path** | **成员路径** | 脚本成员在脚本文件内部嵌套层级中的路径表达（`ParadoxMemberPath`）。 |
-| **event target** | **事件目标** | 脚本中保存并跨上下文引用的动态对象目标。注意：历史 KDoc 中曾出现“事件对象引用”，现已统一。 |
+| **file group** | **文件分组** | 用于根据目录特征（如 `common`、`events`、`localisation`）对文件进行归类的枚举 `ParadoxFileGroup`。 |
+| **entry** | **入口（目录）** | 游戏或模组的基准目录层级（不一定是游戏或模组根目录）。可以存在多个入口，并分为主要入口和次要入口。|
+| **file path** | **文件路径** | 文件在游戏或模组的目录层级中的常用路径表示（`ParadoxPath`）。相对于入口目录，并加入规则匹配。 |
+| **member path** | **成员路径** | 脚本成员在脚本文件内部嵌套层级中的路径表示（`ParadoxMemberPath`）。 |
+| **event target** | **事件目标** | 脚本中保存并跨上下文引用的动态对象目标。 |
 | **variable** | **变量** | 作用域变量，存储在特定游戏作用域对象上的动态数值或标志。区别于 `@var` 封装变量。 |
 | **flag** | **标志** | 存储在国家、星球或角色上的布尔型标记，属于动态值的一种。 |
 | **scope type** | **作用域类型** | 具体的对象类别（如 `country`、`planet`、`character`）。 |
@@ -67,10 +68,10 @@
 | **inline definition** | **内联定义** | 通过特定宏机制或块内部属性派生出的非独立声明定义。 |
 | **declaration** | **声明** | CWT 规则中用来描述定义内部合法结构模式的规则定义。 |
 | **usage** | **用法** | 宏、参数或定义在物理文件中的具体调用位置。 |
-| **type key** | **类型键** | CWT 类型规则用来匹配定义的特征键。 |
-| **root key** | **顶级键** | 脚本成员在文件顶层的首层属性键名。 |
+| **type key** | **类型键** | CWT 类型规则用来匹配定义的特征键。等同于对应的脚本属性的名字，但不一定是定义的名字。|
+| **root key** | **顶级键** | CWT 类型规则用来匹配定义的特征键。等同于上钻得到的所有脚本属性的名字，可以存在多个和多组。 |
 | **related localisation** | **相关本地化** | 与当前定义存在推导或生成关系的本地化条目。 |
-| **related image** | **相关图片** | 与当前定义存在关联匹配关系的图标或贴图资源。 |
+| **related image** | **相关图片** | 与当前定义存在关联匹配关系的图标或贴图资源。可以指向特定类型的定义或图片文件。 |
 
 ---
 
@@ -140,31 +141,30 @@
 | 英文原词 (English) | 推荐中文翻译 (Chinese) | 领域定义与上下文说明 |
 | :--- | :--- | :--- |
 | **config file** | **规则文件** | 编写 CWT 规则的 `*.cwt` 文件。 |
-| **config system** | **规则系统** | Chronicle 内部由 CWT 驱动的代码智能核心子系统。 |
-| **type config** | **类型规则** | 声明某种定义识别逻辑的规则（`type[...] = { ... }`）。 |
-| **declaration config** | **声明规则** | 描述定义内部合法结构模式的规则项。 |
+| **config system** | **规则系统** | 插件内部由 CWT 驱动的代码智能核心子系统。 |
+| **type config** | **类型规则** | 声明某种定义识别逻辑的规则（`CwtTypeConfig`，如 `type[...] = { ... }`）。 |
+| **declaration config** | **声明规则** | 描述定义内部合法结构模式的规则项（`CwtDeclarationConfig`）。 |
 | **row config** | **行规则** | 驱动 CSV 表格结构解析的规则模型（`CwtRowConfig`）。 |
 | **link config** | **链接规则** | 驱动复杂表达式中作用域或值字段跳转的链接模型（`CwtLinkConfig`）。 |
 | **scope config** | **作用域规则** | 声明游戏作用域类型及其关系的规则（`CwtScopeConfig`）。 |
 | **scope group config** | **作用域分组规则** | 声明作用域集合约束的规则（`CwtScopeGroupConfig`）。 |
 | **system scope config** | **系统作用域规则** | 声明系统预定义作用域原型的规则（`CwtSystemScopeConfig`）。 |
-| **alias config** | **别名规则** | 声明可复用规则片段或扩展语法的规则（如 `alias[trigger:...]`）。 |
-| **single alias config** | **单别名规则** | 声明扁平化单一结构的别名规则。 |
+| **alias config** | **别名规则** | 声明可复用规则片段或扩展语法的规则（`CwtAliasConfig`，如 `alias[trigger:...]`）。 |
+| **single alias config** | **单别名规则** | 声明扁平化单一结构的别名规则（`CwtSingleAliasConfig`）。 |
 | **macro config** | **宏规则** | 描述语义宏模式与参数的规则（`CwtMacroConfig`）。 |
-| **dynamic value type config** | **动态值类型规则** | 声明动态值有效作用域与合法性的规则。 |
-| **complex enum config** | **复杂枚举规则** | 声明复杂枚举扫描路径与键值的规则。 |
-| **database object type config**| **数据库对象类型规则**| 声明数据库对象表达式支持的类型及其映射规则。 |
+| **dynamic value type config** | **动态值类型规则** | 声明动态值有效作用域与合法性的规则。（`CwtDynamicValueTypeConfig`） |
+| **complex enum config** | **复杂枚举规则** | 声明复杂枚举扫描路径与键值的规则（`CwtComplexEnumConfig`）。 |
+| **database object type config**| **数据库对象类型规则**| 声明数据库对象表达式支持的类型及其映射规则（`CwtDatabaseObjectTypeConfig`）。 |
 | **option metadata** | **选项元数据** | CWT 注释（`##`）解析生成的控制参数（`CwtOptionMetadata`）。 |
-| **cardinality** | **基数约束** | 属性或值在块内出现次数的上下限约束（`## cardinality = 0..1`）。 |
+| **cardinality** | **基数约束** | 属性或值在块内出现次数的上下限约束（如 `## cardinality = 0..1`）。 |
 | **severity** | **严重级别** | 规则校验失败时报告问题的严重级别（`warning`、`error` 等）。 |
-| **push scope** | **作用域压栈** | 切换进入当前块内部的作用域类型（`## push_scope = country`）。 |
-| **replace scopes** | **作用域替换** | 替换上下文映射槽的规则选项（`## replace_scopes = { ... }`）。 |
+| **push scope** | **作用域压栈** | 切换进入当前块内部的作用域类型（如 `## push_scope = country`）。 |
+| **replace scopes** | **作用域替换** | 替换上下文映射槽的规则选项（如 `## replace_scopes = { ... }`）。 |
 | **scope constraint** | **作用域约束** | 触发器或效果所要求的输入作用域范围。 |
 | **data expression** | **数据表达式** | 规则属性键或值中的类型描述符（如 `filepath`、`scope_field`）。 |
 | **data type** | **数据类型** | CWT 数据表达式解析出的类型枚举（`CwtDataType`）。 |
 | **config resolution** | **规则解析** | 为特定 PSI 元素查找并绑定匹配 CWT 规则的过程。 |
 | **config context** | **规则上下文** | 记录当前元素所处环境的规则树容器（`CwtConfigContext`）。 |
-| **config provider** | **规则上下文提供者** | 实现 `CwtConfigContextProvider` 扩展点的服务类。 |
 | **inferred config** | **推断规则** | 从使用处反向计算生成的非静态规则。 |
 | **mock config** | **模拟规则** | 为动态构造的节点生成的轻量只读虚拟规则对象。 |
 | **config expansion** | **规则展开** | 将别名规则等高级语法展开为实际候选集合的处理过程。 |

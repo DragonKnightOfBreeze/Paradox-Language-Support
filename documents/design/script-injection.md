@@ -67,7 +67,7 @@
 
 ```text
 CwtConfigContextProvider 优先级分派链：
-1. CwtDefineVariableConfigContextProvider     // 定值变量上下文
+1. CwtDefineVariableConfigContextProvider      // 定值变量上下文
 2. CwtParameterValueConfigContextProvider      // 参数传入值与默认值上下文（核心注入点）
 3. CwtInlineScriptUsageConfigContextProvider   // 内联脚本调用处上下文
 4. CwtInlineScriptFileConfigContextProvider    // 内联脚本文件内部上下文
