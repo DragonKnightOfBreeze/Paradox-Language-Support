@@ -28,15 +28,19 @@ interface ParadoxPatternMatcher {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxPatternMatcher>("icu.windea.pls.patternMatcher")
-        @JvmField val CACHE = LazyValue<List<ParadoxPatternMatcher>>()
 
-        fun getAll(): List<ParadoxPatternMatcher> = CACHE.getOrNull().orEmpty()
+        fun getAll(): List<ParadoxPatternMatcher> = getAllFromCache()
 
         // region Implementations
 
+        @JvmField val CACHE = LazyValue<List<ParadoxPatternMatcher>>()
+
         init {
-            CACHE.reinitialize { compute() }
             EP_NAME.addExtensionPointListener { CACHE.reinitialize { compute() } }
+        }
+
+        private fun getAllFromCache(): List<ParadoxPatternMatcher> {
+            return CACHE.initialize { compute() }
         }
 
         private fun compute(): List<ParadoxPatternMatcher> {

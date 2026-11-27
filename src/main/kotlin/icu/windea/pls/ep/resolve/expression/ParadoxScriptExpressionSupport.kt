@@ -58,15 +58,19 @@ interface ParadoxScriptExpressionSupport {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxScriptExpressionSupport>("icu.windea.pls.scriptExpressionSupport")
-        @JvmField val CACHE = LazyValue<Map<CwtDataType, List<ParadoxScriptExpressionSupport>>>()
 
-        fun get(dataType: CwtDataType): List<ParadoxScriptExpressionSupport> = CACHE.getOrNull()?.get(dataType).orEmpty()
+        fun get(dataType: CwtDataType): List<ParadoxScriptExpressionSupport> = getFromCache(dataType)
 
         // region Implementations
 
+        @JvmField val CACHE = LazyValue<Map<CwtDataType, List<ParadoxScriptExpressionSupport>>>()
+
         init {
-            CACHE.initialize { computeCache() }
             EP_NAME.addExtensionPointListener { CACHE.reinitialize { computeCache() } }
+        }
+
+        private fun getFromCache(dataType: CwtDataType): List<ParadoxScriptExpressionSupport> {
+            return CACHE.initialize { computeCache() }.get(dataType).orEmpty()
         }
 
         private fun computeCache(): Map<CwtDataType, List<ParadoxScriptExpressionSupport>> {

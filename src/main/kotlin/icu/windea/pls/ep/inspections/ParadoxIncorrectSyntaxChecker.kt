@@ -36,15 +36,19 @@ interface ParadoxIncorrectSyntaxChecker : DumbAware {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxIncorrectSyntaxChecker>("icu.windea.pls.incorrectSyntaxChecker")
-        @JvmField val CACHE = LazyValue<List<ParadoxIncorrectSyntaxChecker>>()
 
-        fun getAll(): List<ParadoxIncorrectSyntaxChecker> = CACHE.getOrNull().orEmpty()
+        fun getAll(): List<ParadoxIncorrectSyntaxChecker> = getAllFromCache()
 
         // region Implementations
 
+        @JvmField val CACHE = LazyValue<List<ParadoxIncorrectSyntaxChecker>>()
+
         init {
-            CACHE.initialize { computeCache() }
             EP_NAME.addExtensionPointListener { CACHE.reinitialize { computeCache() } }
+        }
+
+        private fun getAllFromCache(): List<ParadoxIncorrectSyntaxChecker> {
+            return CACHE.initialize { computeCache() }
         }
 
         private fun computeCache(): List<ParadoxIncorrectSyntaxChecker> {

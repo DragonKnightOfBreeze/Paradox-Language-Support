@@ -19,15 +19,19 @@ interface ParadoxInferredGameTypeProvider {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxInferredGameTypeProvider>("icu.windea.pls.inferredGameTypeProvider")
-        @JvmField val CACHE = LazyValue<List<ParadoxInferredGameTypeProvider>>()
 
-        fun getAll(): List<ParadoxInferredGameTypeProvider> = CACHE.getOrNull().orEmpty()
+        fun getAll(): List<ParadoxInferredGameTypeProvider> = getAllFromCache()
 
         // region Implementations
 
+        @JvmField val CACHE = LazyValue<List<ParadoxInferredGameTypeProvider>>()
+
         init {
-            CACHE.reinitialize { compute() }
             EP_NAME.addExtensionPointListener { CACHE.reinitialize { compute() } }
+        }
+
+        private fun getAllFromCache(): List<ParadoxInferredGameTypeProvider> {
+            return CACHE.initialize { compute() }
         }
 
         private fun compute(): List<ParadoxInferredGameTypeProvider> {

@@ -17,15 +17,19 @@ interface ParadoxRootMetadataProvider {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxRootMetadataProvider>("icu.windea.pls.rootMetadataProvider")
-        @JvmField val CACHE = LazyValue<List<ParadoxRootMetadataProvider>>()
 
-        fun getAll(): List<ParadoxRootMetadataProvider> = CACHE.getOrNull().orEmpty()
+        fun getAll(): List<ParadoxRootMetadataProvider> = getAllFromCache()
 
         // region Implementations
 
+        @JvmField val CACHE = LazyValue<List<ParadoxRootMetadataProvider>>()
+
         init {
-            CACHE.reinitialize { compute() }
             EP_NAME.addExtensionPointListener { CACHE.reinitialize { compute() } }
+        }
+
+        private fun getAllFromCache(): List<ParadoxRootMetadataProvider> {
+            return CACHE.initialize { compute() }
         }
 
         private fun compute(): List<ParadoxRootMetadataProvider> {

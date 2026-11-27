@@ -21,15 +21,19 @@ interface ParadoxIgnoredFileProvider {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxIgnoredFileProvider>("icu.windea.pls.ignoredFileProvider")
-        @JvmField val CACHE = LazyValue<List<ParadoxIgnoredFileProvider>>()
 
-        fun getAll(): List<ParadoxIgnoredFileProvider> = CACHE.getOrNull().orEmpty()
+        fun getAll(): List<ParadoxIgnoredFileProvider> = getAllFromCache()
 
         // region Implementations
 
+        @JvmField val CACHE = LazyValue<List<ParadoxIgnoredFileProvider>>()
+
         init {
-            CACHE.reinitialize { compute() }
             EP_NAME.addExtensionPointListener { CACHE.reinitialize { compute() } }
+        }
+
+        private fun getAllFromCache(): List<ParadoxIgnoredFileProvider> {
+            return CACHE.initialize { compute() }
         }
 
         private fun compute(): List<ParadoxIgnoredFileProvider> {

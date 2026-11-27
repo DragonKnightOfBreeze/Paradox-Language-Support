@@ -55,15 +55,19 @@ interface ParadoxLocalisationExpressionSupport {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxLocalisationExpressionSupport>("icu.windea.pls.localisationExpressionSupport")
-        @JvmField val CACHE = LazyValue<List<ParadoxLocalisationExpressionSupport>>()
 
-        fun getAll(): List<ParadoxLocalisationExpressionSupport> = CACHE.getOrNull().orEmpty()
+        fun getAll(): List<ParadoxLocalisationExpressionSupport> = getAllFromCache()
 
         // region Implementations
 
+        @JvmField val CACHE = LazyValue<List<ParadoxLocalisationExpressionSupport>>()
+
         init {
-            CACHE.initialize { computeCache() }
             EP_NAME.addExtensionPointListener { CACHE.reinitialize { computeCache() } }
+        }
+
+        private fun getAllFromCache(): List<ParadoxLocalisationExpressionSupport> {
+            return CACHE.initialize { computeCache() }
         }
 
         private fun computeCache(): List<ParadoxLocalisationExpressionSupport> {

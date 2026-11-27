@@ -44,15 +44,19 @@ interface CwtConfigContextProvider {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<CwtConfigContextProvider>("icu.windea.pls.configContextProvider")
-        @JvmField val CACHE = LazyValue<List<CwtConfigContextProvider>>()
 
-        fun getAll(): List<CwtConfigContextProvider> = CACHE.getOrNull().orEmpty()
+        fun getAll(): List<CwtConfigContextProvider> = getAllFromCache()
 
         // region Implementations
 
+        @JvmField val CACHE = LazyValue<List<CwtConfigContextProvider>>()
+
         init {
-            CACHE.reinitialize { compute() }
             EP_NAME.addExtensionPointListener { CACHE.reinitialize { compute() } }
+        }
+
+        private fun getAllFromCache(): List<CwtConfigContextProvider> {
+            return CACHE.initialize { compute() }
         }
 
         private fun compute(): List<CwtConfigContextProvider> {

@@ -31,8 +31,9 @@ class LazyValue<T> {
     }
 
     fun getOrNull(): T? {
+        if (!isInitialized()) return null
         @Suppress("UNCHECKED_CAST")
-        return _value as? T
+        return _value as T
     }
 
     fun isInitialized(): Boolean {

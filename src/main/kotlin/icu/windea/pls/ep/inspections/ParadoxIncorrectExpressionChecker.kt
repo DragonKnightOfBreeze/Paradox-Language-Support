@@ -36,15 +36,19 @@ interface ParadoxIncorrectExpressionChecker {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxIncorrectExpressionChecker>("icu.windea.pls.incorrectExpressionChecker")
-        @JvmField val CACHE = LazyValue<List<ParadoxIncorrectExpressionChecker>>()
 
-        fun getAll(): List<ParadoxIncorrectExpressionChecker> = CACHE.getOrNull().orEmpty()
+        fun getAll(): List<ParadoxIncorrectExpressionChecker> = getAllFromCache()
 
         // region Implementations
 
+        @JvmField val CACHE = LazyValue<List<ParadoxIncorrectExpressionChecker>>()
+
         init {
-            CACHE.initialize { computeCache() }
             EP_NAME.addExtensionPointListener { CACHE.reinitialize { computeCache() } }
+        }
+
+        private fun getAllFromCache(): List<ParadoxIncorrectExpressionChecker> {
+            return CACHE.initialize { computeCache() }
         }
 
         private fun computeCache(): List<ParadoxIncorrectExpressionChecker> {

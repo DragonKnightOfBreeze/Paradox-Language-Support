@@ -21,15 +21,19 @@ interface ParadoxDefinitionInspectionSuppressionProvider {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxDefinitionInspectionSuppressionProvider>("icu.windea.pls.definitionInspectionSuppressionProvider")
-        @JvmField val CACHE = LazyValue<List<ParadoxDefinitionInspectionSuppressionProvider>>()
 
-        fun getAll(): List<ParadoxDefinitionInspectionSuppressionProvider> = CACHE.getOrNull().orEmpty()
+        fun getAll(): List<ParadoxDefinitionInspectionSuppressionProvider> = getAllFromCache()
 
         // region Implementations
 
+        @JvmField val CACHE = LazyValue<List<ParadoxDefinitionInspectionSuppressionProvider>>()
+
         init {
-            CACHE.initialize { computeCache() }
             EP_NAME.addExtensionPointListener { CACHE.reinitialize { computeCache() } }
+        }
+
+        private fun getAllFromCache(): List<ParadoxDefinitionInspectionSuppressionProvider> {
+            return CACHE.initialize { computeCache() }
         }
 
         private fun computeCache(): List<ParadoxDefinitionInspectionSuppressionProvider> {

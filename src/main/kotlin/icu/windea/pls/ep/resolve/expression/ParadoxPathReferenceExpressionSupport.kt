@@ -63,15 +63,19 @@ interface ParadoxPathReferenceExpressionSupport {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxPathReferenceExpressionSupport>("icu.windea.pls.pathReferenceExpressionSupport")
-        @JvmField val CACHE = LazyValue<Map<CwtDataType, ParadoxPathReferenceExpressionSupport>>()
 
-        fun get(dataType: CwtDataType): ParadoxPathReferenceExpressionSupport? = CACHE.getOrNull()?.get(dataType)
+        fun get(dataType: CwtDataType): ParadoxPathReferenceExpressionSupport? = getFromCache(dataType)
 
         // region Implementations
 
+        @JvmField val CACHE = LazyValue<Map<CwtDataType, ParadoxPathReferenceExpressionSupport>>()
+
         init {
-            CACHE.initialize { computeCache() }
             EP_NAME.addExtensionPointListener { CACHE.reinitialize { computeCache() } }
+        }
+
+        private fun getFromCache(dataType: CwtDataType): ParadoxPathReferenceExpressionSupport? {
+            return CACHE.initialize { computeCache() }.get(dataType)
         }
 
         private fun computeCache(): Map<CwtDataType, ParadoxPathReferenceExpressionSupport> {
