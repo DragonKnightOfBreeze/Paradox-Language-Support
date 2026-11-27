@@ -40,8 +40,7 @@ class FileDocumentFragmentContent(
     private val original = original
     private val rangeMarker: RangeMarker
     private val mySynchronizer: MyDocumentsSynchronizer
-
-    private var assignments = 0
+    private val assignmentTracker: DocumentsSynchronizer.DocumentSynchronizerAssignmentTracker
 
     init {
         rangeMarker = createRangeMarker(original.document, range)
@@ -54,6 +53,7 @@ class FileDocumentFragmentContent(
         document2.putUserData(UndoManager.ORIGINAL_DOCUMENT, document1)
 
         mySynchronizer = MyDocumentsSynchronizer(project, rangeMarker, document1, document2)
+        assignmentTracker = DocumentsSynchronizer.DocumentSynchronizerAssignmentTracker(mySynchronizer)
 
         val originalLineConvertor = original.getUserData(DiffUserDataKeysEx.LINE_NUMBER_CONVERTOR)
         putUserData(DiffUserDataKeysEx.LINE_NUMBER_CONVERTOR, IntUnaryOperator block@{ value: Int ->
@@ -113,15 +113,7 @@ class FileDocumentFragmentContent(
 
     override fun onAssigned(isAssigned: Boolean) {
         if (isAssigned) DiffUtil.refreshOnFrameActivation(file)
-
-        if (isAssigned) {
-            if (assignments == 0) mySynchronizer.startListen()
-            assignments++
-        } else {
-            assignments--
-            if (assignments == 0) mySynchronizer.stopListen()
-        }
-        assert(assignments >= 0)
+        assignmentTracker.onAssigned(isAssigned)
     }
 
     private class MyDocumentsSynchronizer(
@@ -132,34 +124,40 @@ class FileDocumentFragmentContent(
     ) : DocumentsSynchronizer(project, document1, document2) {
         override fun onDocumentChanged1(event: DocumentEvent) {
             if (!myRangeMarker.isValid) {
-                myDocument2.setReadOnly(false)
-                replaceString(myDocument2, 0, myDocument2.textLength, DiffBundle.message("synchronize.document.and.its.fragment.range.error"))
-                myDocument2.setReadOnly(true)
+                document2.setReadOnly(false)
+                try {
+                    replaceString(document2, 0, document2.textLength, DiffBundle.message("synchronize.document.and.its.fragment.range.error"))
+                } finally {
+                    document2.setReadOnly(true)
+                }
                 return
             }
-            val newText = myDocument1.charsSequence.subSequence(myRangeMarker.startOffset, myRangeMarker.endOffset)
-            replaceString(myDocument2, 0, myDocument2.textLength, newText)
+            val newText = document1.charsSequence.subSequence(myRangeMarker.startOffset, myRangeMarker.endOffset)
+            replaceString(document2, 0, document2.textLength, newText)
         }
 
         override fun onDocumentChanged2(event: DocumentEvent) {
             if (!myRangeMarker.isValid) return
-            if (!myDocument1.isWritable) return
+            if (!document1.isWritable) return
             val newText = event.newFragment
             val originalOffset = event.offset + myRangeMarker.startOffset
             val originalEnd = originalOffset + event.oldLength
-            replaceString(myDocument1, originalOffset, originalEnd, newText)
+            replaceString(document1, originalOffset, originalEnd, newText)
         }
 
         override fun startListen() {
             if (myRangeMarker.isValid) {
-                myDocument2.setReadOnly(false)
-                val nexText = myDocument1.charsSequence.subSequence(myRangeMarker.startOffset, myRangeMarker.endOffset)
-                replaceString(myDocument2, 0, myDocument2.textLength, nexText)
-                myDocument2.setReadOnly(!myDocument1.isWritable)
+                document2.setReadOnly(false)
+                val nexText = document1.charsSequence.subSequence(myRangeMarker.startOffset, myRangeMarker.endOffset)
+                replaceString(document2, 0, document2.textLength, nexText)
+                document2.setReadOnly(!document1.isWritable)
             } else {
-                myDocument2.setReadOnly(false)
-                replaceString(myDocument2, 0, myDocument2.textLength, DiffBundle.message("synchronize.document.and.its.fragment.range.error"))
-                myDocument2.setReadOnly(true)
+                document2.setReadOnly(false)
+                try {
+                    replaceString(document2, 0, document2.textLength, DiffBundle.message("synchronize.document.and.its.fragment.range.error"))
+                } finally {
+                    document2.setReadOnly(true)
+                }
             }
             super.startListen()
         }
