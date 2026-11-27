@@ -31,7 +31,7 @@
 - [ ] P3 新增与补充关于复杂表达式的参考文档
 - [ ] P3 新增与补充关于常见术语（IDE/领域）的参考文档
 - [ ] P4 新增参考文档：功能速查表 - 可从 XML 配置文件提取，可借助 AI
-- [ ] P3 新增参考笔记：PSI 接口架构 - 记录各种语言的 PSI 接口的继承关系，以及相关的架构决策要点
+- [x] P3 3.1.0 新增参考笔记：PSI 接口架构 - 记录各种语言的 PSI 接口的继承关系，以及相关的架构决策要点
 - [ ] P3 清理、补充与完善 complexExpression 的文档注释
 
 ### 进阶与愿景
@@ -69,7 +69,7 @@
 - [ ] P3 开放内部规则：允许自定义除了 schema 之外的所有现有内部规则类型，考虑新增规则类型 liveTemplateSettings
   - 这些特殊规则的变化基本上不会导致刷新与重新解析，以后可以考虑优化相关代码。
   - 考虑借助 AI 补充更多默认提供的设置规则。
-- [ ] P3 对于作为上下文的规则以及匹配的规则，有时需要展开并集（`union[x]`）和别名（`alias_keys_field[x]`）
+- [x] P3 3.0.1 对于作为上下文的规则以及匹配的规则，有时需要展开并集（`union[x]`）和别名（`alias_keys_field[x]`）
 
 ### 图片处理
 
@@ -395,16 +395,16 @@
 
 - [x] P3/QoL 2.1.10 提供代码检查 `UnmatchedFileInspection`（对于脚本文件或CSV文件），以报告当前文件无法匹配到任何 `CwtFilePathMatchableConfig`（默认级别：`WARNING`） - 这意味着当前文件是特殊的，或者缺失相应的规则
 - [x] P3/QoL 2.1.10 考虑与验证能否将 `ParadoxInlineScriptEditorNotificationProvider` 改为 `DeclaredInlineScriptInspection`（默认级别：`TEXT ATTRIBUTES`） - 为了对齐已有的 `UnusedInlineScriptInspection`
-- [ ] P3/QoL 3.0.x 支持扩展的规则选项 `## doc = some.md`，通过引用指定的文档路径，从而包含额外的快速文档文本 - 同时补充相关参考文档
-- [ ] P3/QoL 3.0.x 支持扩展的规则选项 `## inject_doc`（使用当前规则路径）或 `## inject_doc = some/config.cwt@some/path`，通过引用指定的规则文件路径上的指定规则路径，从而注入额外的快速文档文本 - 同时补充相关参考文档
-- [ ] P3/QoL 3.0.x 提供对规则文件中的文件路径引用和规则路径引用的引用解析
+- [ ] P3/QoL 3.1.0+ 支持扩展的规则选项 `## doc = some.md`，通过引用指定的文档路径，从而包含额外的快速文档文本 - 同时补充相关参考文档
+- [ ] P3/QoL 3.1.0+ 支持扩展的规则选项 `## inject_doc`（使用当前规则路径）或 `## inject_doc = some/config.cwt@some/path`，通过引用指定的规则文件路径上的指定规则路径，从而注入额外的快速文档文本 - 同时补充相关参考文档
+- [ ] P3/QoL 3.1.0+ 提供对规则文件中的文件路径引用和规则路径引用的引用解析
 
 ### 2026-06-22
 
 - [ ] P3 3.3.0+ 提供数据流分析，以及相关代码检查，以检测作用域是否（在当前上下文处）存在
 - [ ] P3 3.3.0+ 提供数据流分析，以及相关代码检查，以检测特定类型的动态值（event_target/variable）是否（在当前上下文处）存在
-- [x] P2 3.0.x ~~支持 *位置感知的数据类型*，适用于定义和本地化的匹配（如 `localisation|$_name,$_desc`），并替换掉现有的 *后缀感知的数据类型* （如 `localisation|_name,_desc`） (#340)~~ - 已变更
-- [ ] P4 3.0.x 推断作用域时，可以采用 *快速推断* 策略，而非默认的 *合并所有* 策略
+- [x] P2 3.0.4 ~~支持 *位置感知的数据类型*，适用于定义和本地化的匹配（如 `localisation|$_name,$_desc`），并替换掉现有的 *后缀感知的数据类型* （如 `localisation|_name,_desc`） (#340)~~ - 已变更
+- [ ] P4 3.1.0+ 推断作用域时，可以采用 *快速推断* 策略，而非默认的 *合并所有* 策略
 - [x] P3 2.2.0 支持 *并集规则（unionConfig）*，类似枚举规则（enumConfig），但是其中预定义的是任意数据表达式
 - [x] P3 2.1.10 在工具菜单中新增规则系统相关的动作，并且另外提供动作，以强制刷新内置规则目录、强制刷新规则分组数据
 
@@ -416,14 +416,14 @@
 ### 2026-07-04
 
 - [x] P3 2.2.0 提取 EP `unresolvedExpressionDecorator`
-- [ ] P3 3.0.x 重构查询相关本地化和相关图片的API，考虑提供EP和查询器
+- [ ] P3 3.1.0+ 重构查询相关本地化和相关图片的API，考虑提供EP和查询器
 
 ### 2026-07-06
 
-- [ ] P3 3.0.x 考虑提供 `ParadoxModiferSearch`
-- [ ] P3 3.0.x 考虑提供 `ParadoxRelatedLocalisationSearch`
-- [ ] P3 3.0.x 考虑提供 `ParadoxRelatedImageSearch`
-- [ ] P2 3.0.x 确定、验证和规范化重命名定义的逻辑
+- [ ] P3 3.1.0+ 考虑提供 `ParadoxModiferSearch`
+- [ ] P3 3.1.0+ 考虑提供 `ParadoxRelatedLocalisationSearch`
+- [ ] P3 3.1.0+ 考虑提供 `ParadoxRelatedImageSearch`
+- [ ] P2 3.1.0+ 确定、验证和规范化重命名定义的逻辑
   - 解析得到文本范围完全匹配的脚本表达式元素（nameField / nameIdentifier），然后调用 elementManipulator 或者  seValue。
   - 考虑新增 `ParadoxDefinitonNameService`，或者完善 `ParadoxDefinitonService`
   - 提取 `ParadoxDefinitionManipulationService`，主要用于重命名
@@ -440,8 +440,8 @@
 ### 2026-07-07
 
 - [ ] P3 事件链解析应能跨越 scripted_effect
-- [ ] P2 3.0.x 继续分析与优化构建索引时的性能和内存占用
-- [ ] P2 3.0.x 继续分析与优化完成项目分析后的性能和内存占用
+- [ ] P2 3.1.0+ 继续分析与优化构建索引时的性能和内存占用
+- [ ] P2 3.1.0+ 继续分析与优化完成项目分析后的性能和内存占用
 
 ### 2026-07-11
 
@@ -449,7 +449,7 @@
 - [x] P2 3.0.0 改为为内联脚本文件提供编辑器通知，而非代码检查，以避免无法适用于非项目文件（回退到 `ParadoxInlineScriptEditorNotificationProvider`，移除 `DeclaredInlineScriptInspection`）
 - [x] P2 3.0.2 完善脚本文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[[p]b]`）的支持
 - [x] P2 3.0.0 完善本地化文件的 lexer：更好的对可选空白和高级插值语法（如 `a_$p$_[b]`）的支持
-- [ ] P3 对于作为上下文的规则以及匹配的规则，有时需要展开并集（`union[x]`）和别名（`alias_keys_field[x]`）
+- [x] P3 3.0.1 对于作为上下文的规则以及匹配的规则，有时需要展开并集（`union[x]`）和别名（`alias_keys_field[x]`）
 
 ### 2026-07-14
 
@@ -477,17 +477,17 @@
 
 ### 2026-07-23
 
-- [ ] P3 3.0.x 考虑进一步重构 select API
+- [ ] P3 3.1.0+ 考虑进一步重构 select API
   - 主要思路是更好的链式调用方式，更好的向上或向下查询的方式
-- [ ] P3 3.0.x 考虑进一步重构 search 和 searcher 的相关API
+- [ ] P3 3.1.0+ 考虑进一步重构 search 和 searcher 的相关API
   - 主要思路是更好的使用方式，比如直接通过单次链式调用执行查询，无需额外创建和传入 selector 对象。
-- [ ] P2 3.0.x 规范化展示（presentation）的相关 API
+- [ ] P2 3.1.0+ 规范化展示（presentation）的相关 API
   - 展示：包括文本展示（textPresentation，来自本地化文本/扩展规则/resourceBundle/等等）和图形展示（graphPresentation，来自图标/图片/切分后的图片/等等）。
   - 区别于“名字/name”，一些目标（定义/动态值/等等）也存在“展示名字/presentableName”，一般来自最相关的本地化或同名的本地化的文本。
   - 对于展示名字、相关本地化、相关图片，存在不同的适用目标和不同的来源策略，考虑提供对应的EP。
   - 相关代码应主要位于 `icu.windea.pls.lang.presentation`。
   - 考虑提供 manager，用于从各种目标获取展示名字、相关本地化、相关图片、等等。
-- [ ] P2 3.0.x 规范化数据（data）的相关 API
+- [ ] P2 3.1.0+ 规范化数据（data）的相关 API
   - 数据：接近原始状态的数据，适用于脚本/本地化/定义/等等，可通过属性委托和数据模型类等方式获取，通常是经过解析（`@sv`）和评估（`@[...]`）的。
   - 相关代码应主要位于 `icu.windea.pls.lang.data`。
   - 考虑重构和提供 dataManager/dataResolver。
@@ -495,7 +495,7 @@
   - 考虑提供 `ParadoxDataManager`，用于从表达式的模型或 PSI 转换为指定类型的数据。
   - 考虑在未来另外提供 `ParadoxJsonDataManager`。
   - 目前仅按需提供特定游戏类型和定义类型的定义数据模型类。
-- [ ] P2 3.0.x 规范化可视化（visualization）的相关API
+- [ ] P2 3.1.0+ 规范化可视化（visualization）的相关API
   - 可视化：基于HTML/Swing/WebView的进阶图形展示。
   - 相关代码应主要位于 `icu.windea.pls.lang.visualization`。
   - 考虑重构和提供 visualizationManager/visiualizationResolver/相关工具类。
@@ -569,7 +569,7 @@
   - 提供 `ParadoxAnnotatedDataFactory`。
   - 这类“注解数据”可用于提取、嵌入、渲染、检查一些关键语法信息和语义信息。
   - 可以用来实现 annotatedRenderer，而这又可用于快照测试。
-- [ ] P2 3.0.x 引入 `ParadoxData` `ParadoxDataSource`。
+- [ ] P2 3.1.0+ 引入 `ParadoxData` `ParadoxDataSource`。
   - 模型代码位于 `icu.windea.pls.model.data` 中。
   - 其他相关代码位于 `icu.windea.pls.lang.data` 中。
   - 提供 `ParadoxDataImpls.kt`（一组预定义且按需提供的模型实现）。
@@ -604,7 +604,7 @@
   - 主要适用于键为常量的子属性，如果数量较少存在差异，需要考虑标注为参数/约束。
   - 可能需要限制条目个数。可配置最大条目个数和换行阈值。
   - 预期有相当的复杂性，考虑视为里程碑。
-- [ ] P3 3.x.x 对于脚本文件和本地化文件中的那些特殊语法（插值/富文本），需要研究一下在不同游戏中的支持情况
+- [ ] P3 3.1.0+ 对于脚本文件和本地化文件中的那些特殊语法（插值/富文本），需要研究一下在不同游戏中的支持情况
 - [ ] P3 3.0.4 分离出代码高亮的配置项分组（语义高亮、抑制插值内容/注入内容的首尾语法错误、等等
 - [ ] P4 3.0.4 对于脚本文件，考虑从 `IncorrectSyntaxInspection` 分离出 `UnsupportedOperatorInspection`，以强调这是“不支持的语法”，并且通常不应禁用这项检查
 - [ ] P4 3.0.4 通过 `IncorrectExpressionInspection` 报告字符串/快形式的颜色字段的参数不正确（越界/缺失/过多）
@@ -615,14 +615,14 @@
 
 ### 2026-09-02
 
-- [ ] P3 3.x.x 需要进一步完善对内联脚本和参数的上下文规则的推断逻辑（结合对游戏脚本文件的分析）
+- [ ] P3 3.1.0+ 需要进一步完善对内联脚本和参数的上下文规则的推断逻辑（结合对游戏脚本文件的分析）
 
 ### 2026-09-07
 
-- [ ] P3 3.x.x 如果存在来自 `Unresolved...Inspection` 或 `UnsupportedRecursionInspection` 的报错，且可通过更改代码检查的配置项来忽略符合条件的报错，则提供对应的快速修复，以通过这种方式快速忽略当前位置的报错
-- [ ] P4 3.x.x 对于来自内置/远程规则分组的规则文件，支持通过编辑器通知等方式，快速打开对应的远程仓库页面
-- [ ] P4 3.x.x 对于 `£mod_job_resort_worker_add£` 这类不存在直接对应的修正图标文件的图标引用，可能需要采用某种回退策略（通过特定代码逻辑合成最终需要的图标？），需要推定游戏引擎的实际行为
-- [ ] P3 3.x.x `events/game_start.txt`（Stellaris 游戏目录，L943）中使用到了 `NOT = { is_same_value = event_target:sol_system_earth? }`，需要推定游戏引擎的实际行为，考虑将 `k? = v` 中的 `?` 识别为 linkedExpression 的一部分
+- [ ] P3 3.1.0+ 如果存在来自 `Unresolved...Inspection` 或 `UnsupportedRecursionInspection` 的报错，且可通过更改代码检查的配置项来忽略符合条件的报错，则提供对应的快速修复，以通过这种方式快速忽略当前位置的报错
+- [ ] P4 3.1.0+ 对于来自内置/远程规则分组的规则文件，支持通过编辑器通知等方式，快速打开对应的远程仓库页面
+- [ ] P4 3.1.0+ 对于 `£mod_job_resort_worker_add£` 这类不存在直接对应的修正图标文件的图标引用，可能需要采用某种回退策略（通过特定代码逻辑合成最终需要的图标？），需要推定游戏引擎的实际行为
+- [ ] P3 3.1.0+ `events/game_start.txt`（Stellaris 游戏目录，L943）中使用到了 `NOT = { is_same_value = event_target:sol_system_earth? }`，需要推定游戏引擎的实际行为，考虑将 `k? = v` 中的 `?` 识别为 linkedExpression 的一部分
   - 这需要级联更改相当多的内容，目前暂不考虑……
 
 ### 2026-09-08
@@ -671,13 +671,13 @@
   - 可以用来直接封装 processXxx 方法，也可以用来作为 searchXxx 方法的返回值
   - 有限迁移：目前仅有限应用于强调“读”（而非“遍历”）的一些API
   - 例如：expansion/relatedItems/presentableItems 的相关代码
-- [ ] P3 3.0.x 考虑继续重构 relatedItem/presentableItem API
+- [ ] P3 3.1.0+ 考虑继续重构 relatedItem/presentableItem API
   - 目标：更加简洁，更加灵活，同时保持性能
   - 考虑返回 `Query`（类似常规的查询，如 `ParadoxDefinitionSearch`）
   - 考虑改为直接返回 `PushStream`
   - 考虑一定程度上缓存结果（这会直接缓存 PSI，需要慎重考虑缓存失效策略）
   - 如果改为直接返回 `PushStream`（或者其他使用懒加载策略的返回结果），缓存结果会变得不合适，以后需要通过 profiling 验证性能表现
-- [ ] P4 3.0.x 考虑继续重构 search API
+- [ ] P4 3.1.0+ 考虑继续重构 search API
   - 目标：更加简洁、更加灵活
 - [ ] P4/QoL 考虑提供与Steam模组上传相关的实用功能
   - 以侧边栏或对话框的形式。
@@ -693,21 +693,21 @@
   - 可以通过传入 `ProgressIndicator` 来进行取消检查（抵达时间间隔阈值时）。
   - 可以指定执行超时。
 - [ ] P3 3.0.5+ 考虑将 scriptedVariable/localisation 的 type 属性改为 lang 模块下的扩展属性，因为它们实际上是语义层的。然而，由于 type 的 resolve 静态方法直接位于 model 模块下，需要可能需要进一步的决策和重构
-- [ ] P3 3.0.x 考虑提供一种纯文本形式的 hintTextRenderer
+- [ ] P3 3.1.0+ 考虑提供一种纯文本形式的 hintTextRenderer
   - 可用于快照测试、上下文信息提取、RAG
   - 由于其繁琐性与复杂性，可以且应当借力AI
   - 然而，仍然需要一些设计与决策
-- [ ] P4 3.0.x 基于上下文（用法/数据流）的对 event_target/variable 的检查（保存/使用）
+- [ ] P4 3.1.0+ 基于上下文（用法/数据流）的对 event_target/variable 的检查（保存/使用）
   - 可参考 cwtools 源码（实际上，不限于此项检查）
-- [ ] P3 3.0.x 考虑清理和优化AI模块，并保持在MVP级别
+- [ ] P3 3.1.0+ 考虑清理和优化AI模块，并保持在MVP级别
   - 使用更简洁、更易扩展的代码风格
   - 考虑迁移框架，或者仅迁移框架版本
   - 完善测试
   - 调整AI提示，适当地完善上下文注入机制
   - 可以考虑另外提供一些AI功能（MVP级别，有实用价值）
-- [ ] P4 3.0.x 考虑借助AI来评估cwtools提供的检查器
+- [ ] P4 3.1.0+ 考虑借助AI来评估cwtools提供的检查器
   - 考虑准确性、复杂性、可参考性、可迁移性，等等
-- [ ] P4 3.0.x 考虑借助AI来评估tiger提供的检查器
+- [ ] P4 3.1.0+ 考虑借助AI来评估tiger提供的检查器
   - 考虑准确性、复杂性、可参考性、可迁移性，等等
   - 代码量可能比较大，有一定难度/上下文限制
 
@@ -738,7 +738,7 @@
 
 ### 2026-10-27
 
-- [ ] P2 3.1.0 将最低支持的  IDE 版本 改为 IDEA 2026.2
+- [x] P2 3.1.0 将最低支持的  IDE 版本 改为 IDEA 2026.2
   - 将 Kotlin 版本同步改为 2.4.0
   - 重构代码以处理平台版本和 Kotlin 版本的兼容性问题
   - 调整启用的编译器参数
@@ -765,7 +765,7 @@
 
 ### 2026-10-30
 
-- [ ] P4 考虑重构和清理 `ConvertImageFormatAction`
+- [x] P4 3.0.6 考虑重构和清理 `ConvertImageFormatAction`
   - 可以改为完全基于 Kotlin 协程实现，但是参考实现（`CopyFilesOrDirectoriesHandler`）目前尚未如此
   - 低优先级，只要能够正常工作即可
 
@@ -780,26 +780,26 @@
 
 - [x] P4 3.0.5 引入 `CancellableInputStream` 和 `CancellableOutputStream`
   - 可通过 `checker` 进行取消检查
-- [ ] P4 3.0.x 引入 `MonitorableInputStream` 和 `MonitorableOutputStream`
+- [x] P4 3.0.6 引入 `MonitorableInputStream` 和 `MonitorableOutputStream`
   - 可监控总长度和已处理长度，可能需要调整命名，可能需要与 `CancellableInputStream` / `CancellableOutputStream` 合并
-- [ ] P4 3.0.x 在快速文档中提示图片文件的尺寸（tailText，` (widthxheight)`）
-- [ ] P2 3.0.x 考虑将 `ImageRenderRequest`/`ParadoxImageResolveResult` 合并为 `ImageDescriptor`
+- [ ] P4 3.1.0+ 在快速文档中提示图片文件的尺寸（tailText，` (widthxheight)`）
+- [x] P2 3.0.6 考虑将 `ImageRenderRequest`/`ParadoxImageResolveResult` 合并为 `ImageDescriptor`
   - 更加通用，不限于“渲染”，也可用于“描述”和“解析”。
   - 提供图片层的方法 `ImageDescriptor.createImage` `ImageDescriptor.createImageIcon` `ImageDescriptor.resolveUrl`。
   - 考虑区分渲染和解析策略：`Direct` `Delegated`（converted/sliced/convertedAndSliced）。
-- [ ] P2 3.0.x 考虑物化图片/图标时的缓存策略（读取/渲染/解析）
+- [x] P2 3.0.6 考虑物化图片/图标时的缓存策略（读取/渲染/解析）
   - 相关代码位置：`ImageService.createImage` `ImageService.createImageIcon`
   - 参见：`com.intellij.util.IconUtil`
   - 参见：`com.intellij.ui.icons.CachedImageIcon`
 - [ ] P4 排序：在 `ParadoxScriptExpressionSupport` 等处，将 `annotate` 方法的顺序移到 `complete` 方法之前
 - [ ] P3 重构：考虑提取 `CwtDataTypePriorities`，以更好地控制数据类型的优先级（这在一些场景下是极其敏感的）
-- [ ] P3 重构：优化 `JsonService`：新增 `JsonOptions` 并应用
+- [x] P3 3.0.6 重构：优化 `JsonService`：新增 `JsonOptions` 并应用
   - 这里的选项应能在合适的范围内控制要使用的底层实现（参见 `Json`），并且可以控制额外的处理逻辑（如对 utf8 bom 的处理） 
   - 提供 `DEFAULT` `JSON5` 等默认选项
-- [ ] P3 重构：优化 `MarkdownService`：新增 `MarkdownOptions` 并应用
+- [x] P3 3.0.6 重构：优化 `MarkdownService`：新增 `MarkdownOptions` 并应用
   - 这里的选项应能在合适的范围内控制要使用的底层实现（参见 `MarkdownFlavourDescriptor`），并且可以控制额外的处理逻辑
   - 提供 `GFM` `CommonMark` 等默认选项
-- [ ] P3 `DownloadOptions`（以及未来可能的 `NetOptions` 等）应可以指定重试机制，并提供默认选项，例如默认重试3次
+- [x] P3 3.0.6 `DownloadOptions`（以及未来可能的 `NetOptions` 等）应可以指定重试机制，并提供默认选项，例如默认重试3次
 
 ### 2026-11-08
 
@@ -822,10 +822,10 @@
 
 ## 2026-11-11
 
-- [ ] 3.0.6 初步提取出语义层通用的 `GraphModel` 以及相关的模型类、服务类、EP 等
-- [ ] 3.0.6 初步提取出语义层通用的 `PresentationModel` 以及相关的模型类、服务类、EP 等
-- [ ] 3.0.6 重构 `extensions.diagram`，提取出通用代码，解决 EDT/RWA 问题
-- [ ] 3.1.x 清理和优化AI模块，但保持MVP状态。
+- [ ] 3.1.0+ 初步提取出语义层通用的 `GraphModel` 以及相关的模型类、服务类、EP 等
+- [ ] 3.1.0+ 初步提取出语义层通用的 `PresentationModel` 以及相关的模型类、服务类、EP 等
+- [x] 3.0.6 重构 `extensions.diagram`，提取出通用代码，解决 EDT/RWA 问题
+- [ ] 3.1.0+ 清理和优化AI模块，但保持MVP状态。
 
 ## 2026-11-12
 
@@ -834,5 +834,5 @@
 
 ## 2026-11-18
 
-- [ ] 3.1.x 暴露更多工具动作作为 run configuration
-- [ ] 3.1.x 重构 `extensions.diagram`：将核心逻辑提取到语义层的 `lang.diagram` `lang.graph` 等，`diagramProvider` 等尽可能仅保留作为门面和桥接
+- [ ] 3.1.0+ 暴露更多工具动作作为 run configuration
+- [ ] 3.1.0+ 重构 `extensions.diagram`：将核心逻辑提取到语义层的 `lang.diagram` `lang.graph` 等，`diagramProvider` 等尽可能仅保留作为门面和桥接
