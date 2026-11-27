@@ -63,15 +63,18 @@ documents/
 
 Living design specifications for top-level design, visual systems, and core abstraction models:
 
-- [Icon Design](design/icon-design.md) - Icon definitions and color mappings for file types, AST nodes, and config elements
-- [Color Scheme](design/color-scheme.md) - Lexical and semantic highlighting color specifications
+- [PSI Architecture](design/psi-architecture.md) - PSI layered model, interface hierarchies, cross-language capability interfaces, stubs, and light elements
+- [Language Abstractions](design/language-abstractions.md) - Grammar-level and semantic-level abstraction mappings for Script, Localisation, CSV, and CWT
+- [Complex Expressions](design/complex-expressions.md) - CWT-driven lightweight expression trees, family taxonomy, node models, and consumer boundaries
+- [Scope System](design/scope-system.md) - Scope classification, union-scope simulation, CWT-driven scope configs, and context inference
+- [Script Injection](design/script-injection.md) - Parameter, localisation, and Markdown injection hosts, dynamic config context, and nesting boundaries
+- [Icon Design](design/icon-design.md) - File type, AST node, config element, gutter, action, and general icon definitions with color mappings
+- [Color Scheme](design/color-scheme.md) - Lexical, semantic, and derived highlighting keys, theme XML overrides, and platform default inheritance
 - [Prompt Template Engine](design/prompt-template-engine.md) - Built-in AI prompt template syntax, directives, and lifecycle
-- [Mod Import/Export](design/mod-import-export.md) - Mod dependency import/export architecture and format adaptors
-- [Language Abstractions](design/language-abstractions.md) - Abstraction model mappings between grammar and semantic layers
-- [Terminology](design/terminology.md) - Core English-Chinese domain terminology
-- [Spellchecking](design/spellchecking.md) - Token splitting and grammar-level spellchecking
-- [Script Injection](design/script-injection.md) - Cross-language injection and dynamic config context construction
-- [Tool Integration: Tiger](design/tool-integration-tiger.md) - `ck3-tiger` validator integration architecture
+- [Mod Import/Export](design/mod-import-export.md) - Mod dependency import/export architecture, launcher format detection, and capability gating
+- [Tool Integration: Tiger](design/tool-integration-tiger.md) - Five `*-tiger` validators: providers, settings, command execution, results, and caching
+- [Terminology](design/terminology.md) - Core English-Chinese domain terminology and disambiguation
+- [Spellchecking](design/spellchecking.md) - Per-language token splitting and grammar-level spellchecking behavior
 
 ### 2. `notes/` (Maintainer Knowledge Base)
 

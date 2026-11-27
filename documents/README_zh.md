@@ -63,15 +63,18 @@ documents/
 
 插件顶层设计、UI 视觉体系与核心抽象模型的现行设计规范：
 
-- [图标设计规范](design/icon-design.md) - 文件类型、AST 语法节点与规则元素的图标定义与颜色映射
-- [配色方案规范](design/color-scheme.md) - 各支持语言的词法高亮与语义高亮配色规范
-- [提示词模板引擎规范](design/prompt-template-engine.md) - 内置 AI 模板引擎语法、指令与生命周期
-- [模组导入与导出设计](design/mod-import-export.md) - 模组依赖导入导出架构与格式适配
-- [语言抽象设计规范](design/language-abstractions.md) - 文法层与语义层的抽象模型映射
-- [领域名词与术语表](design/terminology.md) - 核心术语英汉对照与标准命名
-- [拼写检查机制设计](design/spellchecking.md) - 词元拆分与文法级拼写检查
-- [脚本片段注入机制设计](design/script-injection.md) - 跨语言注入与动态规则上下文构建
-- [外部检查工具集成：Tiger](design/tool-integration-tiger.md) - `ck3-tiger` 校验工具集成架构
+- [PSI 接口架构规范](design/psi-architecture.md) - PSI 分层模型、接口继承谱系、跨语言能力接口、存根与轻量元素
+- [语言抽象设计规范](design/language-abstractions.md) - Script、Localisation、CSV 与 CWT 的文法层与语义层抽象映射
+- [复杂表达式体系设计规范](design/complex-expressions.md) - CWT 驱动的轻量表达式树、家族分类、节点模型与消费边界
+- [作用域系统与上下文推导设计规范](design/scope-system.md) - 作用域分类、并集作用域模拟、CWT 作用域配置与上下文推断
+- [脚本片段注入机制设计规范](design/script-injection.md) - 参数、本地化与 Markdown 注入宿主，动态规则上下文与嵌套边界
+- [图标设计规范](design/icon-design.md) - 文件类型、AST 语法节点、规则元素、装订线、动作与通用图标的定义与颜色映射
+- [配色方案规范](design/color-scheme.md) - 词法、语义与派生高亮键，主题 XML 重载与平台默认继承
+- [提示词模板引擎规范](design/prompt-template-engine.md) - 内置 AI 提示词模板语法、指令与生命周期
+- [模组导入与导出设计](design/mod-import-export.md) - 模组依赖导入导出架构、启动器格式探测与能力门控
+- [外部检查工具集成：Tiger](design/tool-integration-tiger.md) - 五种 `*-tiger` 校验工具：provider、设置、命令执行、结果与缓存
+- [领域名词与术语表](design/terminology.md) - 核心领域术语英汉对照与多载消歧
+- [拼写检查机制设计](design/spellchecking.md) - 按语言划分的词元拆分与文法级拼写检查行为
 
 ### 2. `notes/` (维护者知识库)
 
