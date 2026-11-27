@@ -1,0 +1,7 @@
+test_hidden = {
+	hidden = yes
+}
+
+test_visible = {
+	percentage = yes
+}

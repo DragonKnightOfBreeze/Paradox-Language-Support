@@ -1,0 +1,61 @@
+# Minimal Stellaris rules for Issue #464:
+# `civic_or_origin` image rules are declared both directly and under the `civic` subtype,
+# while `scripted_modifier` localisation is declared only under `subtype[!hidden]`.
+#
+# The `civic` quick doc icon should fall back to the subtype-inferred path when the
+# definition has no explicit `icon` property, and hidden scripted modifiers should not
+# require localisation.
+
+types = {
+    type[civic_or_origin] = {
+        path = "common/governments/civics"
+        path_extension = .txt
+        subtype[civic] = {
+            ## cardinality = 0..1
+            is_origin = no
+        }
+        subtype[origin] = {
+            ## cardinality = 0..1
+            is_origin = yes
+        }
+        images = {
+            icon = icon # filepath
+            subtype[civic] = {
+                icon = "gfx/interface/icons/governments/civics/$.dds" # inferred
+            }
+            subtype[origin] = {
+                icon = "gfx/interface/icons/origins/$.dds" # inferred
+                ## optional
+                picture = picture # <sprite>
+            }
+        }
+    }
+
+    type[scripted_modifier] = {
+        path = "common/scripted_modifiers"
+        path_extension = .txt
+        subtype[hidden] = {
+            hidden = yes
+        }
+        localisation = {
+            subtype[!hidden] = {
+                name = "mod_$"
+            }
+        }
+    }
+}
+
+civic_or_origin = {
+    ## cardinality = 0..1
+    ## file_extensions = { png dds tga }
+    icon = filepath
+    ## cardinality = 0..1
+    is_origin = bool
+}
+
+scripted_modifier = {
+    ## cardinality = 0..1
+    hidden = bool
+    ## cardinality = 0..1
+    percentage = bool
+}

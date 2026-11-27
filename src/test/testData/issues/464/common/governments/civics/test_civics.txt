@@ -1,0 +1,3 @@
+test_civic = {
+	is_origin = no
+}
