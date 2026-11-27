@@ -15,6 +15,9 @@
 - [x] 重整维护者文档架构与代理引导体系，废除 `ai-notes/` 双轨制并拆分路线图、提案、评估、测试与基准测试专册 / Reorganize maintainer documentation and agent guidance, deprecating `ai-notes/` and splitting roadmap, proposals, evaluations, testing, and benchmarking guides
 - [x] 将代理配置目录标准化为 `.agents/` 并落地首批项目级 Skill（`release`、`grammar-kit-codegen`、`issue-triage`） / Standardize agent configuration under `.agents/` and add initial project skills (`release`, `grammar-kit-codegen`, `issue-triage`)
 - [x] 修复 Markdown 内联代码与链接引用在 IDEA 2026.3 中的兼容性问题，支持内联代码符号重命名并补充相关测试 / Fix Markdown inline code and link reference compatibility in IDEA 2026.3, support renaming for inline code symbols, and add related tests
+- [x] 修复部分定义（如 Stellaris `section_template` 与 `civic`）在子类型下声明的本地化与图片因构造期提前初始化而丢失的 BUG / Fix the bug where subtype-declared localisations and images for some definitions (e.g., Stellaris `section_template` and `civic`) were lost due to eager constructor initialization ([#458](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/458), [#464](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/464))
+- [x] 修复若干扩展点缓存在类初始化期间因并发取消或无读锁引发 `ExceptionInInitializerError` 的 BUG，并将 EP 缓存统一迁移至惰性初始化 / Fix `ExceptionInInitializerError` caused by cancellation or missing read access during class initialization of EP caches by migrating EP caches to lazy initialization ([#459](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/459))
+- [x] 修复快速文档中普通定义图标被误按内联文本图标高度上限缩小的问题 / Fix the bug where regular definition icons in quick documentation were erroneously downscaled by the text-icon height limit ([#464](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/464))
 
 ## 3.0.7 - 2026-11-24
 
