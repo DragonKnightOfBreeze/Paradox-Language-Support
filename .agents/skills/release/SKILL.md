@@ -27,14 +27,11 @@ Locally, run only fast, deterministic checks through the built-in shell with `--
 
 ```bash
 # Preview generated GitHub Release Notes locally
-./gradlew generateReleaseNotes \
-  -PreleaseVersion=<version> \
-  -ProadmapRef=<tag-or-branch> \
-  -PoutputFile=build/release-notes.md \
-  --no-daemon --console=plain
+./gradlew generateReleaseNotes "-PreleaseVersion=<version>" "-ProadmapRef=<tag-or-branch>" "-PoutputFile=build/release-notes.md" --no-daemon --console=plain
 ```
 
-- Pass `-PextraNotesFile=<path>` when appending extra Markdown notes to the generated release body, and verify `build/release-notes.md` renders clean `## Release Notes` and `## Roadmap` sections.
+- On Windows PowerShell, keep `-P...` / `-D...` arguments double-quoted (e.g., `"-PreleaseVersion=3.1.0-dev"`) to prevent splitting dotted version strings, and avoid backslash line continuations.
+- Pass `"-PextraNotesFile=<path>"` when appending extra Markdown notes to the generated release body, and verify `build/release-notes.md` renders clean `## Release Notes` and `## Roadmap` sections.
 - Run `./gradlew compileKotlin compileTestKotlin --no-daemon --console=plain` or targeted `--tests` runs when verifying last-minute edits, and run `./gradlew buildPlugin --no-daemon --console=plain` only when inspecting ZIP packaging layout (e.g., `LICENSE` or `NOTICE` inclusion).
 - Rely on GitHub Actions (`build.yml` on PR/push, and `release-github.yml` with `run_checks=true`) for full `check` and `verifyPlugin`.
 
