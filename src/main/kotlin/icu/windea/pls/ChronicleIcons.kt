@@ -152,7 +152,7 @@ object ChronicleIcons {
         @JvmField val ExtendedGameRule = getIcon("/icons/configs/extended/extendedGameRule.svg")
         @JvmField val ExtendedOnAction = getIcon("/icons/configs/extended/extendedOnAction.svg")
         @JvmField val ExtendedParameter = getIcon("/icons/configs/extended/extendedParameter.svg")
-        @JvmField val ExtendedComplexEnumValue = getIcon("/icons/configs/extended/extendedEnumValue.svg")
+        @JvmField val ExtendedComplexEnumValue = getIcon("/icons/configs/extended/extendedComplexEnumValue.svg")
         @JvmField val ExtendedDynamicValue = getIcon("/icons/configs/extended/extendedDynamicValue.svg")
         @JvmField val ExtendedInlineScript = getIcon("/icons/configs/extended/extendedInlineScript.svg")
     }

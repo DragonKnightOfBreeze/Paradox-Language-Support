@@ -20,9 +20,6 @@
         "localisationProperty.svg": "icons/nodes/localisationProperty.svg",
         "localisationIcon.svg": "icons/nodes/localisationIcon.svg",
         "localisationCommand.svg": "icons/nodes/localisationCommand.svg",
-        "localisationCommandScope.svg": "icons/nodes/localisationCommandScope.svg",
-        "localisationCommandField.svg": "icons/nodes/localisationCommandField.svg",
-        "localisationConcept.svg": "icons/nodes/localisationConcept.svg",
         "localisationConceptCommand.svg": "icons/nodes/localisationConceptCommand.svg",
         "localisationTextFormat.svg": "icons/nodes/localisationTextFormat.svg",
         "localisationTextIcon.svg": "icons/nodes/localisationTextIcon.svg",
@@ -90,14 +87,14 @@
         "systemScope.svg": "icons/configs/systemScope.svg",
         "locale.svg": "icons/configs/locale.svg",
         "extended": {
-          "extendedScriptedVariable.svg": "icons/configs/extendedScriptedVariable.svg",
-          "extendedDefinition.svg": "icons/configs/extendedDefinition.svg",
-          "extendedGameRule.svg": "icons/configs/extendedGameRule.svg",
-          "extendedOnAction.svg": "icons/configs/extendedOnAction.svg",
-          "extendedParameter.svg": "icons/configs/extendedParameter.svg",
-          "extendedEnumValue.svg": "icons/configs/extendedEnumValue.svg",
-          "extendedDynamicValue.svg": "icons/configs/extendedDynamicValue.svg",
-          "extendedInlineScript.svg": "icons/configs/extendedInlineScript.svg"
+          "extendedScriptedVariable.svg": "icons/configs/extended/extendedScriptedVariable.svg",
+          "extendedDefinition.svg": "icons/configs/extended/extendedDefinition.svg",
+          "extendedGameRule.svg": "icons/configs/extended/extendedGameRule.svg",
+          "extendedOnAction.svg": "icons/configs/extended/extendedOnAction.svg",
+          "extendedParameter.svg": "icons/configs/extended/extendedParameter.svg",
+          "extendedComplexEnumValue.svg": "icons/configs/extended/extendedComplexEnumValue.svg",
+          "extendedDynamicValue.svg": "icons/configs/extended/extendedDynamicValue.svg",
+          "extendedInlineScript.svg": "icons/configs/extended/extendedInlineScript.svg"
         }
       },
       "gutter": {
