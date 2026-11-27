@@ -3,6 +3,11 @@
     <!--suppress UnstableExtensionsUsage -->
     <psi.implicitReferenceProvider implementation="icu.windea.pls.extensions.markdown.psi.MarkdownInlineCodeReferenceProvider"/>
 
+    <referencesSearch implementation="icu.windea.pls.extensions.markdown.psi.MarkdownInlineCodeReferencesSearcher"/>
+
+    <searcher forClass="com.intellij.refactoring.rename.api.RenameUsageSearchParameters"
+              implementationClass="icu.windea.pls.extensions.markdown.psi.MarkdownInlineCodeRenameUsageSearcher"/>
+
     <localInspection language="Markdown" shortName="ChronicleMarkdownUnresolvedReferenceLink"
                      bundle="messages.ChronicleExtensionsBundle"
                      key="inspection.markdown.unresolvedReferenceLinks" groupKey="inspection.markdown.group"
