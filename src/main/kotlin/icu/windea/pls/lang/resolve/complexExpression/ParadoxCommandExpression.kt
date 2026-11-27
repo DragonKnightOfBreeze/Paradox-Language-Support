@@ -83,7 +83,7 @@ import icu.windea.pls.localisation.psi.ParadoxLocalisationCommandText
  * ```
  */
 interface ParadoxCommandExpression : ParadoxComplexExpression, ParadoxLinkedExpression {
-    val scopeNodes: List<ParadoxScopeNode>
+    val scopeNodes: List<ParadoxCommandScopeNode>
     val fieldNode: ParadoxCommandFieldNode
 
     companion object {
@@ -178,8 +178,8 @@ private class ParadoxCommandExpressionImpl(
 ) : ParadoxComplexExpressionBase(), ParadoxCommandExpression {
     override val linkNodes: List<ParadoxLinkNode>
         get() = nodes.filterIsInstanceFast<ParadoxLinkNode>()
-    override val scopeNodes: List<ParadoxScopeNode>
-        get() = nodes.filterIsInstanceFast<ParadoxScopeNode>()
+    override val scopeNodes: List<ParadoxCommandScopeNode>
+        get() = nodes.filterIsInstanceFast<ParadoxCommandScopeNode>()
     override val fieldNode: ParadoxCommandFieldNode
         get() = nodes.last().cast()
 

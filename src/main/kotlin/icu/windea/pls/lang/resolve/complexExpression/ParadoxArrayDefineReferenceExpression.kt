@@ -30,7 +30,7 @@ import icu.windea.pls.lang.util.ParadoxDefineManager
  * - [ParadoxDefineNamespaceNode] - 标识符节点，匹配定值命名空间（来自脚本文件）。
  * - [ParadoxDefineVariableNode] - 标识符节点，匹配定值变量（来自脚本文件）。
  * - [ParadoxMarkerNode] - 对应其中的 `|`。
- * - [ParadoxNumberLiteralNode] - 对应其中作为索引的数字字面量。应当是一个正整数。
+ * - [ParadoxLiteralNode] - 对应其中作为索引的字面量。正常情况下是数字字面量，且应当是一个正整数；为容错也会解析为字符串字面量。
  *
  * 示例：
  * ```text
@@ -47,7 +47,7 @@ import icu.windea.pls.lang.util.ParadoxDefineManager
 interface ParadoxArrayDefineReferenceExpression : ParadoxComplexExpression {
     val namespaceNode: ParadoxDefineNamespaceNode?
     val variableNode: ParadoxDefineVariableNode?
-    val indexNode: ParadoxNumberLiteralNode?
+    val indexNode: ParadoxLiteralNode?
 
     companion object {
         @JvmStatic
@@ -165,7 +165,7 @@ private class ParadoxArrayDefineReferenceExpressionImpl(
         get() = nodes.getOrNull(0)?.castOrNull()
     override val variableNode: ParadoxDefineVariableNode?
         get() = nodes.getOrNull(2)?.castOrNull()
-    override val indexNode: ParadoxNumberLiteralNode?
+    override val indexNode: ParadoxLiteralNode?
         get() = nodes.getOrNull(4)?.castOrNull()
 
     override fun getErrors(element: ParadoxExpressionElement?) = ParadoxArrayDefineReferenceExpressionValidator.validate(this, element)
