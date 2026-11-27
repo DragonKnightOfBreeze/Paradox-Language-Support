@@ -326,7 +326,7 @@ object ParadoxConfigMatchService {
 
     private fun matchesDefinitionForSubtype(context: CwtSubtypeConfigMatchContext, definition: ParadoxDefinitionElement, propertyConfig: CwtPropertyConfig): Boolean {
         // 这里不能基于内联后的声明结构，否则可能会导致SOE
-        // 也不要基于参数化块表达式中的声明结构
+        // 也不要基于条件化块表达式中的声明结构
         if (propertyConfig.configs.orEmpty().isEmpty()) return true
         val block = definition.block
         // 匹配值列表

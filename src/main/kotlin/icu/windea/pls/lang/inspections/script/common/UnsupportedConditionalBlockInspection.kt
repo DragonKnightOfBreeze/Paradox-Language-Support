@@ -15,10 +15,10 @@ import icu.windea.pls.script.psi.ParadoxScriptNormalConditionalBlock
 import icu.windea.pls.script.psi.ParadoxScriptVisitor
 
 /**
- * 检查是否在不支持的上下文中使用了参数化块。
+ * 检查是否在不支持的上下文中使用了条件化块。
  *
  * 规则如下：
- * - 不支持在内联脚本文件中使用参数化块。
+ * - 不支持在内联脚本文件中使用条件化块。
  */
 class UnsupportedConditionalBlockInspection : LocalInspectionTool(), DumbAware {
     override fun isAvailableForFile(file: PsiFile): Boolean {

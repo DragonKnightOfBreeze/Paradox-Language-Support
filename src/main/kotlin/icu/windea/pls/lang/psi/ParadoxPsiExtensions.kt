@@ -249,7 +249,7 @@ fun ParadoxLocalisationExpressionElement.isDatabaseObjectExpression(strict: Bool
 
 // region Sequence Context Builders
 
-/** 如果包含参数化块，是否需要处理其中的子节点。默认为 `false`。 */
+/** 如果包含条件化块，是否需要处理其中的子节点。默认为 `false`。 */
 var WalkingContext.conditional: Boolean by registerKey(WalkingContext.Keys) { false }
 
 /** @see WalkingContext.conditional */

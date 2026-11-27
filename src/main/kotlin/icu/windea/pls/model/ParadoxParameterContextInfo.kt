@@ -22,7 +22,7 @@ class ParadoxParameterContextInfo(
     }
 
     /**
-     * @property conditionalExpressions 文件中从上到下，链表中从左到右，记录参数化块表达式的堆栈。如果 [element] 是 [ParadoxScriptConditionParameter]，则应当为 null。
+     * @property conditionalExpressions 文件中从上到下，链表中从左到右，记录条件化块表达式的堆栈。如果 [element] 是 [ParadoxScriptConditionParameter]，则应当为 null。
      */
     class Parameter(
         private val elementPointer: SmartPsiElementPointer<PsiElement>, // ParadoxConditionParameter | ParadoxParameter

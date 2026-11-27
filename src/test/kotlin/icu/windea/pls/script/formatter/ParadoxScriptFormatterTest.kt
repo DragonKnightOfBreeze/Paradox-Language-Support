@@ -313,13 +313,13 @@ class ParadoxScriptFormatterTest : BasePlatformTestCase(), ChronicleTestScope {
 
     // endregion
 
-    // region 参数化块
+    // region 条件化块
 
     @Test
     fun testConditionalBlock_spacingEnabled() {
         getCustomSettings().SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS = true
         getCustomSettings().SPACE_WITHIN_CONDITIONAL_EXPRESSION_BRACKETS = false
-        // 参数化块结构：[ (LEFT_BRACKET) [ (NESTED_LEFT_BRACKET) expr ] (NESTED_RIGHT_BRACKET) items ] (RIGHT_BRACKET)
+        // 条件化块结构：[ (LEFT_BRACKET) [ (NESTED_LEFT_BRACKET) expr ] (NESTED_RIGHT_BRACKET) items ] (RIGHT_BRACKET)
         // BRACKETS 控制 NESTED_RIGHT_BRACKET 与 MEMBERS 以及 MEMBERS 与 RIGHT_BRACKET 之间的空格
         val after = reformat("[[param]k = v]")
         assertEquals("[[param] k = v ]", after)
@@ -346,7 +346,7 @@ class ParadoxScriptFormatterTest : BasePlatformTestCase(), ChronicleTestScope {
     fun testConditionalBlock_negated() {
         getCustomSettings().SPACE_WITHIN_CONDITIONAL_BLOCK_BRACKETS = true
         getCustomSettings().SPACE_WITHIN_CONDITIONAL_EXPRESSION_BRACKETS = false
-        // 取反参数化块：`!` 是表达式内部的 NOT_SIGN
+        // 取反条件化块：`!` 是表达式内部的 NOT_SIGN
         val after = reformat("[[!param]k = v]")
         assertEquals("[[!param] k = v ]", after)
     }
