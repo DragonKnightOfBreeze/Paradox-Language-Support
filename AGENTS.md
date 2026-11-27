@@ -147,6 +147,10 @@ Do not read `documents/` wholesale. Read specific documents on demand:
 - Write maintainer documents in Chinese unless context dictates English.
 - Follow the KDoc and comment language rules in `documents/notes/guidelines.md`.
 - Prefer `-` for unordered lists and `**bold**` for emphasis.
+- Do not wrap Markdown paragraphs mid-sentence to control line length.
+- Break lines in Markdown prose only after `:`, `;`, or `.` (or `：`, `；`, `。` in Chinese) when needed.
+- Use consistent ending punctuation across all items in a multi-line list (e.g., end every item with a period, or omit it on all items).
+- When triaging or fixing a GitHub issue, re-read the full issue page at the start of the task (e.g., labels, body images, comments, etc.).
 - Prefer starting from `###` (H3) in conversational responses (does not constrain documents).
 
 ### IntelliJ plugin specifics

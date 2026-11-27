@@ -18,6 +18,7 @@ Follow this workflow when investigating, reproducing, fixing, and documenting Gi
 
 ## 2. Diagnosis and Reproduction
 
+- Re-read the full GitHub issue page at the start of the task (e.g., labels, body images or attachments, comments, etc., via `gh issue view <N> --comments`) so no extra context is missed.
 - Use **intellij** and **intellij-index** MCP tools first to trace PSI elements, CWT configs, references, inspections, and existing regression tests.
 - For game-compatibility issues, verify the actual upstream game syntax or file encoding/structure before designing a fix.
 - For complex or hard-to-reproduce issues (e.g., indexing races, SOFs, cache inconsistencies, freezes), inspect related entries in `documents/notes/issues.md` and `documents/notes/issues/` for prior patterns.
@@ -39,6 +40,6 @@ Add dedicated regression coverage when an issue warrants deterministic reproduct
 
 ## 4. Maintainer Archive and Closure
 
-- **Issue case note** (selective—only for non-trivial diagnostics, subtle parser/PSI/index bugs, or reusable lessons): add a Chinese case note in `documents/notes/issues/` and link it in `documents/notes/issues.md` (and update relevant ADRs/guidelines if rules changed).
+- **Issue case note** (selective—only for non-trivial diagnostics, subtle parser/PSI/index bugs, or reusable lessons): add a Chinese case note in `documents/notes/issues/` and link it in `documents/notes/issues.md` (and update relevant ADRs/guidelines if rules changed). Follow the Markdown formatting rules in `AGENTS.md` and `documents/notes/guidelines.md` (do not wrap lines mid-sentence to fit a line length, and use consistent ending punctuation across multi-line list items).
 - **Commits and PRs**: keep commits focused (e.g., fix, regression test, docs/changelog), and reference `(#<N>)` in commit summaries and PR descriptions.
 - **Issue replies**: if posting a follow-up or closure reply on GitHub, keep it concise, pragmatic, and strictly technical, linking deterministic repository artifacts (e.g., commits, PRs, `Issue<N>Test.kt`, or maintainer notes) when present without boilerplate.
