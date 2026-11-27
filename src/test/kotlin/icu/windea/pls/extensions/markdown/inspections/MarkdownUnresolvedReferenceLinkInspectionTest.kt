@@ -1,11 +1,11 @@
 @file:Suppress("UnstableApiUsage")
 
-package icu.windea.pls.extensions.markdown
+package icu.windea.pls.extensions.markdown.inspections
 
 import com.intellij.testFramework.IndexingTestUtil
 import icu.windea.pls.base.settings.ChronicleExtensionSettings
 import icu.windea.pls.ep.ChronicleEpBundle
-import icu.windea.pls.extensions.markdown.inspections.MarkdownUnresolvedReferenceLinkInspection
+import icu.windea.pls.extensions.markdown.MarkdownTestBase
 import icu.windea.pls.test.dsl.highlightingScope
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -1,8 +1,9 @@
-package icu.windea.pls.extensions.markdown
+package icu.windea.pls.extensions.markdown.injection
 
 import com.intellij.psi.PsiFile
 import icu.windea.pls.base.settings.ChronicleExtensionSettings
 import icu.windea.pls.core.vfs.VirtualFileService
+import icu.windea.pls.extensions.markdown.MarkdownExtensionManager
 import icu.windea.pls.inject.processors.InjectedFileProcessor
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 

@@ -1,18 +1,16 @@
 @file:Suppress("UnstableApiUsage")
 
-package icu.windea.pls.extensions.markdown.psi
+package icu.windea.pls.extensions.markdown.references
 
 import com.intellij.openapi.application.QueryExecutorBase
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.ElementManipulators
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
-import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.PsiSearchScopeUtil
 import com.intellij.psi.search.RequestResultProcessor
 import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
+import icu.windea.pls.extensions.markdown.MarkdownExtensionManager
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 import icu.windea.pls.localisation.psi.ParadoxLocalisationProperty
@@ -56,40 +54,14 @@ class MarkdownInlineCodeReferencesSearcher : QueryExecutorBase<PsiReference, Ref
             val codeSpan = element as? MarkdownCodeSpan ?: return true
             if (!target.isValid) return true
 
-            val info = getMarkdownInlineCodeInfo(codeSpan) ?: return true
+            val info = MarkdownExtensionManager.resolveInfoFromInlineCode(codeSpan) ?: return true
             if (info.prefix != expected.prefix || info.name != expected.name) return true
             if (!info.rangeInElement.containsOffset(offsetInElement)) return true
 
-            val resolved = resolveInlineCodeTarget(codeSpan, info.prefix, info.name) ?: return true
+            val resolved = MarkdownExtensionManager.resolveTargetFromInlineCode(codeSpan, info.prefix, info.name) ?: return true
             if (!target.manager.areElementsEquivalent(resolved, target)) return true
 
-            return consumer.process(MarkdownInlineCodePsiReference(codeSpan, info.rangeInElement, target, info.prefix))
+            return consumer.process(MarkdownInlineCodeReference(codeSpan, info.rangeInElement, target, info.prefix))
         }
-    }
-}
-
-/**
- * 仅用于查找用法和重命名的 Markdown 内联代码引用。
- *
- * [rangeInElement] 只覆盖目标名字，不包含封装变量的前缀 `@`，
- * 因此重命名时不会破坏或者误并入前缀。
- */
-private class MarkdownInlineCodePsiReference(
-    element: MarkdownCodeSpan,
-    rangeInElement: TextRange,
-    private val target: PsiElement,
-    private val prefix: String,
-) : PsiReferenceBase<MarkdownCodeSpan>(element, rangeInElement, false) {
-    override fun resolve(): PsiElement? {
-        return target.takeIf { it.isValid }
-    }
-
-    override fun handleElementRename(newElementName: String): PsiElement {
-        val codeSpan = element
-        val openingLength = codeSpan.firstChild?.textLength ?: 0
-        val closingLength = codeSpan.lastChild?.textLength ?: 0
-        val contentRange = TextRange(openingLength, codeSpan.textLength - closingLength)
-        val newContent = prefix + newElementName.removePrefix("@")
-        return ElementManipulators.handleContentChange(codeSpan, contentRange, newContent)
     }
 }

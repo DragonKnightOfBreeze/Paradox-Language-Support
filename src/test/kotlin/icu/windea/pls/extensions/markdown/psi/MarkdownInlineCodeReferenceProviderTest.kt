@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-package icu.windea.pls.extensions.markdown
+package icu.windea.pls.extensions.markdown.psi
 
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
@@ -16,9 +16,8 @@ import com.intellij.testFramework.IndexingTestUtil
 import icu.windea.pls.base.settings.ChronicleExtensionSettings
 import icu.windea.pls.base.settings.ChronicleSettings
 import icu.windea.pls.core.runSmartReadAction
-import icu.windea.pls.extensions.markdown.psi.MarkdownInlineCodeReferenceProvider
-import icu.windea.pls.extensions.markdown.psi.MarkdownInlineCodeRenameUsageSearcher
-import icu.windea.pls.extensions.markdown.psi.MarkdownInlineCodeSymbol
+import icu.windea.pls.extensions.markdown.MarkdownTestBase
+import icu.windea.pls.extensions.markdown.refactoring.rename.MarkdownInlineCodeRenameUsageSearcher
 import icu.windea.pls.lang.codeInsight.documentation.ParadoxDocumentationTarget
 import icu.windea.pls.lang.definitionInfo
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
@@ -111,7 +110,7 @@ class MarkdownInlineCodeReferenceProviderTest : MarkdownTestBase() {
         val navigationTargets = symbol.getNavigationTargets(project)
         assertFalse(navigationTargets.isEmpty())
 
-        assertEquals("windea", symbol.renameTarget.targetName)
+        assertEquals("windea", symbol.targetName)
     }
 
     // endregion
@@ -125,8 +124,8 @@ class MarkdownInlineCodeReferenceProviderTest : MarkdownTestBase() {
         configureMarkdown("`@greeting`")
 
         val symbol = findInlineCodeSymbol()
-        assertEquals("greeting", symbol.renameTarget.targetName)
-        val usages = collectRenameUsages(symbol.renameTarget)
+        assertEquals("greeting", symbol.targetName)
+        val usages = collectRenameUsages(symbol)
         assertTrue(usages.any { it.declaration })
         val markdownUsage = usages.filterIsInstance<PsiRenameUsage>().first { !it.declaration && it.file.name == "test.md" }
         assertEquals("greeting", markdownUsage.range.substring(markdownUsage.file.text))
@@ -144,8 +143,8 @@ class MarkdownInlineCodeReferenceProviderTest : MarkdownTestBase() {
         configureMarkdown("`windea`")
 
         val symbol = findInlineCodeSymbol()
-        assertEquals("windea", symbol.renameTarget.targetName)
-        val usages = collectRenameUsages(symbol.renameTarget)
+        assertEquals("windea", symbol.targetName)
+        val usages = collectRenameUsages(symbol)
         assertTrue(usages.any { it.declaration })
         assertTrue(usages.any { !it.declaration })
 
@@ -162,8 +161,8 @@ class MarkdownInlineCodeReferenceProviderTest : MarkdownTestBase() {
         configureMarkdown("`title_windea`")
 
         val symbol = findInlineCodeSymbol()
-        assertEquals("title_windea", symbol.renameTarget.targetName)
-        val usages = collectRenameUsages(symbol.renameTarget)
+        assertEquals("title_windea", symbol.targetName)
+        val usages = collectRenameUsages(symbol)
         assertTrue(usages.any { it.declaration })
         assertTrue(usages.any { !it.declaration })
 

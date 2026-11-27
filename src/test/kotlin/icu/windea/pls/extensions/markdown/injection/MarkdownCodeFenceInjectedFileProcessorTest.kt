@@ -1,9 +1,10 @@
 @file:Suppress("UnstableApiUsage")
 
-package icu.windea.pls.extensions.markdown
+package icu.windea.pls.extensions.markdown.injection
 
 import com.intellij.psi.util.PsiTreeUtil
 import icu.windea.pls.base.settings.ChronicleExtensionSettings
+import icu.windea.pls.extensions.markdown.MarkdownTestBase
 import icu.windea.pls.lang.analysis.ParadoxAnalysisInjectionManager
 import icu.windea.pls.lang.resolve.ParadoxConfigService
 import icu.windea.pls.lang.resolve.ParadoxMemberService
