@@ -10,7 +10,7 @@
 - 四门语言在 PSI 层并不是一套完全统一的模型，而是“共享少量跨语言能力接口 + 各自保留语言特有层级”的结构。
 - Paradox Script、Paradox Localisation、Paradox CSV 共享 `ParadoxLanguage`/`ParadoxBaseLanguage` 与 `ParadoxFile`/`ParadoxFileType` 基座，CWT 则直接使用 IntelliJ `Language`/`LanguageFileType`，不进入该基座。
 - 文法层以 Grammar-Kit 生成的 `ParadoxScript*`、`ParadoxLocalisation*`、`ParadoxCsv*`、`Cwt*` PSI 接口为主，手写接口集中在 `src/main/kotlin/.../psi` 中，作为混入能力层；语义层主要位于 `icu.windea.pls.lang`，通过扩展属性、Manager、LightElement、引用解析和复杂表达式模型挂接到 PSI。
-- Script 与 Localisation 拥有自定义的轻量 Stub 体系（文件级 + 节点级），CSV 与 CWT 当前没有语言 Stub，CSV 的语义主要依赖行规则（`CwtRowConfig`）与文件索引，CWT 的语义则直接转化为规则数据模型 `CwtConfigGroup`。
+- Script 与 Localisation 拥有基于平台现代存根 API 的 Light Stub 体系（文件级 + 节点级，`LightLanguageStubDefinition` + `StubRegistryExtension` + `LightStubElementFactory`），CSV 与 CWT 当前没有语言 Stub，CSV 的语义主要依赖行规则（`CwtRowConfig`）与文件索引，CWT 的语义则直接转化为规则数据模型 `CwtConfigGroup`。
 - Script 与 Localisation 采用双阶段/惰性词法解析：Script 的内联数学经 `IReparseableElementType` 延迟解析，Localisation 的属性值经两级 Lexer 延迟解析；CWT 的选项注释出于性能原因明确不采用惰性解析。
 - 跨语言“宏”目前只是概念统一，而不是接口统一：`ParadoxScriptMacro` 与 `ParadoxLocalisationMacro` 分别存在，参数（parameter）也因语法细节差异暂不引入共用 `ParadoxParameter`（见 `documents/notes/adr/macro.md`）。
 - 设计文档 `documents/design/language-abstractions.md` 目前只有 Script 的完整块与 Localisation 的占位块，缺少 Localisation 细节、CSV 与 CWT；本报告第 6 节给出可直接回填的结构化材料。
@@ -367,7 +367,9 @@ CwtOptionMember
 - 存根的构建入口是自定义 `LightLanguageStubDefinition`：`ParadoxScriptStubDefinition` 与 `ParadoxLocalisationStubDefinition`，它们提供 `stubVersion`、`shouldBuildStubFor`、`parseContentsLight`。
 - 节点存根通过 `StubRegistryExtension` 注册：`ParadoxScriptStubRegistry` 为 `SCRIPTED_VARIABLE`/`PROPERTY` 注册 `LightStubElementFactory` 与序列化器；`ParadoxLocalisationStubRegistry` 为 `PROPERTY_LIST`/`LOCALE`/`PROPERTY` 做同样的事。
 - 索引侧由 `ChronicleIndexKeys` 与 `stubIndex` 注册驱动，包括脚本封装变量名、定义命名空间/变量、内联脚本用法/参数，以及本地化名、同步本地化名、受限本地化名等。
-- 值得注意的快照事实：`ParadoxScriptElementTypeFactory` 的 `SCRIPTED_VARIABLE`/`PROPERTY` 与 `ParadoxLocalisationElementTypeFactory` 的 `PROPERTY` 目前都映射为普通 `IElementType`，原先映射到专用 StubElementType 的分支已被注释；因此普通 AST 解析不依赖平台 AST stub 树，跨文件索引走自定义 light stub。PSI 接口仍声明为 `StubBasedPsiElement`，这是后续需要明确的“双模式”边界。
+- 值得注意的快照事实：`ParadoxScriptElementTypeFactory` 的 `SCRIPTED_VARIABLE`/`PROPERTY` 与 `ParadoxLocalisationElementTypeFactory` 的 `PROPERTY` 现在都映射为普通 `IElementType`；这些工厂中注释掉的专用 `StubElementType` 分支是 2025-08（`8e6827ce5d`）迁移到平台现代存根 API 后保留的历史残留，并不表示存在“AST Stub 与 Light Stub 双模式”，也不表示计划恢复 `IStubElementType`。
+- 现代实现路径：`StubRegistryExtension` + `LightLanguageStubDefinition` + `LightStubBuilder` + `LightStubElementFactory`。工厂同时支持从 PSI 与 LighterAST 构建存根；平台在需要 PSI 时通过 `StubBase.getPsi()` 调用 `createPsi(stub)`，将存根还原为 `StubBasedPsiElement` 实现类，因此 PSI 接口声明 `StubBasedPsiElement` 是该方案的组成部分，而不是待开启的第二模式。
+- 平台侧事实：263 平台源码中 `ILightStubElementType` 标注为 `@ApiStatus.Obsolete`，并注明改用 `LightLanguageStubDefinition` 与 `LightStubElementFactory`；`IStubElementType` 是旧基类，平台新 API 中的 `StubSerializingElementFactory` 在文档中称其为 old API。
 - CSV 与 CWT 没有语言存根；CSV 的语义依赖 `CwtRowConfig`、文件索引与引用解析，CWT 的语义依赖规则数据模型与 `CwtConfigSymbolIndex` 等文件索引。
 
 #### LightElement
@@ -501,7 +503,7 @@ CWT 的语义层级可以概括为：
 | Lexer 上下文栈 | Script 与 Localisation 文本 Lexer 使用 `stateStack` + `expectStack`，按需回退状态 | `adr/script-lexer-refactor.md`、`adr/localisation-lexer-refactor.md` |
 | 惰性解析 | InlineMath 与 Localisation PropertyValue 使用 `IReparseableElementType`；CWT 选项注释明确不惰性解析 | `ParadoxScriptInlineMathElementType.kt`、`ParadoxLocalisationPropertyValueElementType.kt`、`Cwt.bnf` |
 | 分层 Lexer | 高亮时使用 `LayeredLexer` 叠加内联数学、富文本与字符串字面量 Lexer | `ParadoxScriptLexerFactory.kt`、`ParadoxLocalisationLexerFactory.kt`、`ParadoxCsvLexerFactory.kt`、`CwtLexerFactory.kt` |
-| 自定义轻量 Stub | `LightLanguageStubDefinition` + `StubRegistryExtension` + `LightStubElementFactory` 生成可索引的 light stub | `lang/index/stubs/**`、`lang/index/ChronicleIndexKeys.kt`、`META-INF/chronicle-lang.xml` |
+| 现代 Light Stub 注册 | `LightLanguageStubDefinition` + `LightStubBuilder` + `StubRegistryExtension` + `LightStubElementFactory` 从 PSI 或 LighterAST 构建存根，并在需要时通过 `createPsi(stub)` 还原 PSI | `lang/index/stubs/**`、`lang/index/ChronicleIndexKeys.kt`、`META-INF/chronicle-lang.xml` |
 | 语义 LightElement | 参数、复杂枚举、动态值、修饰符、片段等作为非物理导航/相关项 | `lang/psi/light/**`、`core/psi/light/LightElementBase.kt` |
 | 注入边界 | 只对 Script 的字符串与参数实参注入；注入文件按宿主上下文参与语义解析 | `lang/injection/**`、`ParadoxPsiFileMatchService.kt` |
 
@@ -510,14 +512,14 @@ CWT 的语义层级可以概括为：
 - **为什么不统一 `Member`/`Macro`**：四门语言的结构差异较大。CWT 无参数与插值，CSV 无成员层级，Localisation 的富文本不是成员；强行统一会产生大量空实现或语义错位。因此共享的是更底层的能力（文件、表达式、引号、引用）而不是上层结构。
 - **为什么 CWT 不进入 `ParadoxLanguage` 基座**：CWT 是规则语言，其语义目标是规则数据模型而不是游戏数据；CWT 语言本身不需要 `ParadoxFile`、定义/封装变量语义或游戏文件 GameType 上下文（规则分组仍按游戏类型组织）。保持独立可以避免 `config` 模块对 `lang` 的进一步依赖。
 - **为什么 Script 文件是定义元素**：文件级定义（例如 mod 描述符或文件级配置）需要与属性级定义共享 `ParadoxDefinitionElement` 接口，`ParadoxDefinitionSource.File` 正是为此存在。
-- **为什么 Stub 与 AST 双模式**：PSI 接口声明为 `StubBasedPsiElement` 可以让同一实现类同时服务解析树与 light stub 索引；但当前元素类型工厂不创建 AST stub 类型，跨文件索引主要依赖 `LightLanguageStubDefinition`，因此两者的职责边界需要在设计文档中明确。
+- **为什么 PSI 接口仍声明 `StubBasedPsiElement`**：在现代 Light Stub 方案中，`LightStubElementFactory.createPsi(stub)` 会直接实例化生成 PSI 实现类（如 `ParadoxScriptPropertyImpl(stub, PROPERTY)`），`StubBasedPsiElement<T>` 正是存根反序列化的标准载体；同一实现类同时服务解析树与存根基质，但元素类型始终是普通 `IElementType`，不存在 AST Stub 与 Light Stub 的双模式切换。
 
 ## 现存待演进项
 
 ### 文档与接口层
 
 - **补齐 `language-abstractions.md`**：当前只有 Script 与 Localisation 占位，缺少 Localisation 细节、CSV、CWT 与跨语言共性；本报告第 6 节可作为回填底稿。
-- **明确 Stub 双模式**：`ParadoxScriptElementTypeFactory` 与 `ParadoxLocalisationElementTypeFactory` 中 StubElementType 分支被注释，但生成接口仍声明 `StubBasedPsiElement`；需要明确“AST stub 是否保留”“light stub 与 AST stub 的职责边界”。
+- **清理 `*ElementTypeFactory` 历史残留注释**：`ParadoxScriptElementTypeFactory` 与 `ParadoxLocalisationElementTypeFactory` 中注释掉的 `*StubElementType` 分支是迁移到现代存根 API 后的历史残留；应在后续清理中删除或加注说明，避免被误读为“AST stub 与 light stub 双模式”。
 - **定义 LightElement 缺口**：`ideas.md:434-436` 提到内联定义的 `definitionLightElement`，当前代码中未找到对应实现；现有定义语义主要由 `ParadoxDefinitionInfo` 与 Script PSI 承载。
 - **跨语言宏/参数的进一步收敛**：`adr/macro.md` 明确暂不引入共用 `ParadoxParameter`；如果未来要统一，需要先处理 Script/Localisation 参数变体、默认值、tagged parameter 与实参注入的差异。
 
@@ -573,12 +575,13 @@ CWT 的语义层级可以概括为：
 
 - 当前 PSI 架构的核心特征是“少量跨语言能力接口 + 各语言独立结构 + 语义层外挂”。这种设计在 Script/CWT 的成员模型、Localisation 的富文本模型、CSV 的列模型之间保持了必要的差异，但也导致跨语言统一需要依赖扩展属性、Manager 与 LightElement，而不是统一接口。
 - 短期最值得补齐的是文档层：将本报告第 3-6 节的内容回填到 `documents/design/language-abstractions.md`，并单列“Stub/Light/Injected 边界”与“四语言对照表”。
-- 中期最值得明确的是实现层边界：Stub 双模式（AST stub 与 light stub）、定义 LightElement 缺口、Localisation 参数接口拆分、Script 内联数学条件化块与颜色词元拆分。
+- 中期最值得明确的是实现层边界：存根体系的历史残留清理（`*ElementTypeFactory` 注释）、定义 LightElement 缺口、Localisation 参数接口拆分、Script 内联数学条件化块与颜色词元拆分。
 - 长期可以评估 `ParadoxData`/`ParadoxDataSource` 是否会成为语义层与 PSI 层之间的稳定边界，从而降低语言功能对具体 PSI 类型的耦合。
 
 ## 附录：核验记录与关键路径
 
 - MCP 核验：使用 `intellij-index` 的 `ide_type_hierarchy` 核验了 `ParadoxScriptMember`、`ParadoxLocalisationRichText`、`CwtMember`、`ParadoxCsvColumn`、`ParadoxLanguage` 的层级；使用 `ide_find_implementations` 核验了 `ParadoxExpressionElement`、`PsiQuoteAwareElement` 的实现范围。
+- 平台存根 API 核验：使用 `intellij-index` 的 `ide_read_file` 查阅了 263 平台源码中的 `ILightStubElementType`、`IStubElementType`、`StubRegistryExtension`、`LightLanguageStubDefinition`、`LightStubElementFactory`、`LightStubBuilder`、`StubBase` 与 `StubElementRegistryServiceImpl`，确认了 `@ApiStatus.Obsolete` 标注、`registerLightStubFactory` 注册路径，以及 `StubBase.getPsi()` 调用 `createPsi(stub)` 的反序列化路径。
 - 生成 PSI 路径：`src/main/gen/icu/windea/pls/script/psi`、`src/main/gen/icu/windea/pls/localisation/psi`、`src/main/gen/icu/windea/pls/csv/psi`、`src/main/gen/icu/windea/pls/cwt/psi`。
 - 手写 PSI 路径：`src/main/kotlin/icu/windea/pls/script/psi`、`src/main/kotlin/icu/windea/pls/localisation/psi`、`src/main/kotlin/icu/windea/pls/csv/psi`、`src/main/kotlin/icu/windea/pls/cwt/psi`。
 - 文法路径：`src/main/kotlin/icu/windea/pls/script/ParadoxScript.bnf`、`ParadoxScript.flex`、`ParadoxScript.InlineMath.flex`；`src/main/kotlin/icu/windea/pls/localisation/ParadoxLocalisation.bnf`、`ParadoxLocalisation.flex`、`ParadoxLocalisation.Text.flex`；`src/main/kotlin/icu/windea/pls/csv/ParadoxCsv.bnf`、`ParadoxCsv.flex`；`src/main/kotlin/icu/windea/pls/cwt/Cwt.bnf`、`Cwt.flex`。

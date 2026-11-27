@@ -245,7 +245,7 @@ CwtOptionMember
 | **表达式接口** | `ParadoxScriptExpressionElement` | `ParadoxLocalisationExpressionElement` | `ParadoxCsvExpressionElement` | `CwtExpressionElement` |
 | **跨语言通用表达式接口** | 实现 `ParadoxExpressionElement` | 实现 `ParadoxExpressionElement` | 实现 `ParadoxExpressionElement` | **不实现** |
 | **语法宏接口** | `ParadoxScriptMacro` / `Interpolation` | `ParadoxLocalisationMacro` / `Interpolation` | 无 | 无 |
-| **Stub 索引模式** | 混合存根（Light stub 优先） | 混合存根（Light stub 优先） | 无 Stub（依赖轻量文件索引） | 无 Stub（直接编译为规则数据模型） |
+| **Stub 索引模式** | Light Stub（`StubRegistryExtension` + `LightStubElementFactory`） | Light Stub（`StubRegistryExtension` + `LightStubElementFactory`） | 无 Stub（依赖轻量文件索引） | 无 Stub（直接编译为规则数据模型） |
 
 ### 3.2 跨语言通用能力接口
 
@@ -281,15 +281,21 @@ CwtOptionMember
 
 ## 四、Stub、Light 与 Injected 边界模型
 
-### 4.1 存根体系（Stub Architecture）的双模式现状
+### 4.1 存根体系（Stub Architecture）的现代 Light Stub 实现
 
-插件对跨文件符号索引采用了专有的轻量存根系统（Light stub）：
+插件对跨文件符号索引采用平台现代存根 API 提供的 Light Stub 机制，而不是 `IStubElementType` / `ILightStubElementType` 的旧存根元素类型方案（其中 `ILightStubElementType` 已标注 `@ApiStatus.Obsolete`）：
 
 ```text
-[物理源码] ─── (通过 LightLanguageStubDefinition 快速解析) ───> [Light Stub 树]
-     │                                                                 │
-     │                                                                 ▼
-     └────── (平台常规解析) ──────> [AST / PSI 树] ──────────> [ChronicleIndexKeys 索引库]
+[物理源码]
+   ├─ 索引期
+   │    LightLanguageStubDefinition.parseContentsLight
+   │      → LightStubBuilder
+   │      → [Light Stub 树] ──(StubSerializer.indexStub / IndexSink)──> [StubIndex / ChronicleIndexKeys]
+   │
+   └─ 分析期
+        [StubIndex 查询] → [Light Stub 树] ──(LightStubElementFactory.createPsi(stub))──> [StubBasedPsiElement]
+                                                                                          │
+                                                                                          └─(按需 getNode())→ [AST]
 ```
 
 1. **核心存根接口**：
@@ -298,10 +304,12 @@ CwtOptionMember
 2. **存根类型覆盖**：
    - **Script**：文件级存根 `ParadoxScriptFileStub`；节点级存根包括 `ParadoxScriptPropertyStub`（以 sealed 类建模定义、定值变量、内联脚本用法与参数）和 `ParadoxScriptScriptedVariableStub`。
    - **Localisation**：文件级存根 `ParadoxLocalisationFileStub`；节点级存根包括 `ParadoxLocalisationPropertyListStub`、`ParadoxLocalisationLocaleStub`、`ParadoxLocalisationPropertyStub`。
-3. **双模式（AST Stub vs. Light Stub）现行边界**：
-   - **现行事实**：在当前版本（`v3.1.0`）中，索引构建主要由自定义的 `LightLanguageStubDefinition`（`ParadoxScriptStubDefinition` 与 `ParadoxLocalisationStubDefinition`）直接驱动，采用 `parseContentsLight` 构建存根流并填充到 `ChronicleIndexKeys`。
-   - **架构约束**：`ParadoxScriptElementTypeFactory` 与 `ParadoxLocalisationElementTypeFactory` 中针对普通 AST 构建 StubElementType 的分支当前已注释为普通 `IElementType`。虽然相关 PSI 接口保留了 `StubBasedPsiElement<T>` 签名以便未来按需开启平台完整 AST Stub 树，但**运行期索引查询均基于轻量 Stub 机制完成**。
-   - **无 Stub 语言**：CSV 与 CWT 不生成 Stub。CSV 通过轻量行规则与基于文件的文件索引提供支持；CWT 规则文件直接解析为内存中的 `CwtConfigGroup`。
+3. **现代平台存根注册路径**：
+   - **语言级定义**：`ParadoxScriptStubDefinition` 与 `ParadoxLocalisationStubDefinition` 实现 `LightLanguageStubDefinition`，通过 `META-INF/chronicle-lang.xml` 的 `languageStubDefinition` 注册，提供 `stubVersion`、`LightStubBuilder`（`ParadoxScriptStubBuilder` / `ParadoxLocalisationStubBuilder`）、`shouldBuildStubFor` 与 `parseContentsLight`。
+   - **节点级工厂与序列化器**：`ParadoxScriptStubRegistry` 与 `ParadoxLocalisationStubRegistry` 实现 `StubRegistryExtension`，通过 `stubElementRegistryExtension` 注册；它们为文件元素类型注册 `StubSerializer`，并为 `SCRIPTED_VARIABLE`/`PROPERTY`（以及 `PROPERTY_LIST`/`LOCALE`/`PROPERTY`）注册 `LightStubElementFactory` 与 `StubSerializer`。
+   - **构建与反序列化**：`LightStubBuilder` 在索引期从 LighterAST 调用 `LightStubElementFactory.createStub(tree, node, parentStub)`，工厂同时提供 `createStub(psi, parentStub)`；反序列化后的节点存根通过 `StubBase.getPsi()` 调用 `createPsi(stub)`，生成 `StubBasedPsiElement` 实现类（如 `ParadoxScriptPropertyImpl(stub, PROPERTY)`）。
+   - **历史残留**：`ParadoxScriptElementTypeFactory` 与 `ParadoxLocalisationElementTypeFactory` 中注释掉的 `*StubElementType` 分支是 2025-08（`8e6827ce5d`）迁移离开旧 `IStubElementType` / `ILightStubElementType` 后保留的历史注释；当前所有存根元素类型都是普通 `IElementType`，不存在“AST Stub 与 Light Stub 双模式”，也没有恢复旧接口的计划。
+4. **无 Stub 语言**：CSV 与 CWT 不生成 Stub。CSV 通过轻量行规则与文件索引提供支持；CWT 规则文件直接解析为内存中的 `CwtConfigGroup`。
 
 ### 4.2 轻量元素体系（LightElement Architecture）
 
@@ -350,11 +358,11 @@ com.intellij.psi.impl.light.LightElement
 | **参数接口不强行统一** | Script 参数与 Localisation 参数由于语法符号、转义规则与变体支持差异巨大，分别使用 `ParadoxScriptParameter` 与 `ParadoxLocalisationParameter`。 | `adr/macro.md` |
 | **统一引号策略抽象** | 将引号增删与判定逻辑从 PSI 节点剥离，由 `PsiQuoteAwareElement` 暴露只读策略，统一委托给 `QuotePattern` 引擎。 | `adr/quote-pattern.md` |
 | **CWT 选项注释禁用延迟解析** | 考虑到 CWT 规则文件加载频次与解析开销，选项注释（`##`）保持在顶层单层词法扫描中解析，不引入复杂的延迟子树。 | `Cwt.bnf` 历史决策 |
+| **现代 Light Stub 存根注册** | 以 `LanguageStubDefinition` / `LightLanguageStubDefinition`、`StubRegistryExtension`、`LightStubBuilder`、`LightStubElementFactory` 注册普通 `IElementType`；不再使用 `IStubElementType` / `ILightStubElementType`。 | `lang/index/stubs/**`、`META-INF/chronicle-lang.xml` |
 
 ### 5.2 未来演进界线（Out of Scope for v3.1.x）
 
 以下内容属于未来架构蓝图或待定技术提案，**不属于当前现行事实**：
 
-1. **平台 AST Stub 完整迁移**：目前已建立轻量 Stub 索引体系；将 AST 节点全面恢复为平台级 `IStubElementType` 并统一两者序列化器属于长期技术探索。
-2. **Localisation 语法标签全面语义化**：当前 `ParadoxLocalisationTag`、`ContextTag`、`StringVariantSet` 主要停留在文法和高亮层，未来演进拟引入动态规则引用与校验。参见 `documents/notes/adr/localisation-syntax-grammatical.md`。
-3. **内联定义的 LightElement 抽象**：对于在同一块内通过宏或复合属性动态派生的内联定义，当前仍依赖静态定义解析；尚未引入一等公民级的定义轻量元素。
+1. **Localisation 语法标签全面语义化**：当前 `ParadoxLocalisationTag`、`ContextTag`、`StringVariantSet` 主要停留在文法和高亮层，未来演进拟引入动态规则引用与校验。参见 `documents/notes/adr/localisation-syntax-grammatical.md`。
+2. **内联定义的 LightElement 抽象**：对于在同一块内通过宏或复合属性动态派生的内联定义，当前仍依赖静态定义解析；尚未引入一等公民级的定义轻量元素。

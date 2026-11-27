@@ -223,7 +223,7 @@
 | :--- | :--- | :--- |
 | **PSI** | **程序结构接口** | Program Structure Interface，平台的核心语法与语义抽象层。 |
 | **AST** | **抽象语法树** | Abstract Syntax Tree，由解析器生成的物理语法树。 |
-| **Stub** | **存根** | 跨文件索引的二进制快速序列化载体。插件采用 Light stub 体系。 |
+| **Stub** | **存根** | 跨文件索引的二进制快速序列化载体。插件采用基于 `StubRegistryExtension` + `LightStubElementFactory` 的现代 Light Stub 体系，元素类型保持普通 `IElementType`，不注册 `IStubElementType`。 |
 | **LightElement** | **轻量元素** | 平台中不具备物理 AST 节点对应物的虚拟语义符号抽象。 |
 | **Language Injection** | **语言注入** | 平台将一种语言嵌入到另一种语言宿主内部的机制。 |
 | **ModificationTracker** | **修改追踪器** | 驱动 PSI 缓存失效的版本自增标记。 |

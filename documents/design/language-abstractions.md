@@ -71,7 +71,7 @@ Paradox Script 的语法结构围绕“成员（Member）”与“语句（State
 
 ### 1.3 存根与轻量元素边界
 
-- **存根（Stub）**：脚本支持文件级存根（`ParadoxScriptFileStub`）以及属性（`ParadoxScriptPropertyStub`，涵盖定义、定值、内联脚本用法）和封装变量（`ParadoxScriptScriptedVariableStub`）的节点存根。当前运行期跨文件索引主要基于轻量存根（Light stub）驱动。
+- **存根（Stub）**：脚本支持文件级存根（`ParadoxScriptFileStub`）以及属性（`ParadoxScriptPropertyStub`，涵盖定义、定值、内联脚本用法）和封装变量（`ParadoxScriptScriptedVariableStub`）的节点存根；存根以普通 `IElementType` 作为元素类型，通过 `LightLanguageStubDefinition` + `StubRegistryExtension` + `LightStubElementFactory` 注册，由 `LightStubBuilder` 从 PSI 或 LighterAST 构建，并在需要时通过 `createPsi(stub)` 还原为 `StubBasedPsiElement`。
 - **轻量元素（LightElement）**：参数、动态值、复杂枚举值、动态修正等在脚本代码中不具备独立强类型物理声明的符号，由轻量元素代理提供导航、快速文档与重命名能力。
 
 ---
@@ -120,7 +120,7 @@ Paradox Localisation（`*.yml`）是面向玩家展示文本的多语言资源�
 
 ### 2.3 存根与轻量元素边界
 
-- **存根（Stub）**：支持文件存根（`ParadoxLocalisationFileStub`）、属性列表存根（`ParadoxLocalisationPropertyListStub`）、语言区域存根（`ParadoxLocalisationLocaleStub`）以及条目存根（`ParadoxLocalisationPropertyStub`），驱动高效的跨语言条目索引。
+- **存根（Stub）**：支持文件存根（`ParadoxLocalisationFileStub`）、属性列表存根（`ParadoxLocalisationPropertyListStub`）、语言区域存根（`ParadoxLocalisationLocaleStub`）以及条目存根（`ParadoxLocalisationPropertyStub`）；这些存根以普通 `IElementType` 作为元素类型，通过 `LightLanguageStubDefinition` + `StubRegistryExtension` + `LightStubElementFactory` 注册，由 `LightStubBuilder` 构建，驱动高效的跨语言条目索引。
 - **轻量元素（LightElement）**：本地化参数（`ParadoxLocalisationParameterLightElement`）与本地化片段（`ParadoxLocalisationSnippetLightElement`）作为轻量符号暴露给编辑器。
 
 ---
