@@ -1,5 +1,6 @@
 package icu.windea.pls.inject
 
+import com.intellij.ide.plugins.PluginDetailsService
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.extensions.PluginDescriptor
@@ -42,15 +43,14 @@ abstract class CodeInjectorBase : CodeInjector, UserDataHolderBase() {
         putUserData(CodeInjectorContext.targetClassKey, null)
     }
 
-    @Suppress("JetBrainsInternalApiUsage")
     private fun isPluginEnabled(pluginId: PluginId): Boolean {
-        return PluginManager.getInstance().findEnabledPlugin(pluginId) != null
+        return PluginDetailsService.getInstance().isLoaded(pluginId)
     }
 
     @Suppress("JetBrainsInternalApiUsage")
     private fun getPluginClassLoader(pluginId: PluginId): ClassLoader {
-        // NOTE 3.0.0 [compatibility] `PluginManager.findEnabledPlugin(PluginId)` is internal (but ignored) since IDEA-262
-        //  - Use `PluginDetailsService` instead (but by this way we cannot get the plugin class loader)
+        // NOTE 3.1.0 [compatibility] `PluginDetailsService` does not expose `pluginClassLoader`,
+        //  so the internal `PluginManager.findEnabledPlugin(PluginId)` is still required here
         val pluginDescriptor = PluginManager.getInstance().findEnabledPlugin(pluginId)
         return pluginDescriptor?.pluginClassLoader ?: PluginDescriptor::class.java.classLoader
     }
