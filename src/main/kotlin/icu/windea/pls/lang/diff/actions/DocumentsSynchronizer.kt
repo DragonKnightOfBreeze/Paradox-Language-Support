@@ -48,6 +48,7 @@ abstract class DocumentsSynchronizer(
     protected abstract fun onDocumentChanged2(event: DocumentEvent)
 
     @RequiresEdt
+    @Suppress("DialogTitleCapitalization")
     protected fun replaceString(document: Document, startOffset: Int, endOffset: Int, newText: CharSequence) {
         try {
             duringModification = true
