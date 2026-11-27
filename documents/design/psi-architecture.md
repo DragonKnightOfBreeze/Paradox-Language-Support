@@ -313,7 +313,7 @@ CwtOptionMember
 
 ### 4.2 轻量元素体系（LightElement Architecture）
 
-当一个符号在物理源码中并不存在显式的单一定义节点，或者该符号是从规则、动态计算或复合结构中派生而来时，插件统一使用 LightElement 进行建模：
+当一个符号在物理源码中并不存在显式的单一定义节点，或者该符号是从规则、动态评估或复合结构中派生而来时，插件统一使用 LightElement 进行建模：
 
 ```text
 com.intellij.psi.impl.light.LightElement

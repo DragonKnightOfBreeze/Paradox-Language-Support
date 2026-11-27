@@ -143,7 +143,7 @@ PsiReference   ParadoxExpressionAnnotator  Inspections    Completion     Paradox
    - **引用解析**：由各节点的 `getReference` 返回具体实现（如 `ParadoxDynamicValueNode` 返回指向动态值轻量元素的引用，`ParadoxSystemScopeNode` 返回系统作用域符号引用）。
    - **语义高亮**：`ParadoxExpressionAnnotator` 遍历整树，直接读取各节点的 `getAttributesKey()` 进行范围标注。
    - **代码检查**：`ParadoxComplexExpressionInspection` 调用 `getAllErrors()` 统一上报格式畸形或未解析错误。
-   - **代码补全**：`ParadoxComplexExpressionCompletionProvider` 定位光标所在的 `ParadoxComplexExpressionNode`，依据其规则上下文计算候选集。
+   - **代码补全**：`ParadoxComplexExpressionCompletionProvider` 定位光标所在的 `ParadoxComplexExpressionNode`，依据其规则上下文评估候选集。
    - **作用域推导**：`ParadoxScopeService` 遍历链式节点（`ParadoxLinkedExpression`），自左向右逐步演算作用域切换与上下文转移。
 
 ---
@@ -160,7 +160,7 @@ PsiReference   ParadoxExpressionAnnotator  Inspections    Completion     Paradox
    - 命令表达式仅在本地化富文本（`ParadoxLocalisationCommandText`）及命名格式表达式内部生效。
 3. **坐标系统基准（Coordinate Baseline）**：
    - 顶层复杂表达式的 `rangeInExpression` 始终以传入的整体文本相对偏移（通常为 `TextRange(0, text.length)`）为基准。
-   - 嵌套复杂表达式（如动态值内部的 `@scope`、命名格式内部的 `[...]` 命令）的子节点偏移严格相对于**最外层复杂表达式的起点**计算。外部消费者在向物理 PSI 映射时，须将节点的 `rangeInExpression` 加上表达式在宿主 PSI 元素内部的文本起始偏移。
+   - 嵌套复杂表达式（如动态值内部的 `@scope`、命名格式内部的 `[...]` 命令）的子节点偏移严格相对于**最外层复杂表达式的起点**评估。外部消费者在向物理 PSI 映射时，须将节点的 `rangeInExpression` 加上表达式在宿主 PSI 元素内部的文本起始偏移。
 4. **完整性模式（Complete Mode）依赖**：
    - 在代码补全或容错解析场景下，解析器需要宽容不完整输入的节点。这一行为当前通过 `ParadoxThreadContext` / `ThreadLocal` 传递 `complete = true` 标志，属于有状态调用。
 5. **部分匹配与回退语义**：
@@ -186,7 +186,7 @@ PsiReference   ParadoxExpressionAnnotator  Inspections    Completion     Paradox
 | 插件概念 / 类型 | CWTools 对应概念 | 官方 Wiki 概念 | 语义与模型差异消歧 |
 | :--- | :--- | :--- | :--- |
 | **`scope_field`** | `scope_field` / `scope[...]` | Scope chaining | 基本同构。插件在此基础上增加了细粒度 AST 节点与光标补全。 |
-| **`value_field`** | `value_field` / `int_value_field` | Value expressions | 插件支持将其解析为包含作用域前驱的链式计算树。 |
+| **`value_field`** | `value_field` / `int_value_field` | Value expressions | 插件支持将其解析为包含作用域前驱的链式评估树。 |
 | **`DynamicValue`** | `value_set[...]` / `value[...]` | Dynamic variables / Event targets | **同名异义**：CWTools 的 `value_set` 仅是静态规则集合声明；插件将其提升为具备读写语义、轻量元素建模与作用域引用的统一“动态值（Dynamic Value）”体系。 |
 | **`DatabaseObject`** | 无直接对应（通常使用定义引用） | Database entries (`civic:...`) | 插件特有的复杂表达式，用于精准表达本地化及特定脚本中带命名空间的数据库对象映射。 |
 | **`NameFormat`** | 无直接对应 | Name format blocks | 插件特有，用于解析带命名部件占位符与命令表达式的字符串构造格式。 |

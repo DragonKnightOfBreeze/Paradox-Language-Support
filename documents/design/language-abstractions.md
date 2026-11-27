@@ -12,7 +12,7 @@
 
 ### 1.1 文法级别 (Grammar Level)
 
-Paradox Script 的语法结构围绕“成员（Member）”与“语句（Statement）”展开，支持嵌套块、封装变量、参数化结构以及内联数学计算：
+Paradox Script 的语法结构围绕“成员（Member）”与“语句（Statement）”展开，支持嵌套块、封装变量、参数化结构以及内联数学评估：
 
 - **文件与根块**
   - 脚本文件 (`ParadoxScriptFile`)：实现了 `ParadoxScriptMemberContext`、`ParadoxScriptMember` 与 `ParadoxDefinitionElement`，可承载整个文件级别的定义。

@@ -50,7 +50,7 @@
 - `TigerLintResult.Item` 由 `severity`（`tips` / `untidy` / `warning` / `error` / `fatal`）与 `confidence`（`weak` / `reasonable` / `strong`）共同描述，并携带 `key`、`message`、`info`、`wiki` 与 `locations`。
 - `TigerLintResult.itemGroups` 按文件路径分组，`fromPath` 供注解器提取当前文件的条目。
 - `ChronicleTigerLintAnnotator`（`ExternalAnnotator`）与 `ChronicleTigerLintInspection`（`LocalInspectionTool` + `ExternalAnnotatorBatchInspection`）配对注册于 `PARADOX` 语言。
-- 严重度映射默认按 `TigerLintToolUtil.getDefaultHighlightSeverity` 计算，并可由 `TigerHighlightDialog` 的配置覆盖。
+- 严重度映射默认按 `TigerLintToolUtil.getDefaultHighlightSeverity` 评估，并可由 `TigerHighlightDialog` 的配置覆盖。
 - 快速修复只有针对 `item.wiki` 的 `OpenUrlFix`，暂不提供通用修复。
 
 ## 缓存与失效

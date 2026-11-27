@@ -109,7 +109,7 @@ ParadoxScopeContext
 ### 3.2 上下文下钻与传播链
 
 1. **层级下钻 (`resolveNext`)**：当通过静态链接、动态链接或 `push_scope` 进入下一层级时，当前上下文的 `scope` 成为新上下文的 `this`，旧上下文被链接为新上下文的 `prev`，`root` 与 `from` 引用继续向深层透传。
-2. **点号链式传播**：在解析复杂表达式（如 `a.b.c`）时，`ParadoxScopeService.evaluateScopeContextFromNode` 依次处理每个节点。首个节点从当前物理环境上下文获取输入，后继节点以上一节点的输出作为输入，最终节点计算出的上下文作为整段表达式的产出。
+2. **点号链式传播**：在解析复杂表达式（如 `a.b.c`）时，`ParadoxScopeService.evaluateScopeContextFromNode` 依次处理每个节点。首个节点从当前物理环境上下文获取输入，后继节点以上一节点的输出作为输入，最终节点评估出的上下文作为整段表达式的产出。
 
 ### 3.3 四类合并索引推断管线
 

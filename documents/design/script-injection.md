@@ -21,14 +21,14 @@
                ParadoxLanguageInjector (注册分派)
                                │
                                ▼
-            ParadoxLanguageInjectionService (计算切片与范围)
+            ParadoxLanguageInjectionService (评估切片与范围)
                                │
                                ▼
             ParadoxLanguageInjectionManager (识别/回溯/切片匹配)
 ```
 
 1. **`ParadoxLanguageInjector`**：实现了平台的 `MultiHostInjector` 接口，作为注入逻辑的物理分派入口。根据宿主类型与设置开关，将文本切片注入为 `ParadoxScriptLanguage` 或 `ParadoxLocalisationLanguage`。
-2. **`ParadoxLanguageInjectionService`**：负责具体的业务逻辑判定，包括向上解析参数上下文、检查参数名称有效性、过滤非法操作符样式、计算文本在宿主内部的精确注入区间（`TextRange`），并生成对应的注入信息载荷。
+2. **`ParadoxLanguageInjectionService`**：负责具体的业务逻辑判定，包括向上解析参数上下文、检查参数名称有效性、过滤非法操作符样式、评估文本在宿主内部的精确注入区间（`TextRange`），并生成对应的注入信息载荷。
 3. **`ParadoxLanguageInjectionManager`**：提供注入运行期辅助，负责识别注入生成的虚拟文件窗口（`VirtualFileWindow`）、跨层级回溯顶层物理宿主元素、以及依据文档窗口的切片（Shred）信息检索注入元数据。
 
 ### 1.2 物理注入与语义规则上下文的分立
