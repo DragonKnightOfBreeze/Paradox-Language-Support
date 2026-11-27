@@ -35,16 +35,20 @@ interface ParadoxScriptExpressionMatcher {
 
     companion object INSTANCE {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxScriptExpressionMatcher>("icu.windea.pls.scriptExpressionMatcher")
-        @JvmField val CACHE = LazyValue<Map<CwtDataType, List<ParadoxScriptExpressionMatcher>>>()
 
         @JvmStatic
-        fun getAll(dataType: CwtDataType): List<ParadoxScriptExpressionMatcher> = CACHE.getOrNull()?.get(dataType).orEmpty()
+        fun getAll(dataType: CwtDataType): List<ParadoxScriptExpressionMatcher> = getAllFromCache(dataType)
 
         // region Implementations
 
+        @JvmField val CACHE = LazyValue<Map<CwtDataType, List<ParadoxScriptExpressionMatcher>>>()
+
         init {
-            CACHE.initialize { computeCache() }
             EP_NAME.addExtensionPointListener { CACHE.reinitialize { computeCache() } }
+        }
+
+        private fun getAllFromCache(dataType: CwtDataType): List<ParadoxScriptExpressionMatcher> {
+            return CACHE.initialize { computeCache() }.get(dataType).orEmpty()
         }
 
         private fun computeCache(): Map<CwtDataType, List<ParadoxScriptExpressionMatcher>> {
