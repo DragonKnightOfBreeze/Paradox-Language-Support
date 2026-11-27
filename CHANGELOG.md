@@ -14,6 +14,7 @@
 - [x] 迁移至现代 IntelliJ 263 平台 API，清理过时的 252-262 兼容分支与反射兜底，并修正运行时类型契约与折叠选区行为 / Migrate to modern IntelliJ 263 platform APIs, clean legacy 252-262 compatibility branches and reflection fallbacks, and fix runtime type contracts and folding selection behavior
 - [x] 重整维护者文档架构与代理引导体系，废除 `ai-notes/` 双轨制并拆分路线图、提案、评估、测试与基准测试专册 / Reorganize maintainer documentation and agent guidance, deprecating `ai-notes/` and splitting roadmap, proposals, evaluations, testing, and benchmarking guides
 - [x] 将代理配置目录标准化为 `.agents/` 并落地首批项目级 Skill（`release`、`grammar-kit-codegen`、`issue-triage`） / Standardize agent configuration under `.agents/` and add initial project skills (`release`, `grammar-kit-codegen`, `issue-triage`)
+- [x] 修复 Markdown 内联代码与链接引用在 IDEA 2026.3 中的兼容性问题，支持内联代码符号重命名并补充相关测试 / Fix Markdown inline code and link reference compatibility in IDEA 2026.3, support renaming for inline code symbols, and add related tests
 
 ## 3.0.7 - 2026-11-24
 
