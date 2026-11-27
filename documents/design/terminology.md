@@ -91,7 +91,7 @@
 | **complex expression** | **复杂表达式** | 运行期由 CWT 数据类型驱动解析出的轻量语法树结构。 |
 | **parameter** | **参数** | 宏体系中的形参占位符，形式如 `$PARAM$`。 |
 | **argument** | **传入参数（实参）** | 调用宏时传入的具体实参赋值（如 `MY_PARAM = "value"`）。 |
-| **conditional block** | **条件化块** | 语法如 `[[PARAM] ...]`。代码与技术文档已统一为“条件化块”，部分老 UI 存在“参数化块”遗留。 |
+| **conditional block** | **条件化块** | 语法如 `[[PARAM] ...]`。 |
 | **inline conditional block** | **内联条件化块** | 作为内联插值嵌入在字符串或标识符内部的条件化块。 |
 | **conditional expression** | **条件化表达式** | 条件化块内部的条件判定部分。 |
 | **conditional parameter** | **条件化参数** | 驱动条件化块是否展开的布尔参数。 |
@@ -200,18 +200,13 @@
 - **`config`（规则）**：CWT 体系中的语法与语义匹配规则。在插件内部单提“规则”默认指 CWT 规则。
 - **`game rule`（游戏规则）**：游戏引擎逻辑中的特定规则对象（如 `game_rules/` 目录下的设定）。在文档中必须显式带上“游戏”二字以示区分。
 
-### 4.5 `conditional block`（条件化块）与“参数化块”
-
-- **事实依据**：代码实现与底层规范（`guidelines.md`、`language-abstractions.md`）已统一使用 **`conditionalBlock` / 条件化块**。
-- **现存状态**：历史遗留的个别 UI 文本与检查描述仍残留“参数化块”字样；技术文档与新提交中一律使用“条件化块”，禁止新造“参数化块”表述。
-
-### 4.6 `injection` 的多重语义消除
+### 4.5 `injection` 的多重语义消除
 
 - **定义注入（Definition Injection）**：VIC3/EU5 中的一种语义宏（`inject:xxx`），属于模组脚本业务逻辑范畴。
 - **语言注入（Language Injection）**：IntelliJ 平台能力，指在字符串或参数内建立子语言 PSI（如参数值脚本注入），属于 IDE 基础设施范畴。
 - **代码注入（Bytecode / Class Injection）**：插件底层的 `icu.windea.pls.inject` 子系统，通过修改平台字节码进行底层修复。
 
-### 4.7 `event target` 术语统一
+### 4.6 `event target` 术语统一
 
 - **事实依据**：早期文档与个别 KDoc 曾交替使用“事件目标”与“事件对象引用”。最新代码提交（`dc4ddf0aaa`）已全面统一为 **`event target` -> 事件目标**，相关引用统称为“事件目标引用”。
 
