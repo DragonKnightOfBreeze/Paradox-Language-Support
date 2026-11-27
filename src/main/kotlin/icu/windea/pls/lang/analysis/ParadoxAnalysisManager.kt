@@ -53,7 +53,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
 
         // skip for `StubVirtualFile` (unsupported)
         if (VirtualFileService.isStubFile(rootFile)) return null
-        // skip for in achieve files (unsupported)
+        // skip for in archive files (unsupported)
         if (VirtualFileService.isInArchiveFile(rootFile)) return null
 
         // try to get injected root info first
@@ -104,7 +104,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         }
         // skip for `StubVirtualFile` (unsupported)
         if (VirtualFileService.isStubFile(file)) return null
-        // skip for in achieve files (unsupported)
+        // skip for in archive files (unsupported)
         if (VirtualFileService.isInArchiveFile(file)) return null
 
         // try to get injected file info first
@@ -196,7 +196,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
 
         // skip for `StubVirtualFile` (unsupported)
         if (VirtualFileService.isStubFile(file)) return null
-        // skip for in achieve files (unsupported)
+        // skip for in archive files (unsupported)
         if (VirtualFileService.isInArchiveFile(file)) return null
 
         // try to get injected locale config first
