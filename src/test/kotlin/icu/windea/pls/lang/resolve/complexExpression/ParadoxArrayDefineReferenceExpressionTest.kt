@@ -51,6 +51,17 @@ class ParadoxArrayDefineReferenceExpressionTest : ParadoxComplexExpressionTest()
     }
 
     @Test
+    fun indexNode_stringLiteral_test() {
+        val s = "Namespace|Name|foo"
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
+        exp.renderAndPrintln()
+        val indexNode = exp.indexNode
+        assertNotNull(indexNode)
+        assertTrue(indexNode is ParadoxStringLiteralNode)
+        assertEquals("foo", indexNode!!.text)
+    }
+
+    @Test
     fun missingPipe_test() {
         val s = "Namespace"
         val exp = resolve(s, ParadoxGameType.Stellaris)

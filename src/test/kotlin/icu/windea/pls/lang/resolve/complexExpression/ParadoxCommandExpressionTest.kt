@@ -49,6 +49,17 @@ class ParadoxCommandExpressionTest : ParadoxComplexExpressionTest() {
     }
 
     @Test
+    fun scopeNodes_test() {
+        val s = "Root.Owner.GetName"
+        val exp = resolve(s, ParadoxGameType.Stellaris)!!
+        exp.renderAndPrintln()
+        assertEquals(2, exp.scopeNodes.size)
+        assertTrue(exp.scopeNodes[0] is ParadoxSystemCommandScopeNode)
+        assertTrue(exp.scopeNodes[1] is ParadoxStaticCommandScopeNode)
+        assertEquals(exp.linkNodes.filterIsInstance<ParadoxCommandScopeNode>(), exp.scopeNodes)
+    }
+
+    @Test
     fun basic_chain_noSuffix_test() {
         val s = "Root.Owner.event_target:some_target.var"
         val exp = resolve(s, ParadoxGameType.Stellaris)!!
