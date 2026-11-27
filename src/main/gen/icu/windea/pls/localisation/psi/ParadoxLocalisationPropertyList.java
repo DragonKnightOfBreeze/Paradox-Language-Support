@@ -6,7 +6,6 @@ import com.intellij.psi.PsiListLikeElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,8 +24,6 @@ public interface ParadoxLocalisationPropertyList extends PsiListLikeElement, Stu
   @NotNull List<@NotNull PsiElement> getComponents();
 
   @NotNull Icon getIcon(@IconFlags int flags);
-
-  @NotNull IElementType getIElementType();
 
   @NotNull GlobalSearchScope getResolveScope();
 

@@ -6,7 +6,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement;
 import icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub;
@@ -39,8 +38,6 @@ public interface ParadoxScriptProperty extends ParadoxScriptNamedElement, Parado
   @Nullable PsiElement getNameIdentifier();
 
   @Nullable String getValue();
-
-  @NotNull IElementType getIElementType();
 
   @NotNull String getPresentableText();
 

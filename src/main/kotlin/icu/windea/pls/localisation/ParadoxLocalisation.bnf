@@ -38,14 +38,14 @@ private comment ::= COMMENT {
 
 property_list ::= comment* ( property_item_list_with_locale | property_item_list ) {
   name="property list"
-  extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
+  extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubBasedPsiElementBase<?>"
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyListStub"
   implements=[
     "com.intellij.psi.PsiListLikeElement"
   ]
   methods=[
     getComponents
-    getIcon getIElementType
+    getIcon
   ]
 }
 private property_item_list_with_locale ::= locale property_items? { pin=1 }
@@ -60,14 +60,14 @@ private property_item_recover ::= !( comment | LOCALE_TOKEN | PROPERTY_KEY_TOKEN
 locale ::= LOCALE_TOKEN COLON {
   name="locale"
   pin=1
-  extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
+  extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubBasedPsiElementBase<?>"
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationLocaleStub"
   implements=[
     "com.intellij.psi.NavigatablePsiElement"
   ]
   methods=[
     getIdElement
-    getIcon getName setName getIElementType
+    getIcon getName setName
     getPresentation getReference getReferences
   ]
 }
@@ -75,7 +75,7 @@ locale ::= LOCALE_TOKEN COLON {
 property ::= property_key COLON property_number? property_value {
   name="property"
   pin=1
-  extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubElementImpl<?>"
+  extends="icu.windea.pls.localisation.psi.impl.ParadoxLocalisationStubBasedPsiElementBase<?>"
   stubClass="icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationPropertyStub"
   implements=[
     "icu.windea.pls.localisation.psi.ParadoxLocalisationNamedElement"
@@ -84,7 +84,7 @@ property ::= property_key COLON property_number? property_value {
   ]
   methods=[
     getIcon getName setName getNameIdentifier getTextOffset getType getValue setValue
-    getIElementType getPresentableText isEquivalentTo
+    getPresentableText isEquivalentTo
     getPresentation
   ]
 }

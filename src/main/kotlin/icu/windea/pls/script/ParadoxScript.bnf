@@ -62,7 +62,7 @@ private root_block_item_recover ::= !( COMMENT
 property ::= property_key property_separator property_value {
   name="property"
   pin=1
-  extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
+  extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubBasedPsiElementBase<?>"
   stubClass="icu.windea.pls.script.psi.stubs.ParadoxScriptPropertyStub"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
@@ -73,7 +73,7 @@ property ::= property_key property_separator property_value {
   ]
   methods=[
     getMemberContainer getMembers getBlock property_key="property_key" property_value="value"
-    getIcon getName setName getNameIdentifier getValue getIElementType getPresentableText isEquivalentTo
+    getIcon getName setName getNameIdentifier getValue getPresentableText isEquivalentTo
     getPresentation
   ]
 }
@@ -200,7 +200,7 @@ private block_item_recover ::= !( COMMENT
 scripted_variable ::= scripted_variable_name scripted_variable_separator scripted_variable_value {
   name="scripted variable"
   pin=1
-  extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubElementImpl<?>"
+  extends="icu.windea.pls.script.psi.impl.ParadoxScriptStubBasedPsiElementBase<?>"
   stubClass="icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub"
   implements=[
     "icu.windea.pls.script.psi.ParadoxScriptNamedElement"
@@ -210,7 +210,7 @@ scripted_variable ::= scripted_variable_name scripted_variable_separator scripte
   ]
   methods=[
     scripted_variable_name="scripted_variable_name" scripted_variable_value="value"
-    getIcon getName setName getNameIdentifier getTextOffset getType getValue getIElementType getPresentableText isEquivalentTo
+    getIcon getName setName getNameIdentifier getTextOffset getType getValue getPresentableText isEquivalentTo
     getPresentation
   ]
 }

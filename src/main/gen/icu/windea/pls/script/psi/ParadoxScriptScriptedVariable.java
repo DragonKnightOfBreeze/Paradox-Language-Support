@@ -6,7 +6,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.core.psi.PsiPresentableTextAwareElement;
 import icu.windea.pls.model.ParadoxScriptedVariableType;
 import icu.windea.pls.script.psi.stubs.ParadoxScriptScriptedVariableStub;
@@ -36,8 +35,6 @@ public interface ParadoxScriptScriptedVariable extends ParadoxScriptNamedElement
   @Nullable ParadoxScriptedVariableType getType();
 
   @Nullable String getValue();
-
-  @NotNull IElementType getIElementType();
 
   @NotNull String getPresentableText();
 

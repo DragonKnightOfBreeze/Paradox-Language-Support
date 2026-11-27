@@ -9,7 +9,6 @@ import com.intellij.psi.impl.ResolveScopeManager
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
-import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
@@ -174,11 +173,6 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getValue(element: ParadoxScriptProperty): String? {
         return element.propertyValue?.value
-    }
-
-    @JvmStatic
-    fun getIElementType(element: ParadoxScriptProperty): IElementType {
-        return PROPERTY
     }
 
     @JvmStatic
@@ -386,11 +380,6 @@ object ParadoxScriptPsiImplUtil {
     @JvmStatic
     fun getValue(element: ParadoxScriptScriptedVariable): String? {
         return element.scriptedVariableValue?.value
-    }
-
-    @JvmStatic
-    fun getIElementType(element: ParadoxScriptScriptedVariable): IElementType {
-        return SCRIPTED_VARIABLE
     }
 
     @JvmStatic

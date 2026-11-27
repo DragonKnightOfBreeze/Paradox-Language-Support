@@ -6,7 +6,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import icu.windea.pls.model.ParadoxScriptedVariableType;
@@ -17,11 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementImpl<ParadoxScriptScriptedVariableStub> implements ParadoxScriptScriptedVariable {
-
-  public ParadoxScriptScriptedVariableImpl(@NotNull ParadoxScriptScriptedVariableStub stub, @NotNull IStubElementType<?, ?> type) {
-    super(stub, type);
-  }
+public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubBasedPsiElementBase<ParadoxScriptScriptedVariableStub> implements ParadoxScriptScriptedVariable {
 
   public ParadoxScriptScriptedVariableImpl(@NotNull ParadoxScriptScriptedVariableStub stub, @NotNull IElementType type) {
     super(stub, type);
@@ -86,11 +81,6 @@ public class ParadoxScriptScriptedVariableImpl extends ParadoxScriptStubElementI
   @Override
   public @Nullable String getValue() {
     return ParadoxScriptPsiImplUtil.getValue(this);
-  }
-
-  @Override
-  public @NotNull IElementType getIElementType() {
-    return ParadoxScriptPsiImplUtil.getIElementType(this);
   }
 
   @Override

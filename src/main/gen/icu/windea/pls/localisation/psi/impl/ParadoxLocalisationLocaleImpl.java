@@ -7,7 +7,6 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.localisation.psi.ParadoxLocalisationElementPresentation;
 import icu.windea.pls.localisation.psi.ParadoxLocalisationLocale;
@@ -18,11 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationStubElementImpl<ParadoxLocalisationLocaleStub> implements ParadoxLocalisationLocale {
-
-  public ParadoxLocalisationLocaleImpl(@NotNull ParadoxLocalisationLocaleStub stub, @NotNull IStubElementType<?, ?> type) {
-    super(stub, type);
-  }
+public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationStubBasedPsiElementBase<ParadoxLocalisationLocaleStub> implements ParadoxLocalisationLocale {
 
   public ParadoxLocalisationLocaleImpl(@NotNull ParadoxLocalisationLocaleStub stub, @NotNull IElementType type) {
     super(stub, type);
@@ -60,11 +55,6 @@ public class ParadoxLocalisationLocaleImpl extends ParadoxLocalisationStubElemen
   @Override
   public @NotNull ParadoxLocalisationLocale setName(@NotNull String name) {
     return ParadoxLocalisationPsiImplUtil.setName(this, name);
-  }
-
-  @Override
-  public @NotNull IElementType getIElementType() {
-    return ParadoxLocalisationPsiImplUtil.getIElementType(this);
   }
 
   @Override

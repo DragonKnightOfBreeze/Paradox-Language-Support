@@ -10,7 +10,6 @@ import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import com.intellij.psi.impl.source.tree.LeafElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.SearchScope
-import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
 import com.intellij.util.IncorrectOperationException
 import icu.windea.pls.ChronicleIcons
@@ -104,11 +103,6 @@ object ParadoxLocalisationPsiImplUtil {
         return ChronicleIcons.Nodes.LocalisationLocale
     }
 
-    @JvmStatic
-    fun getIElementType(element: ParadoxLocalisationPropertyList): IElementType {
-        return PROPERTY_LIST
-    }
-
     // endregion
 
     // region ParadoxLocalisationLocale
@@ -135,11 +129,6 @@ object ParadoxLocalisationPsiImplUtil {
         val newIdElement = ParadoxLocalisationElementFactory.createLocale(element.project, name).idElement
         idElement.replace(newIdElement)
         return element
-    }
-
-    @JvmStatic
-    fun getIElementType(element: ParadoxLocalisationLocale): IElementType {
-        return LOCALE
     }
 
     // endregion
@@ -198,11 +187,6 @@ object ParadoxLocalisationPsiImplUtil {
             valueElement.replace(newValueElement)
             return element
         }
-    }
-
-    @JvmStatic
-    fun getIElementType(element: ParadoxLocalisationProperty): IElementType {
-        return PROPERTY
     }
 
     @JvmStatic

@@ -7,7 +7,6 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.StubBasedPsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
-import com.intellij.psi.tree.IElementType;
 import icu.windea.pls.localisation.psi.stubs.ParadoxLocalisationLocaleStub;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,8 +22,6 @@ public interface ParadoxLocalisationLocale extends NavigatablePsiElement, StubBa
   @NotNull String getName();
 
   @NotNull ParadoxLocalisationLocale setName(@NotNull String name);
-
-  @NotNull IElementType getIElementType();
 
   @NotNull ParadoxLocalisationElementPresentation getPresentation();
 
