@@ -25,7 +25,6 @@ import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.platform.ide.progress.withBackgroundProgress
-import com.intellij.unscramble.AnalyzeStacktraceUtil
 import icu.windea.pls.ChronicleBundle
 import icu.windea.pls.ChronicleFacade
 import icu.windea.pls.base.notification.ChronicleNotificationGroups
@@ -110,7 +109,6 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         }
     }
 
-    @Suppress("JetBrainsInternalApiUsage")
     private fun showHintInToolWindow(
         project: Project,
         generator: CwtConfigGenerator,
@@ -118,7 +116,6 @@ abstract class GenerateConfigActionBase : DumbAwareAction() {
         hint: CwtConfigGenerator.Hint
     ) {
         val builder = TextConsoleBuilderFactory.getInstance().createBuilder(project)
-        builder.filters(AnalyzeStacktraceUtil.EP_NAME.getExtensions(project))
 
         val consoleView = builder.console
         val toolbarActions = DefaultActionGroup()
