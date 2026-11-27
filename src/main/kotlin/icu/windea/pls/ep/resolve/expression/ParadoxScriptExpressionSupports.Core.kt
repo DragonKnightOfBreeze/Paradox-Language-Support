@@ -38,18 +38,18 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
             return dataType == CwtDataTypes.Definition
         }
 
-        override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-            val attributesKey = ParadoxSemanticHighlighterColors.definitionReference(element.language)
-            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
-            return true
-        }
-
         override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
             return ParadoxExpressionSupportFactory.resolveDefinition(element, text, config)
         }
 
         override fun resolveAll(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
             return ParadoxExpressionSupportFactory.resolveAllDefinition(element, text, config)
+        }
+
+        override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+            val attributesKey = ParadoxSemanticHighlighterColors.definitionReference(element.language)
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+            return true
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -66,18 +66,18 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
             return dataType == CwtDataTypes.Localisation
         }
 
-        override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-            val attributesKey = ParadoxSemanticHighlighterColors.localisationReference(element.language)
-            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
-            return true
-        }
-
         override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
             return ParadoxExpressionSupportFactory.resolveLocalisation(element, text, config)
         }
 
         override fun resolveAll(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
             return ParadoxExpressionSupportFactory.resolveAllLocalisation(element, text, config)
+        }
+
+        override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+            val attributesKey = ParadoxSemanticHighlighterColors.localisationReference(element.language)
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+            return true
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -94,18 +94,18 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
             return dataType == CwtDataTypes.SyncedLocalisation
         }
 
-        override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-            val attributesKey = ParadoxSemanticHighlighterColors.localisationReference(element.language)
-            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
-            return true
-        }
-
         override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
             return ParadoxExpressionSupportFactory.resolveLocalisation(element, text, config, ParadoxLocalisationType.Synced)
         }
 
         override fun resolveAll(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
             return ParadoxExpressionSupportFactory.resolveAllLocalisation(element, text, config, ParadoxLocalisationType.Synced)
+        }
+
+        override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+            val attributesKey = ParadoxSemanticHighlighterColors.localisationReference(element.language)
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+            return true
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -120,13 +120,6 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
     class ForInlineLocalisation : ParadoxCoreScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.InlineLocalisation
 
-        override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-            if (text.isLeftQuoted()) return false
-            val attributesKey = ParadoxSemanticHighlighterColors.localisationReference(element.language)
-            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
-            return true
-        }
-
         override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
             if (element.text.isLeftQuoted()) return null // inline string
             return ParadoxExpressionSupportFactory.resolveLocalisation(element, text, config)
@@ -135,6 +128,13 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
         override fun resolveAll(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiElement> {
             if (element.text.isLeftQuoted()) return emptyList() // inline string
             return ParadoxExpressionSupportFactory.resolveAllLocalisation(element, text, config)
+        }
+
+        override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+            if (text.isLeftQuoted()) return false
+            val attributesKey = ParadoxSemanticHighlighterColors.localisationReference(element.language)
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+            return true
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -150,15 +150,15 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
     class ForModifier : ParadoxCoreScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Modifier
 
+        override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
+            val configGroup = config.configGroup
+            return ParadoxExpressionSupportFactory.resolveModifier(element, text, configGroup)
+        }
+
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             val attributesKey = ParadoxSemanticHighlighterColors.modifier()
             ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
-        }
-
-        override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-            val configGroup = config.configGroup
-            return ParadoxExpressionSupportFactory.resolveModifier(element, text, configGroup)
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -173,6 +173,10 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
     class ForEnumValue : ParadoxCoreScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.EnumValue
 
+        override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
+            return ParadoxExpressionSupportFactory.resolveEnumValue(element, text, config)
+        }
+
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             val configGroup = config.configGroup
             val configExpression = config.configExpression ?: return false
@@ -183,10 +187,6 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
             }
             ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
-        }
-
-        override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-            return ParadoxExpressionSupportFactory.resolveEnumValue(element, text, config)
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -207,6 +207,19 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
         override fun supports(gameType: ParadoxGameType) = gameType == ParadoxGameType.Stellaris
 
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.TechnologyWithLevel
+
+        override fun getReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
+            if (element !is ParadoxScriptStringExpressionElement) return emptyList()
+            val separatorIndex = text.indexOf('@')
+            if (separatorIndex == -1) return emptyList() // no `@` -> ignore
+            if (separatorIndex == 0) return emptyList() // no tech node -> ignore
+            val offset = ParadoxExpressionService.getExpressionOffset(element)
+            val referenceRange = TextRange.from(rangeInExpression.startOffset + offset, separatorIndex)
+            val referenceConfig = CwtValueConfig.mock(config.configGroup, typeExpression)
+            val referenceRole = ParadoxExpressionRole.Other
+            val reference = ParadoxScriptExpressionPsiReference(element, referenceRange, referenceConfig, referenceRole)
+            return reference.to.singletonList()
+        }
 
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             if (element !is ParadoxScriptStringExpressionElement) return false // only for string expressions in script files
@@ -237,19 +250,6 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
             return true
         }
 
-        override fun getReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): List<PsiReference> {
-            if (element !is ParadoxScriptStringExpressionElement) return emptyList()
-            val separatorIndex = text.indexOf('@')
-            if (separatorIndex == -1) return emptyList() // no `@` -> ignore
-            if (separatorIndex == 0) return emptyList() // no tech node -> ignore
-            val offset = ParadoxExpressionService.getExpressionOffset(element)
-            val referenceRange = TextRange.from(rangeInExpression.startOffset + offset, separatorIndex)
-            val referenceConfig = CwtValueConfig.mock(config.configGroup, typeExpression)
-            val referenceRole = ParadoxExpressionRole.Other
-            val reference = ParadoxScriptExpressionPsiReference(element, referenceRange, referenceConfig, referenceRole)
-            return reference.to.singletonList()
-        }
-
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
             val definitionScriptExpressionSupport = ParadoxScriptExpressionSupport.EP_NAME.findExtension(ForDefinition::class.java) ?: return
 
@@ -268,16 +268,16 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
     class ForParameter : ParadoxCoreScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Parameter
 
+        override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
+            if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
+            return ParadoxParameterService.resolveArgument(element, rangeInExpression, config)
+        }
+
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             if (element !is ParadoxScriptStringExpressionElement) return false // only for string expressions in script files
             val attributesKey = ParadoxSemanticHighlighterColors.argument()
             ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
-        }
-
-        override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-            if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
-            return ParadoxParameterService.resolveArgument(element, rangeInExpression, config)
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -292,16 +292,16 @@ abstract class ParadoxCoreScriptExpressionSupport : ParadoxScriptExpressionSuppo
     class ForLocalisationParameter : ParadoxCoreScriptExpressionSupport() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.LocalisationParameter
 
+        override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
+            if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
+            return ParadoxLocalisationParameterService.resolveArgument(element, rangeInExpression, config)
+        }
+
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             if (element !is ParadoxScriptStringExpressionElement) return false // only for string expressions in script files
             val attributesKey = ParadoxSemanticHighlighterColors.argument()
             ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
-        }
-
-        override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-            if (element !is ParadoxScriptStringExpressionElement) return null // only for string expressions in script files
-            return ParadoxLocalisationParameterService.resolveArgument(element, rangeInExpression, config)
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

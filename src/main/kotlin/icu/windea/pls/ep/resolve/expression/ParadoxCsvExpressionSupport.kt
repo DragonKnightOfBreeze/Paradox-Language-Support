@@ -35,20 +35,20 @@ interface ParadoxCsvExpressionSupport {
 
     fun supports(dataType: CwtDataType): Boolean
 
-    /**
-     * 语义级别的代码高亮的语言功能入口。
-     * 如果返回 `true`，则表示此 EP 适用，因而终止遍历 EP。
-     */
-    fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
-        return false
-    }
-
     fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
         return null
     }
 
     fun resolveAll(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): List<PsiElement> {
         return resolve(element, text, rangeInExpression, config).to.singletonListOrEmpty()
+    }
+
+    /**
+     * 语义级别的代码高亮的语言功能入口。
+     * 如果返回 `true`，则表示此 EP 适用，因而终止遍历 EP。
+     */
+    fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
+        return false
     }
 
     fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

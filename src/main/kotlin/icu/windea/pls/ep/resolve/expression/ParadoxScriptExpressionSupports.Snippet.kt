@@ -27,14 +27,14 @@ abstract class ParadoxSnippetScriptExpressionSupport : ParadoxScriptExpressionSu
             return dataType == CwtDataTypes.DefinitionSnippet
         }
 
+        override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
+            return ParadoxExpressionSupportFactory.resolveDefinitionSnippet(element, text, config)
+        }
+
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             val attributesKey = ParadoxSemanticHighlighterColors.definitionReferenceSnippet(element.language)
             ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
-        }
-
-        override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-            return ParadoxExpressionSupportFactory.resolveDefinitionSnippet(element, text, config)
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -50,14 +50,14 @@ abstract class ParadoxSnippetScriptExpressionSupport : ParadoxScriptExpressionSu
             return dataType == CwtDataTypes.LocalisationSnippet
         }
 
+        override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
+            return ParadoxExpressionSupportFactory.resolveLocalisationSnippet(element, text, config)
+        }
+
         override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
             val attributesKey = ParadoxSemanticHighlighterColors.localisationReferenceSnippet(element.language)
             ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
-        }
-
-        override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-            return ParadoxExpressionSupportFactory.resolveLocalisationSnippet(element, text, config)
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

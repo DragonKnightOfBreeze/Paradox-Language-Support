@@ -29,14 +29,6 @@ interface ParadoxLocalisationExpressionSupport {
 
     fun supports(element: ParadoxExpressionElement): Boolean
 
-    /**
-     * 语义级别的代码高亮的语言功能入口。
-     * 如果返回 `true`，则表示此 EP 适用，因而终止遍历 EP。
-     */
-    fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, holder: AnnotationHolder): Boolean {
-        return false
-    }
-
     fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange): PsiElement? {
         return null
     }
@@ -47,6 +39,14 @@ interface ParadoxLocalisationExpressionSupport {
 
     fun getReferences(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange): List<PsiReference> {
         return emptyList()
+    }
+
+    /**
+     * 语义级别的代码高亮的语言功能入口。
+     * 如果返回 `true`，则表示此 EP 适用，因而终止遍历 EP。
+     */
+    fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, holder: AnnotationHolder): Boolean {
+        return false
     }
 
     fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

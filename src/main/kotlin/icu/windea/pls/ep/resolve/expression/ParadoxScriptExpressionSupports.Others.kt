@@ -30,6 +30,10 @@ class ParadoxConstantScriptExpressionSupport : ParadoxScriptExpressionSupport {
         return dataType == CwtDataTypes.Constant
     }
 
+    override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
+        return config.resolved().pointer.element
+    }
+
     override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
         val annotated = annotateByAliasName(element, rangeInExpression, holder, config)
         if (annotated) return false
@@ -72,10 +76,6 @@ class ParadoxConstantScriptExpressionSupport : ParadoxScriptExpressionSupport {
         }
         ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
         return true
-    }
-
-    override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
-        return config.resolved().pointer.element
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

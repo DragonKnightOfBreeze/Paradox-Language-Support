@@ -136,59 +136,6 @@ object ParadoxExpressionService {
 
     // endregion
 
-    // region Annotate Methods
-
-    /**
-     * @see ParadoxScriptExpressionSupport.annotate
-     */
-    fun annotateScriptExpression(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-        if (text.isEmpty()) return false // skip if expression text is empty
-        if (rangeInExpression.isEmpty) return false
-        val configExpression = config.configExpression ?: return false
-        val dataType = configExpression.type
-        val gameType = config.configGroup.gameType
-        val supports = ParadoxScriptExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
-        return supports.anyFast f@{ support ->
-            if (gameType.orSpecific() != null && !support.supports(gameType)) return@f false // check game type first
-            ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
-            support.annotate(element, text, rangeInExpression, config, holder)
-        }
-    }
-
-    /**
-     * @see ParadoxLocalisationExpressionSupport.annotate
-     */
-    fun annotateLocalisationExpression(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, holder: AnnotationHolder): Boolean {
-        if (text.isEmpty()) return false // skip if expression text is empty
-        if (rangeInExpression.isEmpty) return false
-        val gameType = selectGameType(element)
-        val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
-        return supports.anyFast f@{ support ->
-            if (gameType.orSpecific() != null && !support.supports(gameType)) return@f false // check game type first
-            ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
-            support.annotate(element, text, rangeInExpression, holder)
-        }
-    }
-
-    /**
-     * @see ParadoxCsvExpressionSupport.annotate
-     */
-    fun annotateCsvExpression(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
-        if (text.isEmpty()) return false // skip if expression text is empty
-        if (rangeInExpression.isEmpty) return false
-        val configExpression = config.configExpression
-        val dataType = configExpression.type
-        val gameType = config.configGroup.gameType
-        val supports = ParadoxCsvExpressionSupport.getAll(dataType) // 3.0.1 optimize: use global cache (by data type)
-        return supports.anyFast f@{ support ->
-            if (gameType.orSpecific() != null && !support.supports(gameType)) return@f false // check game type first
-            ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
-            support.annotate(element, text, rangeInExpression, config, holder)
-        }
-    }
-
-    // endregion
-
     // region Resolve Methods
 
     /**
@@ -396,6 +343,59 @@ object ParadoxExpressionService {
         if (referenceRange.isEmpty) return PsiReference.EMPTY_ARRAY
         val reference = ParadoxCsvExpressionPsiReference(element, referenceRange, columnConfig)
         return arrayOf(reference)
+    }
+
+    // endregion
+
+    // region Annotate Methods
+
+    /**
+     * @see ParadoxScriptExpressionSupport.annotate
+     */
+    fun annotateScriptExpression(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+        if (text.isEmpty()) return false // skip if expression text is empty
+        if (rangeInExpression.isEmpty) return false
+        val configExpression = config.configExpression ?: return false
+        val dataType = configExpression.type
+        val gameType = config.configGroup.gameType
+        val supports = ParadoxScriptExpressionSupport.get(dataType) // 3.0.1 optimize: use global cache (by data type)
+        return supports.anyFast f@{ support ->
+            if (gameType.orSpecific() != null && !support.supports(gameType)) return@f false // check game type first
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
+            support.annotate(element, text, rangeInExpression, config, holder)
+        }
+    }
+
+    /**
+     * @see ParadoxLocalisationExpressionSupport.annotate
+     */
+    fun annotateLocalisationExpression(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, holder: AnnotationHolder): Boolean {
+        if (text.isEmpty()) return false // skip if expression text is empty
+        if (rangeInExpression.isEmpty) return false
+        val gameType = selectGameType(element)
+        val supports = ParadoxLocalisationExpressionSupport.getAll() // 3.0.1 use global cache (all supports)
+        return supports.anyFast f@{ support ->
+            if (gameType.orSpecific() != null && !support.supports(gameType)) return@f false // check game type first
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
+            support.annotate(element, text, rangeInExpression, holder)
+        }
+    }
+
+    /**
+     * @see ParadoxCsvExpressionSupport.annotate
+     */
+    fun annotateCsvExpression(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
+        if (text.isEmpty()) return false // skip if expression text is empty
+        if (rangeInExpression.isEmpty) return false
+        val configExpression = config.configExpression
+        val dataType = configExpression.type
+        val gameType = config.configGroup.gameType
+        val supports = ParadoxCsvExpressionSupport.getAll(dataType) // 3.0.1 optimize: use global cache (by data type)
+        return supports.anyFast f@{ support ->
+            if (gameType.orSpecific() != null && !support.supports(gameType)) return@f false // check game type first
+            ProgressManager.checkCanceled() // 3.0.1 optimize: check canceled immediately before applying logic
+            support.annotate(element, text, rangeInExpression, config, holder)
+        }
     }
 
     // endregion

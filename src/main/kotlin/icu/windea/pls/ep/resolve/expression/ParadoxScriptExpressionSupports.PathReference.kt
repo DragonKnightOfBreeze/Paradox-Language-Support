@@ -31,12 +31,6 @@ class ParadoxPathReferenceScriptExpressionSupport : ParadoxScriptExpressionSuppo
         return dataType in CwtDataTypeSets.PathReference
     }
 
-    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-        val attributesKey = ParadoxScriptHighlighterColors.PATH_REFERENCE
-        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
-        return true
-    }
-
     override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
         if (text.isEmpty()) return null
 
@@ -66,6 +60,12 @@ class ParadoxPathReferenceScriptExpressionSupport : ParadoxScriptExpressionSuppo
         if (pathReference.isEmpty()) return emptyList()
         val selector = ParadoxFilePathSearch.selector(project, element).contextSensitive()
         return ParadoxFilePathSearch.search(pathReference, configExpression, selector).findAll().mapNotNull { it.toPsiFile(project) }
+    }
+
+    override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+        val attributesKey = ParadoxScriptHighlighterColors.PATH_REFERENCE
+        ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+        return true
     }
 
     override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

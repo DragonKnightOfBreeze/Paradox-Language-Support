@@ -21,18 +21,18 @@ abstract class ParadoxCoreCsvExpressionSupport : ParadoxCsvExpressionSupport {
     class ForDefinition : ParadoxCoreCsvExpressionSupport() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.Definition
 
-        override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
-            val attributesKey = ParadoxSemanticHighlighterColors.definitionReference(element.language)
-            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
-            return true
-        }
-
         override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
             return ParadoxExpressionSupportFactory.resolveDefinition(element, text, config)
         }
 
         override fun resolveAll(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): List<PsiElement> {
             return ParadoxExpressionSupportFactory.resolveAllDefinition(element, text, config)
+        }
+
+        override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
+            val attributesKey = ParadoxSemanticHighlighterColors.definitionReference(element.language)
+            ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
+            return true
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -46,6 +46,10 @@ abstract class ParadoxCoreCsvExpressionSupport : ParadoxCsvExpressionSupport {
     class ForEnumValue : ParadoxCoreCsvExpressionSupport() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.EnumValue
 
+        override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
+            return ParadoxExpressionSupportFactory.resolveEnumValue(element, text, config)
+        }
+
         override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
             val configGroup = config.configGroup
             val configExpression = config.configExpression
@@ -56,10 +60,6 @@ abstract class ParadoxCoreCsvExpressionSupport : ParadoxCsvExpressionSupport {
             }
             ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
-        }
-
-        override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
-            return ParadoxExpressionSupportFactory.resolveEnumValue(element, text, config)
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
@@ -75,14 +75,14 @@ abstract class ParadoxCoreCsvExpressionSupport : ParadoxCsvExpressionSupport {
             return dataType in CwtDataTypeSets.DynamicValue
         }
 
+        override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
+            return ParadoxExpressionSupportFactory.resolveDynamicValue(element, text, config)
+        }
+
         override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
             val attributesKey = ParadoxSemanticHighlighterColors.dynamicValue(element.language)
             ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
-        }
-
-        override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
-            return ParadoxExpressionSupportFactory.resolveDynamicValue(element, text, config)
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

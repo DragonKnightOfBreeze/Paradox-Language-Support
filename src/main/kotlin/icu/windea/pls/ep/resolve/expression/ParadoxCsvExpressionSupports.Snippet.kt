@@ -24,14 +24,14 @@ abstract class ParadoxSnippetCsvExpressionSupport : ParadoxCsvExpressionSupport 
     class ForDefinitionSnippet : ParadoxSnippetCsvExpressionSupport() {
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.DefinitionSnippet
 
+        override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
+            return ParadoxExpressionSupportFactory.resolveDefinitionSnippet(element, text, config)
+        }
+
         override fun annotate(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig, holder: AnnotationHolder): Boolean {
             val attributesKey = ParadoxSemanticHighlighterColors.definitionReferenceSnippet(element.language)
             ParadoxExpressionSupportFactory.annotateExpression(element, rangeInExpression, holder, attributesKey)
             return true
-        }
-
-        override fun resolve(element: ParadoxCsvExpressionElement, text: String, rangeInExpression: TextRange, config: CwtValueConfig): PsiElement? {
-            return ParadoxExpressionSupportFactory.resolveDefinitionSnippet(element, text, config)
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {

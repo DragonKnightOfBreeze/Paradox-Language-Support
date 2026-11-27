@@ -26,20 +26,6 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
         override fun supports(dataType: CwtDataType) = dataType == CwtDataTypes.UnionValue
 
         // NOTE 3.0.1 recursion guard is required here for various operations
-        override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-            val configGroup = config.configGroup
-            val configExpression = config.configExpression ?: return false
-            val unionName = configExpression.metadata.value ?: return false
-            val expression = ParadoxExpression.resolve(text, false) // 3.0.3 should be resolved from `text`, rather than `element`
-            // NOTE 3.0.1 recursion guard is required here
-            // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
-            val guardName = "scriptExpression.annotate.union"
-            val expanded = ParadoxConfigExpansionService.expandAndMatchUnion(element, expression, unionName, configGroup, guardName = guardName)
-            return expanded.filter { _, mr -> mr.get() }.any { r, _ ->
-                ParadoxExpressionService.annotateScriptExpression(element, text, rangeInExpression, r.config, holder)
-            }
-        }
-
         override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
             val configGroup = config.configGroup
             val configExpression = config.configExpression ?: return null
@@ -79,6 +65,20 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             return ParadoxExpressionService.getScriptExpressionReferences(element, text, rangeInExpression, matched.config, role)
         }
 
+        override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+            val configGroup = config.configGroup
+            val configExpression = config.configExpression ?: return false
+            val unionName = configExpression.metadata.value ?: return false
+            val expression = ParadoxExpression.resolve(text, false) // 3.0.3 should be resolved from `text`, rather than `element`
+            // NOTE 3.0.1 recursion guard is required here
+            // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
+            val guardName = "scriptExpression.annotate.union"
+            val expanded = ParadoxConfigExpansionService.expandAndMatchUnion(element, expression, unionName, configGroup, guardName = guardName)
+            return expanded.filter { _, mr -> mr.get() }.any { r, _ ->
+                ParadoxExpressionService.annotateScriptExpression(element, text, rangeInExpression, r.config, holder)
+            }
+        }
+
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
             val configGroup = context.configGroup
             val configExpression = context.config?.configExpression ?: return
@@ -104,20 +104,6 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
 
         // NOTE 3.0.1 recursion guard is required here for various operations
 
-        override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
-            val configGroup = config.configGroup
-            val configExpression = config.configExpression ?: return false
-            val aliasName = configExpression.metadata.value ?: return false
-            val expression = ParadoxExpression.resolve(text, false) // 3.0.3 should be resolved from `text`, rather than `element`
-            // NOTE 3.0.1 recursion guard is required here
-            // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
-            val guardName = "scriptExpression.annotate.alias"
-            val expanded = ParadoxConfigExpansionService.expandAndMatchAlias(element, expression, aliasName, configGroup, guardName = guardName)
-            return expanded.filter { _, mr -> mr.get() }.any { r, _ ->
-                ParadoxExpressionService.annotateScriptExpression(element, text, rangeInExpression, r.config, holder)
-            }
-        }
-
         override fun resolve(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, role: ParadoxExpressionRole): PsiElement? {
             val configGroup = config.configGroup
             val configExpression = config.configExpression ?: return null
@@ -140,6 +126,20 @@ abstract class ParadoxExpandableScriptExpressionSupport : ParadoxScriptExpressio
             val expanded = ParadoxConfigExpansionService.expandAndMatchAlias(element, expression, aliasName, configGroup, guardName = guardName)
             val matched = expanded.firstNotNullOrOrNull { m, mr -> if (mr.get()) m else null } ?: return emptyList()
             return ParadoxExpressionService.resolveAllScriptExpression(element, text, rangeInExpression, matched.config, role)
+        }
+
+        override fun annotate(element: ParadoxExpressionElement, text: String, rangeInExpression: TextRange, config: CwtConfig<*>, holder: AnnotationHolder): Boolean {
+            val configGroup = config.configGroup
+            val configExpression = config.configExpression ?: return false
+            val aliasName = configExpression.metadata.value ?: return false
+            val expression = ParadoxExpression.resolve(text, false) // 3.0.3 should be resolved from `text`, rather than `element`
+            // NOTE 3.0.1 recursion guard is required here
+            // NOTE 3.0.3 use first actually matched config atm, event if the result from this config is null or empty
+            val guardName = "scriptExpression.annotate.alias"
+            val expanded = ParadoxConfigExpansionService.expandAndMatchAlias(element, expression, aliasName, configGroup, guardName = guardName)
+            return expanded.filter { _, mr -> mr.get() }.any { r, _ ->
+                ParadoxExpressionService.annotateScriptExpression(element, text, rangeInExpression, r.config, holder)
+            }
         }
 
         override fun complete(context: ParadoxCompletionContext, result: CompletionResultSet) {
