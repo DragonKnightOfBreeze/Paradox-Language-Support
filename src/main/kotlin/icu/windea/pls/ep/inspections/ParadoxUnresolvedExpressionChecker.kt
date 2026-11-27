@@ -36,7 +36,7 @@ interface ParadoxUnresolvedExpressionChecker {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxUnresolvedExpressionChecker>("icu.windea.pls.unresolvedExpressionChecker")
         @JvmField val CACHE = LazyValue<List<ParadoxUnresolvedExpressionChecker>>()
 
-        fun getAll(): List<ParadoxUnresolvedExpressionChecker> = CACHE.get().orEmpty()
+        fun getAll(): List<ParadoxUnresolvedExpressionChecker> = CACHE.getOrNull().orEmpty()
 
         // region Implementations
 

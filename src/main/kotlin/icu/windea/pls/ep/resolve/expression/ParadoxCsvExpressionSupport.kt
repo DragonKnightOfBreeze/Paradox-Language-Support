@@ -59,7 +59,7 @@ interface ParadoxCsvExpressionSupport {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxCsvExpressionSupport>("icu.windea.pls.csvExpressionSupport")
         @JvmField val CACHE = LazyValue<Map<CwtDataType, List<ParadoxCsvExpressionSupport>>>()
 
-        fun getAll(dataType: CwtDataType): List<ParadoxCsvExpressionSupport> = CACHE.get()?.get(dataType).orEmpty()
+        fun getAll(dataType: CwtDataType): List<ParadoxCsvExpressionSupport> = CACHE.getOrNull()?.get(dataType).orEmpty()
 
         // region Implementations
 

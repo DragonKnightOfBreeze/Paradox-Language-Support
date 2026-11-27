@@ -65,7 +65,7 @@ interface ParadoxPathReferenceExpressionSupport {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxPathReferenceExpressionSupport>("icu.windea.pls.pathReferenceExpressionSupport")
         @JvmField val CACHE = LazyValue<Map<CwtDataType, ParadoxPathReferenceExpressionSupport>>()
 
-        fun get(dataType: CwtDataType): ParadoxPathReferenceExpressionSupport? = CACHE.get()?.get(dataType)
+        fun get(dataType: CwtDataType): ParadoxPathReferenceExpressionSupport? = CACHE.getOrNull()?.get(dataType)
 
         // region Implementations
 

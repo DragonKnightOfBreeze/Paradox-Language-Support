@@ -5,7 +5,6 @@ package icu.windea.pls.core.util.values
 import icu.windea.pls.core.annotations.Fast
 import icu.windea.pls.core.toBoolean
 import icu.windea.pls.core.toByte
-import java.util.function.Supplier
 
 /**
  * 可以延迟初始化的值（包装类）。
@@ -14,17 +13,27 @@ import java.util.function.Supplier
  * - 使用双重检查锁定（double-checked locking）保证初始化时的线程安全。
  * - 不同于 [Lazy]，不需要在声明时就指定初始化逻辑。
  */
-class LazyValue<T> : Supplier<T?> {
+class LazyValue<T> {
     @Volatile private var _value: Any? = UNINITIALIZED
 
-    @Suppress("UNCHECKED_CAST")
     var value: T?
-        get() = if (isInitialized()) _value as? T else null
+        get() {
+            @Suppress("UNCHECKED_CAST")
+            return if (isInitialized()) _value as T else null
+        }
         set(value) {
             _value = value
         }
 
-    override fun get(): T? = value
+    fun get(): T {
+        @Suppress("UNCHECKED_CAST")
+        return _value as T
+    }
+
+    fun getOrNull(): T? {
+        @Suppress("UNCHECKED_CAST")
+        return _value as? T
+    }
 
     fun isInitialized(): Boolean {
         return _value !== UNINITIALIZED
@@ -35,22 +44,22 @@ class LazyValue<T> : Supplier<T?> {
     }
 
     inline fun check(crossinline predicate: (T) -> Boolean) {
-        val value = value ?: return
-        if (predicate(value)) return
+        if (!isInitialized()) return
+        if (predicate(get())) return
         clear()
     }
 
-    inline fun initialize(crossinline initializer: () -> T?): T? {
-        if (isInitialized()) return value
+    inline fun initialize(crossinline initializer: () -> T): T {
+        if (isInitialized()) return get()
         synchronized(this) {
-            if (isInitialized()) return value
+            if (isInitialized()) return get()
             val newValue = initializer()
             value = newValue
             return newValue
         }
     }
 
-    inline fun reinitialize(crossinline initializer: () -> T?): T? {
+    inline fun reinitialize(crossinline initializer: () -> T): T {
         synchronized(this) {
             val newValue = initializer()
             value = newValue

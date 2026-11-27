@@ -34,7 +34,7 @@ interface ParadoxScriptExpressionMatchOptimizer {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxScriptExpressionMatchOptimizer>("icu.windea.pls.scriptExpressionMatchOptimizer")
         @JvmField val CACHE = LazyValue<List<ParadoxScriptExpressionMatchOptimizer>>()
 
-        fun getAll(): List<ParadoxScriptExpressionMatchOptimizer> = CACHE.get().orEmpty()
+        fun getAll(): List<ParadoxScriptExpressionMatchOptimizer> = CACHE.getOrNull().orEmpty()
 
         // region Implementations
 

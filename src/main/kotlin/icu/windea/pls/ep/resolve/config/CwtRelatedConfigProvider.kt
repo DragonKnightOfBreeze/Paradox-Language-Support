@@ -32,7 +32,7 @@ interface CwtRelatedConfigProvider {
         @JvmField val EP_NAME = ExtensionPointName<CwtRelatedConfigProvider>("icu.windea.pls.relatedConfigProvider")
         @JvmField val CACHE = LazyValue<List<CwtRelatedConfigProvider>>()
 
-        fun getAll(): List<CwtRelatedConfigProvider> = CACHE.get().orEmpty()
+        fun getAll(): List<CwtRelatedConfigProvider> = CACHE.getOrNull().orEmpty()
 
         // region Implementations
 

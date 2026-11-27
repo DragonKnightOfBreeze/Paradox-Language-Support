@@ -39,7 +39,7 @@ interface ParadoxCsvExpressionMatcher {
         @JvmField val CACHE = LazyValue<Map<CwtDataType, List<ParadoxCsvExpressionMatcher>>>()
 
         @JvmStatic
-        fun getAll(dataType: CwtDataType): List<ParadoxCsvExpressionMatcher> = CACHE.get()?.get(dataType).orEmpty()
+        fun getAll(dataType: CwtDataType): List<ParadoxCsvExpressionMatcher> = CACHE.getOrNull()?.get(dataType).orEmpty()
 
         // region Implementations
 

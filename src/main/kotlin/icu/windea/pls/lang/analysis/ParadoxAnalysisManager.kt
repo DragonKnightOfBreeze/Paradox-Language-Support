@@ -76,7 +76,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         if (!cached) return doResolveRootInfo(rootFile)
         ParadoxAnalysisLifecycleService.ensureLoaded()
         val cachedRootInfo = ParadoxAnalysisDataManager.getOrPutData(rootFile, ParadoxAnalysisDataManager.Keys.cachedRootInfo) { LazyValue() }
-        cachedRootInfo.check { rootInfo -> doCheckRootInfo(rootInfo) }
+        cachedRootInfo.check { rootInfo -> rootInfo == null || doCheckRootInfo(rootInfo) }
         return cachedRootInfo.initialize { doResolveRootInfo(rootFile) }
     }
 
@@ -135,7 +135,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         if (!cached) return doResolveFileInfo(file, cached)
         ParadoxAnalysisLifecycleService.ensureLoaded()
         val cachedFileInfo = ParadoxAnalysisDataManager.getOrPutData(file, ParadoxAnalysisDataManager.Keys.cachedFileInfo) { LazyValue() }
-        cachedFileInfo.check { fileInfo -> doCheckFileInfo(fileInfo) }
+        cachedFileInfo.check { fileInfo -> fileInfo == null || doCheckFileInfo(fileInfo) }
         return cachedFileInfo.initialize { doResolveFileInfo(file, cached) }
     }
 

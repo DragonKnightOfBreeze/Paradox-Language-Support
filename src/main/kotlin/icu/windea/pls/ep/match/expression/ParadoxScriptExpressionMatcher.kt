@@ -38,7 +38,7 @@ interface ParadoxScriptExpressionMatcher {
         @JvmField val CACHE = LazyValue<Map<CwtDataType, List<ParadoxScriptExpressionMatcher>>>()
 
         @JvmStatic
-        fun getAll(dataType: CwtDataType): List<ParadoxScriptExpressionMatcher> = CACHE.get()?.get(dataType).orEmpty()
+        fun getAll(dataType: CwtDataType): List<ParadoxScriptExpressionMatcher> = CACHE.getOrNull()?.get(dataType).orEmpty()
 
         // region Implementations
 

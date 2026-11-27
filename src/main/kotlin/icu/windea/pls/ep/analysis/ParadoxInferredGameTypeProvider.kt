@@ -21,7 +21,7 @@ interface ParadoxInferredGameTypeProvider {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxInferredGameTypeProvider>("icu.windea.pls.inferredGameTypeProvider")
         @JvmField val CACHE = LazyValue<List<ParadoxInferredGameTypeProvider>>()
 
-        fun getAll(): List<ParadoxInferredGameTypeProvider> = CACHE.get().orEmpty()
+        fun getAll(): List<ParadoxInferredGameTypeProvider> = CACHE.getOrNull().orEmpty()
 
         // region Implementations
 

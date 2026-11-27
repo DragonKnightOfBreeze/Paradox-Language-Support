@@ -57,7 +57,7 @@ interface ParadoxLocalisationExpressionSupport {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxLocalisationExpressionSupport>("icu.windea.pls.localisationExpressionSupport")
         @JvmField val CACHE = LazyValue<List<ParadoxLocalisationExpressionSupport>>()
 
-        fun getAll(): List<ParadoxLocalisationExpressionSupport> = CACHE.get().orEmpty()
+        fun getAll(): List<ParadoxLocalisationExpressionSupport> = CACHE.getOrNull().orEmpty()
 
         // region Implementations
 

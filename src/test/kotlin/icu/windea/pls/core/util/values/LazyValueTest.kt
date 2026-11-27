@@ -75,7 +75,7 @@ class LazyValueTest {
 
     @Test
     fun initialize_withNull_cachesAndDoesNotRecompute_test() {
-        val v = LazyValue<String>()
+        val v = LazyValue<String?>()
         var count = 0
         Assert.assertNull(v.initialize { count++; null })
         Assert.assertNull(v.initialize { count++; "x" })
@@ -139,7 +139,7 @@ class LazyValueTest {
         val doneLatch = CountDownLatch(threadCount)
         val results = java.util.Collections.synchronizedList(mutableListOf<T>())
         val failures = java.util.Collections.synchronizedList(mutableListOf<Throwable>())
-        for (i in 0 until threadCount) {
+        repeat(threadCount) {
             executor.submit {
                 try {
                     startLatch.await()

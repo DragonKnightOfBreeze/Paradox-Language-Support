@@ -60,7 +60,7 @@ interface ParadoxScriptExpressionSupport {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxScriptExpressionSupport>("icu.windea.pls.scriptExpressionSupport")
         @JvmField val CACHE = LazyValue<Map<CwtDataType, List<ParadoxScriptExpressionSupport>>>()
 
-        fun get(dataType: CwtDataType): List<ParadoxScriptExpressionSupport> = CACHE.get()?.get(dataType).orEmpty()
+        fun get(dataType: CwtDataType): List<ParadoxScriptExpressionSupport> = CACHE.getOrNull()?.get(dataType).orEmpty()
 
         // region Implementations
 

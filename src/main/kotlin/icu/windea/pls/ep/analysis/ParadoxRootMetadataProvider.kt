@@ -19,7 +19,7 @@ interface ParadoxRootMetadataProvider {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxRootMetadataProvider>("icu.windea.pls.rootMetadataProvider")
         @JvmField val CACHE = LazyValue<List<ParadoxRootMetadataProvider>>()
 
-        fun getAll(): List<ParadoxRootMetadataProvider> = CACHE.get().orEmpty()
+        fun getAll(): List<ParadoxRootMetadataProvider> = CACHE.getOrNull().orEmpty()
 
         // region Implementations
 

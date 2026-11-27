@@ -46,7 +46,7 @@ interface CwtOverriddenConfigProvider {
         @JvmField val EP_NAME = ExtensionPointName<CwtOverriddenConfigProvider>("icu.windea.pls.overriddenConfigProvider")
         @JvmField val CACHE = LazyValue<List<CwtOverriddenConfigProvider>>()
 
-        fun getAll(): List<CwtOverriddenConfigProvider> = CACHE.get().orEmpty()
+        fun getAll(): List<CwtOverriddenConfigProvider> = CACHE.getOrNull().orEmpty()
 
         // region Implementations
 

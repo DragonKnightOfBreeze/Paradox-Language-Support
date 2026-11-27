@@ -46,7 +46,7 @@ interface CwtConfigContextProvider {
         @JvmField val EP_NAME = ExtensionPointName<CwtConfigContextProvider>("icu.windea.pls.configContextProvider")
         @JvmField val CACHE = LazyValue<List<CwtConfigContextProvider>>()
 
-        fun getAll(): List<CwtConfigContextProvider> = CACHE.get().orEmpty()
+        fun getAll(): List<CwtConfigContextProvider> = CACHE.getOrNull().orEmpty()
 
         // region Implementations
 

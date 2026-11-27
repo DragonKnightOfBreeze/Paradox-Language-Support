@@ -38,7 +38,7 @@ interface ParadoxIncorrectExpressionChecker {
         @JvmField val EP_NAME = ExtensionPointName<ParadoxIncorrectExpressionChecker>("icu.windea.pls.incorrectExpressionChecker")
         @JvmField val CACHE = LazyValue<List<ParadoxIncorrectExpressionChecker>>()
 
-        fun getAll(): List<ParadoxIncorrectExpressionChecker> = CACHE.get().orEmpty()
+        fun getAll(): List<ParadoxIncorrectExpressionChecker> = CACHE.getOrNull().orEmpty()
 
         // region Implementations
 

@@ -23,11 +23,11 @@ object ParadoxAnalysisDataManager {
         // 直接保存到文件级别的用户数据（注意：尝试获取时不会立即初始化）
 
         /** 用于在根目录级别保存根信息（[ParadoxRootInfo]）。 */
-        val cachedRootInfo by registerKey<LazyValue<ParadoxRootInfo>>(this)
+        val cachedRootInfo by registerKey<LazyValue<ParadoxRootInfo?>>(this)
         /** 用于在文件级别保存文件信息（[ParadoxFileInfo]）。 */
-        val cachedFileInfo by registerKey<LazyValue<ParadoxFileInfo>>(this)
+        val cachedFileInfo by registerKey<LazyValue<ParadoxFileInfo?>>(this)
         /** 用于在文件级别保存语言环境规则（[CwtLocaleConfig]）。 */
-        val cachedLocaleConfig by registerKey<LazyValue<CwtLocaleConfig>>(this)
+        val cachedLocaleConfig by registerKey<LazyValue<CwtLocaleConfig?>>(this)
 
         /** 用于为文件注入根信息（[ParadoxRootInfo]）。 */
         val injectedRootInfo by registerKey<ParadoxRootInfo>(this)
