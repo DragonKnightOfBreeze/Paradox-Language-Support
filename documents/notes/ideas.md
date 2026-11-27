@@ -782,7 +782,7 @@
   - 可通过 `checker` 进行取消检查
 - [x] P4 3.0.6 引入 `MonitorableInputStream` 和 `MonitorableOutputStream`
   - 可监控总长度和已处理长度，可能需要调整命名，可能需要与 `CancellableInputStream` / `CancellableOutputStream` 合并
-- [ ] P4 3.1.0+ 在快速文档中提示图片文件的尺寸（tailText，` (widthxheight)`）
+- [x] P4 3.1.0 在快速文档中提示图片文件的尺寸（tailText，` (widthxheight)`）
 - [x] P2 3.0.6 考虑将 `ImageRenderRequest`/`ParadoxImageResolveResult` 合并为 `ImageDescriptor`
   - 更加通用，不限于“渲染”，也可用于“描述”和“解析”。
   - 提供图片层的方法 `ImageDescriptor.createImage` `ImageDescriptor.createImageIcon` `ImageDescriptor.resolveUrl`。
@@ -791,8 +791,8 @@
   - 相关代码位置：`ImageService.createImage` `ImageService.createImageIcon`
   - 参见：`com.intellij.util.IconUtil`
   - 参见：`com.intellij.ui.icons.CachedImageIcon`
-- [ ] P4 排序：在 `ParadoxScriptExpressionSupport` 等处，将 `annotate` 方法的顺序移到 `complete` 方法之前
-- [ ] P3 重构：考虑提取 `CwtDataTypePriorities`，以更好地控制数据类型的优先级（这在一些场景下是极其敏感的）
+- [x] P4 3.1.0 排序：在 `ParadoxScriptExpressionSupport` 等处，将 `annotate` 方法的顺序移到 `complete` 方法之前
+- [x] P3 3.1.0 重构：考虑提取 `CwtDataTypePriorities`，以更好地控制数据类型的优先级（这在一些场景下是极其敏感的）
 - [x] P3 3.0.6 重构：优化 `JsonService`：新增 `JsonOptions` 并应用
   - 这里的选项应能在合适的范围内控制要使用的底层实现（参见 `Json`），并且可以控制额外的处理逻辑（如对 utf8 bom 的处理） 
   - 提供 `DEFAULT` `JSON5` 等默认选项
