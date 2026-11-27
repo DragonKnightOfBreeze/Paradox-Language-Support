@@ -27,6 +27,7 @@
 - [x] [\[Vic3\] New quote escape construct breaks the localization parser · Issue #451](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/451) - [分析](issues/issue-451-vic3-quote-escape-parser-break.md)
 - [x] [idea堆栈报错 · Issue #459](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/459) - [分析](issues/issue-459-ep-cache-clinit-error.md)
 - [x] [舰船区段本地化链接丢失 · Issue #458](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/458) - [分析](issues/issue-458-section-template-localisation-links-lost.md)
+- [x] [部分位置快速文档的图标异常 · Issue #464](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/464) - [分析](issues/issue-464-quick-documentation-icons.md)
 
 ### 来自 CWTools 的 Github 仓库
 
