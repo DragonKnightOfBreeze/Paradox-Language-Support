@@ -10,6 +10,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import java.nio.file.Path
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 
 /**
@@ -24,6 +25,7 @@ class ImageRenderSession(
     private val jobs = ConcurrentLinkedQueue<Deferred<Path?>>()
     private val failedRequests = ConcurrentLinkedQueue<ImageDescriptor>()
     private val descriptors = ConcurrentLinkedQueue<ImageDescriptor>()
+    private val textIconDescriptors = ConcurrentHashMap.newKeySet<ImageDescriptor>()
 
     fun launch(descriptor: ImageDescriptor): Deferred<Path?> {
         descriptors += descriptor
@@ -56,6 +58,17 @@ class ImageRenderSession(
 
     fun requests(): List<ImageDescriptor> {
         return descriptors.toList()
+    }
+
+    /**
+     * 将指定图片请求标记为文本图标，用于区分快速文档中的内联文本图标与其他图片。
+     */
+    fun markTextIcon(descriptor: ImageDescriptor) {
+        textIconDescriptors += descriptor
+    }
+
+    fun textIconRequests(): List<ImageDescriptor> {
+        return textIconDescriptors.toList()
     }
 
     fun failedRequests(): List<ImageDescriptor> {

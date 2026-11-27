@@ -459,17 +459,19 @@ class ImageRenderService : Disposable {
      *
      * 说明：
      * - 如果存在当前渲染会话，则首先在其中记录渲染请求。
+     * - 如果 [textIcon] 为 `true`，则同时将请求标记为文本图标，以便后续仅缩放真正的文本图标。
      * - 如果不需要渲染，则直接返回源路径。
      * - 如果存在目标路径对应的本地缓存，则直接返回目标路径。
      * - 如果存在当前渲染会话，则直接返回目标路径。这适用于渲染快速文档等场景。
      * - 否则，尝试同步获取或渲染目标图片。
      * - 同步渲染失败时，按照设置中的失败策略返回目标路径、`null` 或占位图路径。
      */
-    fun resolveUrl(descriptor: ImageDescriptor, project: Project): String? {
+    fun resolveUrl(descriptor: ImageDescriptor, project: Project, textIcon: Boolean = false): String? {
         val session = currentRenderSession()
 
         // 3.0.5 it's necessary to record render request first, or image policies may be not applied correctly
         @Suppress("DeferredResultUnused") session?.launch(descriptor)
+        if (textIcon) session?.markTextIcon(descriptor)
 
         try {
             if (!descriptor.renderRequired) return descriptor.sourcePath.absolutePathString()
@@ -518,11 +520,12 @@ class ImageRenderService : Disposable {
     /**
      * 对快速文档中的文本图标按文本高度进行缩放。
      *
-     * 只处理高度不超过 [textIconSizeLimit] 的图片；较大的图片保留原始尺寸。
+     * 仅处理被显式标记为文本图标的图片请求，避免把定义图标等普通图片误当作文本图标缩放。
+     * 只处理高度不超过 [textIconSizeLimit] 的文本图标；较大的文本图标保留原始尺寸。
      */
     fun applyImageScaling(builder: DocumentationBuilder, session: ImageRenderSession, textHeight: Int, textIconSizeLimit: Int) {
         if (textHeight <= 0 || textIconSizeLimit <= 0) return
-        for (request in session.requests()) {
+        for (request in session.textIconRequests()) {
             val targetPath = request.targetPath
             if (!targetPath.isRegularFile()) continue
             // 优先读取内存缓存中的图像宽高，未命中时再回退到元数据读取

@@ -170,7 +170,7 @@ class ParadoxLocalisationTextQuickDocRenderContext(
             // 如果无法解析（包括对应文件不存在的情况）就直接跳过
             if (!iconResolveResult.canResolve()) return@run
             // 图片尺寸由渲染/展示层处理；这里只记录 URL，避免在 readAction 中读取图片或 Icon
-            val iconUrl = iconResolveResult.resolveUrl(element.project) ?: return@run
+            val iconUrl = iconResolveResult.resolveUrl(element.project, textIcon = true) ?: return@run
             builder.image(iconUrl)
             return
         }

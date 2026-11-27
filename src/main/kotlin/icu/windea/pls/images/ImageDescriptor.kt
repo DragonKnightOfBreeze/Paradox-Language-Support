@@ -54,7 +54,7 @@ data class ImageDescriptor(
     /**
      * @see ImageRenderService.resolveUrl
      */
-    fun resolveUrl(project: Project): String? = ImageRenderService.getInstance().resolveUrl(this, project)
+    fun resolveUrl(project: Project, textIcon: Boolean = false): String? = ImageRenderService.getInstance().resolveUrl(this, project, textIcon)
 
     /**
      * @see ImageRenderService.createImage

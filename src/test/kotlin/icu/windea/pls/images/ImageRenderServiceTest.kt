@@ -55,12 +55,32 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         val request = ImageDescriptor(source, target)
         val service = ImageRenderService.getInstance()
         val session = service.newRenderSession(this)
-        session.launch(request).await()
-        val builder = buildDocumentation { image(target.absolutePathString()) }
+        val url = service.withRenderSession(session) { request.resolveUrl(project, textIcon = true) }
+        session.awaitAll()
+        val builder = buildDocumentation { image(url!!) }
 
         service.applyImageScaling(builder, session, textHeight = 20, textIconSizeLimit = 50)
 
         Assert.assertTrue(builder.content.contains("width=\"50\" height=\"20\""))
+    }
+
+    @Test
+    fun applyImageScaling_nonTextIconKeepsOriginalSize_test() = runBlocking {
+        val source = root.resolve("scaling-non-text-icon-source.png")
+        val target = root.resolve("scaling-non-text-icon-target.png")
+        writeImage(source, 100, 40)
+
+        val request = ImageDescriptor(source, target)
+        val service = ImageRenderService.getInstance()
+        val session = service.newRenderSession(this)
+        val url = service.withRenderSession(session) { request.resolveUrl(project) }
+        session.awaitAll()
+        val builder = buildDocumentation { image(url!!) }
+
+        service.applyImageScaling(builder, session, textHeight = 20, textIconSizeLimit = 50)
+
+        // 未被标记为文本图标的图片即使高度未超过限制，也不应该被缩放
+        Assert.assertTrue(builder.content.contains("<img src=\"${target.absolutePathString().toFileUrl()}\"/>"))
     }
 
     @Test
@@ -72,8 +92,9 @@ class ImageRenderServiceTest : BasePlatformTestCase() {
         val request = ImageDescriptor(source, target)
         val service = ImageRenderService.getInstance()
         val session = service.newRenderSession(this)
-        session.launch(request).await()
-        val builder = buildDocumentation { image(target.absolutePathString()) }
+        val url = service.withRenderSession(session) { request.resolveUrl(project, textIcon = true) }
+        session.awaitAll()
+        val builder = buildDocumentation { image(url!!) }
 
         service.applyImageScaling(builder, session, textHeight = 20, textIconSizeLimit = 36)
 
