@@ -524,14 +524,15 @@ class ImageRenderService : Disposable {
      * 只处理高度不超过 [textIconSizeLimit] 的文本图标；较大的文本图标保留原始尺寸。
      */
     fun applyImageScaling(builder: DocumentationBuilder, session: ImageRenderSession, textHeight: Int, textIconSizeLimit: Int) {
+        // TODO 3.1.0 存在边界问题：如果同一 targetPath 的图片，在同一 session 中（如同一快速文档），同时出现作为文本图标/非文本图标，如何区分？
         if (textHeight <= 0 || textIconSizeLimit <= 0) return
-        for (request in session.textIconRequests()) {
-            val targetPath = request.targetPath
+        for (descriptor in session.textIconDescriptors()) {
+            val targetPath = descriptor.targetPath
             if (!targetPath.isRegularFile()) continue
             // 优先读取内存缓存中的图像宽高，未命中时再回退到元数据读取
             var width = 0
             var height = 0
-            val cachedImage = createImageCacheKey(request)?.let { imageCache.getIfPresent(it) }
+            val cachedImage = createImageCacheKey(descriptor)?.let { imageCache.getIfPresent(it) }
             if (cachedImage != null) {
                 val cachedWidth = cachedImage.getWidth(null)
                 val cachedHeight = cachedImage.getHeight(null)
@@ -555,16 +556,16 @@ class ImageRenderService : Disposable {
      * 根据 [ImageRenderFailurePolicy] 处理渲染会话中失败的图片。
      */
     fun applyFailurePolicy(builder: DocumentationBuilder, session: ImageRenderSession) {
-        val failedRequests = session.failedRequests()
-        if (failedRequests.isEmpty()) return
+        val failedDescriptors = session.failedDescriptors()
+        if (failedDescriptors.isEmpty()) return
         val policy = ChronicleImageSettings.getInstance().state.renderFailurePolicy
-        for (request in failedRequests) {
+        for (descriptor in failedDescriptors) {
             when (policy) {
                 ImageRenderFailurePolicy.AcceptBroken -> Unit
-                ImageRenderFailurePolicy.RemoveImage -> builder.removeImage(request.targetPath.absolutePathString())
+                ImageRenderFailurePolicy.RemoveImage -> builder.removeImage(descriptor.targetPath.absolutePathString())
                 ImageRenderFailurePolicy.Placeholder -> {
                     val placeholderPath = runCatching { getPlaceholderImagePath() }.getOrNull() ?: continue
-                    builder.replaceImage(request.targetPath.absolutePathString(), placeholderPath.absolutePathString())
+                    builder.replaceImage(descriptor.targetPath.absolutePathString(), placeholderPath.absolutePathString())
                 }
             }
         }

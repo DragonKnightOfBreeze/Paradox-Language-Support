@@ -10,7 +10,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import java.nio.file.Path
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 
 /**
@@ -23,9 +22,9 @@ class ImageRenderSession(
 ) {
     // 3.0.5 统一使用 `ConcurrentLinkedQueue`，无锁且并发遍历绝对安全，以省去不必要的心智负担
     private val jobs = ConcurrentLinkedQueue<Deferred<Path?>>()
-    private val failedRequests = ConcurrentLinkedQueue<ImageDescriptor>()
     private val descriptors = ConcurrentLinkedQueue<ImageDescriptor>()
-    private val textIconDescriptors = ConcurrentHashMap.newKeySet<ImageDescriptor>()
+    private val textIconDescriptors = ConcurrentLinkedQueue<ImageDescriptor>()
+    private val failedDescriptors = ConcurrentLinkedQueue<ImageDescriptor>()
 
     fun launch(descriptor: ImageDescriptor): Deferred<Path?> {
         descriptors += descriptor
@@ -35,7 +34,7 @@ class ImageRenderSession(
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                failedRequests += descriptor
+                failedDescriptors += descriptor
                 logger.warn("Render image for documentation session failed. (source path: ${descriptor.sourcePath})", e)
                 null
             }
@@ -56,10 +55,6 @@ class ImageRenderSession(
         return jobs.toList().awaitAll()
     }
 
-    fun requests(): List<ImageDescriptor> {
-        return descriptors.toList()
-    }
-
     /**
      * 将指定图片请求标记为文本图标，用于区分快速文档中的内联文本图标与其他图片。
      */
@@ -67,12 +62,16 @@ class ImageRenderSession(
         textIconDescriptors += descriptor
     }
 
-    fun textIconRequests(): List<ImageDescriptor> {
+    fun descriptors(): List<ImageDescriptor> {
+        return descriptors.toList()
+    }
+
+    fun textIconDescriptors(): List<ImageDescriptor> {
         return textIconDescriptors.toList()
     }
 
-    fun failedRequests(): List<ImageDescriptor> {
-        return failedRequests.toList()
+    fun failedDescriptors(): List<ImageDescriptor> {
+        return failedDescriptors.toList()
     }
 
     companion object {

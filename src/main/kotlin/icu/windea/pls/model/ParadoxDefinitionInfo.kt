@@ -46,9 +46,8 @@ data class ParadoxDefinitionInfo(
     /** @see ParadoxDefinitionManager.getMemberPath */
     val memberPath: ParadoxMemberPath = ParadoxDefinitionManager.getMemberPath(this)
 
-    // NOTE `element` 在构造完成后才由 `ParadoxDefinitionService` 赋值，
-    // 因此依赖子类型的属性不能在这里立即初始化，否则会基于空的 `element` 解析出空的子类型，
-    // 进而丢失声明在子类型下的本地化与图片。
+    // NOTE 3.1.0 `element` 在构造完成后才由 `ParadoxDefinitionService` 赋值，因此依赖子类型的属性不能在这里立即初始化。
+    //  否则，会基于空的 `element` 解析出空的子类型，进而丢失声明在子类型下的本地化与图片。
     /** @see ParadoxDefinitionManager.getRelatedLocalisationInfos */
     val localisations: List<RelatedLocalisationInfo> get() = ParadoxDefinitionManager.getRelatedLocalisationInfos(this)
     /** @see ParadoxDefinitionManager.getRelatedImageInfos */
