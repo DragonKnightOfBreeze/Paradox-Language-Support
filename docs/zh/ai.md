@@ -23,7 +23,7 @@
 
 这些功能可以通过多种方式触发，包括：
 
-- **意图（Intentions）**：在编辑器中将光标停留在本地化文本上，使用 `Alt + Enter`（或点击出现的灯泡图标）触发。适用于单条文本或选中范围内的文本的快速处理。
+- **意向（Intentions）**：在编辑器中将光标停留在本地化文本上，使用 `Alt + Enter`（或点击出现的灯泡图标）触发。适用于单条文本或选中范围内的文本的快速处理。
 - **动作（Actions）**：通过工具菜单、编辑器右键菜单、项目视图的右键菜单等触发。支持在文件级别或目录级别进行批量处理。
 
 <!-- @see icu.windea.pls.ai.intentions.localisation -->
@@ -48,7 +48,7 @@
 <!-- @see icu.windea.pls.ai.actions.localisation.AiReplaceLocalisationWithTranslationAction -->
 <!-- @see icu.windea.pls.ai.actions.localisation.AiReplaceLocalisationWithTranslationFromLocaleAction -->
 
-<!-- 占位符：演示翻译本地化文本的意图 -->
+<!-- 占位符：演示翻译本地化文本的意向 -->
 <!-- ![](../assets/ai/ai_translate_intention_1.png) -->
 <!-- 占位符：演示批量翻译本地化文本的动作 -->
 <!-- ![](../assets/ai/ai_translate_action_1.png) -->
@@ -66,7 +66,7 @@
 <!-- @see icu.windea.pls.ai.intentions.localisation.AiReplaceLocalisationWithPolishingIntention -->
 <!-- @see icu.windea.pls.ai.actions.localisation.AiReplaceLocalisationWithPolishingAction -->
 
-<!-- 占位符：演示润色本地化文本的意图 -->
+<!-- 占位符：演示润色本地化文本的意向 -->
 <!-- ![](../assets/ai/ai_polish_intention_1.png) -->
 <!-- 占位符：演示批量润色本地化文本的动作 -->
 <!-- ![](../assets/ai/ai_polish_action_1.png) -->
