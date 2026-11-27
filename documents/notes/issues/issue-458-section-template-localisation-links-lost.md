@@ -11,7 +11,7 @@
 - **GitHub Issue**：[#458 - 舰船区段本地化链接丢失](https://github.com/DragonKnightOfBreeze/Paradox-Language-Support/issues/458)
 - **标签**：`bug`、`regression`、`language-features`
 - **错误表现**：
-  1. 在 `common/section_templates` 中定义的区段（`ship_section_template`）不再显示本地化内嵌提示/快速文档中的本地化文本；
+  1. 在 `common/section_templates` 中定义的区段（`ship_section_template`）不再显示本地化内嵌提示/快速文档中的本地化文本。
   2. 在本地化文件中，对应的键（如 `lglr_tundra_a`）也无法通过装订线图标/查找用法索引回区段定义。
 - **复现线索**：原版 `common/section_templates/battleship.txt` 与 `localisation/english/ship_sections_l_english.yml`。
 
@@ -48,8 +48,8 @@
 
 ### 2. 双向链路
 
-- **定义 → 本地化**：`ParadoxDefinitionManager.getRelatedLocalisations(...)` → `ParadoxDefinitionService.resolveRelatedLocalisations(...)`，依赖 `definitionInfo.localisations`；
-- **本地化 → 定义**：`ParadoxLocalisationManager.getRelatedDefinitions(...)` → `ParadoxLocalisationService.resolveRelatedDefinitions(...)`，逐一检查候选定义的 `definitionInfo.localisations`；
+- **定义 → 本地化**：`ParadoxDefinitionManager.getRelatedLocalisations(...)` → `ParadoxDefinitionService.resolveRelatedLocalisations(...)`，依赖 `definitionInfo.localisations`。
+- **本地化 → 定义**：`ParadoxLocalisationManager.getRelatedDefinitions(...)` → `ParadoxLocalisationService.resolveRelatedDefinitions(...)`，逐一检查候选定义的 `definitionInfo.localisations`。
 - 两者都取决于 `ParadoxDefinitionInfo.localisations`（主键相关逻辑还依赖 `primaryLocalisations`）。
 
 ## 根因
@@ -68,11 +68,11 @@
 
 ### 2. 失效链路
 
-1. 构造 `ParadoxDefinitionInfo` 时，`element` 仍为 `null`；
-2. `localisations` 初始化会调用 `resolveRelatedLocalisationInfos(...)`，其中需要 `definitionInfo.subtypes`；
-3. `subtypes` 通过 `getSubtypeConfigs(...)` 解析，而后者需要 `element`；`element == null` 时返回空子类型列表；
-4. 对于 `section_template`，`localisation` 规则挂在 `needs_locs` 子类型下，空子类型导致 `getLocationConfigs(emptyList())` 不返回任何位置规则；
-5. 于是 `localisations` 被永久缓存为空列表（属性为 `val`），即使之后 `element` 已赋值也不会重算；
+1. 构造 `ParadoxDefinitionInfo` 时，`element` 仍为 `null`。
+2. `localisations` 初始化会调用 `resolveRelatedLocalisationInfos(...)`，其中需要 `definitionInfo.subtypes`。
+3. `subtypes` 通过 `getSubtypeConfigs(...)` 解析，而后者需要 `element`；`element == null` 时返回空子类型列表。
+4. 对于 `section_template`，`localisation` 规则挂在 `needs_locs` 子类型下，空子类型导致 `getLocationConfigs(emptyList())` 不返回任何位置规则。
+5. 于是 `localisations` 被永久缓存为空列表（属性为 `val`），即使之后 `element` 已赋值也不会重算。
 6. 双向本地化链接因此同时失效。
 
 > 说明：直接声明本地化（不依赖子类型）的类型不受影响，所以该回归最初只在 `section_template` 这类“本地化挂在子类型下”的定义上明显暴露。
@@ -93,13 +93,13 @@
 
 ## 回归测试
 
-- 新增 `src/test/kotlin/icu/windea/pls/test/issues/Issue458Test.kt`
+- 新增 `src/test/kotlin/icu/windea/pls/test/issues/Issue458Test.kt`。
 - 新增夹具 `src/test/testData/issues/458/`：
-  - `.config/stellaris/section_templates.test.cwt`：最小化的 Stellaris 规则，保留 `name_field = "key"`、`needs_locs` 子类型与子类型下的本地化；
+  - `.config/stellaris/section_templates.test.cwt`：最小化的 Stellaris 规则，保留 `name_field = "key"`、`needs_locs` 子类型与子类型下的本地化。
   - `common/ship_sizes/00_ship_sizes.txt`、`common/section_templates/battleship.txt`、`localisation/english/ship_sections_l_english.yml`。
 - 覆盖：
-  1. `definitionInfo` 的 `type` / `name` / `subtypes` / `localisations`；
-  2. 定义侧的 `getRelatedLocalisations`（含 `onlyPrimary`）与 `getPrimaryLocalisationKey`；
+  1. `definitionInfo` 的 `type` / `name` / `subtypes` / `localisations`。
+  2. 定义侧的 `getRelatedLocalisations`（含 `onlyPrimary`）与 `getPrimaryLocalisationKey`。
   3. 本地化侧的 `getRelatedDefinitions`，确保能反向索引回区段定义。
 
 ## 验证
