@@ -204,11 +204,7 @@
 
 - **定义注入（Definition Injection）**：VIC3/EU5 中的一种语义宏（`inject:xxx`），属于模组脚本业务逻辑范畴。
 - **语言注入（Language Injection）**：IntelliJ 平台能力，指在字符串或参数内建立子语言 PSI（如参数值脚本注入），属于 IDE 基础设施范畴。
-- **代码注入（Bytecode / Class Injection）**：插件底层的 `icu.windea.pls.inject` 子系统，通过修改平台字节码进行底层修复。
-
-### 4.6 `event target` 术语统一
-
-- **事实依据**：早期文档与个别 KDoc 曾交替使用“事件目标”与“事件对象引用”。最新代码提交（`dc4ddf0aaa`）已全面统一为 **`event target` -> 事件目标**，相关引用统称为“事件目标引用”。
+- **代码注入（Bytecode / Class Injection）**：插件底层的 `icu.windea.pls.inject` 子系统，通过修改平台字节码进行底层修复，或是实现特定功能。
 
 ---
 
