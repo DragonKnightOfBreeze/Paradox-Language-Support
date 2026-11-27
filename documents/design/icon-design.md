@@ -1,17 +1,26 @@
 # 图标设计
 
-> - 更新版本：v3.0.4
-> - 更新日期：2026-10-05
+> - 版本：`v3.1.0`
+> - 更新日期：`2026-11-28`
+> - 状态：**现行活规范（Living Specification）**
+> - 文档定位：规范文件类型、AST 语法节点、CWT 规则元素、装订线、动作与通用图标的设计约定，以及图标资源与 `ChronicleIcons` 的映射关系。
+
+---
 
 ## 概述
 
 相关代码位置：
-- `icu.windea.pls.ChronicleIcons` 
+- `icu.windea.pls.ChronicleIcons`
 
 相关文件与目录：
 - `src/main/resources/ChronicleIconMappings.json`
 - `src/main/resources/icons`
 - `src/main/resources/icons/expui`
+
+说明：
+- `ChronicleIconMappings.json` 是供 expui 图标组织与维护的映射清单，与 `ChronicleIcons` 的当前路径保持对齐（如 `ExtendedComplexEnumValue` 已指向 `icons/configs/extended/extendedComplexEnumValue.svg`）
+- 该映射清单不是运行时图标加载的数据源，权威来源仍是 `ChronicleIcons`
+- `icons/expui` 存放 New UI 变体资源，部分图标提供 `_dark.svg` 变体
 
 ## 文件类型 (fileTypes)
 
@@ -20,13 +29,14 @@
 - [src/main/resources/icons/expui/fileTypes/](/src/main/resources/icons/expui/fileTypes/)
 
 说明：
-- 4种自定义DSL的文件类型图标：文件+扩展名标签 / 正方形+字母
+- CWT、Paradox Script、Paradox Localisation 三种自定义语言提供文件类型图标：文件+扩展名标签 / 正方形+字母
+- Paradox CSV 使用平台 `AllIcons.FileTypes.Csv`，不单独提供自定义图标
 - 规则文件、模组描述符文件：齿轮
 
 详情：
 - `cwt.svg` - 绿色+文件+CWT / 绿色+正方形+C
 - `paradoxScript.svg` - 紫色+文件+TXT / 紫色+正方形+S
-- `paradoxScript.svg` - 红色+文件+YML / 红色+正方形+L
+- `paradoxLocalisation.svg` - 红色+文件+YML / 红色+正方形+L
 - `cwtConfig.svg` - 灰白色（`#9AA7B0`）+齿轮
 - `modDescriptor.svg` - 蓝色（`#5D8DC3`）+齿轮
 
@@ -167,6 +177,55 @@
 - `relatedLocalisations.svg` - 红色+圆形+L & 右下角的回形针
 - `relatedImages.svg` - Markdown 图片图标 & 右下角的回形针
 - `relatedDefinitionInjections.svg` - 蓝色+圆形+D - 切面形式（参考自：aroundAdvice） & 右下角的回形针
+- `defineVariable.svg` - 橙色+圆形+D
 - `inlineScripts.svg` - 脚本图标 & 右下角的回形针
 - `definitionInjections.svg` - 蓝色+圆形+D - 切面形式（参考自：aroundAdvice）
 - `definitionInjectionTargets.svg` - Rust 目标图标
+
+## 通用 (general)
+
+相关目录：
+- [src/main/resources/icons/](/src/main/resources/icons/)
+
+说明：
+- 除 `steam.svg` 外，多数通用图标直接复用平台图标，不单独维护自定义资源
+
+详情：
+- `steam.svg` - 自定义 Steam 图标
+- `GameDirectory` / `ModDirectory` - 平台 `AllIcons.Nodes.Module`
+- `EntryDirectory` - 平台 `AllIcons.Modules.SourceRoot`
+- `ConfigGroupDirectory` - 平台 `AllIcons.Modules.EditFolder`
+- `Library` - 平台 `AllIcons.Nodes.PpLibFolder`
+- `Presentation` - 平台 `PlatformImagesIcons.ThumbnailToolWindow`
+
+## 动作 (actions)
+
+相关目录：
+- [src/main/resources/icons/actions/](/src/main/resources/icons/actions/)
+- [src/main/resources/icons/expui/actions/](/src/main/resources/icons/expui/actions/)
+
+说明：
+- 图标大小：16x16
+- 除强制刷新动作外，统一使用蓝色（`#5D8DC3`）
+
+详情：
+- `gameSettings.svg` - 蓝色+齿轮
+- `modSettings.svg` - 蓝色+齿轮
+- `refreshConfigGroups.svg` - 蓝色+刷新箭头
+- `syncConfigGroupsFromRemote.svg` - 蓝色+克隆/同步图形
+- `forceRefreshConfigGroups.svg` - 红色（`#B91919`）+刷新箭头
+
+## 编辑器动作 (editorActions)
+
+相关目录：
+- [src/main/resources/icons/editorActions/](/src/main/resources/icons/editorActions/)
+
+说明：
+- 图标大小：16x16
+- 用于表格编辑，参考自 Markdown 插件
+
+详情：
+- `addColumnLeft.svg` - 左侧插入列
+- `addColumnRight.svg` - 右侧插入列
+- `addRowAbove.svg` - 上方插入行
+- `addRowBelow.svg` - 下方插入行
