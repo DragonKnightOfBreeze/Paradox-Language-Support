@@ -113,13 +113,39 @@ class LazyValueTest {
 
     // endregion
 
+    // region get / getOrNull
+
+    @Test
+    fun getOrNull_uninitialized_returnsNull_test() {
+        val v = LazyValue<String>()
+        Assert.assertNull(v.getOrNull()) // 未初始化时返回 null，且不会触发初始化
+        Assert.assertFalse(v.isInitialized())
+    }
+
+    @Test
+    fun getOrNull_initialized_returnsValue_test() {
+        val v = LazyValue<String>()
+        v.initialize { "x" }
+        Assert.assertEquals("x", v.getOrNull())
+    }
+
+    @Test
+    fun getOrNull_nullValue_returnsNull_test() {
+        val v = LazyValue<String?>()
+        v.initialize { null }
+        Assert.assertNull(v.getOrNull()) // null 值同样视为已初始化
+        Assert.assertTrue(v.isInitialized())
+    }
+
+    // endregion
+
     // region 并发
 
     @Test
     fun initialize_concurrent_runsOnce_test() {
         val v = LazyValue<String>()
         val count = AtomicInteger(0)
-        val results = runConcurrently(32) {
+        val results = runConcurrently {
             v.initialize {
                 count.incrementAndGet()
                 Thread.sleep(1) // 拉宽竞争窗口，确保真正发生竞争
@@ -133,7 +159,8 @@ class LazyValueTest {
 
     // endregion
 
-    private fun <T> runConcurrently(threadCount: Int, action: () -> T): List<T> {
+    private fun <T> runConcurrently(action: () -> T): List<T> {
+        val threadCount = 32
         val executor = Executors.newFixedThreadPool(threadCount)
         val startLatch = CountDownLatch(1)
         val doneLatch = CountDownLatch(threadCount)
