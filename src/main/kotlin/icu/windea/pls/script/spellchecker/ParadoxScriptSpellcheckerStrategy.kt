@@ -32,7 +32,7 @@ class ParadoxScriptSpellcheckerStrategy : SpellcheckingStrategy(), DumbAware {
     private val scriptedVariableReferenceTokenizer = TokenAwareTokenizer(SCRIPTED_VARIABLE_REFERENCE_TOKEN)
     private val parameterTokenizer = TokenAwareTokenizer(PARAMETER_TOKEN)
     private val conditionParameterTokenizer = TokenAwareTokenizer(CONDITION_PARAMETER_TOKEN)
-    private val argumentTokenizer = TokenAwareTokenizer(CONDITION_PARAMETER_TOKEN)
+    private val argumentTokenizer = TokenAwareTokenizer(ARGUMENT_TOKEN)
 
     override fun getTokenizer(element: PsiElement): Tokenizer<*> {
         if (element is PsiWhiteSpace) return emptyTokenizer
