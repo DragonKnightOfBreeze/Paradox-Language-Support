@@ -1,0 +1,54 @@
+# Minimal Stellaris rules for Issue #458:
+# `section_template` localisation is declared only under the `needs_locs` subtype,
+# which is selected by the referenced `ship_size` definition being `designable`.
+
+types = {
+    type[ship_size] = {
+        path = "common/ship_sizes"
+        path_extension = .txt
+        subtype[designable] = {
+            ## cardinality = 0..1
+            is_designable = yes
+        }
+    }
+
+    type[section_template] = {
+        name_field = "key"
+        path = "common/section_templates"
+        path_extension = .txt
+        subtype[needs_locs] = {
+            ship_size = <ship_size.designable>
+        }
+        localisation = {
+            subtype[needs_locs] = {
+                name = "$"
+            }
+        }
+    }
+}
+
+ship_size = {
+    ## cardinality = 0..1
+    is_space_station = bool
+    ## cardinality = 0..1
+    is_designable = bool
+    ## cardinality = 0..1
+    section_slots = {
+        ## cardinality = 0..inf
+        value = {
+            locator = scalar
+        }
+    }
+}
+
+section_template = {
+    key = scalar
+    ## cardinality = 0..1
+    ship_size = <ship_size>
+    ## cardinality = 0..1
+    fits_on_slot = scalar
+    ## cardinality = 0..1
+    entity = scalar
+    ## cardinality = 0..1
+    icon = scalar
+}

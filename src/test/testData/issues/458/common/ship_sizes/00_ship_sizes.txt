@@ -1,0 +1,8 @@
+battleship = {
+	is_space_station = no
+	section_slots = {
+		"bow" = { locator = "part1" }
+		"mid" = { locator = "part2" }
+		"stern" = { locator = "part3" }
+	}
+}

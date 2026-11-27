@@ -1,0 +1,7 @@
+ship_section_template = {
+	key = "lglr_tundra_a"
+	ship_size = battleship
+	fits_on_slot = bow
+	entity = "battleship_bow_entity"
+	icon = "GFX_ship_part_core_bow"
+}
