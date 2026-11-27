@@ -2171,7 +2171,7 @@ Name format expression type.
 Matches a name format expression (e.g., `{alpha}`, `{<adj> {<noun>}}`).
 
 Format of corresponding data expressions:
-- `name_format[{type}]` - where `{name}` matches the format name (the corresponding definition type is `{name}_name_format`).
+- `name_format[{type}]` - where `{type}` matches the format name (the corresponding definition type is `{type}_name_parts_list`).
 - `$name_format[{type}]` - provided for alignment.
 
 > CWTools Compatibility: Not compatible. Provided as an extension by the plugin.

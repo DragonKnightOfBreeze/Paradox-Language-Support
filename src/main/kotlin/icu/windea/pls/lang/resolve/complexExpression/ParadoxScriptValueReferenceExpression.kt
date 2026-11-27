@@ -26,7 +26,7 @@ import icu.windea.pls.lang.util.ParadoxExpressionManager
  * 说明：
  * - 对应的规则数据类型为 [CwtDataTypes.ScriptValueReference]。
  * - 通常作为链接 `script_value` 的数据源使用。
- * - 评估结果应是一个数字字面量。
+ * - 评估结果预期是一个数字字面量，但当前尚未提供对应的评估器。
  *
  * 示例：
  * ```text

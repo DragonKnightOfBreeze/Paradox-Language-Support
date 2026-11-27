@@ -20,7 +20,7 @@ object ParadoxScriptHighlighterColors {
     @JvmField val SCRIPTED_VARIABLE_NAME = createTextAttributesKey("PARADOX_SCRIPT.SCRIPTED_VARIABLE_NAME", DefaultLanguageHighlighterColors.STATIC_FIELD)
     @JvmField val SCRIPTED_VARIABLE_REFERENCE = createTextAttributesKey("PARADOX_SCRIPT.SCRIPTED_VARIABLE_REFERENCE", DefaultLanguageHighlighterColors.STATIC_FIELD)
     @JvmField val PARAMETER = createTextAttributesKey("PARADOX_SCRIPT.PARAMETER", DefaultLanguageHighlighterColors.KEYWORD)
-    @JvmField val CONDITION_PARAMETER = createTextAttributesKey("PARADOX_SCRIPT.CONDITION_PARAMETER", DefaultLanguageHighlighterColors.KEYWORD) // JAVA_TYPE_PARAMETER
+    @JvmField val CONDITION_PARAMETER = createTextAttributesKey("PARADOX_SCRIPT.CONDITION_PARAMETER", DefaultLanguageHighlighterColors.KEYWORD) // KOTLIN_TYPE_PARAMETER
     @JvmField val ARGUMENT = createTextAttributesKey("PARADOX_SCRIPT.ARGUMENT") // KOTLIN_NAMED_ARGUMENT
     @JvmField val PROPERTY_KEY = createTextAttributesKey("PARADOX_SCRIPT.PROPERTY_KEY", DefaultLanguageHighlighterColors.INSTANCE_FIELD)
     @JvmField val NUMBER = createTextAttributesKey("PARADOX_SCRIPT.NUMBER", DefaultLanguageHighlighterColors.NUMBER)

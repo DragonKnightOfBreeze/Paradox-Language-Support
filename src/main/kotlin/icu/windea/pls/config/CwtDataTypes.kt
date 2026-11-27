@@ -645,7 +645,7 @@ object CwtDataTypes {
      * 匹配命名格式表达式（如 `{alpha}` `{<adj> {<noun>}}`）。
      *
      * 对应的数据表达式的格式：
-     * - `name_format[{type}]` - 其中 `{name}` 匹配格式的名字（对应的定义类型为 `{name}_name_format`）。
+     * - `name_format[{type}]` - 其中 `{type}` 匹配格式的名字（对应的定义类型为 `{type}_name_parts_list`）。
      * - `$name_format[{type}]` - 出于对齐的目的而提供。
      *
      * > CWTools 兼容性：不兼容。插件作为扩展提供。
