@@ -14,3 +14,8 @@
 
 - [报告：代码规范（`icu.windea.pls.config.configExpression`）](reports/report-config-expression-conventions.md)
 - [报告：测试覆盖度 - `icu.windea.pls.core`](reports/report-test-coverage-core-3.0.1.md)
+- [报告：PSI 接口架构与语言抽象调研（v3.1.0）](reports/report-psi-architecture-3.1.0.md)
+- [报告：复杂表达式体系调研（v3.1.0）](reports/report-complex-expressions-3.1.0.md)
+- [报告：作用域系统与上下文推导调研（v3.1.0）](reports/report-scope-system-3.1.0.md)
+- [报告：脚本片段注入机制调研与既有设计文档现行性核对（v3.1.0）](reports/report-script-injection-and-design-audit-3.1.0.md)
+- [报告：术语全维度审计（v3.1.0）](reports/report-terminology-audit-3.1.0.md)
