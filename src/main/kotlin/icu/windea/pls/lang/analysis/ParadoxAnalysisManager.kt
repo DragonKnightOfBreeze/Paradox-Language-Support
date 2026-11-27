@@ -56,7 +56,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         // skip for in archive files (unsupported)
         if (VirtualFileService.isInArchiveFile(rootFile)) return null
 
-        // try to get injected root info first
+        // try to use forced root info first
         doGetForcedRootInfo(rootFile)?.let { return it }
 
         // get root info from cache (load if necessary)
@@ -64,7 +64,12 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
     }
 
     private fun doGetForcedRootInfo(rootFile: VirtualFile): ParadoxRootInfo? {
-        return rootFile.injectedRootInfo ?: markedRootInfo?.also { rootFile.injectedRootInfo = it }
+        // try to use directly injected root info
+        rootFile.injectedRootInfo?.let { return it }
+        // try to use globally marked root info
+        markedRootInfo?.also { rootFile.injectedRootInfo = it }?.let { return it }
+        // fallback
+        return null
     }
 
     private fun doGetRootInfo(rootFile: VirtualFile, cached: Boolean): ParadoxRootInfo? {
@@ -98,16 +103,12 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
     }
 
     fun getFileInfo(file: VirtualFile, cached: Boolean = true): ParadoxFileInfo? {
-        // try injected file info first (e.g., Markdown code fences)
-        if (VirtualFileService.isInjectedFile(file)) {
-            return ParadoxAnalysisInjectionManager.getInjectedFileInfo(file)
-        }
         // skip for `StubVirtualFile` (unsupported)
         if (VirtualFileService.isStubFile(file)) return null
         // skip for in archive files (unsupported)
         if (VirtualFileService.isInArchiveFile(file)) return null
 
-        // try to get injected file info first
+        // try to use forced file info first
         doGetForcedFileInfo(file)?.let { return it }
 
         // get file info from cache (load if necessary)
@@ -119,7 +120,14 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
     }
 
     private fun doGetForcedFileInfo(file: VirtualFile): ParadoxFileInfo? {
-        return file.injectedFileInfo ?: markedFileInfo?.takeIf { it.isPossible(file) }?.also { file.injectedFileInfo = it }
+        // try to use directly injected root info (compatible with injected files)
+        file.injectedFileInfo?.let { return it }
+        // skip for injected files (e.g., Markdown code fences) from now on
+        if (VirtualFileService.isInjectedFile(file)) return null
+        // try to use globally marked root info
+        markedFileInfo?.takeIf { it.isPossible(file) }?.also { file.injectedFileInfo = it }?.let { return it }
+        // fallback
+        return null
     }
 
     @Suppress("KotlinConstantConditions")
@@ -199,7 +207,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
         // skip for in archive files (unsupported)
         if (VirtualFileService.isInArchiveFile(file)) return null
 
-        // try to get injected locale config first
+        // try to use forced locale config first
         doGetForcedLocaleConfig(file)?.let { return it }
 
         // get locale config from cache (load if necessary)
@@ -207,6 +215,7 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
     }
 
     private fun doGetForcedLocaleConfig(file: VirtualFile): CwtLocaleConfig? {
+        // try to use directly injected locale config
         return file.injectedLocaleConfig
     }
 
