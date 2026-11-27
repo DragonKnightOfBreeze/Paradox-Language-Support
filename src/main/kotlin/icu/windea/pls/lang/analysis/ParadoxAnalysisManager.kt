@@ -98,8 +98,10 @@ object ParadoxAnalysisManager : ParadoxAnalysisScope {
     }
 
     fun getFileInfo(file: VirtualFile, cached: Boolean = true): ParadoxFileInfo? {
-        // no file info for `VirtualFileWindow` (injected PSI)
-        if (VirtualFileService.isInjectedFile(file)) return null
+        // try injected file info first (e.g., Markdown code fences)
+        if (VirtualFileService.isInjectedFile(file)) {
+            return ParadoxAnalysisInjectionManager.getInjectedFileInfo(file)
+        }
         // skip for `StubVirtualFile` (unsupported)
         if (VirtualFileService.isStubFile(file)) return null
         // skip for in achieve files (unsupported)

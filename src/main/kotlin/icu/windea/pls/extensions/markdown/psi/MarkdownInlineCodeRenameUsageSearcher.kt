@@ -19,6 +19,7 @@ import com.intellij.refactoring.rename.api.RenameUsageSearchParameters
 import com.intellij.refactoring.rename.api.RenameUsageSearcher
 import com.intellij.util.CollectionQuery
 import com.intellij.util.Query
+import icu.windea.pls.core.runSmartReadAction
 
 /**
  * 由 Markdown 内联代码发起的重命名时，提供目标声明以及所有引用作为重命名用法。
@@ -29,13 +30,15 @@ import com.intellij.util.Query
 class MarkdownInlineCodeRenameUsageSearcher : RenameUsageSearcher {
     override fun collectSearchRequests(parameters: RenameUsageSearchParameters): Collection<Query<out RenameUsage>> {
         val target = parameters.target as? MarkdownInlineCodeRenameTarget ?: return emptyList()
-        val element = target.element
-        if (getMarkdownInlineCodeTargetName(element).isEmpty()) return emptyList()
-
-        val references = ReferencesSearch.search(element, parameters.searchScope)
-            .mapping { reference -> PsiModifiableRenameUsage.defaultPsiModifiableRenameUsage(PsiUsage.textUsage(reference.element, reference.rangeInElement)) }
-        val declaration = CollectionQuery(listOf(MarkdownInlineCodeDeclarationUsage(element)))
-        return listOf(references, declaration)
+        val usages = runSmartReadAction {
+            val element = target.element
+            if (getMarkdownInlineCodeTargetName(element).isEmpty()) return@runSmartReadAction emptyList()
+            val references = ReferencesSearch.search(element, parameters.searchScope)
+                .findAll()
+                .map { reference -> PsiModifiableRenameUsage.defaultPsiModifiableRenameUsage(PsiUsage.textUsage(reference.element, reference.rangeInElement)) }
+            references + MarkdownInlineCodeDeclarationUsage(element)
+        }
+        return listOf(CollectionQuery(usages))
     }
 }
 

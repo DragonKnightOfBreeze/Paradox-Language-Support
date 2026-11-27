@@ -40,11 +40,10 @@ object MarkdownExtensionManager {
     fun getIdentifierFromInlineCode(element: PsiElement): String? {
         if (element.elementType != MarkdownElementTypes.CODE_SPAN) return null
         val idElement = element.firstChild?.nextSibling ?: return null
-        if (idElement.elementType != MarkdownTokenTypes.TEXT) return null
         if (idElement.prevSibling?.elementType != MarkdownTokenTypes.BACKTICK) return null
         if (idElement.nextSibling?.elementType != MarkdownTokenTypes.BACKTICK) return null
-        val text = idElement.text
-        return text
+        // Accept any leaf token (e.g., `TEXT`, GFM `AT_PATH_TOKEN`), not just plain text.
+        return idElement.text
     }
 
     fun getPathInjectionInfo(element: MarkdownCodeFence): ParadoxPathInjectionInfo? {
