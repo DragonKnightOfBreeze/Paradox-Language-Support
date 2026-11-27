@@ -48,7 +48,7 @@ import icu.windea.pls.model.scope.ParadoxScopeConstants
  * - **作用域链接（scope link）** - 如 `owner`。
  * - **系统作用域（system scope）** - 如 `root`。
  * - **本地化命令字段（localisation command field）** - 如 `GetName`。
- * - **事件对象引用（event target reference）** - 如 `event_target:x`。
+ * - **事件目标引用（event target reference）** - 如 `event_target:x`。
  * - **动态数据引用（dynamic data reference）** - 如 `modifier:x` `value:x`。
  *
  * 路径定位：
