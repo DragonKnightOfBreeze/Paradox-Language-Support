@@ -13,11 +13,6 @@ object ParadoxScriptElementTypeFactory {
 
     @JvmStatic
     fun getElementType(debugName: String): IElementType {
-        // return when (debugName) {
-        //     "SCRIPTED_VARIABLE" -> ParadoxScriptStubElementTypes.SCRIPTED_VARIABLE
-        //     "PROPERTY" -> ParadoxScriptStubElementTypes.PROPERTY
-        //     else -> ParadoxScriptElementType(debugName)
-        // }
         return ParadoxScriptElementType(debugName)
     }
 }

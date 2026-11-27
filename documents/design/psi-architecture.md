@@ -308,7 +308,6 @@ CwtOptionMember
    - **语言级定义**：`ParadoxScriptStubDefinition` 与 `ParadoxLocalisationStubDefinition` 实现 `LightLanguageStubDefinition`，通过 `META-INF/chronicle-lang.xml` 的 `languageStubDefinition` 注册，提供 `stubVersion`、`LightStubBuilder`（`ParadoxScriptStubBuilder` / `ParadoxLocalisationStubBuilder`）、`shouldBuildStubFor` 与 `parseContentsLight`。
    - **节点级工厂与序列化器**：`ParadoxScriptStubRegistry` 与 `ParadoxLocalisationStubRegistry` 实现 `StubRegistryExtension`，通过 `stubElementRegistryExtension` 注册；它们为文件元素类型注册 `StubSerializer`，并为 `SCRIPTED_VARIABLE`/`PROPERTY`（以及 `PROPERTY_LIST`/`LOCALE`/`PROPERTY`）注册 `LightStubElementFactory` 与 `StubSerializer`。
    - **构建与反序列化**：`LightStubBuilder` 在索引期从 LighterAST 调用 `LightStubElementFactory.createStub(tree, node, parentStub)`，工厂同时提供 `createStub(psi, parentStub)`；反序列化后的节点存根通过 `StubBase.getPsi()` 调用 `createPsi(stub)`，生成 `StubBasedPsiElement` 实现类（如 `ParadoxScriptPropertyImpl(stub, PROPERTY)`）。
-   - **历史残留**：`ParadoxScriptElementTypeFactory` 与 `ParadoxLocalisationElementTypeFactory` 中注释掉的 `*StubElementType` 分支是 2025-08（`8e6827ce5d`）迁移离开旧 `IStubElementType` / `ILightStubElementType` 后保留的历史注释；当前所有存根元素类型都是普通 `IElementType`，不存在“AST Stub 与 Light Stub 双模式”，也没有恢复旧接口的计划。
 4. **无 Stub 语言**：CSV 与 CWT 不生成 Stub。CSV 通过轻量行规则与文件索引提供支持；CWT 规则文件直接解析为内存中的 `CwtConfigGroup`。
 
 ### 4.2 轻量元素体系（LightElement Architecture）

@@ -13,10 +13,6 @@ object ParadoxLocalisationElementTypeFactory {
 
     @JvmStatic
     fun getElementType(debugName: String): IElementType {
-        // return when (debugName) {
-        //     "PROPERTY" -> ParadoxLocalisationPropertyStubElementType.INSTANCE
-        //     else -> ParadoxLocalisationElementType(debugName)
-        // }
         return ParadoxLocalisationElementType(debugName)
     }
 }
