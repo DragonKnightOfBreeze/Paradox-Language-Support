@@ -74,6 +74,7 @@ import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.ScrollPaneConstants
 import javax.swing.SwingConstants
+import javax.swing.SwingUtilities
 import javax.swing.event.ChangeEvent
 import javax.swing.event.ChangeListener
 import kotlin.math.ceil
@@ -534,10 +535,9 @@ class ImageEditorUI(
         }
     }
 
-    @Suppress("DEPRECATION")
     private inner class FocusRequester : MouseAdapter() {
         override fun mousePressed(e: MouseEvent) {
-            IdeFocusManager.getGlobalInstance().doWhenFocusSettlesDown { IdeFocusManager.getGlobalInstance().requestFocus(this@ImageEditorUI, true) }
+            SwingUtilities.invokeLater { IdeFocusManager.getGlobalInstance().requestFocus(this@ImageEditorUI, true) }
         }
     }
 
