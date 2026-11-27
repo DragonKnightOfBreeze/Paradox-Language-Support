@@ -26,7 +26,7 @@ import java.awt.Color
 import java.util.*
 import javax.swing.JLabel
 
-// TODO 3.0.x refactor
+// TODO 3.1.0+ refactor
 
 object ParadoxDefinitionPresentationUtil {
     fun getNameLocalisation(definition: ParadoxDefinitionElement): ParadoxLocalisationProperty? {

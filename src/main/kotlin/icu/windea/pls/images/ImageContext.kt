@@ -25,7 +25,7 @@ internal object ImageContext {
     // see: https://github.com/haraldk/TwelveMonkeys
 
     // TODO 3.0.5+ refactoring: built-in SPIs for DDS and TGA images
-    // note: delay since it's complexity
+    // note: delay since its complexity
 
     // NOTE 2.1.7 MUST be lazy loaded here (avoiding eager class loading of ImageReaders and make ImageReaderCodeInjectors work as expected)
     private val ddsImageReaderSpi by lazy { DdsImageReaderSpi() }

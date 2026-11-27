@@ -145,7 +145,7 @@ class ParadoxDefinitionHierarchyNodeDescriptor(
         if (element !is ParadoxDefinitionElement) return null
         val definitionInfo = element.definitionInfo ?: return null
         val gameType = definitionInfo.gameType
-        if (gameType != ParadoxGameType.Stellaris) return null // TODO 3.0.x refactor
+        if (gameType != ParadoxGameType.Stellaris) return null // TODO 3.1.0+ refactor
         val file = element.containingFile
         return buildList {
             run r@{

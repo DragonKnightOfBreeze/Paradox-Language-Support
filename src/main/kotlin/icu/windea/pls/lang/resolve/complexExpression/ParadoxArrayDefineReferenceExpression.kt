@@ -68,7 +68,7 @@ private object ParadoxArrayDefineReferenceExpressionResolver {
         val range = range ?: TextRange.create(0, text.length)
         val expression = ParadoxArrayDefineReferenceExpressionImpl(text, range, configGroup, nodes)
 
-        // TODO 3.1.0 compatible with parameter ranges
+        // TODO 3.1.0+ compatible with parameter ranges
 
         run r1@{
             var namespaceNode: ParadoxDefineNamespaceNode? = null

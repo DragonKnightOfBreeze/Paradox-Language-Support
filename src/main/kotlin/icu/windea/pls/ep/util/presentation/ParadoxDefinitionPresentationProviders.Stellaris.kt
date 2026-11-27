@@ -10,7 +10,7 @@ import icu.windea.pls.model.ParadoxGameType
 import icu.windea.pls.model.constants.ParadoxDefinitionTypes
 import javax.swing.JComponent
 
-// TODO 3.0.x further refactor
+// TODO 3.1.0+ further refactor
 
 /**
  * 科技的图形展示（科技卡）。

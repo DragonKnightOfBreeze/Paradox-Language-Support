@@ -4,7 +4,7 @@ import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentation
 import icu.windea.pls.ep.util.presentation.ParadoxDefinitionPresentationProvider
 import icu.windea.pls.lang.psi.ParadoxDefinitionElement
 
-// TODO 3.0.x refactor
+// TODO 3.1.0+ refactor
 
 object ParadoxDefinitionPresentationService {
     inline fun <reified T : ParadoxDefinitionPresentation> get(element: ParadoxDefinitionElement, lenient: Boolean = false): T? {
