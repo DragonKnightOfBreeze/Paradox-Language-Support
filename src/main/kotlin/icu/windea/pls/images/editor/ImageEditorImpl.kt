@@ -6,11 +6,13 @@ import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.openapi.vfs.VirtualFileEvent
-import com.intellij.openapi.vfs.VirtualFileListener
 import com.intellij.openapi.vfs.VirtualFileManager
-import com.intellij.openapi.vfs.VirtualFilePropertyEvent
+import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.RefreshQueue
+import com.intellij.openapi.vfs.newvfs.events.VFileContentChangeEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent
+import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
+import com.intellij.util.application
 import icu.windea.pls.images.ImageService
 import org.intellij.images.editor.ImageDocument
 import org.intellij.images.editor.ImageDocument.*
@@ -34,16 +36,16 @@ class ImageEditorImpl(
     init {
         Disposer.register(this, editorUI)
 
-        @Suppress("DEPRECATION")
-        VirtualFileManager.getInstance().addVirtualFileListener(object : VirtualFileListener {
-            override fun propertyChanged(event: VirtualFilePropertyEvent) {
-                this@ImageEditorImpl.propertyChanged(event)
+        application.messageBus.connect(this).subscribe(VirtualFileManager.VFS_CHANGES, object : BulkFileListener {
+            override fun after(events: List<VFileEvent>) {
+                for (event in events) {
+                    when (event) {
+                        is VFilePropertyChangeEvent -> propertyChanged(event)
+                        is VFileContentChangeEvent -> contentsChanged(event)
+                    }
+                }
             }
-
-            override fun contentsChanged(event: VirtualFileEvent) {
-                this@ImageEditorImpl.contentsChanged(event)
-            }
-        }, this)
+        })
 
         Disposer.register(this, imageFileLoader)
 
@@ -126,7 +128,7 @@ class ImageEditorImpl(
         disposed = true
     }
 
-    fun propertyChanged(event: VirtualFilePropertyEvent) {
+    fun propertyChanged(event: VFilePropertyChangeEvent) {
         if (file != event.file) return
 
         // Change document
@@ -142,7 +144,7 @@ class ImageEditorImpl(
         }
     }
 
-    fun contentsChanged(event: VirtualFileEvent) {
+    fun contentsChanged(event: VFileContentChangeEvent) {
         if (file != event.file) return
 
         // Change document
