@@ -152,16 +152,18 @@ class ImageEditorUI(
 
 
         // toolbar is disabled in embedded mode
-        var toolbarPanel: JComponent? = null
-        if (!isEmbedded) {
+        val toolbarPanel: JComponent? = if (!isEmbedded) {
             val actionManager = ActionManager.getInstance()
             val actionGroup = actionManager.getAction(ImageEditorActions.GROUP_TOOLBAR) as ActionGroup
             val actionToolbar = actionManager.createActionToolbar(ImageEditorActions.ACTION_PLACE, actionGroup, true)
             actionToolbar.targetComponent = this
 
-            toolbarPanel = actionToolbar.component
-            toolbarPanel.setBackground(JBColor.lazy { getBackground() ?: UIUtil.getPanelBackground() })
-            toolbarPanel.addMouseListener(FocusRequester())
+            actionToolbar.component.apply {
+                setBackground(JBColor.lazy { getBackground() ?: UIUtil.getPanelBackground() })
+                addMouseListener(FocusRequester())
+            }
+        } else {
+            null
         }
 
         val errorLabel = JLabel(
@@ -175,8 +177,8 @@ class ImageEditorUI(
         contentPanel.add(errorPanel, ERROR_PANEL)
 
         val topPanel: JPanel = NonOpaquePanel(BorderLayout())
-        if (!isEmbedded) {
-            topPanel.add(toolbarPanel!!, BorderLayout.WEST)
+        if (toolbarPanel != null) {
+            topPanel.add(toolbarPanel, BorderLayout.WEST)
             infoLabel = JLabel(null as String?, SwingConstants.RIGHT)
             infoLabel!!.setBorder(JBUI.Borders.emptyRight(2))
             topPanel.add(infoLabel!!, BorderLayout.EAST)
