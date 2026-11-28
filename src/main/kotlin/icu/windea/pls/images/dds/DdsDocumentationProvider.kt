@@ -9,9 +9,7 @@ import com.intellij.psi.PsiFileSystemItem
 import icu.windea.pls.base.settings.ChroniclePresentationSettings
 import icu.windea.pls.core.codeInsight.documentation.DocumentationBuilder
 import icu.windea.pls.core.codeInsight.documentation.buildDocumentation
-import icu.windea.pls.core.escapeXml
 import icu.windea.pls.core.runSmartReadAction
-import icu.windea.pls.images.getExtendedImageDimensionTailText
 
 // org.intellij.images.fileTypes.ImageDocumentationProvider
 
@@ -23,18 +21,10 @@ class DdsDocumentationProvider : AbstractDocumentationProvider() {
         val file = element.virtualFile
         val metadata = runSmartReadAction { DdsMetadataIndex.getInstance().getMetadata(file, project) }
         if (metadata == null) return null
-        val tailText = runSmartReadAction { file.getExtendedImageDimensionTailText(project) }
-        return buildDocumentation { buildDoc(file, metadata, tailText) }.toString()
+        return buildDocumentation { buildDoc(file, metadata) }.toString()
     }
 
-    private fun DocumentationBuilder.buildDoc(file: VirtualFile, metadata: DdsMetadata, tailText: String?) {
-        // 加入图片文件名及尺寸提示（tailText，格式为 ` ({width}x{height})`）
-        run {
-            definition {
-                append(file.name.escapeXml())
-                if (tailText != null) append(tailText)
-            }
-        }
+    private fun DocumentationBuilder.buildDoc(file: VirtualFile, metadata: DdsMetadata) {
         // 加入用于渲染的图片的标签
         run {
             val maxSize = maxOf(metadata.width, metadata.height)

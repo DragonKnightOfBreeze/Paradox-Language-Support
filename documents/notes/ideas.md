@@ -780,7 +780,8 @@
   - 可通过 `checker` 进行取消检查
 - [x] P4 3.0.6 引入 `MonitorableInputStream` 和 `MonitorableOutputStream`
   - 可监控总长度和已处理长度，可能需要调整命名，可能需要与 `CancellableInputStream` / `CancellableOutputStream` 合并
-- [x] P4 3.1.0 在快速文档中提示图片文件的尺寸（tailText，` ({width}x{height})`）
+- [x] P4 3.1.0 ~~在代码补全中提示图片文件的尺寸（tailText，` ({width}x{height})`）~~
+  - 忽略并回退：已通过 `DdsLookupInfoProvider` 和 `TgaLookupInfoProvider` 实现。
 - [x] P2 3.0.6 考虑将 `ImageRenderRequest`/`ParadoxImageResolveResult` 合并为 `ImageDescriptor`
   - 更加通用，不限于“渲染”，也可用于“描述”和“解析”。
   - 提供图片层的方法 `ImageDescriptor.createImage` `ImageDescriptor.createImageIcon` `ImageDescriptor.resolveUrl`。
