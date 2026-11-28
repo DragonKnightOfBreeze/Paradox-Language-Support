@@ -738,11 +738,9 @@
 
 ### 2026-10-27
 
-- [x] P2 3.1.0 将最低支持的  IDE 版本 改为 IDEA 2026.2
-  - 将 Kotlin 版本同步改为 2.4.0
+- [x] P2 3.1.0 将最低支持的  IDE 版本 改为 IDEA 2026.3
   - 重构代码以处理平台版本和 Kotlin 版本的兼容性问题
   - 调整启用的编译器参数
-  - 补充 AI 编写的 ADR
 - [ ] P3 3.1.0 补充和完善维护者笔记
   - 设计笔记：`language-abstractions.md`
   - AI生成的学习笔记（更系统、更全面、更准确）
@@ -782,7 +780,7 @@
   - 可通过 `checker` 进行取消检查
 - [x] P4 3.0.6 引入 `MonitorableInputStream` 和 `MonitorableOutputStream`
   - 可监控总长度和已处理长度，可能需要调整命名，可能需要与 `CancellableInputStream` / `CancellableOutputStream` 合并
-- [x] P4 3.1.0 在快速文档中提示图片文件的尺寸（tailText，` (widthxheight)`）
+- [x] P4 3.1.0 在快速文档中提示图片文件的尺寸（tailText，` ({width}x{height})`）
 - [x] P2 3.0.6 考虑将 `ImageRenderRequest`/`ParadoxImageResolveResult` 合并为 `ImageDescriptor`
   - 更加通用，不限于“渲染”，也可用于“描述”和“解析”。
   - 提供图片层的方法 `ImageDescriptor.createImage` `ImageDescriptor.createImageIcon` `ImageDescriptor.resolveUrl`。

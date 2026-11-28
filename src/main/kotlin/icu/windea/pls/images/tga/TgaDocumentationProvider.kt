@@ -28,7 +28,7 @@ class TgaDocumentationProvider : AbstractDocumentationProvider() {
     }
 
     private fun DocumentationBuilder.buildDoc(file: VirtualFile, metadata: TgaMetadata, tailText: String?) {
-        // 加入图片文件名及尺寸提示（tailText，格式为 ` (widthxheight)`）
+        // 加入图片文件名及尺寸提示（tailText，格式为 ` ({width}x{height})`）
         run {
             definition {
                 append(file.name.escapeXml())

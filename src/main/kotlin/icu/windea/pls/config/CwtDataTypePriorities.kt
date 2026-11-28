@@ -150,20 +150,20 @@ object CwtDataTypePriorities {
     const val EXTERNAL_REFERENCE = 20.0
 
     /**
-     * 参数引用优先级（10.0）。
+     * 参数引用优先级（15.0）。
      *
      * 适用于参数名 [CwtDataTypes.Parameter] 和本地化参数名 [CwtDataTypes.LocalisationParameter]。
      * 低于所有引用类型，高于 [SCALAR]。
      */
-    const val PARAMETER_REFERENCE = 10.0
+    const val PARAMETER_REFERENCE = 15.0
 
     /**
-     * 标量优先级（9.0）。
+     * 标量优先级（10.0）。
      *
      * 适用于标量类型 [CwtDataTypes.Scalar]。
      * 低于 [PARAMETER_REFERENCE]，高于 [WILDCARD_LITERAL]。
      */
-    const val SCALAR = 9.0
+    const val SCALAR = 10.0
 
     /**
      * 通配字面量优先级（7.0）。
@@ -200,9 +200,8 @@ object CwtDataTypePriorities {
     /**
      * 默认优先级（0.0）。
      *
-     * 未指定静态优先级或动态优先级的数据类型会回退到该值，例如 [CwtDataTypes.UnionValue]、[CwtDataTypes.AliasKeysField]、
-     * [CwtDataTypes.AliasName]、[CwtDataTypes.AliasMatchLeft]、[CwtDataTypes.SingleAliasRight]、[CwtDataTypes.Glob]、
-     * [CwtDataTypes.Ant]、[CwtDataTypes.Regex]，以及动态枚举未命中时的回退值。低于所有显式定义的优先级。
+     * 未指定静态优先级或动态优先级的数据类型会回退到该值，例如 [CwtDataTypeSets.Pattern]。
+     * 低于所有显式定义的优先级。
      */
     const val DEFAULT = 0.0
 }

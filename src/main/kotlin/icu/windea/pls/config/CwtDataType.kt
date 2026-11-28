@@ -35,8 +35,8 @@ import icu.windea.pls.model.type.ParadoxExpressionType
  *
  * @property id 唯一标识符。
  * @property isReference 是否为引用类型（表达式引用了特定目标，如定义、本地化、文件路径等）。
- * @property priority 静态优先级。脚本表达式会优先匹配优先级更高的数据表达式。优先级默认为 [CwtDataTypePriorities.DEFAULT]（0.0）。
- * @property priorityProvider 动态优先级提供者。根据具体的数据表达式和规则组动态计算优先级。动态计算失败时会回退到 [CwtDataTypePriorities.DEFAULT]（0.0）。
+ * @property priority 静态优先级。脚本表达式会优先匹配优先级更高的数据表达式。优先级默认为 [CwtDataTypePriorities.DEFAULT]。
+ * @property priorityProvider 动态优先级提供者。根据具体的数据表达式和规则组动态计算优先级。优先级默认为 [CwtDataTypePriorities.DEFAULT]。
  *
  * @see CwtDataTypes
  * @see CwtDataTypeSets
